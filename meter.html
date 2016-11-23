@@ -1,0 +1,56 @@
+<html>
+<meta charset="utf-8">
+<head>
+<title>LabQuest 2 Sample Temperature Meter Readout</title>
+<script src="js/lib/sensor-labquest-2-interface.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        var sensor = sensorLabquest2Interface;
+
+        $('#connect').on('click', function() {
+            $('#control-status').html('Connecting...');
+            var ip = $('input[name=ip]').val();
+            sensor.startPolling(ip);
+            sensor.on('connected', function(){
+               $('#control-status').html('Connected.');
+            });
+            sensor.on('statusReceived', liveDataHandler);
+        });
+
+        $('#disconnect').on('click', function() {
+            sensor.stopPolling();
+            $('#control-status').html('Enter an address for your LabQuest2 and click Connect.');
+        });
+
+        sensor.on('controlDisabled', function() {
+           $('#control-status').html("Disconnected.");
+        });
+
+        sensor.on('controlEnabled', function() {
+           $('#control-status').html("Remote control is enabled.");
+        });
+
+        function liveDataHandler(){
+           var currentDataDisplay = "" ;
+            sensor.liveSensors.forEach(function(liveSensor, index) {
+                currentDataDisplay += "Sensor " + (index+1) + ": " + liveSensor.liveValue + liveSensor.units + "<br/>";
+            });
+            $("#sensors").html(currentDataDisplay);
+        }
+    });
+</script>
+</head>
+
+<body>
+  <h1>LabQuest2 Live Meter Readings</h1>
+  <input name="ip" type="text"></input>
+  <button id="connect">Connect</button>
+  <button id="disconnect">Disconnect</button>
+  <div id="control-status">Enter an address for your LabQuest2 and click Connect.</div>
+  <div id="sensors"></div>
+</body>
+</html>
