@@ -1,0 +1,15 @@
+{
+  "title": "Lab Interactive",
+  "aspectRatio": 1,
+  "theme": "no-framing",
+  "showTopBar": false,
+  "showBottomBar": false,
+  "models": [
+    {
+      "type": "md2d",
+      "id": "model"
+    }
+  ],
+  "parameters": [
+  ]
+}
