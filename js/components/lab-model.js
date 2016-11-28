@@ -1,24 +1,47 @@
 import React, {PureComponent} from 'react';
 import Lab from 'react-lab';
+import CircularProgress from 'material-ui/CircularProgress';
 import interactive from '../../models/interactive.json';
 
 import '../../css/lab-model.less';
 
 export default class LabModel extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true
+    };
+    this.handleModelLoad = this.handleModelLoad.bind(this);
+  }
+
   get labProps() {
     const { temperature, tempScale } = this.props;
     return { targetTemperature: tempScale(temperature) };
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.model !== prevProps.model) {
+      this.setState({loading: true});
+    }
+  }
+
+  handleModelLoad() {
+    this.setState({loading: false});
+  }
+
   render() {
     const { width, height, model } = this.props;
+    const { loading } = this.state;
     return (
       <div className="lab-model">
         <div className="lab-container">
+          {loading &&
+            <CircularProgress size={width * 0.5} thickness={7} style={{position: 'absolute', top: width * 0.25, left: width * 0.25}}/>
+          }
           <Lab interactive={interactive} model={model}
                props={this.labProps}
                width={width} height={height}
-               propsUpdateDelay={75}
+               onModelLoad={this.handleModelLoad}
                playing={true}/>
           <div className="overlay"/>
         </div>
