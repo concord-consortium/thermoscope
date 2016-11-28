@@ -45,7 +45,7 @@
     "aminoAcidLabels": true,
     "useThreeLetterCode": true,
     "showChargeSymbols": false,
-    "showVDWLines": true,
+    "showVDWLines": false,
     "VDWLinesCutoff": "medium",
     "showVelocityVectors": false,
     "showForceVectors": false,
