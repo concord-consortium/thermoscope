@@ -33,7 +33,7 @@
     "viewPortX": 0.1,
     "viewPortY": 0,
     "viewPortDrag": false,
-    "backgroundColor": "rgba(238,238,238,255)",
+    "backgroundColor": "#eee",
     "showClock": false,
     "markColor": "#f8b500",
     "atomRadiusScale": 1,
