@@ -4,13 +4,13 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import Thermoscope from './thermoscope';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import LabQuest2 from '../../public/sensor-labquest-2-interface.js';
+import LabQuest2 from 'sensor-labquest-2-interface';
 
 import '../../css/app.less';
 
 // Required by Material-UI library.
 injectTapEventPlugin();
-LabQuest2.startPolling("10.11.12.207");
+LabQuest2.connect("10.11.12.219");
 
 darkBaseTheme.palette.textColor = '#ccc';
 
