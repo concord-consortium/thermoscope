@@ -17,9 +17,11 @@ const App = () => (
   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
     <div className="app">
       <div className="thermoscope-container">
+        <div className="label">A</div>
         <Thermoscope/>
       </div>
       <div className="thermoscope-container">
+        <div className="label">B</div>
         <Thermoscope/>
       </div>
     </div>
