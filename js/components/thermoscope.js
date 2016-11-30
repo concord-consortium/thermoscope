@@ -29,7 +29,7 @@ export default class Thermoscope extends PureComponent {
   }
 
   handleMaterialTypeChange(event, value) {
-    this.setState({materialType: value});
+    this.setState({materialType: value, materialIdx: 0});
   }
 
   handleMaterialIdxChange(event, value) {
@@ -57,8 +57,8 @@ export default class Thermoscope extends PureComponent {
             <div className="material-type-select">
               <RadioButtonGroup name="material-type" valueSelected={materialType} onChange={this.handleMaterialTypeChange}>
                 <RadioButton value="solid" label="Solid"/>
-                <RadioButton value="liquid" label="Liquid" disabled/>
-                <RadioButton value="gas" label="Gas" disabled/>
+                <RadioButton value="liquid" label="Liquid"/>
+                <RadioButton value="gas" label="Gas"/>
               </RadioButtonGroup>
             </div>
             <div className="material-select">
