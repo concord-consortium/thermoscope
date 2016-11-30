@@ -7,10 +7,20 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import LabQuest2 from 'sensor-labquest-2-interface';
 
 import '../../css/app.less';
+import '../../css/sensor-connect.less';
 
 // Required by Material-UI library.
 injectTapEventPlugin();
-LabQuest2.connect("10.11.12.219");
+
+// For the LabQuest2 sensor
+var connect = function() {
+  LabQuest2.connect(document.getElementById("sensorIP").value);
+  document.getElementById("sensorConnectionStatus").innerHTML = "Connecting...";
+  LabQuest2.on('connected', function(){
+    document.getElementById("sensorConnectionStatus").innerHTML = "Connected.";
+  });
+};
+
 
 darkBaseTheme.palette.textColor = '#ccc';
 
@@ -18,6 +28,12 @@ darkBaseTheme.palette.textColor = '#ccc';
 const App = () => (
   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
     <div className="app">
+      <div className="sensorConnect">
+        <span>Sensor IP Address</span>
+        <input name="ip" type="text" id="sensorIP"></input>
+        <button id="connect" onClick={connect}>Connect</button>
+        <div id="sensorConnectionStatus"></div>
+      </div>
       <div className="thermoscope-container">
         <Thermoscope sensor={LabQuest2} probeIndex={0}/>
       </div>
