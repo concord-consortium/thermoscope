@@ -54439,7 +54439,7 @@
 			"aminoAcidLabels": true,
 			"useThreeLetterCode": true,
 			"showChargeSymbols": false,
-			"showVDWLines": true,
+			"showVDWLines": false,
 			"VDWLinesCutoff": "short",
 			"showVelocityVectors": false,
 			"showForceVectors": false,
