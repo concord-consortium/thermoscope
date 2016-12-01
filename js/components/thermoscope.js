@@ -10,7 +10,6 @@ import '../../css/thermoscope.less';
 
 const MODEL_WIDTH = 400;
 const MODEL_HEIGHT = 400;
-var sensor;
 
 export default class Thermoscope extends PureComponent {
   constructor(props) {
@@ -24,8 +23,7 @@ export default class Thermoscope extends PureComponent {
     this.handleTempSliderChange = this.handleTempSliderChange.bind(this);
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
-    this.sensor = this.props.sensor;
-    this.sensor.on('statusReceived', this.liveDataHandler.bind(this));
+    this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
   }
 
   handleTempSliderChange(event, value) {
@@ -41,8 +39,8 @@ export default class Thermoscope extends PureComponent {
   }
 
   liveDataHandler() {
-    if (this.sensor && this.sensor.liveSensors) {
-      let newData = this.sensor.liveSensors[this.props.probeIndex].liveValue;
+    if (this.props.sensor && this.props.sensor.liveSensors) {
+      let newData = this.props.sensor.liveSensors[this.props.probeIndex].liveValue;
       if (!isNaN(newData) && isFinite(newData)) this.setState({ temperature: newData, liveData: true });
     }
   }
