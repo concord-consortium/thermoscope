@@ -10,27 +10,31 @@ import gas2 from '../models/gas-2.json';
 export const MIN_TEMP = -6; // *C
 export const MAX_TEMP = 60; // *C
 
+function normalizeTemp(temp) {
+  return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+}
+
 export default {
   solid: [
     {
       name: 'Solid 1',
       json: solid1,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 800 + 10;
+        return normalizeTemp(temp) * 800 + 10;
       }
     },
     {
       name: 'Solid 2',
       json: solid2,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 800 + 10;
+        return normalizeTemp(temp) * 800 + 10;
       }
     },
     {
       name: 'Solid 3',
       json: solid3,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 800 + 10;
+        return normalizeTemp(temp) * 800 + 10;
       }
     }
   ],
@@ -39,21 +43,21 @@ export default {
       name: 'Liquid 1',
       json: liquid1,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 1500 + 500;
+        return normalizeTemp(temp) * 1500 + 500;
       }
     },
     {
       name: 'Liquid 2',
       json: liquid2,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 1500 + 1000;
+        return normalizeTemp(temp) * 1500 + 1000;
       }
     },
     {
       name: 'Liquid 3',
       json: liquid3,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 1500 + 1000;
+        return normalizeTemp(temp) * 1500 + 1000;
       }
     }
   ],
@@ -62,14 +66,20 @@ export default {
       name: 'Gas 1',
       json: gas1,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 5000 + 1500;
+        return normalizeTemp(temp) * 5000 + 1500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 1.0 + 0.2;
       }
     },
     {
       name: 'Gas 2',
       json: gas2,
       tempScale: function (temp) {
-        return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 7000 + 3500;
+        return normalizeTemp(temp) * 7000 + 3500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.65 + 0.03;
       }
     }
   ]

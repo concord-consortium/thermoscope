@@ -15,8 +15,14 @@ export default class LabModel extends PureComponent {
   }
 
   get labProps() {
-    const { temperature, tempScale } = this.props;
-    return { targetTemperature: tempScale(temperature) };
+    const { temperature, tempScale, timeStepScale } = this.props;
+    const props = {
+      targetTemperature: tempScale(temperature)
+    };
+    if (timeStepScale) {
+      props.timeStep = timeStepScale(temperature);
+    }
+    return props;
   }
 
   componentDidUpdate(prevProps) {
@@ -55,7 +61,9 @@ LabModel.PropTypes = {
   width: React.PropTypes.number,
   height: React.PropTypes.number,
   temperature: React.PropTypes.number,
-  tempScale: React.PropTypes.func
+  tempScale: React.PropTypes.func,
+  // timeStep can be also scaled with temperature to amplify difference in particles speed.
+  timeStepScale: React.PropTypes.func
 };
 
 LabModel.defaultProps = {
