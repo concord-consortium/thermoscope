@@ -29470,11 +29470,21 @@
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'thermoscope-container' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'label' },
+	          'A'
+	        ),
 	        _react2.default.createElement(_thermoscope2.default, null)
 	      ),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'thermoscope-container' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'label' },
+	          'B'
+	        ),
 	        _react2.default.createElement(_thermoscope2.default, null)
 	      )
 	    )
@@ -37090,7 +37100,11 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'thermoscope' },
-	        _react2.default.createElement(_labModel2.default, { model: model.json, tempScale: model.tempScale, temperature: temperature, width: MODEL_WIDTH, height: MODEL_HEIGHT }),
+	        _react2.default.createElement(_labModel2.default, { temperature: temperature,
+	          model: model.json,
+	          tempScale: model.tempScale,
+	          timeStepScale: model.timeStepScale,
+	          width: MODEL_WIDTH, height: MODEL_HEIGHT }),
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -50523,9 +50537,16 @@
 	    get: function get() {
 	      var _props2 = this.props,
 	          temperature = _props2.temperature,
-	          tempScale = _props2.tempScale;
+	          tempScale = _props2.tempScale,
+	          timeStepScale = _props2.timeStepScale;
 
-	      return { targetTemperature: tempScale(temperature) };
+	      var props = {
+	        targetTemperature: tempScale(temperature)
+	      };
+	      if (timeStepScale) {
+	        props.timeStep = timeStepScale(temperature);
+	      }
+	      return props;
 	    }
 	  }]);
 
@@ -50540,7 +50561,9 @@
 	  width: _react2.default.PropTypes.number,
 	  height: _react2.default.PropTypes.number,
 	  temperature: _react2.default.PropTypes.number,
-	  tempScale: _react2.default.PropTypes.func
+	  tempScale: _react2.default.PropTypes.func,
+	  // timeStep can be also scaled with temperature to amplify difference in particles speed.
+	  timeStepScale: _react2.default.PropTypes.func
 	};
 
 	LabModel.defaultProps = {
@@ -53018,56 +53041,66 @@
 	var MIN_TEMP = exports.MIN_TEMP = -6; // *C
 	var MAX_TEMP = exports.MAX_TEMP = 60; // *C
 
+	function normalizeTemp(temp) {
+	  return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+	}
+
 	exports.default = {
 	  solid: [{
 	    name: 'Solid 1',
 	    json: _solid2.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 800 + 10;
+	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }, {
 	    name: 'Solid 2',
 	    json: _solid4.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 800 + 10;
+	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }, {
 	    name: 'Solid 3',
 	    json: _solid6.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 800 + 10;
+	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }],
 	  liquid: [{
 	    name: 'Liquid 1',
 	    json: _liquid2.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 1500 + 500;
+	      return normalizeTemp(temp) * 1500 + 500;
 	    }
 	  }, {
 	    name: 'Liquid 2',
 	    json: _liquid4.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 1500 + 1000;
+	      return normalizeTemp(temp) * 1500 + 1000;
 	    }
 	  }, {
 	    name: 'Liquid 3',
 	    json: _liquid6.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 1500 + 1000;
+	      return normalizeTemp(temp) * 1500 + 1000;
 	    }
 	  }],
 	  gas: [{
 	    name: 'Gas 1',
 	    json: _gas2.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 5000 + 1500;
+	      return normalizeTemp(temp) * 5000 + 1500;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 1.0 + 0.2;
 	    }
 	  }, {
 	    name: 'Gas 2',
 	    json: _gas4.default,
 	    tempScale: function tempScale(temp) {
-	      return (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP) * 7000 + 3500;
+	      return normalizeTemp(temp) * 7000 + 3500;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 0.65 + 0.03;
 	    }
 	  }]
 	};
@@ -59877,7 +59910,7 @@
 			"color": [
 				-855310,
 				-1,
-				-39373,
+				-157070,
 				-2539040,
 				-855310
 			]
@@ -59920,7 +59953,7 @@
 
 
 	// module
-	exports.push([module.id, ".thermoscope {\n  color: #ccc;\n}\n.thermoscope .slider {\n  width: 270px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
+	exports.push([module.id, ".thermoscope .slider {\n  width: 270px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
 
 	// exports
 
@@ -60268,7 +60301,7 @@
 
 
 	// module
-	exports.push([module.id, ".app {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n", ""]);
 
 	// exports
 
