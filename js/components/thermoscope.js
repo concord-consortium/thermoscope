@@ -48,13 +48,6 @@ export default class Thermoscope extends PureComponent {
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
     const model = models[materialType][materialIdx];
-    let slider;
-    if (!liveData){
-    slider = <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
-        sliderStyle={{ marginTop: 5, marginBottom: 5 }}
-        name="temperature"
-        onChange={this.handleTempSliderChange} />
-    }
 
     return (
       <div className="thermoscope">
@@ -63,7 +56,10 @@ export default class Thermoscope extends PureComponent {
           <div className="controls-row">
             Temperature {temperature}°C
             <div className="slider">
-              {slider}
+              {!liveData && <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
+                sliderStyle={{ marginTop: 5, marginBottom: 5 }}
+                name="temperature"
+                onChange={this.handleTempSliderChange} />}
             </div>
           </div>
           <div className="controls-row">
