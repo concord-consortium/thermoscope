@@ -44,20 +44,29 @@ export default {
       json: liquid1,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 1500 + 500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.55 + 0.25;
       }
     },
     {
       name: 'Liquid 2',
       json: liquid2,
       tempScale: function (temp) {
-        return normalizeTemp(temp) * 1500 + 1000;
+        return normalizeTemp(temp) * 2000 + 2000;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.40 + 0.25;
       }
     },
     {
       name: 'Liquid 3',
       json: liquid3,
       tempScale: function (temp) {
-        return normalizeTemp(temp) * 1500 + 1000;
+        return normalizeTemp(temp) * 2000 + 3000;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.85 + 0.15;
       }
     }
   ],
