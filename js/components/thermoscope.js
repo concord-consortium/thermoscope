@@ -51,7 +51,11 @@ export default class Thermoscope extends PureComponent {
 
     return (
       <div className="thermoscope">
-        <LabModel model={model.json} tempScale={model.tempScale} temperature={temperature} liveData={liveData} width={MODEL_WIDTH} height={MODEL_HEIGHT}/>
+        <LabModel temperature={temperature}
+                  model={model.json}
+                  tempScale={model.tempScale}
+                  timeStepScale={model.timeStepScale}
+                  width={MODEL_WIDTH} height={MODEL_HEIGHT}/>
         <div>
           <div className="controls-row">
             Temperature {temperature}°C
