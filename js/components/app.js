@@ -5,7 +5,7 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import Thermoscope from './thermoscope';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from './sensor';
-import labquest2 from 'sensor-labquest-2-interface';
+import LabQuest2 from 'sensor-labquest-2-interface';
 
 import '../../css/app.less';
 
@@ -18,14 +18,14 @@ darkBaseTheme.palette.textColor = '#ccc';
 const App = () => (
   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
     <div className="app">
-      <Sensor sensor={labquest2}/>
+      <Sensor sensor={LabQuest2}/>
       <div className="thermoscope-container">
         <div className="label">A</div>
-        <Thermoscope sensor={labquest2} probeIndex={0}/>
+        <Thermoscope sensor={LabQuest2} probeIndex={0}/>
       </div>
       <div className="thermoscope-container">
         <div className="label">B</div>
-        <Thermoscope sensor={labquest2} probeIndex={1}/>
+        <Thermoscope sensor={LabQuest2} probeIndex={1}/>
       </div>
     </div>
   </MuiThemeProvider>
