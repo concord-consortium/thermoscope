@@ -25,8 +25,10 @@ export default class LabModel extends PureComponent {
     return props;
   }
 
-  componentDidUpdate(prevProps) {
-    this.setState({ loading: (this.props.model !== prevProps.model) });
+  componentWillUpdate(prevProps) {
+    if (this.props.model !== prevProps.model) {
+      this.setState({ loading: true });
+    }
   }
 
   handleModelLoad() {
