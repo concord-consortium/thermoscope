@@ -25,9 +25,6 @@
       "showBottomBar": {
         "defaultValue": true
       },
-      "credits": {
-        "defaultValue": ""
-      },
       "padding": {
         "defaultValue": 10
       },
