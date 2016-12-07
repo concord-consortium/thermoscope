@@ -1,0 +1,167 @@
+{
+  "type": "md2d",
+  "imagePath": "",
+  "width": 4.5,
+  "height": 3,
+  "unitsScheme": "md2d",
+  "lennardJonesForces": true,
+  "coulombForces": true,
+  "temperatureControl": false,
+  "targetTemperature": 300,
+  "gravitationalField": false,
+  "timeStep": 1,
+  "dielectricConstant": 1,
+  "realisticDielectricEffect": true,
+  "solventForceFactor": 1.25,
+  "solventForceType": 0,
+  "additionalSolventForceMult": 4,
+  "additionalSolventForceThreshold": 10,
+  "polarAAEpsilon": -2,
+  "viscosity": 1,
+  "timeStepsPerTick": 50,
+  "DNAState": "dna",
+  "DNA": "",
+  "DNAMutations": true,
+  "useQuantumDynamics": false,
+  "useChemicalReactions": false,
+  "viewOptions": {
+    "viewPortWidth": 4.5,
+    "viewPortHeight": 3,
+    "viewPortZoom": 1,
+    "viewPortX": 0,
+    "viewPortY": 0,
+    "viewPortDrag": false,
+    "backgroundColor": "#eeeeee",
+    "showClock": false,
+    "markColor": "#f8b500",
+    "keShading": false,
+    "chargeShading": false,
+    "useThreeLetterCode": true,
+    "aminoAcidColorScheme": "hydrophobicity",
+    "showChargeSymbols": true,
+    "showVDWLines": false,
+    "VDWLinesCutoff": "medium",
+    "showVelocityVectors": false,
+    "showForceVectors": false,
+    "showElectricField": false,
+    "electricFieldDensity": 18,
+    "electricFieldColor": "auto",
+    "showAtomTrace": false,
+    "images": [],
+    "imageMapping": {},
+    "textBoxes": [],
+    "xlabel": false,
+    "ylabel": false,
+    "xunits": false,
+    "yunits": false,
+    "controlButtons": "play",
+    "gridLines": false,
+    "atomNumbers": false,
+    "enableAtomTooltips": false,
+    "enableKeyboardHandlers": true,
+    "atomTraceColor": "#6913c5",
+    "velocityVectors": {
+      "color": "#000",
+      "width": 0.01,
+      "length": 2
+    },
+    "forceVectors": {
+      "color": "#169C30",
+      "width": 0.01,
+      "length": 2
+    },
+    "forceVectorsDirectionOnly": false
+  },
+  "pairwiseLJProperties": [],
+  "elements": {
+    "mass": [
+      20,
+      40,
+      60,
+      80,
+      600
+    ],
+    "sigma": [
+      0.07,
+      0.14,
+      0.19149999618530272,
+      0.28,
+      0.3
+    ],
+    "epsilon": [-0.1, -0.1, -0.01, -0.1, -0.1],
+    "color": [-855310, -9066941, -13159, -2539040, -855310]
+  },
+  "atoms": {
+    "x": [
+      1.9387574672895096,
+      1.6031029030961708,
+      1.632623318315442,
+      1.4631399105450587,
+      1.4140489251651494,
+      2.8430177214860044,
+      1.506229397314764
+    ],
+    "y": [
+      0.20532896150132046,
+      1.3556470752596637,
+      1.7309677298414223,
+      2.4509323794841062,
+      2.649559715692863,
+      2.0068852294301034,
+      1.569186969543926
+    ],
+    "vx": [-0.00011036900127019925, 0.00014946047460790478, -0.00023940578015734266, 0.0002953883014108157, 0.00024142163502047595, 0.000042655137781303914, 0.0001820295091808977
+    ],
+    "vy": [-0.00010523978493433866,
+      -0.00013829468934910686, -0.00030301379459964545,
+      0.0005630386622460662,
+      0.00015856489699153347,
+      0.00030801239441768306, -0.0003328395247646734
+    ],
+    "charge": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "friction": [
+      0.002,
+      0.002,
+      0.002,
+      0.002,
+      0.002,
+      0.002,
+      0.002
+    ],
+    "element": [
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "pinned": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "draggable": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  }
+}

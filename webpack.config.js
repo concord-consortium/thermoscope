@@ -2,12 +2,13 @@ var path = require('path');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: [
-    './js/index.js'
-  ],
+  entry: {
+    'app': './js/index.js',
+    'particle-modeler': './js/particle-modeler/index.js'
+  },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'app.js'
+    filename: '[name].js'
   },
   module: {
     loaders: [
