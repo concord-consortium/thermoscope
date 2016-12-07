@@ -5,6 +5,7 @@ import NewAtomBin from './new-atom-bin';
 import interactive from './interactive.json';
 import model from './model.json';
 
+import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
 let api, lab;
@@ -45,9 +46,11 @@ export default class Interactive extends PureComponent {
 
   render () {
     return (
-      <div>
-        <Lab ref={node => lab = node} model={model} interactive={interactive} height='380px'
+      <div className="app">
+        <div className="lab-wrapper">
+          <Lab ref={node => lab = node} model={model} interactive={interactive} height='380px'
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
+        </div>
         <NewAtomBin showAtom={this.state.showNewAtom}/>
       </div>
     );
