@@ -22125,7 +22125,7 @@
 			exports["ReactLab"] = factory(require("react"));
 		else
 			root["ReactLab"] = factory(root["React"]);
-	})(this, function(__WEBPACK_EXTERNAL_MODULE_35__) {
+	})(this, function(__WEBPACK_EXTERNAL_MODULE_60__) {
 	return /******/ (function(modules) { // webpackBootstrap
 	/******/ 	// The module cache
 	/******/ 	var installedModules = {};
@@ -22182,19 +22182,21 @@
 
 		var _classCallCheck = __webpack_require__(29)['default'];
 
-		var _Object$keys = __webpack_require__(30)['default'];
+		var _getIterator = __webpack_require__(30)['default'];
 
-		var _interopRequireDefault = __webpack_require__(34)['default'];
+		var _Object$keys = __webpack_require__(55)['default'];
+
+		var _interopRequireDefault = __webpack_require__(59)['default'];
 
 		Object.defineProperty(exports, '__esModule', {
 		  value: true
 		});
 
-		var _react = __webpack_require__(35);
+		var _react = __webpack_require__(60);
 
 		var _react2 = _interopRequireDefault(_react);
 
-		var _iframePhone = __webpack_require__(36);
+		var _iframePhone = __webpack_require__(61);
 
 		var _iframePhone2 = _interopRequireDefault(_iframePhone);
 
@@ -22203,10 +22205,17 @@
 		var Lab = (function (_React$Component) {
 		  _inherits(Lab, _React$Component);
 
-		  function Lab() {
+		  function Lab(props) {
 		    _classCallCheck(this, Lab);
 
-		    _get(Object.getPrototypeOf(Lab.prototype), 'constructor', this).apply(this, arguments);
+		    _get(Object.getPrototypeOf(Lab.prototype), 'constructor', this).call(this, props);
+		    this.state = {
+		      loading: true
+		    };
+		    this._handleIframeLoad = this._handleIframeLoad.bind(this);
+		    this._asyncLabPropertiesUpdate = this._asyncLabPropertiesUpdate.bind(this);
+		    this._labUpdateTimeoutID = null;
+		    this._propsToSet = {};
 		  }
 
 		  _createClass(Lab, [{
@@ -22215,33 +22224,30 @@
 		      var _this = this;
 
 		      this._phone = new _iframePhone2['default'].ParentEndpoint(this.refs.iframe);
-		      this._labUpdateTimeoutID = null;
-		      this._propsToSet = {};
-		      this._asyncLabPropertiesUpdate = this._asyncLabPropertiesUpdate.bind(this);
-
-		      this.refs.iframe.onload = function () {
-		        _this.interactiveController.on('modelLoaded.react-lab', function () {
-		          _this.props.onModelLoad();
-		          _this._setLabProperties(_this.props.props);
-		          _this._addLabListeners(_this.props.observedProps);
-		          _this._setLabPlaying(_this.props.playing);
-		        });
-		        _this._loadInteractive(_this.props.interactive, _this.props.model);
-		      };
 		      this._phone.addListener('log', function (content) {
 		        _this.props.onLogEvent(content.action, content.data);
 		      });
+		      this.refs.iframe.addEventListener('load', this._handleIframeLoad);
 		    }
 		  }, {
 		    key: 'componentWillUnmount',
 		    value: function componentWillUnmount() {
 		      this._phone.disconnect();
+		      this.refs.iframe.removeEventListener('load', this._handleIframeLoad);
 		    }
 		  }, {
 		    key: 'componentWillReceiveProps',
 		    value: function componentWillReceiveProps(nextProps) {
 		      if (nextProps.interactive !== this.props.interactive || nextProps.model !== this.props.model) {
-		        this._loadInteractive(nextProps.interactive, nextProps.model);
+		        // Complete iframe reload is slower, but more bulletproof and workarounds Lab issues related to memory leaks.
+		        if (nextProps.reloadIframeOnModelUpdate) {
+		          // Looks a bit magic, but interactive will be loaded and completely setup (including interactive and model jsons)
+		          // by the iframe "onload" handler. Take a look at _handleIframeLoad() method.
+		          this.refs.iframe.contentWindow.location.reload();
+		          this.setState({ loading: true });
+		        } else {
+		          this._loadInteractive(nextProps.interactive, nextProps.model);
+		        }
 		      }
 		      if (nextProps.props !== this.props.props) {
 		        // Set only DIFF of new and old properties. It's quite important difference,
@@ -22255,9 +22261,62 @@
 		    }
 		  }, {
 		    key: 'shouldComponentUpdate',
-		    value: function shouldComponentUpdate(nextProps) {
-		      // Update component only if it's width or height is changed.
-		      return nextProps.width !== this.props.width || nextProps.height !== this.props.height;
+		    value: function shouldComponentUpdate(nextProps, nextState) {
+		      // List here everything that is used in render() method.
+		      // Other properties are sent directly to Lab using scriptingAPI, so we don't need to re-render component.
+		      var viewProps = ['width', 'height', 'embeddableSrc', 'frameBorder', 'allowFullScreen'];
+		      var viewState = ['loading'];
+		      var _iteratorNormalCompletion = true;
+		      var _didIteratorError = false;
+		      var _iteratorError = undefined;
+
+		      try {
+		        for (var _iterator = _getIterator(viewProps), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+		          var prop = _step.value;
+
+		          if (nextProps[prop] !== this.props[prop]) return true;
+		        }
+		      } catch (err) {
+		        _didIteratorError = true;
+		        _iteratorError = err;
+		      } finally {
+		        try {
+		          if (!_iteratorNormalCompletion && _iterator['return']) {
+		            _iterator['return']();
+		          }
+		        } finally {
+		          if (_didIteratorError) {
+		            throw _iteratorError;
+		          }
+		        }
+		      }
+
+		      var _iteratorNormalCompletion2 = true;
+		      var _didIteratorError2 = false;
+		      var _iteratorError2 = undefined;
+
+		      try {
+		        for (var _iterator2 = _getIterator(viewState), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+		          var prop = _step2.value;
+
+		          if (nextState[prop] !== this.state[prop]) return true;
+		        }
+		      } catch (err) {
+		        _didIteratorError2 = true;
+		        _iteratorError2 = err;
+		      } finally {
+		        try {
+		          if (!_iteratorNormalCompletion2 && _iterator2['return']) {
+		            _iterator2['return']();
+		          }
+		        } finally {
+		          if (_didIteratorError2) {
+		            throw _iteratorError2;
+		          }
+		        }
+		      }
+
+		      return false;
 		    }
 		  }, {
 		    key: 'render',
@@ -22268,24 +22327,49 @@
 		      var embeddableSrc = _props.embeddableSrc;
 		      var frameBorder = _props.frameBorder;
 		      var allowFullScreen = _props.allowFullScreen;
+		      var loading = this.state.loading;
 
-		      return _react2['default'].createElement('iframe', { ref: 'iframe', src: embeddableSrc, frameBorder: frameBorder,
+		      var style = loading ? { visibility: 'hidden' } : {};
+		      return _react2['default'].createElement('iframe', { ref: 'iframe', src: embeddableSrc, frameBorder: frameBorder, style: style,
 		        width: width, height: height, allowFullScreen: allowFullScreen });
 		    }
 
 		    // Public API.
 
 		  }, {
-		    key: '_loadInteractive',
+		    key: '_handleIframeLoad',
 
 		    // Private methods. Use React properties instead.
 
+		    value: function _handleIframeLoad() {
+		      var _this2 = this;
+
+		      this.interactiveController.on('modelLoaded.react-lab', function () {
+		        _this2._setLabProperties(_this2.props.props);
+		        _this2._addLabListeners(_this2.props.observedProps);
+		        _this2._setLabPlaying(_this2.props.playing);
+		        _this2.props.onModelLoad();
+		        _this2._handleModelLoad();
+		      });
+		      this._loadInteractive(this.props.interactive, this.props.model);
+		    }
+		  }, {
+		    key: '_handleModelLoad',
+		    value: function _handleModelLoad() {
+		      this.setState({ loading: false });
+		    }
+		  }, {
+		    key: '_loadInteractive',
 		    value: function _loadInteractive(interactive, model) {
 		      // Iframe might be still loading. The interactive will be loaded when iframe is loaded.
 		      if (!this.interactiveController) return;
 		      if (interactive) {
 		        if (model) {
 		          interactive = combineInteractiveAndModel(interactive, model);
+		        }
+		        if (this.scriptingAPI) {
+		          // Stop the model before loading a new one to avoid performance issues.
+		          this.scriptingAPI.stop();
 		        }
 		        this.interactiveController.loadInteractive(interactive);
 		      }
@@ -22327,11 +22411,11 @@
 		  }, {
 		    key: '_addLabListeners',
 		    value: function _addLabListeners(observedProps) {
-		      var _this2 = this;
+		      var _this3 = this;
 
 		      observedProps.forEach(function (propName) {
-		        _this2.scriptingAPI.onPropertyChange(propName, function (value) {
-		          _this2.props.onPropChange(propName, value);
+		        _this3.scriptingAPI.onPropertyChange(propName, function (value) {
+		          _this3.props.onPropChange(propName, value);
 		        });
 		      });
 		    }
@@ -22362,9 +22446,36 @@
 
 		exports['default'] = Lab;
 
-		Lab.defaultProps = {
+		Lab.PropTypes = {
+		  // Lab interactive JSON (parsed).
+		  interactive: _react2['default'].PropTypes.object.isRequired,
+		  // Lab model JSON (parsed).
+		  model: _react2['default'].PropTypes.object.isRequired,
 		  // Source to Lab embeddable page. Needs to be under the same domain as the application.
 		  // This package is providing lab distribution that can be used (/lab).
+		  embeddableSrc: _react2['default'].PropTypes.string,
+		  // Batch Lab properties updates and send them to Lab after given time period.
+		  // You can provide value in ms or use true (the default delay value will be used).
+		  propsUpdateDelay: _react2['default'].PropTypes.oneOfType([_react2['default'].PropTypes.bool, _react2['default'].PropTypes.number]),
+		  // Lab properties.
+		  props: _react2['default'].PropTypes.object,
+		  // Lab observed properties (onPropChange will be called when any of them changes).
+		  observedProps: _react2['default'].PropTypes.array,
+		  // Iframe properties.
+		  width: _react2['default'].PropTypes.oneOfType([_react2['default'].PropTypes.string, _react2['default'].PropTypes.number]),
+		  height: _react2['default'].PropTypes.oneOfType([_react2['default'].PropTypes.string, _react2['default'].PropTypes.number]),
+		  allowFullScreen: _react2['default'].PropTypes.bool,
+		  frameBorder: _react2['default'].PropTypes.string,
+		  // Lab lets you update interactive or model without reloading the iframe, but that might lead to memory leaks
+		  // and performance issues. Complete iframe reload is a safe option, but it increases loading time a bit.
+		  reloadIframeOnModelUpdate: _react2['default'].PropTypes.bool,
+		  // Callbacks.
+		  onModelLoad: _react2['default'].PropTypes.func,
+		  onPropChange: _react2['default'].PropTypes.func,
+		  onLogEvent: _react2['default'].PropTypes.func
+		};
+
+		Lab.defaultProps = {
 		  embeddableSrc: 'lab/embeddable.html',
 		  width: '565px',
 		  height: '435px',
@@ -22372,12 +22483,11 @@
 		  frameBorder: '0',
 		  props: {},
 		  observedProps: [],
-		  // Batch Lab properties updates and send them to Lab after given time period.
-		  // You can provide value in ms or use true (the default delay value will be used).
 		  propsUpdateDelay: false,
 		  onModelLoad: function onModelLoad() {},
 		  onPropChange: function onPropChange(name, value) {},
-		  onLogEvent: function onLogEvent(actionName, data) {}
+		  onLogEvent: function onLogEvent(actionName, data) {},
+		  reloadIframeOnModelUpdate: true
 		};
 
 		function combineInteractiveAndModel(interactive, model) {
@@ -22849,14 +22959,386 @@
 	/***/ function(module, exports, __webpack_require__) {
 
 		__webpack_require__(32);
-		module.exports = __webpack_require__(13).Object.keys;
+		__webpack_require__(49);
+		module.exports = __webpack_require__(52);
 
 	/***/ },
 	/* 32 */
 	/***/ function(module, exports, __webpack_require__) {
 
+		__webpack_require__(33);
+		var Iterators = __webpack_require__(36);
+		Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
+
+	/***/ },
+	/* 33 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+		var addToUnscopables = __webpack_require__(34)
+		  , step             = __webpack_require__(35)
+		  , Iterators        = __webpack_require__(36)
+		  , toIObject        = __webpack_require__(6);
+
+		// 22.1.3.4 Array.prototype.entries()
+		// 22.1.3.13 Array.prototype.keys()
+		// 22.1.3.29 Array.prototype.values()
+		// 22.1.3.30 Array.prototype[@@iterator]()
+		module.exports = __webpack_require__(37)(Array, 'Array', function(iterated, kind){
+		  this._t = toIObject(iterated); // target
+		  this._i = 0;                   // next index
+		  this._k = kind;                // kind
+		// 22.1.5.2.1 %ArrayIteratorPrototype%.next()
+		}, function(){
+		  var O     = this._t
+		    , kind  = this._k
+		    , index = this._i++;
+		  if(!O || index >= O.length){
+		    this._t = undefined;
+		    return step(1);
+		  }
+		  if(kind == 'keys'  )return step(0, index);
+		  if(kind == 'values')return step(0, O[index]);
+		  return step(0, [index, O[index]]);
+		}, 'values');
+
+		// argumentsList[@@iterator] is %ArrayProto_values% (9.4.4.6, 9.4.4.7)
+		Iterators.Arguments = Iterators.Array;
+
+		addToUnscopables('keys');
+		addToUnscopables('values');
+		addToUnscopables('entries');
+
+	/***/ },
+	/* 34 */
+	/***/ function(module, exports) {
+
+		module.exports = function(){ /* empty */ };
+
+	/***/ },
+	/* 35 */
+	/***/ function(module, exports) {
+
+		module.exports = function(done, value){
+		  return {value: value, done: !!done};
+		};
+
+	/***/ },
+	/* 36 */
+	/***/ function(module, exports) {
+
+		module.exports = {};
+
+	/***/ },
+	/* 37 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+		var LIBRARY        = __webpack_require__(38)
+		  , $export        = __webpack_require__(11)
+		  , redefine       = __webpack_require__(39)
+		  , hide           = __webpack_require__(40)
+		  , has            = __webpack_require__(43)
+		  , Iterators      = __webpack_require__(36)
+		  , $iterCreate    = __webpack_require__(44)
+		  , setToStringTag = __webpack_require__(45)
+		  , getProto       = __webpack_require__(4).getProto
+		  , ITERATOR       = __webpack_require__(46)('iterator')
+		  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
+		  , FF_ITERATOR    = '@@iterator'
+		  , KEYS           = 'keys'
+		  , VALUES         = 'values';
+
+		var returnThis = function(){ return this; };
+
+		module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED){
+		  $iterCreate(Constructor, NAME, next);
+		  var getMethod = function(kind){
+		    if(!BUGGY && kind in proto)return proto[kind];
+		    switch(kind){
+		      case KEYS: return function keys(){ return new Constructor(this, kind); };
+		      case VALUES: return function values(){ return new Constructor(this, kind); };
+		    } return function entries(){ return new Constructor(this, kind); };
+		  };
+		  var TAG        = NAME + ' Iterator'
+		    , DEF_VALUES = DEFAULT == VALUES
+		    , VALUES_BUG = false
+		    , proto      = Base.prototype
+		    , $native    = proto[ITERATOR] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT]
+		    , $default   = $native || getMethod(DEFAULT)
+		    , methods, key;
+		  // Fix native
+		  if($native){
+		    var IteratorPrototype = getProto($default.call(new Base));
+		    // Set @@toStringTag to native iterators
+		    setToStringTag(IteratorPrototype, TAG, true);
+		    // FF fix
+		    if(!LIBRARY && has(proto, FF_ITERATOR))hide(IteratorPrototype, ITERATOR, returnThis);
+		    // fix Array#{values, @@iterator}.name in V8 / FF
+		    if(DEF_VALUES && $native.name !== VALUES){
+		      VALUES_BUG = true;
+		      $default = function values(){ return $native.call(this); };
+		    }
+		  }
+		  // Define iterator
+		  if((!LIBRARY || FORCED) && (BUGGY || VALUES_BUG || !proto[ITERATOR])){
+		    hide(proto, ITERATOR, $default);
+		  }
+		  // Plug for library
+		  Iterators[NAME] = $default;
+		  Iterators[TAG]  = returnThis;
+		  if(DEFAULT){
+		    methods = {
+		      values:  DEF_VALUES  ? $default : getMethod(VALUES),
+		      keys:    IS_SET      ? $default : getMethod(KEYS),
+		      entries: !DEF_VALUES ? $default : getMethod('entries')
+		    };
+		    if(FORCED)for(key in methods){
+		      if(!(key in proto))redefine(proto, key, methods[key]);
+		    } else $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
+		  }
+		  return methods;
+		};
+
+	/***/ },
+	/* 38 */
+	/***/ function(module, exports) {
+
+		module.exports = true;
+
+	/***/ },
+	/* 39 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		module.exports = __webpack_require__(40);
+
+	/***/ },
+	/* 40 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var $          = __webpack_require__(4)
+		  , createDesc = __webpack_require__(41);
+		module.exports = __webpack_require__(42) ? function(object, key, value){
+		  return $.setDesc(object, key, createDesc(1, value));
+		} : function(object, key, value){
+		  object[key] = value;
+		  return object;
+		};
+
+	/***/ },
+	/* 41 */
+	/***/ function(module, exports) {
+
+		module.exports = function(bitmap, value){
+		  return {
+		    enumerable  : !(bitmap & 1),
+		    configurable: !(bitmap & 2),
+		    writable    : !(bitmap & 4),
+		    value       : value
+		  };
+		};
+
+	/***/ },
+	/* 42 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		// Thank's IE8 for his funny defineProperty
+		module.exports = !__webpack_require__(16)(function(){
+		  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
+		});
+
+	/***/ },
+	/* 43 */
+	/***/ function(module, exports) {
+
+		var hasOwnProperty = {}.hasOwnProperty;
+		module.exports = function(it, key){
+		  return hasOwnProperty.call(it, key);
+		};
+
+	/***/ },
+	/* 44 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+		var $              = __webpack_require__(4)
+		  , descriptor     = __webpack_require__(41)
+		  , setToStringTag = __webpack_require__(45)
+		  , IteratorPrototype = {};
+
+		// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
+		__webpack_require__(40)(IteratorPrototype, __webpack_require__(46)('iterator'), function(){ return this; });
+
+		module.exports = function(Constructor, NAME, next){
+		  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
+		  setToStringTag(Constructor, NAME + ' Iterator');
+		};
+
+	/***/ },
+	/* 45 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var def = __webpack_require__(4).setDesc
+		  , has = __webpack_require__(43)
+		  , TAG = __webpack_require__(46)('toStringTag');
+
+		module.exports = function(it, tag, stat){
+		  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
+		};
+
+	/***/ },
+	/* 46 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var store  = __webpack_require__(47)('wks')
+		  , uid    = __webpack_require__(48)
+		  , Symbol = __webpack_require__(12).Symbol;
+		module.exports = function(name){
+		  return store[name] || (store[name] =
+		    Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
+		};
+
+	/***/ },
+	/* 47 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var global = __webpack_require__(12)
+		  , SHARED = '__core-js_shared__'
+		  , store  = global[SHARED] || (global[SHARED] = {});
+		module.exports = function(key){
+		  return store[key] || (store[key] = {});
+		};
+
+	/***/ },
+	/* 48 */
+	/***/ function(module, exports) {
+
+		var id = 0
+		  , px = Math.random();
+		module.exports = function(key){
+		  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+		};
+
+	/***/ },
+	/* 49 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		'use strict';
+		var $at  = __webpack_require__(50)(true);
+
+		// 21.1.3.27 String.prototype[@@iterator]()
+		__webpack_require__(37)(String, 'String', function(iterated){
+		  this._t = String(iterated); // target
+		  this._i = 0;                // next index
+		// 21.1.5.2.1 %StringIteratorPrototype%.next()
+		}, function(){
+		  var O     = this._t
+		    , index = this._i
+		    , point;
+		  if(index >= O.length)return {value: undefined, done: true};
+		  point = $at(O, index);
+		  this._i += point.length;
+		  return {value: point, done: false};
+		});
+
+	/***/ },
+	/* 50 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var toInteger = __webpack_require__(51)
+		  , defined   = __webpack_require__(9);
+		// true  -> String#at
+		// false -> String#codePointAt
+		module.exports = function(TO_STRING){
+		  return function(that, pos){
+		    var s = String(defined(that))
+		      , i = toInteger(pos)
+		      , l = s.length
+		      , a, b;
+		    if(i < 0 || i >= l)return TO_STRING ? '' : undefined;
+		    a = s.charCodeAt(i);
+		    return a < 0xd800 || a > 0xdbff || i + 1 === l || (b = s.charCodeAt(i + 1)) < 0xdc00 || b > 0xdfff
+		      ? TO_STRING ? s.charAt(i) : a
+		      : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
+		  };
+		};
+
+	/***/ },
+	/* 51 */
+	/***/ function(module, exports) {
+
+		// 7.1.4 ToInteger
+		var ceil  = Math.ceil
+		  , floor = Math.floor;
+		module.exports = function(it){
+		  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
+		};
+
+	/***/ },
+	/* 52 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var anObject = __webpack_require__(25)
+		  , get      = __webpack_require__(53);
+		module.exports = __webpack_require__(13).getIterator = function(it){
+		  var iterFn = get(it);
+		  if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
+		  return anObject(iterFn.call(it));
+		};
+
+	/***/ },
+	/* 53 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		var classof   = __webpack_require__(54)
+		  , ITERATOR  = __webpack_require__(46)('iterator')
+		  , Iterators = __webpack_require__(36);
+		module.exports = __webpack_require__(13).getIteratorMethod = function(it){
+		  if(it != undefined)return it[ITERATOR]
+		    || it['@@iterator']
+		    || Iterators[classof(it)];
+		};
+
+	/***/ },
+	/* 54 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		// getting tag from 19.1.3.6 Object.prototype.toString()
+		var cof = __webpack_require__(8)
+		  , TAG = __webpack_require__(46)('toStringTag')
+		  // ES3 wrong here
+		  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
+
+		module.exports = function(it){
+		  var O, T, B;
+		  return it === undefined ? 'Undefined' : it === null ? 'Null'
+		    // @@toStringTag case
+		    : typeof (T = (O = Object(it))[TAG]) == 'string' ? T
+		    // builtinTag case
+		    : ARG ? cof(O)
+		    // ES3 arguments fallback
+		    : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
+		};
+
+	/***/ },
+	/* 55 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		module.exports = { "default": __webpack_require__(56), __esModule: true };
+
+	/***/ },
+	/* 56 */
+	/***/ function(module, exports, __webpack_require__) {
+
+		__webpack_require__(57);
+		module.exports = __webpack_require__(13).Object.keys;
+
+	/***/ },
+	/* 57 */
+	/***/ function(module, exports, __webpack_require__) {
+
 		// 19.1.2.14 Object.keys(O)
-		var toObject = __webpack_require__(33);
+		var toObject = __webpack_require__(58);
 
 		__webpack_require__(10)('keys', function($keys){
 		  return function keys(it){
@@ -22865,7 +23347,7 @@
 		});
 
 	/***/ },
-	/* 33 */
+	/* 58 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		// 7.1.13 ToObject(argument)
@@ -22875,7 +23357,7 @@
 		};
 
 	/***/ },
-	/* 34 */
+	/* 59 */
 	/***/ function(module, exports) {
 
 		"use strict";
@@ -22889,38 +23371,38 @@
 		exports.__esModule = true;
 
 	/***/ },
-	/* 35 */
+	/* 60 */
 	/***/ function(module, exports) {
 
-		module.exports = __WEBPACK_EXTERNAL_MODULE_35__;
+		module.exports = __WEBPACK_EXTERNAL_MODULE_60__;
 
 	/***/ },
-	/* 36 */
+	/* 61 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		module.exports = {
 		  /**
 		   * Allows to communicate with an iframe.
 		   */
-		  ParentEndpoint:  __webpack_require__(37),
+		  ParentEndpoint:  __webpack_require__(62),
 		  /**
 		   * Allows to communicate with a parent page.
 		   * IFrameEndpoint is a singleton, as iframe can't have multiple parents anyway.
 		   */
-		  getIFrameEndpoint: __webpack_require__(39),
-		  structuredClone: __webpack_require__(38),
+		  getIFrameEndpoint: __webpack_require__(64),
+		  structuredClone: __webpack_require__(63),
 
 		  // TODO: May be misnamed
-		  IframePhoneRpcEndpoint: __webpack_require__(40)
+		  IframePhoneRpcEndpoint: __webpack_require__(65)
 
 		};
 
 
 	/***/ },
-	/* 37 */
+	/* 62 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		var structuredClone = __webpack_require__(38);
+		var structuredClone = __webpack_require__(63);
 
 		/**
 		  Call as:
@@ -23094,7 +23576,7 @@
 
 
 	/***/ },
-	/* 38 */
+	/* 63 */
 	/***/ function(module, exports) {
 
 		var featureSupported = false;
@@ -23136,10 +23618,10 @@
 
 
 	/***/ },
-	/* 39 */
+	/* 64 */
 	/***/ function(module, exports, __webpack_require__) {
 
-		var structuredClone = __webpack_require__(38);
+		var structuredClone = __webpack_require__(63);
 		var HELLO_INTERVAL_LENGTH = 200;
 		var HELLO_TIMEOUT_LENGTH = 60000;
 
@@ -23289,13 +23771,13 @@
 		};
 
 	/***/ },
-	/* 40 */
+	/* 65 */
 	/***/ function(module, exports, __webpack_require__) {
 
 		"use strict";
 
-		var ParentEndpoint = __webpack_require__(37);
-		var getIFrameEndpoint = __webpack_require__(39);
+		var ParentEndpoint = __webpack_require__(62);
+		var getIFrameEndpoint = __webpack_require__(64);
 
 		// Not a real UUID as there's an RFC for that (needed for proper distributed computing).
 		// But in this fairly parochial situation, we just need to be fairly sure to avoid repeats.
@@ -24053,7 +24535,7 @@
 
 
 	// module
-	exports.push([module.id, ".new-atom-bin {\n  position: absolute;\n  top: 86px;\n  left: calc(50% - 253px);\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n", ""]);
+	exports.push([module.id, ".new-atom-bin {\n  position: absolute;\n  top: calc(50% - 138px);\n  left: calc(50% - 253px);\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n", ""]);
 
 	// exports
 
