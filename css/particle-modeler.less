@@ -1,0 +1,51 @@
+.new-atom-bin {
+  position: absolute;
+  top: 50px;
+  left: 24px;
+  border: 1px solid #333;
+  padding: 10px;
+  pointer-events: none;
+
+  p {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 10px;
+  }
+
+  .new-atom {
+    display: block;
+    border: 1px solid #555;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    transition: background 1.5s;
+
+    div {
+      display: block;
+      background: black;
+      border-radius: 50%;
+      height: 22px;
+      width: 22px;
+      margin: 3px;
+      background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
+      opacity: 1;
+      transition: opacity 1.5s;
+    }
+  }
+
+  .hiding {
+    display: block;
+    border: 1px solid #555;
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,1);
+    transition: background 0s;
+
+    div {
+      opacity: 0;
+      transition: opacity 0s;
+    }
+  }
+}
