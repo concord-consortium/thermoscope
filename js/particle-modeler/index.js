@@ -3,21 +3,33 @@ import ReactDOM from 'react-dom';
 import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
 import models from './models/';
+import { getStateFromHashWithDefaults } from '../utils';
 
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
 let api, lab;
 
+// Set of authorable properties which can be overwritten by the url hash.
+let authoredDefaults = {
+  authoring: false
+}
+
 export default class Interactive extends PureComponent {
 
   constructor(props) {
     super(props);
+
+    let hashParams = window.location.hash.substring(1),
+        authoredState = getStateFromHashWithDefaults(hashParams, authoredDefaults);
+
     this.state = {
       interactive: models.interactive,
       model: models.baseModel,
-      showNewAtom: true
+      showNewAtom: true,
+      ...authoredState
     };
+
     this.handleModelLoad = this.handleModelLoad.bind(this);
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
   }
