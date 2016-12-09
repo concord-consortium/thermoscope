@@ -4,6 +4,7 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import LabModel from './lab-model';
+import Meter from './meter';
 import models, {MIN_TEMP, MAX_TEMP} from '../models';
 
 import '../../css/thermoscope.less';
@@ -51,6 +52,7 @@ export default class Thermoscope extends PureComponent {
 
     return (
       <div className="thermoscope">
+        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} />
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={model.tempScale}
