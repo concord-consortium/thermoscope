@@ -63,8 +63,9 @@ export default class Interactive extends PureComponent {
   }
 
   render () {
+    let appClass = "app" + (this.state.authoring ? " authoring" : "");
     return (
-      <div className="app">
+      <div className={appClass}>
         <div className="lab-wrapper">
           <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
