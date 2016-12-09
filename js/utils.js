@@ -74,5 +74,6 @@ module.exports = {
   getObjectFromHashParams,
   getHashParamsFromObject,
   getDiffedHashParams,
-  getStateFromHashWithDefaults
+  getStateFromHashWithDefaults,
+  parseToPrimitive
 }

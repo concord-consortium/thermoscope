@@ -2,8 +2,9 @@ import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
+import Authoring from './authoring';
 import models from './models/';
-import { getStateFromHashWithDefaults, getDiffedHashParams } from '../utils';
+import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
 
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
@@ -12,8 +13,12 @@ let api, lab;
 
 // Set of authorable properties which can be overwritten by the url hash.
 let authoredDefaults = {
-  authoring: false
-}
+  authoring: false,
+  gravitationalField: 0
+};
+
+// Set of authorable properties that are set using
+let modelProperties = ["gravitationalField"];
 
 export default class Interactive extends PureComponent {
 
@@ -32,11 +37,20 @@ export default class Interactive extends PureComponent {
 
     this.handleModelLoad = this.handleModelLoad.bind(this);
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
+    this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     let hash = getDiffedHashParams(this.state, authoredDefaults);
     window.location.hash = hash;
+
+    let newModelProperties = {}
+    for (let prop of modelProperties) {
+      if (this.state[prop] !== "" && this.state[prop] !== prevState[prop]) {
+        newModelProperties[prop] = parseToPrimitive(this.state[prop]);
+      }
+    }
+    api.set(newModelProperties);
   }
 
   handleModelLoad() {
@@ -62,6 +76,12 @@ export default class Interactive extends PureComponent {
     }
   }
 
+  handleAuthoringPropChange(prop, value) {
+    let newState = {};
+    newState[prop] = value;
+    this.setState(newState);
+  }
+
   render () {
     let appClass = "app" + (this.state.authoring ? " authoring" : "");
     return (
@@ -71,6 +91,7 @@ export default class Interactive extends PureComponent {
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
         </div>
         <NewAtomBin showAtom={this.state.showNewAtom}/>
+        <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
       </div>
     );
   }
