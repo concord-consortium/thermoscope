@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
 import models from './models/';
-import { getStateFromHashWithDefaults } from '../utils';
+import { getStateFromHashWithDefaults, getDiffedHashParams } from '../utils';
 
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
@@ -32,6 +32,11 @@ export default class Interactive extends PureComponent {
 
     this.handleModelLoad = this.handleModelLoad.bind(this);
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
+  }
+
+  componentDidUpdate() {
+    let hash = getDiffedHashParams(this.state, authoredDefaults);
+    window.location.hash = hash;
   }
 
   handleModelLoad() {
