@@ -2,8 +2,7 @@ import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
-import interactive from './interactive.json';
-import model from './model.json';
+import models from './models/';
 
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
@@ -15,6 +14,8 @@ export default class Interactive extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      interactive: models.interactive,
+      model: models.baseModel,
       showNewAtom: true
     };
     this.handleModelLoad = this.handleModelLoad.bind(this);
@@ -48,7 +49,7 @@ export default class Interactive extends PureComponent {
     return (
       <div className="app">
         <div className="lab-wrapper">
-          <Lab ref={node => lab = node} model={model} interactive={interactive} height='380px'
+          <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
         </div>
         <NewAtomBin showAtom={this.state.showNewAtom}/>
