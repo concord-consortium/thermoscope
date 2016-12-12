@@ -59,8 +59,8 @@ export default class Meter extends PureComponent {
   }
 
   render() {
-    const {meterValue, showSlider} = this.state;
-    const {cx, cy, r} = this.props;
+    const {meterValue} = this.state;
+    const {cx, cy, r, showSlider} = this.props;
 
     let angle = 180 * meterValue;
     let meterLineLength = r - 10;
