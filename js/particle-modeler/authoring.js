@@ -11,31 +11,30 @@ const Authoring = (props) => {
     props.onChange(evt.target.dataset.prop, evt.target.checked);
   }
 
-  let createCheckboxInput = function(property, label) {
+  let createCheckboxInput = function(prop, values) {
     return (
-      <div>
-        {label}:
-        <input type="checkbox" data-prop={property} checked={props[property].value} onChange={handleCheckboxChange} />
+      <div key={prop}>
+        {values.label}:
+        <input type="checkbox" data-prop={prop} checked={values.value} onChange={handleCheckboxChange} />
       </div>
     );
   }
 
-  let createSliderInput = function(property, label) {
-    let prop = props[property],
-        scale = (prop.max - prop.min > 1) ? 1 : 1/(prop.max - prop.min) ,
+  let createSliderInput = function(prop, values) {
+    let scale = (values.max - values.min > 1) ? 1 : 1/(values.max - values.min) ,
         handleChange = function(evt, val) {
           val /= scale;
           val = val < 1 && val > 0 ? val.toPrecision(2) : val;
-          props.onChange(property, val);
+          props.onChange(prop, val);
         }
     return (
-      <div>
-        {label}: {prop.value}
+      <div key={prop}>
+        {values.label}: {values.value}
         <Slider
-          min={prop.min * scale}
-          max={prop.max * scale}
-          value={prop.value * scale}
-          step={((prop.max - prop.min) * scale) / 100}
+          min={values.min * scale}
+          max={values.max * scale}
+          value={values.value * scale}
+          step={((values.max - values.min) * scale) / 100}
           onChange={handleChange}
           sliderStyle={{ marginTop: 5, marginBottom: 5, width: "200px" }}
         />
@@ -43,15 +42,21 @@ const Authoring = (props) => {
     );
   }
 
+  let inputs = Object.keys(props).map(function(key) {
+    if (!props[key].hasOwnProperty("label")) {
+      return null;
+    } else if (typeof props[key].value === "number") {
+      return createSliderInput(key, props[key]);
+    } else {
+      return createCheckboxInput(key, props[key]);
+    }
+  });
+
   return (
     <MuiThemeProvider>
       <div className="authoring-form">
         <h3>Authoring</h3>
-        { createCheckboxInput("temperatureControl", "Heatbath") }
-        { createSliderInput("targetTemperature", "Heatbath Temperature") }
-        { createSliderInput("gravitationalField", "Gravity") }
-        { createSliderInput("timeStep", "Time Step") }
-        { createSliderInput("viscosity", "Viscosity") }
+        { inputs }
       </div>
     </MuiThemeProvider>
   )
