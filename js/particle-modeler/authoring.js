@@ -15,24 +15,29 @@ const Authoring = (props) => {
     return (
       <div>
         {label}:
-        <input type="checkbox" data-prop={property} checked={props[property]} onChange={handleCheckboxChange} />
+        <input type="checkbox" data-prop={property} checked={props[property].value} onChange={handleCheckboxChange} />
       </div>
     );
   }
 
   let createSliderInput = function(property, label) {
-    let handleChange = function(evt, val) {
-      props.onChange(property, val);
-    }
+    let prop = props[property],
+        scale = (prop.max - prop.min > 1) ? 1 : 1/(prop.max - prop.min) ,
+        handleChange = function(evt, val) {
+          val /= scale;
+          val = val < 1 && val > 0 ? val.toPrecision(2) : val;
+          props.onChange(property, val);
+        }
     return (
       <div>
-        {label}:
+        {label}: {prop.value}
         <Slider
-          min={0}
-          max={100}
-          value={props[property]}
+          min={prop.min * scale}
+          max={prop.max * scale}
+          value={prop.value * scale}
+          step={((prop.max - prop.min) * scale) / 100}
           onChange={handleChange}
-          sliderStyle={{ marginTop: 5, marginBottom: 5 }}
+          sliderStyle={{ marginTop: 5, marginBottom: 5, width: "200px" }}
         />
       </div>
     );

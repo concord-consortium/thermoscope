@@ -17,9 +17,9 @@ function getObjectFromHashParams (str) {
 
 function parseToPrimitive(value) {
   try {
-    return JSON.parse(value);
+    return JSON.parse(val(value));
   } catch(e){
-    return value.toString();
+    return val(value).toString();
   }
 }
 
@@ -29,7 +29,7 @@ function parseToPrimitive(value) {
 function getHashParamsFromObject (obj) {
   let hashPartBuffer = [];
   for (let k in obj) {
-    hashPartBuffer.push(encodeURIComponent(k), '=', encodeURIComponent(obj[k]), '&');
+    hashPartBuffer.push(encodeURIComponent(k), '=', encodeURIComponent(val(obj[k])), '&');
   }
   if (hashPartBuffer.length) {    // Remove the last '&'
     hashPartBuffer.pop();
@@ -46,7 +46,7 @@ function getHashParamsFromObject (obj) {
 function getDiffedHashParams (state, defaults) {
   let diff = {};
   for (let k in defaults) {
-    if (state.hasOwnProperty(k) && state[k] !== defaults[k]) {
+    if (state.hasOwnProperty(k) && val(state[k]) !== val(defaults[k])) {
       diff[k] = state[k]
     }
   }
@@ -61,13 +61,25 @@ function getDiffedHashParams (state, defaults) {
  */
 function getStateFromHashWithDefaults (hash, defaults) {
   let hashObj = getObjectFromHashParams(hash),
-      ret = {...defaults};
+      ret = JSON.parse(JSON.stringify(defaults)); // deep clone
   for (let k in ret) {
     if (hashObj.hasOwnProperty(k)) {
-      ret[k] = hashObj[k]
+      if (ret[k].hasOwnProperty("value")) {
+        ret[k].value = hashObj[k];
+      } else {
+        ret[k] = hashObj[k]
+      }
     }
   }
   return ret;
+}
+
+// We can pass in either primitives or objects of form {value: val, ...}
+function val(prop) {
+  if (prop.hasOwnProperty("value")) {
+    return prop.value;
+  }
+  return prop;
 }
 
 module.exports = {

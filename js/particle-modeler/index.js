@@ -14,11 +14,29 @@ let api, lab;
 // Set of authorable properties which can be overwritten by the url hash.
 let authoredDefaults = {
   authoring: false,
-  targetTemperature: 0,
-  temperatureControl: false,
-  gravitationalField: 0,
-  timeStep: 1,
-  viscosity: 1
+  targetTemperature: {
+    value: 0,
+    min: 0,
+    max: 1000
+  },
+  temperatureControl: {
+    value: false
+  },
+  gravitationalField: {
+    value: 0,
+    min: 0,
+    max: 1e-5
+  },
+  timeStep: {
+    value: 1,
+    min: 0,
+    max: 5
+  },
+  viscosity: {
+    value: 1,
+    min: 0,
+    max: 10
+  }
 };
 
 export default class Interactive extends PureComponent {
@@ -84,7 +102,9 @@ export default class Interactive extends PureComponent {
 
   handleAuthoringPropChange(prop, value) {
     let newState = {};
-    newState[prop] = value;
+    newState[prop] = {...this.state[prop]};
+    newState[prop].value = value;
+    newState.foo = Math.random();
     this.setState(newState);
   }
 
