@@ -14,7 +14,11 @@ let api, lab;
 // Set of authorable properties which can be overwritten by the url hash.
 let authoredDefaults = {
   authoring: false,
-  gravitationalField: 0
+  targetTemperature: 0,
+  temperatureControl: false,
+  gravitationalField: 0,
+  timeStep: 1,
+  viscosity: 1
 };
 
 export default class Interactive extends PureComponent {
