@@ -53,7 +53,7 @@ export default class Thermoscope extends PureComponent {
 
     return (
       <div className="thermoscope">
-        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} />
+        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} showSlider="true"/>
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={model.tempScale}
