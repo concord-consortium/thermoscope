@@ -17,9 +17,6 @@ let authoredDefaults = {
   gravitationalField: 0
 };
 
-// Set of authorable properties that are set using
-let modelProperties = ["gravitationalField"];
-
 export default class Interactive extends PureComponent {
 
   constructor(props) {
@@ -40,17 +37,21 @@ export default class Interactive extends PureComponent {
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    let hash = getDiffedHashParams(this.state, authoredDefaults);
-    window.location.hash = hash;
-
+  setModelProps(prevState = {}) {
     let newModelProperties = {}
-    for (let prop of modelProperties) {
+    for (let prop in this.state.model) {
       if (this.state[prop] !== "" && this.state[prop] !== prevState[prop]) {
         newModelProperties[prop] = parseToPrimitive(this.state[prop]);
       }
     }
     api.set(newModelProperties);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    let hash = getDiffedHashParams(this.state, authoredDefaults);
+    window.location.hash = hash;
+
+    this.setModelProps(prevState);
   }
 
   handleModelLoad() {
@@ -65,6 +66,7 @@ export default class Interactive extends PureComponent {
     });
 
     this.addNewDraggableAtom();
+    this.setModelProps();
   }
 
   addNewDraggableAtom() {
@@ -83,7 +85,11 @@ export default class Interactive extends PureComponent {
   }
 
   render () {
-    let appClass = "app" + (this.state.authoring ? " authoring" : "");
+    let appClass = "app", authoringPanel = null;
+    if (this.state.authoring) {
+      appClass += " authoring";
+      authoringPanel = <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
+    }
     return (
       <div className={appClass}>
         <div className="lab-wrapper">
@@ -91,7 +97,7 @@ export default class Interactive extends PureComponent {
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
         </div>
         <NewAtomBin showAtom={this.state.showNewAtom}/>
-        <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
+        { authoringPanel }
       </div>
     );
   }
