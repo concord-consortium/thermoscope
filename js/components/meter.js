@@ -64,6 +64,9 @@ export default class Meter extends PureComponent {
 
     let angle = 180 * meterValue;
     let meterLineLength = r - 10;
+    let sliderWidth = (r * 2) + "px";
+    let sliderStyle = { width: sliderWidth, margin: 'auto'};
+
     return (
       <div className="meter">
         <svg>
@@ -73,8 +76,8 @@ export default class Meter extends PureComponent {
           <circle id="meterLineBase" cx={cx} cy={cy} r="12" stroke="black" strokeWidth="1" fill="#664488" />
         </svg>
         <div className="slider">
-          {showSlider && <Slider min={0} max={1} step={0.01} value={meterValue}
-            sliderStyle={{ marginTop: 5, marginBottom: 5 }}
+          {showSlider && <Slider min={0} max={1} value={meterValue}
+            style={sliderStyle}
             name="temperature"
             onChange={this.handleSliderChange} />}
         </div>
