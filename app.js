@@ -62696,7 +62696,7 @@
 
 
 	// module
-	exports.push([module.id, ".thermoscope .slider {\n  width: 270px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
+	exports.push([module.id, ".thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
 
 	// exports
 
