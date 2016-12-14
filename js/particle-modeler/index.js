@@ -41,6 +41,10 @@ let authoredDefaults = {
     value: 1,
     min: 0,
     max: 10
+  },
+  showFreezeButton: {
+    label: "Show Freeze Button",
+    value: false
   }
 };
 
@@ -64,6 +68,7 @@ export default class Interactive extends PureComponent {
     this.handleModelLoad = this.handleModelLoad.bind(this);
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
+    this.freeze = this.freeze.bind(this);
   }
 
   setModelProps(prevState = {}) {
@@ -115,6 +120,17 @@ export default class Interactive extends PureComponent {
     }
   }
 
+  freeze() {
+    let oldTemp = this.state.targetTemperature.value,
+        oldControl = this.state.temperatureControl.value;
+    api.set({temperatureControl: true});
+    api.set({targetTemperature: 0});
+    setTimeout(function() {
+      api.set({temperatureControl: oldControl});
+      api.set({targetTemperature: oldTemp});
+    }, 500)
+  }
+
   handleAuthoringPropChange(prop, value) {
     let newState = {};
     newState[prop] = {...this.state[prop]};
@@ -123,16 +139,21 @@ export default class Interactive extends PureComponent {
   }
 
   render () {
-    let appClass = "app", authoringPanel = null;
+    let appClass = "app", authoringPanel = null, freezeButton = null;
     if (this.state.authoring) {
       appClass += " authoring";
       authoringPanel = <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
+    }
+
+    if (this.state.showFreezeButton.value === true) {
+      freezeButton = <button onClick={this.freeze}>Freeze</button>
     }
     return (
       <div className={appClass}>
         <div className="lab-wrapper">
           <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
+          { freezeButton }
         </div>
         <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
         { authoringPanel }
