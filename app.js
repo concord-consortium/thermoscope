@@ -67635,7 +67635,7 @@
 
 
 	// module
-	exports.push([module.id, ".app {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n", ""]);
 
 	// exports
 
