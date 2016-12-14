@@ -45,6 +45,10 @@ let authoredDefaults = {
   showFreezeButton: {
     label: "Show Freeze Button",
     value: false
+  },
+  startWithAtoms: {
+    label: "Start With Existing Atoms",
+    value: false
   }
 };
 
@@ -54,11 +58,12 @@ export default class Interactive extends PureComponent {
     super(props);
 
     let hashParams = window.location.hash.substring(1),
-        authoredState = getStateFromHashWithDefaults(hashParams, authoredDefaults);
+        authoredState = getStateFromHashWithDefaults(hashParams, authoredDefaults),
+        model = authoredState.startWithAtoms.value ? models.baseModel : models.emptyModel;
 
     this.state = {
       interactive: models.interactive,
-      model: models.baseModel,
+      model: model,
       showNewAtom0: true,
       showNewAtom1: true,
       showNewAtom2: true,
@@ -79,6 +84,13 @@ export default class Interactive extends PureComponent {
       }
     }
     api.set(newModelProperties);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.startWithAtoms.value !== nextState.startWithAtoms.value) {
+       let model = nextState.startWithAtoms.value ? models.baseModel : models.emptyModel;
+       this.setState({model: model});
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
