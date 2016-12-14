@@ -55,7 +55,9 @@ export default class Interactive extends PureComponent {
     this.state = {
       interactive: models.interactive,
       model: models.baseModel,
-      showNewAtom: true,
+      showNewAtom0: true,
+      showNewAtom1: true,
+      showNewAtom2: true,
       ...authoredState
     };
 
@@ -86,22 +88,30 @@ export default class Interactive extends PureComponent {
     let _this = this;
     api.onDrag('atom', function(x, y, d, i) {
       if (d.pinned === 1) {
+        let el = d.element,
+            newState = {};
         api.setAtomProperties(i, {pinned: 0});
-        _this.setState({showNewAtom: false});
-        _this.addNewDraggableAtom();
+        newState["showNewAtom"+el] = false;
+        _this.setState(newState);
+        _this.addNewDraggableAtom(el);
       }
     });
 
-    this.addNewDraggableAtom();
+    this.addNewDraggableAtom(0);
+    this.addNewDraggableAtom(1);
+    this.addNewDraggableAtom(2);
     this.setModelProps();
   }
 
-  addNewDraggableAtom() {
-    var added = api.addAtom({x: 0.37, y: 2.22, element: 2, draggable: 1, pinned: 1});
+  addNewDraggableAtom(el=0) {
+    let y = 2.22 - (el * 0.24),
+        added = api.addAtom({x: 0.37, y: y, element: el, draggable: 1, pinned: 1});
     if (!added) {
-      setTimeout(this.addNewDraggableAtom, 2000);
+      setTimeout(() => this.addNewDraggableAtom(el), 2000);
     } else {
-        this.setState({showNewAtom: true});
+      let newState = {};
+      newState["showNewAtom"+el] = true;
+      this.setState(newState);
     }
   }
 
@@ -124,7 +134,7 @@ export default class Interactive extends PureComponent {
           <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
               playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
         </div>
-        <NewAtomBin showAtom={this.state.showNewAtom}/>
+        <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
         { authoringPanel }
       </div>
     );
