@@ -46,6 +46,13 @@ export default class Thermoscope extends PureComponent {
     }
   }
 
+  onMeterChange(value) {
+    let range = MAX_TEMP - MIN_TEMP;
+    let scaledValue = Math.round(value * range);
+    scaledValue = MIN_TEMP != 0 ? scaledValue + MIN_TEMP : scaledValue;
+    this.setState({temperature: scaledValue});
+  }
+
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
     const model = models[materialType][materialIdx];
@@ -67,9 +74,10 @@ export default class Thermoscope extends PureComponent {
         end: 180
       }
     ];
+
     return (
       <div className="thermoscope">
-        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments}/>
+        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={(val) => this.onMeterChange(val)}/>
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={model.tempScale}

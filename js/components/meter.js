@@ -26,7 +26,16 @@ export default class Meter extends PureComponent {
   }
 
   handleSliderChange(event, value) {
-    this.setState({ meterValue: value });
+    this.setMeterValue(value);
+  }
+
+  setMeterValue(val) {
+    // sanity check, clamp the value between 0 and 1
+    val = val < 0 ? 0 : val > 1 ? 1 : val;
+    this.setState({ meterValue: val });
+    if (this.props.onMeterChange) {
+      this.props.onMeterChange(val);
+    }
   }
 
   describeArc(cx, cy, radius, angleStart, angleEnd = 0){
@@ -77,7 +86,7 @@ export default class Meter extends PureComponent {
       this.setState({ centerX: centerX, minX: centerX - this.props.r, maxX: centerX + this.props.r });
       let clampedX = this.checkPosition(event.clientX);
       if (clampedX) {
-        this.setMeterValue(clampedX);
+        this.updateMeterPosition(clampedX);
       }
     }
     event.preventDefault();
@@ -88,29 +97,29 @@ export default class Meter extends PureComponent {
     let padding = 10;
 
     if (centerX && pos > (minX - padding) && pos < (maxX + padding)) {
-      // clamp position
+      // clamp position for meter controls while allowing a slight padded tolerance on dragging
       let clampedPos = pos < minX ? minX : pos > maxX ? maxX : pos;
       return clampedPos;
     } else if (centerX) {
       // was dragging, but now out of bounds
       this.endDrag();
     }
+    // not dragging
     return false;
   }
 
-  setMeterValue(pos) {
+  updateMeterPosition(pos) {
     let minX = this.state.minX;
     let r = this.props.r;
     let val = (pos - minX) / (r * 2);
-    val = val < 0 ? 0 : val > 1 ? 1 : val;
-    this.setState({meterValue: val});
+    this.setMeterValue(val);
   }
 
   onDrag(event) {
     if (this.props.draggable && this.state.centerX) {
       let clampedX = this.checkPosition(event.clientX);
       if (clampedX) {
-        this.setMeterValue(clampedX);
+        this.updateMeterPosition(clampedX);
       }
     }
   }
@@ -118,7 +127,6 @@ export default class Meter extends PureComponent {
     this.setState({centerX: undefined, minX: undefined, maxX: undefined});
   }
   finishDragging(event) {
-    //console.log(event.clientX, event.currentTarget.getBoundingClientRect());
     this.endDrag();
     event.preventDefault();
   }
@@ -180,7 +188,8 @@ Meter.PropTypes = {
   segments: React.PropTypes.array,
   background: React.PropTypes.string,
   needleColor: React.PropTypes.string,
-  draggable: React.PropTypes.bool
+  draggable: React.PropTypes.bool,
+  onMeterChange: React.PropTypes.func
 };
 
 Meter.defaultProps = {
