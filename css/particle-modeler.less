@@ -1,69 +1,3 @@
-.new-atom-bin {
-  position: absolute;
-  top: ~"calc(50% - 138px)";
-  left: ~"calc(50% - 253px)";
-  border: 1px solid #555;
-  color: #777;
-  padding: 10px;
-  pointer-events: none;
-  z-index: 2;
-
-  p {
-    width: 100%;
-    text-align: center;
-    padding-bottom: 10px;
-  }
-
-  .new-atom {
-    display: block;
-    border: 1px solid #555;
-    height: 28px;
-    width: 28px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.7);
-    transition: background 1.5s;
-
-    div {
-      display: block;
-      background: black;
-      border-radius: 50%;
-      height: 22px;
-      width: 22px;
-      margin: 3px;
-      background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
-      opacity: 1;
-      transition: opacity 1.5s;
-    }
-
-    &.new-atom-0 {
-      div {
-        background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);
-      }
-    }
-
-    &.new-atom-1 {
-      div {
-        background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
-      }
-    }
-  }
-
-  .hiding {
-    display: block;
-    border: 1px solid #555;
-    height: 28px;
-    width: 28px;
-    border-radius: 50%;
-    background: rgba(255,255,255,1);
-    transition: background 0s;
-
-    div {
-      opacity: 0;
-      transition: opacity 0s;
-    }
-  }
-}
-
 .authoring-form {
   position: absolute;
   left: ~"calc(50% + 300px)";
@@ -75,10 +9,88 @@
   }
 }
 
-button {
-  position: absolute;
-  z-index: 3;
-  bottom: ~"calc(50% - 160px)";
-  left: ~"calc(50% - 255px)";
-  padding: 4px;
+.lab-ui {
+  position: relative;
+  width: 100%;
+
+  .new-atom-bin {
+    position: absolute;
+    top: -340px;
+    left: 18px;
+    border: 1px solid #555;
+    color: #777;
+    padding: 10px;
+    pointer-events: none;
+    z-index: 2;
+
+    p {
+      width: 100%;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+
+    .new-atom {
+      display: block;
+      border: 1px solid #555;
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.7);
+      transition: background 1.5s;
+
+      div {
+        display: block;
+        background: black;
+        border-radius: 50%;
+        height: 22px;
+        width: 22px;
+        margin: 3px;
+        background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
+        opacity: 1;
+        transition: opacity 1.5s;
+      }
+
+      &.new-atom-0 {
+        div {
+          background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);
+        }
+      }
+
+      &.new-atom-1 {
+        div {
+          background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
+        }
+      }
+    }
+
+    .hiding {
+      display: block;
+      border: 1px solid #555;
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,1);
+      transition: background 0s;
+
+      div {
+        opacity: 0;
+        transition: opacity 0s;
+      }
+    }
+  }
+
+
+  button {
+    position: absolute;
+    top: -60px;
+    left: 20px;
+    padding: 4px;
+  }
+
+  .delete-icon {
+    position: absolute;
+    top: -73px;
+    left: 489px;
+    pointer-events: none;
+  }
 }
