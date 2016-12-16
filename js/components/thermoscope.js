@@ -25,6 +25,7 @@ export default class Thermoscope extends PureComponent {
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
+    this.onMeterChange = this.onMeterChange.bind(this);
   }
 
   handleTempSliderChange(event, value) {
@@ -77,7 +78,7 @@ export default class Thermoscope extends PureComponent {
 
     return (
       <div className="thermoscope">
-        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={(val) => this.onMeterChange(val)}/>
+        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={this.onMeterChange}/>
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={model.tempScale}

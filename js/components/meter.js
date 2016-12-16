@@ -10,6 +10,9 @@ export default class Meter extends PureComponent {
     }
     this.scaleCurrentValue(props.currentValue);
     this.handleSliderChange = this.handleSliderChange.bind(this);
+    this.startDragging = this.startDragging.bind(this);
+    this.onDrag = this.onDrag.bind(this);
+    this.finishDragging = this.finishDragging.bind(this);
   }
 
   componentWillReceiveProps(prevProps) {
@@ -151,13 +154,13 @@ export default class Meter extends PureComponent {
     return (
       <div className="meter">
         <svg
-          onTouchStart={this.startDragging.bind(this)}
-          onMouseDown={this.startDragging.bind(this)}
-          onTouchMove={this.onDrag.bind(this)}
-          onMouseMove={this.onDrag.bind(this)}
-          onMouseLeave={this.finishDragging.bind(this)}
-          onTouchEnd={this.finishDragging.bind(this)}
-          onMouseUp={this.finishDragging.bind(this)}>
+          onTouchStart={this.startDragging}
+          onMouseDown={this.startDragging}
+          onTouchMove={this.onDrag}
+          onMouseMove={this.onDrag}
+          onMouseLeave={this.finishDragging}
+          onTouchEnd={this.finishDragging}
+          onMouseUp={this.finishDragging}>
           {backgroundArc}
           {arcSegments}
           <path id="arc-incomplete" fill="none" stroke="#cccccc" strokeWidth="4" d={this.describeArc(cx, cy, r, 180)} />
