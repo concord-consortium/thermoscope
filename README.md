@@ -30,7 +30,11 @@ and open http://localhost:8080/ or http://localhost:8080/webpack-dev-server/ (au
 
 #### Github Pages:
 You can build a simple github page deployment by following these steps:
-1. prepare the destination directory: `rm -rf ./dist`
-1. clone the gh-pages branch to dist: `git clone -b gh-pages https://github.com/concord-consortium/thermoscope.git dist`
-1. build: `webpack`
-1. add the files, commit and push: `cd dist; git add . && git commit -m 'Update gh-pages' && git push origin gh-pages`
+
+1. Prepare the destination directory: `rm -rf ./dist`
+
+2. Clone the gh-pages branch to dist: `git clone -b gh-pages https://github.com/concord-consortium/thermoscope.git dist`
+
+3. Build: `webpack`
+
+4. Add the files, commit and push: `cd dist; git add . && git commit -m 'Update gh-pages' && git push origin gh-pages`
