@@ -57,13 +57,22 @@ export default class Interactive extends PureComponent {
   }
 
   setModelProps(prevState = {}) {
-    let newModelProperties = {}
-    for (let prop in this.state.model) {
-      if (this.state[prop] !== "" && this.state[prop] !== prevState[prop]) {
-        newModelProperties[prop] = parseToPrimitive(this.state[prop]);
+    let newModelProperties = {},
+        newElementProperties = [{}, {}, {}];
+    for (let prop in authorableProps) {
+      let value = this.state[prop];
+      if (value !== "" && value !== prevState[prop]) {
+        if (value.hasOwnProperty("element")) {
+          newElementProperties[value.element][value.property] = parseToPrimitive(value);
+        } else {
+          newModelProperties[prop] = parseToPrimitive(value);
+        }
       }
     }
     api.set(newModelProperties);
+    for (let elem in newElementProperties) {
+      api.setElementProperties(elem, newElementProperties[elem]);
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {

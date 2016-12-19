@@ -19,7 +19,7 @@ const Authoring = (props) => {
     let scale = (values.max - values.min > 1) ? 1 : 1/(values.max - values.min) ,
         handleChange = function(evt, val) {
           val /= scale;
-          val = val < 1 && val > 0 ? val.toPrecision(2) : val;
+          val = val < 1 && val > -1 && val != 0 ? val.toPrecision(3) : val;
           props.onChange(prop, val);
         }
     return (
