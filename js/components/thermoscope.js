@@ -17,7 +17,7 @@ export default class Thermoscope extends PureComponent {
     this.state = {
       temperature: 20,
       liveData: false,
-      materialType: 'solid',
+      materialType: this.props.material ? this.props.material : 'solid',
       materialIdx: 0
     };
     this.handleTempSliderChange = this.handleTempSliderChange.bind(this);
