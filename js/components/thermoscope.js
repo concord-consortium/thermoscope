@@ -47,6 +47,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
+    const {embeddableSrc} = this.props;
     const model = models[materialType][materialIdx];
 
     return (
@@ -55,7 +56,9 @@ export default class Thermoscope extends PureComponent {
                   model={model.json}
                   tempScale={model.tempScale}
                   timeStepScale={model.timeStepScale}
-                  width={MODEL_WIDTH} height={MODEL_HEIGHT}/>
+                  width={MODEL_WIDTH} height={MODEL_HEIGHT}
+                  embeddableSrc={embeddableSrc}
+          />
         <div>
           <div className="controls-row">
             Temperature {temperature}°C

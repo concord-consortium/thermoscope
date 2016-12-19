@@ -25,15 +25,15 @@ export default class ThreeThermoscope extends PureComponent {
         <div className="three-thermoscope">
           <div className="thermoscope-container">
             <div className="label">A</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid"/>
+            <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html'/>
           </div>
           <div className="thermoscope-container">
             <div className="label">B</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid"/>
+            <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html'/>
           </div>
           <div className="thermoscope-container">
             <div className="label">C</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={2} material="gas"/>
+            <Thermoscope sensor={LabQuest2} probeIndex={2} material="gas" embeddableSrc='../lab/embeddable.html'/>
           </div>
         </div>
       </MuiThemeProvider>
