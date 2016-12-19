@@ -4,6 +4,8 @@ import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
 import Authoring from './authoring';
 import models from './models/';
+// Set of authorable properties which can be overwritten by the url hash.
+import authorableProps from './models/authorable-props';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
 
 import '../../css/app.less';
@@ -11,54 +13,13 @@ import '../../css/particle-modeler.less';
 
 let api, lab;
 
-// Set of authorable properties which can be overwritten by the url hash.
-let authoredDefaults = {
-  authoring: false,
-  temperatureControl: {
-    label: "Heatbath",
-    value: false
-  },
-  targetTemperature: {
-    label: "Heatbath temperature",
-    value: 0,
-    min: 0,
-    max: 1000
-  },
-  gravitationalField: {
-    label: "Gravity",
-    value: 0,
-    min: 0,
-    max: 1e-5
-  },
-  timeStep: {
-    label: "Time step",
-    value: 1,
-    min: 0,
-    max: 5
-  },
-  viscosity: {
-    label: "Viscosity",
-    value: 1,
-    min: 0,
-    max: 10
-  },
-  showFreezeButton: {
-    label: "Show Freeze Button",
-    value: false
-  },
-  startWithAtoms: {
-    label: "Start With Existing Atoms",
-    value: false
-  }
-};
-
 export default class Interactive extends PureComponent {
 
   constructor(props) {
     super(props);
 
     let hashParams = window.location.hash.substring(1),
-        authoredState = getStateFromHashWithDefaults(hashParams, authoredDefaults),
+        authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
         model = authoredState.startWithAtoms.value ? models.baseModel : models.emptyModel;
 
     this.state = {
@@ -94,7 +55,7 @@ export default class Interactive extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let hash = getDiffedHashParams(this.state, authoredDefaults);
+    let hash = getDiffedHashParams(this.state, authorableProps);
     window.location.hash = hash;
 
     this.setModelProps(prevState);
