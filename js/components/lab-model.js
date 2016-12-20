@@ -36,7 +36,7 @@ export default class LabModel extends PureComponent {
   }
 
   render() {
-    const { width, height, model } = this.props;
+    const { width, height, model, embeddableSrc } = this.props;
     const { loading } = this.state;
     return (
       <div className="lab-model">
@@ -48,7 +48,8 @@ export default class LabModel extends PureComponent {
                props={this.labProps}
                width={width} height={height}
                onModelLoad={this.handleModelLoad}
-               playing={true}/>
+               playing={true}
+               embeddableSrc={embeddableSrc}/>
           <div className="overlay"/>
         </div>
       </div>
