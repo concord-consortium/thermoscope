@@ -71,13 +71,15 @@ export default class Meter extends PureComponent {
   }
 
   generateSegments() {
-    const {cx, cy, r, showSlider, segments } = this.props;
+    const {cx, cy, r, showSlider, segments, arcWidth } = this.props;
     let arcSegments = [];
+    let width = r / 6;
+
     for (var i = 0; i < segments.length; i++) {
       let segmentId = "arc-s" + i;
       let angleStart = segments[i].end;
       let angleEnd = segments[i].start;
-      arcSegments.push(<path id={segmentId} key={segmentId} fill="none" stroke={segments[i].color} strokeWidth="34" d={this.describeArc(cx, cy, 80, angleStart, angleEnd)} />);
+      arcSegments.push(<path id={segmentId} key={segmentId} fill="none" stroke={segments[i].color} strokeWidth={width} d={this.describeArc(cx, cy, (r - (width/2) - arcWidth), angleStart, angleEnd)} />);
     }
     return arcSegments;
   }
@@ -136,7 +138,7 @@ export default class Meter extends PureComponent {
 
   render() {
     const {meterValue} = this.state;
-    const {cx, cy, r, showSlider, segments, background, needleColor} = this.props;
+    const {cx, cy, r, showSlider, segments, background, needleColor, arcWidth, needleWidth} = this.props;
 
     let angle = 180 * meterValue;
     let meterLineLength = r - 10;
@@ -148,7 +150,7 @@ export default class Meter extends PureComponent {
       </g>
       : undefined;
     let backgroundArc = background ?
-      <path id="arc-bg" fill="none" stroke={background} strokeWidth="190" d={this.describeArc(cx, cy, 1, 180)} />
+      <path id="arc-bg" fill="none" stroke={background} strokeWidth={(2*r) - arcWidth} d={this.describeArc(cx, cy, 1, 180)} />
       : undefined;
 
     return (
@@ -163,10 +165,10 @@ export default class Meter extends PureComponent {
           onMouseUp={this.finishDragging}>
           {backgroundArc}
           {arcSegments}
-          <path id="arc-incomplete" fill="none" stroke="#cccccc" strokeWidth="4" d={this.describeArc(cx, cy, r, 180)} />
-          <path id="arc" fill="none" stroke="#446688" strokeWidth="4" d={this.describeArc(cx, cy, r, angle)}/>
-          <path id="meterLine" fill="none" stroke="#000" strokeWidth="3" d={this.drawMeterLine(cx, cy, meterLineLength, angle, 1)} />
-          <path id="meterLine" fill="none" stroke={needleColor} strokeWidth="2" d={this.drawMeterLine(cx, cy, meterLineLength, angle, 1)} />
+          <path id="arc-incomplete" fill="none" stroke="#cccccc" strokeWidth={arcWidth} d={this.describeArc(cx, cy, r, 180)} />
+          <path id="arc" fill="none" stroke="#446688" strokeWidth={arcWidth} d={this.describeArc(cx, cy, r, angle)}/>
+          <path id="meterLine" fill="none" stroke="#000" strokeWidth={needleWidth} d={this.drawMeterLine(cx, cy, meterLineLength, angle, 1)} />
+          <path id="meterLine" fill="none" stroke={needleColor} strokeWidth={needleWidth-1} d={this.drawMeterLine(cx, cy, meterLineLength, angle, 1)} />
           <circle id="meterLineBase" cx={cx} cy={cy} r="12" stroke="black" strokeWidth="1" fill={needleColor}  />
         </svg>
         <div className="slider">
@@ -199,6 +201,8 @@ Meter.defaultProps = {
   cx: 150,
   cy: 150,
   r: 100,
+  arcWidth: 4,
+  needleWidth: 3,
   minValue: 0,
   maxValue: 100,
   currentValue: 30,
