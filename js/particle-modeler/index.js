@@ -93,9 +93,9 @@ export default class Interactive extends PureComponent {
     api = lab.scriptingAPI;
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
-        let el = d.element,
+        let el = d.element - 3,
             newState = {};
-        api.setAtomProperties(i, {pinned: 0});
+        api.setAtomProperties(i, {pinned: 0, element: el});
         newState["showNewAtom"+el] = false;
         this.setState(newState);
         this.addNewDraggableAtom(el);
@@ -136,7 +136,7 @@ export default class Interactive extends PureComponent {
 
   addNewDraggableAtom(el=0) {
     let y = atomBox.y - (el * atomBox.spacing),
-        added = api.addAtom({x: atomBox.x, y: y, element: el, draggable: 1, pinned: 1});
+        added = api.addAtom({x: atomBox.x, y: y, element: (el+3), draggable: 1, pinned: 1});
     if (!added) {
       setTimeout(() => this.addNewDraggableAtom(el), 2000);
     } else {
