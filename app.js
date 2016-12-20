@@ -37067,7 +37067,7 @@
 	    _this.state = {
 	      temperature: 20,
 	      liveData: false,
-	      materialType: 'solid',
+	      materialType: _this.props.material ? _this.props.material : 'solid',
 	      materialIdx: 0
 	    };
 	    _this.handleTempSliderChange = _this.handleTempSliderChange.bind(_this);
@@ -37108,6 +37108,7 @@
 	          materialType = _state.materialType,
 	          materialIdx = _state.materialIdx,
 	          liveData = _state.liveData;
+	      var embeddableSrc = this.props.embeddableSrc;
 
 	      var model = _models2.default[materialType][materialIdx];
 
@@ -37118,7 +37119,9 @@
 	          model: model.json,
 	          tempScale: model.tempScale,
 	          timeStepScale: model.timeStepScale,
-	          width: MODEL_WIDTH, height: MODEL_HEIGHT }),
+	          width: MODEL_WIDTH, height: MODEL_HEIGHT,
+	          embeddableSrc: embeddableSrc
+	        }),
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -50527,7 +50530,8 @@
 	      var _props = this.props,
 	          width = _props.width,
 	          height = _props.height,
-	          model = _props.model;
+	          model = _props.model,
+	          embeddableSrc = _props.embeddableSrc;
 	      var loading = this.state.loading;
 
 	      return _react2.default.createElement(
@@ -50541,7 +50545,8 @@
 	            props: this.labProps,
 	            width: width, height: height,
 	            onModelLoad: this.handleModelLoad,
-	            playing: true }),
+	            playing: true,
+	            embeddableSrc: embeddableSrc }),
 	          _react2.default.createElement('div', { className: 'overlay' })
 	        )
 	      );
