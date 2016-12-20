@@ -38,7 +38,7 @@ module.exports = {
   },
 
   element1Sigma: {
-    label: "Element 1 Sigma",
+    label: "Sigma",
     element: 0,
     property: "sigma",
     value: 0.1915,
@@ -46,7 +46,7 @@ module.exports = {
     max: 0.5
   },
   element1Epsilon: {
-    label: "Element 1 Epsilon",
+    label: "Epsilon",
     element: 0,
     property: "epsilon",
     value: -0.05,
@@ -54,7 +54,7 @@ module.exports = {
     max: 0
   },
   element1Mass: {
-    label: "Element 1 Mass",
+    label: "Mass",
     element: 0,
     property: "mass",
     value: 20,
@@ -63,7 +63,7 @@ module.exports = {
   },
 
   element2Sigma: {
-    label: "Element 2 Sigma",
+    label: "Sigma",
     element: 1,
     property: "sigma",
     value: 0.1915,
@@ -71,7 +71,7 @@ module.exports = {
     max: 0.5
   },
   element2Epsilon: {
-    label: "Element 2 Epsilon",
+    label: "Epsilon",
     element: 1,
     property: "epsilon",
     value: -0.1,
@@ -79,7 +79,7 @@ module.exports = {
     max: 0
   },
   element2Mass: {
-    label: "Element 2 Mass",
+    label: "Mass",
     element: 1,
     property: "mass",
     value: 100,
@@ -88,7 +88,7 @@ module.exports = {
   },
 
   element3Sigma: {
-    label: "Element 3 Sigma",
+    label: "Sigma",
     element: 2,
     property: "sigma",
     value: 0.1915,
@@ -96,7 +96,7 @@ module.exports = {
     max: 0.5
   },
   element3Epsilon: {
-    label: "Element 3 Epsilon",
+    label: "Epsilon",
     element: 2,
     property: "epsilon",
     value: -0.000001,
@@ -104,7 +104,7 @@ module.exports = {
     max: 0
   },
   element3Mass: {
-    label: "Element 3 Mass",
+    label: "Mass",
     element: 2,
     property: "mass",
     value: 30,
