@@ -67,7 +67,7 @@ export default class Meter extends PureComponent {
   }
 
   generateSegments() {
-    const {cx, cy, r, showSlider, segments, arcWidth } = this.props;
+    const {cx, cy, r, segments, arcWidth } = this.props;
     let arcSegments = [];
     let width = r / 6;
 
@@ -183,6 +183,8 @@ Meter.PropTypes = {
   cx: React.PropTypes.object.number,
   cy: React.PropTypes.number,
   r: React.PropTypes.number,
+  arcWidth: React.PropTypes.number,
+  needleWidth: React.PropTypes.number,
   minValue: React.PropTypes.number,
   maxValue: React.PropTypes.number,
   currentValue: React.PropTypes.number,
