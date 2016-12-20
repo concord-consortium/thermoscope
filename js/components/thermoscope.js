@@ -48,10 +48,7 @@ export default class Thermoscope extends PureComponent {
   }
 
   onMeterChange(value) {
-    let range = MAX_TEMP - MIN_TEMP;
-    let scaledValue = Math.round(value * range);
-    scaledValue = MIN_TEMP != 0 ? scaledValue + MIN_TEMP : scaledValue;
-    this.setState({temperature: scaledValue});
+    this.setState({temperature: value});
   }
 
   render() {

@@ -4,28 +4,25 @@ import Slider from 'material-ui/Slider';
 export default class Meter extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      meterValue: this.scaleCurrentValue(props.currentValue),
-      showSlider: false
-    }
-    this.scaleCurrentValue(props.currentValue);
     this.handleSliderChange = this.handleSliderChange.bind(this);
     this.startDragging = this.startDragging.bind(this);
     this.onDrag = this.onDrag.bind(this);
     this.finishDragging = this.finishDragging.bind(this);
   }
 
-  componentWillReceiveProps(prevProps) {
-    if (this.props.currentValue != prevProps.currentValue) {
-      this.setState({meterValue: this.scaleCurrentValue(this.props.currentValue) });
-    }
-  }
-
-  scaleCurrentValue(absoluteValue) {
+  scaleValue(val) {
     const {minValue, maxValue} = this.props;
     let range = maxValue - minValue;
-    let scaledValue = minValue != 0 ? absoluteValue - minValue : absoluteValue;
+    let scaledValue = minValue != 0 ? val - minValue : val;
     return scaledValue / range;
+  }
+
+  absoluteValue(val) {
+    const {minValue, maxValue} = this.props;
+    let range = maxValue - minValue;
+    let absValue = Math.round(val * range);
+    absValue = minValue != 0 ? absValue + minValue : absValue;
+    return absValue;
   }
 
   handleSliderChange(event, value) {
@@ -35,9 +32,8 @@ export default class Meter extends PureComponent {
   setMeterValue(val) {
     // sanity check, clamp the value between 0 and 1
     val = val < 0 ? 0 : val > 1 ? 1 : val;
-    this.setState({ meterValue: val });
     if (this.props.onMeterChange) {
-      this.props.onMeterChange(val);
+      this.props.onMeterChange(this.absoluteValue(val));
     }
   }
 
@@ -97,6 +93,7 @@ export default class Meter extends PureComponent {
     event.preventDefault();
   }
   checkPosition(pos) {
+    if (!this.state) return false;
     let {centerX, minX, maxX} = this.state;
     let r = this.props.r;
     let padding = 10;
@@ -121,7 +118,7 @@ export default class Meter extends PureComponent {
   }
 
   onDrag(event) {
-    if (this.props.draggable && this.state.centerX) {
+    if (this.props.draggable && this.state && this.state.centerX) {
       let clampedX = this.checkPosition(event.clientX);
       if (clampedX) {
         this.updateMeterPosition(clampedX);
@@ -137,9 +134,9 @@ export default class Meter extends PureComponent {
   }
 
   render() {
-    const {meterValue} = this.state;
-    const {cx, cy, r, showSlider, segments, background, needleColor, arcWidth, needleWidth} = this.props;
+    const {cx, cy, r, showSlider, segments, background, needleColor, arcWidth, needleWidth, currentValue} = this.props;
 
+    let meterValue = this.scaleValue(currentValue);
     let angle = 180 * meterValue;
     let meterLineLength = r - 10;
     let sliderWidth = (r * 2) + "px";
