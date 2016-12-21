@@ -1,10 +1,5 @@
 import React from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Slider from 'material-ui/Slider';
-import injectTapEventPlugin from 'react-tap-event-plugin';
-
-// Required by Material-UI library.
-injectTapEventPlugin();
 
 const Authoring = (props) => {
   let handleCheckboxChange = function (evt) {
@@ -53,12 +48,10 @@ const Authoring = (props) => {
   });
 
   return (
-    <MuiThemeProvider>
-      <div className="authoring-form">
-        <h3>Authoring</h3>
-        { inputs }
-      </div>
-    </MuiThemeProvider>
+    <div className="authoring-form">
+      <h3>Authoring</h3>
+      { inputs }
+    </div>
   )
 }
 

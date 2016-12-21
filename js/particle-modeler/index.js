@@ -5,11 +5,29 @@ import NewAtomBin from './new-atom-bin';
 import Authoring from './authoring';
 import models from './models/';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
+// Required by Material-UI library.
+injectTapEventPlugin();
+
 let api, lab;
+
+let atomBox = {
+      x: 0.37,
+      y: 2.22,
+      spacing: 0.24
+    },
+    delIcon = {
+      x: 4.187,
+      y: 0.141,
+      width: 0.141,
+      height: 0.146
+    };
 
 // Set of authorable properties which can be overwritten by the url hash.
 let authoredDefaults = {
@@ -67,6 +85,7 @@ export default class Interactive extends PureComponent {
       showNewAtom0: true,
       showNewAtom1: true,
       showNewAtom2: true,
+      deleteHover: false,
       ...authoredState
     };
 
@@ -102,17 +121,42 @@ export default class Interactive extends PureComponent {
 
   handleModelLoad() {
     api = lab.scriptingAPI;
-    let _this = this;
-    api.onDrag('atom', function(x, y, d, i) {
+    api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element,
             newState = {};
         api.setAtomProperties(i, {pinned: 0});
         newState["showNewAtom"+el] = false;
-        _this.setState(newState);
-        _this.addNewDraggableAtom(el);
+        this.setState(newState);
+        this.addNewDraggableAtom(el);
+      } else {
+        if (d.x > delIcon.x && d.x < delIcon.x+delIcon.width && d.y > delIcon.y && d.y < delIcon.y+delIcon.height) {
+          // mark atoms for deletion
+          if (!d.marked) {
+            this.setState({deleteHover: true});
+            api.setAtomProperties(i, {marked: 1});
+          }
+        } else if (d.marked) {
+          this.setState({deleteHover: false});
+          api.setAtomProperties(i, {marked: 0});
+        }
       }
     });
+
+    let deleteMarkedAtoms = () => {
+      let atomsToDelete = [];
+      for (let i=0, ii=api.getNumberOfAtoms(); i<ii; i++) {
+        if (api.getAtomProperties(i).marked)
+          atomsToDelete.push(i);
+      }
+      for (let i=atomsToDelete.length-1; i>-1; i--) {
+        api.removeAtom(atomsToDelete[i]);
+      }
+
+      this.setState({deleteHover: false});
+    }
+
+    lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
 
     this.addNewDraggableAtom(0);
     this.addNewDraggableAtom(1);
@@ -121,8 +165,8 @@ export default class Interactive extends PureComponent {
   }
 
   addNewDraggableAtom(el=0) {
-    let y = 2.22 - (el * 0.24),
-        added = api.addAtom({x: 0.37, y: y, element: el, draggable: 1, pinned: 1});
+    let y = atomBox.y - (el * atomBox.spacing),
+        added = api.addAtom({x: atomBox.x, y: y, element: el, draggable: 1, pinned: 1});
     if (!added) {
       setTimeout(() => this.addNewDraggableAtom(el), 2000);
     } else {
@@ -160,16 +204,23 @@ export default class Interactive extends PureComponent {
     if (this.state.showFreezeButton.value === true) {
       freezeButton = <button onClick={this.freeze}>Freeze</button>
     }
+    let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
+
     return (
-      <div className={appClass}>
-        <div className="lab-wrapper">
-          <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
-              playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
-          { freezeButton }
+      <MuiThemeProvider>
+        <div className={appClass}>
+          <div className="lab-wrapper">
+            <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
+                playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
+            <div className="lab-ui">
+              <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
+              { freezeButton }
+              <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
+            </div>
+          </div>
+          { authoringPanel }
         </div>
-        <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
-        { authoringPanel }
-      </div>
+      </MuiThemeProvider>
     );
   }
 }
