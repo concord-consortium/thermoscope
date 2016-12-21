@@ -17,6 +17,18 @@ injectTapEventPlugin();
 
 let api, lab;
 
+let atomBox = {
+      x: 0.37,
+      y: 2.22,
+      spacing: 0.24
+    },
+    delIcon = {
+      x: 4.187,
+      y: 0.141,
+      width: 0.141,
+      height: 0.146
+    };
+
 // Set of authorable properties which can be overwritten by the url hash.
 let authoredDefaults = {
   authoring: false,
@@ -119,7 +131,7 @@ export default class Interactive extends PureComponent {
         _this.setState(newState);
         _this.addNewDraggableAtom(el);
       } else {
-        if (d.x > 4.187 && d.x < 4.328 && d.y > 0.141 && d.y < 0.287) {
+        if (d.x > delIcon.x && d.x < delIcon.x+delIcon.width && d.y > delIcon.y && d.y < delIcon.y+delIcon.height) {
           // mark atoms for deletion
           if (!d.marked) {
             _this.setState({deleteHover: true});
@@ -154,8 +166,8 @@ export default class Interactive extends PureComponent {
   }
 
   addNewDraggableAtom(el=0) {
-    let y = 2.22 - (el * 0.24),
-        added = api.addAtom({x: 0.37, y: y, element: el, draggable: 1, pinned: 1});
+    let y = atomBox.y - (el * atomBox.spacing),
+        added = api.addAtom({x: atomBox.x, y: y, element: el, draggable: 1, pinned: 1});
     if (!added) {
       setTimeout(() => this.addNewDraggableAtom(el), 2000);
     } else {
