@@ -4,6 +4,7 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import LabModel from './lab-model';
+import Meter from './meter';
 import models, {MIN_TEMP, MAX_TEMP} from '../models';
 
 import '../../css/thermoscope.less';
@@ -24,6 +25,7 @@ export default class Thermoscope extends PureComponent {
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
+    this.onMeterChange = this.onMeterChange.bind(this);
   }
 
   handleTempSliderChange(event, value) {
@@ -45,13 +47,18 @@ export default class Thermoscope extends PureComponent {
     }
   }
 
+  onMeterChange(value) {
+    this.setState({temperature: value});
+  }
+
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
-    const {embeddableSrc} = this.props;
+    const {embeddableSrc, showMeter, meterSegments} = this.props;
     const model = models[materialType][materialIdx];
 
     return (
       <div className="thermoscope">
+        {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={this.onMeterChange} />}
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={model.tempScale}
