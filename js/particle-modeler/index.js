@@ -121,30 +121,29 @@ export default class Interactive extends PureComponent {
 
   handleModelLoad() {
     api = lab.scriptingAPI;
-    let _this = this;
-    api.onDrag('atom', function(x, y, d, i) {
+    api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element,
             newState = {};
         api.setAtomProperties(i, {pinned: 0});
         newState["showNewAtom"+el] = false;
-        _this.setState(newState);
-        _this.addNewDraggableAtom(el);
+        this.setState(newState);
+        this.addNewDraggableAtom(el);
       } else {
         if (d.x > delIcon.x && d.x < delIcon.x+delIcon.width && d.y > delIcon.y && d.y < delIcon.y+delIcon.height) {
           // mark atoms for deletion
           if (!d.marked) {
-            _this.setState({deleteHover: true});
+            this.setState({deleteHover: true});
             api.setAtomProperties(i, {marked: 1});
           }
         } else if (d.marked) {
-            _this.setState({deleteHover: false});
+          this.setState({deleteHover: false});
           api.setAtomProperties(i, {marked: 0});
         }
       }
     });
 
-    let deleteMarkedAtoms = function() {
+    let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
       for (let i=0, ii=api.getNumberOfAtoms(); i<ii; i++) {
         if (api.getAtomProperties(i).marked)
@@ -154,7 +153,7 @@ export default class Interactive extends PureComponent {
         api.removeAtom(atomsToDelete[i]);
       }
 
-      _this.setState({deleteHover: false});
+      this.setState({deleteHover: false});
     }
 
     lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
