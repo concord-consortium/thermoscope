@@ -66,23 +66,35 @@
 
 	var _reactLab2 = _interopRequireDefault(_reactLab);
 
-	var _newAtomBin = __webpack_require__(762);
+	var _newAtomBin = __webpack_require__(765);
 
 	var _newAtomBin2 = _interopRequireDefault(_newAtomBin);
 
-	var _authoring = __webpack_require__(763);
+	var _authoring = __webpack_require__(766);
 
 	var _authoring2 = _interopRequireDefault(_authoring);
 
-	var _models = __webpack_require__(764);
+	var _models = __webpack_require__(767);
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _utils = __webpack_require__(768);
+	var _utils = __webpack_require__(771);
 
-	__webpack_require__(760);
+	var _MuiThemeProvider = __webpack_require__(475);
 
-	__webpack_require__(769);
+	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
+
+	var _deleteForever = __webpack_require__(772);
+
+	var _deleteForever2 = _interopRequireDefault(_deleteForever);
+
+	var _reactTapEventPlugin = __webpack_require__(744);
+
+	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
+
+	__webpack_require__(761);
+
+	__webpack_require__(773);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -92,8 +104,23 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	// Required by Material-UI library.
+	(0, _reactTapEventPlugin2.default)();
+
 	var api = void 0,
 	    lab = void 0;
+
+	var atomBox = {
+	  x: 0.37,
+	  y: 2.22,
+	  spacing: 0.24
+	},
+	    delIcon = {
+	  x: 4.187,
+	  y: 0.141,
+	  width: 0.141,
+	  height: 0.146
+	};
 
 	// Set of authorable properties which can be overwritten by the url hash.
 	var authoredDefaults = {
@@ -142,25 +169,26 @@
 	  function Interactive(props) {
 	    _classCallCheck(this, Interactive);
 
-	    var _this2 = _possibleConstructorReturn(this, (Interactive.__proto__ || Object.getPrototypeOf(Interactive)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Interactive.__proto__ || Object.getPrototypeOf(Interactive)).call(this, props));
 
 	    var hashParams = window.location.hash.substring(1),
 	        authoredState = (0, _utils.getStateFromHashWithDefaults)(hashParams, authoredDefaults),
 	        model = authoredState.startWithAtoms.value ? _models2.default.baseModel : _models2.default.emptyModel;
 
-	    _this2.state = _extends({
+	    _this.state = _extends({
 	      interactive: _models2.default.interactive,
 	      model: model,
 	      showNewAtom0: true,
 	      showNewAtom1: true,
-	      showNewAtom2: true
+	      showNewAtom2: true,
+	      deleteHover: false
 	    }, authoredState);
 
-	    _this2.handleModelLoad = _this2.handleModelLoad.bind(_this2);
-	    _this2.addNewDraggableAtom = _this2.addNewDraggableAtom.bind(_this2);
-	    _this2.handleAuthoringPropChange = _this2.handleAuthoringPropChange.bind(_this2);
-	    _this2.freeze = _this2.freeze.bind(_this2);
-	    return _this2;
+	    _this.handleModelLoad = _this.handleModelLoad.bind(_this);
+	    _this.addNewDraggableAtom = _this.addNewDraggableAtom.bind(_this);
+	    _this.handleAuthoringPropChange = _this.handleAuthoringPropChange.bind(_this);
+	    _this.freeze = _this.freeze.bind(_this);
+	    return _this;
 	  }
 
 	  _createClass(Interactive, [{
@@ -195,18 +223,44 @@
 	  }, {
 	    key: 'handleModelLoad',
 	    value: function handleModelLoad() {
+	      var _this2 = this;
+
 	      api = lab.scriptingAPI;
-	      var _this = this;
 	      api.onDrag('atom', function (x, y, d, i) {
 	        if (d.pinned === 1) {
 	          var el = d.element,
 	              newState = {};
 	          api.setAtomProperties(i, { pinned: 0 });
 	          newState["showNewAtom" + el] = false;
-	          _this.setState(newState);
-	          _this.addNewDraggableAtom(el);
+	          _this2.setState(newState);
+	          _this2.addNewDraggableAtom(el);
+	        } else {
+	          if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
+	            // mark atoms for deletion
+	            if (!d.marked) {
+	              _this2.setState({ deleteHover: true });
+	              api.setAtomProperties(i, { marked: 1 });
+	            }
+	          } else if (d.marked) {
+	            _this2.setState({ deleteHover: false });
+	            api.setAtomProperties(i, { marked: 0 });
+	          }
 	        }
 	      });
+
+	      var deleteMarkedAtoms = function deleteMarkedAtoms() {
+	        var atomsToDelete = [];
+	        for (var i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+	          if (api.getAtomProperties(i).marked) atomsToDelete.push(i);
+	        }
+	        for (var _i = atomsToDelete.length - 1; _i > -1; _i--) {
+	          api.removeAtom(atomsToDelete[_i]);
+	        }
+
+	        _this2.setState({ deleteHover: false });
+	      };
+
+	      lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
 
 	      this.addNewDraggableAtom(0);
 	      this.addNewDraggableAtom(1);
@@ -220,8 +274,8 @@
 
 	      var el = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
-	      var y = 2.22 - el * 0.24,
-	          added = api.addAtom({ x: 0.37, y: y, element: el, draggable: 1, pinned: 1 });
+	      var y = atomBox.y - el * atomBox.spacing,
+	          added = api.addAtom({ x: atomBox.x, y: y, element: el, draggable: 1, pinned: 1 });
 	      if (!added) {
 	        setTimeout(function () {
 	          return _this3.addNewDraggableAtom(el);
@@ -270,20 +324,31 @@
 	          'Freeze'
 	        );
 	      }
+	      var deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
+
 	      return _react2.default.createElement(
-	        'div',
-	        { className: appClass },
+	        _MuiThemeProvider2.default,
+	        null,
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'lab-wrapper' },
-	          _react2.default.createElement(_reactLab2.default, { ref: function ref(node) {
-	              return lab = node;
-	            }, model: this.state.model, interactive: this.state.interactive, height: '380px',
-	            playing: true, onModelLoad: this.handleModelLoad, embeddableSrc: '../lab/embeddable.html' }),
-	          freezeButton
-	        ),
-	        _react2.default.createElement(_newAtomBin2.default, { showAtom0: this.state.showNewAtom0, showAtom1: this.state.showNewAtom1, showAtom2: this.state.showNewAtom2 }),
-	        authoringPanel
+	          { className: appClass },
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'lab-wrapper' },
+	            _react2.default.createElement(_reactLab2.default, { ref: function ref(node) {
+	                return lab = node;
+	              }, model: this.state.model, interactive: this.state.interactive, height: '380px',
+	              playing: true, onModelLoad: this.handleModelLoad, embeddableSrc: '../lab/embeddable.html' }),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'lab-ui' },
+	              _react2.default.createElement(_newAtomBin2.default, { showAtom0: this.state.showNewAtom0, showAtom1: this.state.showNewAtom1, showAtom2: this.state.showNewAtom2 }),
+	              freezeButton,
+	              _react2.default.createElement(_deleteForever2.default, { className: 'delete-icon', style: { width: 45, height: 50, opacity: deleteOpacity } })
+	            )
+	          ),
+	          authoringPanel
+	        )
 	      );
 	    }
 	  }]);
@@ -32928,17 +32993,471 @@
 /* 666 */,
 /* 667 */,
 /* 668 */,
-/* 669 */,
-/* 670 */,
-/* 671 */,
-/* 672 */,
-/* 673 */,
-/* 674 */,
-/* 675 */,
-/* 676 */,
-/* 677 */,
-/* 678 */,
-/* 679 */,
+/* 669 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _shouldUpdate = __webpack_require__(670);
+
+	var _shouldUpdate2 = _interopRequireDefault(_shouldUpdate);
+
+	var _shallowEqual = __webpack_require__(639);
+
+	var _shallowEqual2 = _interopRequireDefault(_shallowEqual);
+
+	var _createHelper = __webpack_require__(671);
+
+	var _createHelper2 = _interopRequireDefault(_createHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var pure = (0, _shouldUpdate2.default)(function (props, nextProps) {
+	  return !(0, _shallowEqual2.default)(props, nextProps);
+	});
+
+	exports.default = (0, _createHelper2.default)(pure, 'pure', true, true);
+
+/***/ },
+/* 670 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _react = __webpack_require__(298);
+
+	var _createHelper = __webpack_require__(671);
+
+	var _createHelper2 = _interopRequireDefault(_createHelper);
+
+	var _createEagerFactory = __webpack_require__(674);
+
+	var _createEagerFactory2 = _interopRequireDefault(_createEagerFactory);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var shouldUpdate = function shouldUpdate(test) {
+	  return function (BaseComponent) {
+	    var factory = (0, _createEagerFactory2.default)(BaseComponent);
+	    return function (_Component) {
+	      _inherits(_class, _Component);
+
+	      function _class() {
+	        _classCallCheck(this, _class);
+
+	        return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+	      }
+
+	      _class.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
+	        return test(this.props, nextProps);
+	      };
+
+	      _class.prototype.render = function render() {
+	        return factory(this.props);
+	      };
+
+	      return _class;
+	    }(_react.Component);
+	  };
+	};
+
+	exports.default = (0, _createHelper2.default)(shouldUpdate, 'shouldUpdate');
+
+/***/ },
+/* 671 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	exports.__esModule = true;
+	var createHelper = function createHelper(func, helperName) {
+	  var setDisplayName = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+	  var noArgs = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	  if (process.env.NODE_ENV !== 'production' && setDisplayName) {
+	    var _ret = function () {
+	      /* eslint-disable global-require */
+	      var wrapDisplayName = __webpack_require__(672).default;
+	      /* eslint-enable global-require */
+
+	      if (noArgs) {
+	        return {
+	          v: function v(BaseComponent) {
+	            var Component = func(BaseComponent);
+	            Component.displayName = wrapDisplayName(BaseComponent, helperName);
+	            return Component;
+	          }
+	        };
+	      }
+
+	      return {
+	        v: function v() {
+	          for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	            args[_key] = arguments[_key];
+	          }
+
+	          if (args.length > func.length) {
+	            /* eslint-disable */
+	            console.error(
+	            /* eslint-enable */
+	            'Too many arguments passed to ' + helperName + '(). It should called ' + ('like so: ' + helperName + '(...args)(BaseComponent).'));
+	          }
+
+	          return function (BaseComponent) {
+	            var Component = func.apply(undefined, args)(BaseComponent);
+	            Component.displayName = wrapDisplayName(BaseComponent, helperName);
+	            return Component;
+	          };
+	        }
+	      };
+	    }();
+
+	    if (typeof _ret === "object") return _ret.v;
+	  }
+
+	  return func;
+	};
+
+	exports.default = createHelper;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
+/* 672 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _getDisplayName = __webpack_require__(673);
+
+	var _getDisplayName2 = _interopRequireDefault(_getDisplayName);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var wrapDisplayName = function wrapDisplayName(BaseComponent, hocName) {
+	  return hocName + '(' + (0, _getDisplayName2.default)(BaseComponent) + ')';
+	};
+
+	exports.default = wrapDisplayName;
+
+/***/ },
+/* 673 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	var getDisplayName = function getDisplayName(Component) {
+	  if (typeof Component === 'string') {
+	    return Component;
+	  }
+
+	  if (!Component) {
+	    return undefined;
+	  }
+
+	  return Component.displayName || Component.name || 'Component';
+	};
+
+	exports.default = getDisplayName;
+
+/***/ },
+/* 674 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _createEagerElementUtil = __webpack_require__(675);
+
+	var _createEagerElementUtil2 = _interopRequireDefault(_createEagerElementUtil);
+
+	var _isReferentiallyTransparentFunctionComponent = __webpack_require__(676);
+
+	var _isReferentiallyTransparentFunctionComponent2 = _interopRequireDefault(_isReferentiallyTransparentFunctionComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var createFactory = function createFactory(type) {
+	  var isReferentiallyTransparent = (0, _isReferentiallyTransparentFunctionComponent2.default)(type);
+	  return function (p, c) {
+	    return (0, _createEagerElementUtil2.default)(false, isReferentiallyTransparent, type, p, c);
+	  };
+	};
+
+	exports.default = createFactory;
+
+/***/ },
+/* 675 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var createEagerElementUtil = function createEagerElementUtil(hasKey, isReferentiallyTransparent, type, props, children) {
+	  if (!hasKey && isReferentiallyTransparent) {
+	    if (children) {
+	      return type(_extends({}, props, { children: children }));
+	    }
+	    return type(props);
+	  }
+
+	  var Component = type;
+
+	  if (children) {
+	    return _react2.default.createElement(
+	      Component,
+	      props,
+	      children
+	    );
+	  }
+
+	  return _react2.default.createElement(Component, props);
+	};
+
+	exports.default = createEagerElementUtil;
+
+/***/ },
+/* 676 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _isClassComponent = __webpack_require__(677);
+
+	var _isClassComponent2 = _interopRequireDefault(_isClassComponent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var isReferentiallyTransparentFunctionComponent = function isReferentiallyTransparentFunctionComponent(Component) {
+	  return Boolean(typeof Component === 'function' && !(0, _isClassComponent2.default)(Component) && !Component.defaultProps && !Component.contextTypes && !Component.propTypes);
+	};
+
+	exports.default = isReferentiallyTransparentFunctionComponent;
+
+/***/ },
+/* 677 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	var isClassComponent = function isClassComponent(Component) {
+	  return Boolean(Component && Component.prototype && typeof Component.prototype.isReactComponent === 'object');
+	};
+
+	exports.default = isClassComponent;
+
+/***/ },
+/* 678 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _SvgIcon = __webpack_require__(679);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _SvgIcon2.default;
+
+/***/ },
+/* 679 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SvgIcon = function (_Component) {
+	  (0, _inherits3.default)(SvgIcon, _Component);
+
+	  function SvgIcon() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, SvgIcon);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = SvgIcon.__proto__ || (0, _getPrototypeOf2.default)(SvgIcon)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false
+	    }, _this.handleMouseLeave = function (event) {
+	      _this.setState({ hovered: false });
+	      _this.props.onMouseLeave(event);
+	    }, _this.handleMouseEnter = function (event) {
+	      _this.setState({ hovered: true });
+	      _this.props.onMouseEnter(event);
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(SvgIcon, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          children = _props.children,
+	          color = _props.color,
+	          hoverColor = _props.hoverColor,
+	          onMouseEnter = _props.onMouseEnter,
+	          onMouseLeave = _props.onMouseLeave,
+	          style = _props.style,
+	          viewBox = _props.viewBox,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['children', 'color', 'hoverColor', 'onMouseEnter', 'onMouseLeave', 'style', 'viewBox']);
+	      var _context$muiTheme = this.context.muiTheme,
+	          svgIcon = _context$muiTheme.svgIcon,
+	          prepareStyles = _context$muiTheme.prepareStyles;
+
+
+	      var offColor = color ? color : 'currentColor';
+	      var onColor = hoverColor ? hoverColor : offColor;
+
+	      var mergedStyles = (0, _simpleAssign2.default)({
+	        display: 'inline-block',
+	        color: svgIcon.color,
+	        fill: this.state.hovered ? onColor : offColor,
+	        height: 24,
+	        width: 24,
+	        userSelect: 'none',
+	        transition: _transitions2.default.easeOut()
+	      }, style);
+
+	      return _react2.default.createElement(
+	        'svg',
+	        (0, _extends3.default)({}, other, {
+	          onMouseEnter: this.handleMouseEnter,
+	          onMouseLeave: this.handleMouseLeave,
+	          style: prepareStyles(mergedStyles),
+	          viewBox: viewBox
+	        }),
+	        children
+	      );
+	    }
+	  }]);
+	  return SvgIcon;
+	}(_react.Component);
+
+	SvgIcon.muiName = 'SvgIcon';
+	SvgIcon.defaultProps = {
+	  onMouseEnter: function onMouseEnter() {},
+	  onMouseLeave: function onMouseLeave() {},
+	  viewBox: '0 0 24 24'
+	};
+	SvgIcon.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? SvgIcon.propTypes = {
+	  /**
+	   * Elements passed into the SVG Icon.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * This is the fill color of the svg icon.
+	   * If not specified, this component will default
+	   * to muiTheme.palette.textColor.
+	   */
+	  color: _react.PropTypes.string,
+	  /**
+	   * This is the icon color when the mouse hovers over the icon.
+	   */
+	  hoverColor: _react.PropTypes.string,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * Allows you to redefine what the coordinates
+	   * without units mean inside an svg element. For example,
+	   * if the SVG element is 500 (width) by 200 (height), and you
+	   * pass viewBox="0 0 50 20", this means that the coordinates inside
+	   * the svg will go from the top left corner (0,0) to bottom right (50,20)
+	   * and each unit will be worth 10px.
+	   */
+	  viewBox: _react.PropTypes.string
+	} : void 0;
+	exports.default = SvgIcon;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
 /* 680 */,
 /* 681 */,
 /* 682 */,
@@ -35066,11 +35585,12 @@
 /* 740 */,
 /* 741 */,
 /* 742 */,
-/* 743 */
+/* 743 */,
+/* 744 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(744);
+	var defaultClickRejectionStrategy = __webpack_require__(745);
 
 	var alreadyInjected = false;
 
@@ -35092,14 +35612,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(745)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(746)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 744 */
+/* 745 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -35110,7 +35630,7 @@
 
 
 /***/ },
-/* 745 */
+/* 746 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35138,10 +35658,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(746);
+	var TouchEventUtils = __webpack_require__(747);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(747);
+	var keyOf = __webpack_require__(748);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -35287,7 +35807,7 @@
 
 
 /***/ },
-/* 746 */
+/* 747 */
 /***/ function(module, exports) {
 
 	/**
@@ -35335,7 +35855,7 @@
 
 
 /***/ },
-/* 747 */
+/* 748 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -35374,7 +35894,6 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 748 */,
 /* 749 */,
 /* 750 */,
 /* 751 */,
@@ -35386,13 +35905,14 @@
 /* 757 */,
 /* 758 */,
 /* 759 */,
-/* 760 */
+/* 760 */,
+/* 761 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(761);
+	var content = __webpack_require__(762);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -35412,7 +35932,7 @@
 	}
 
 /***/ },
-/* 761 */
+/* 762 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -35426,7 +35946,9 @@
 
 
 /***/ },
-/* 762 */
+/* 763 */,
+/* 764 */,
+/* 765 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35474,7 +35996,7 @@
 	exports.default = NewAtomBin;
 
 /***/ },
-/* 763 */
+/* 766 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35487,22 +36009,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _MuiThemeProvider = __webpack_require__(475);
-
-	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
-
 	var _Slider = __webpack_require__(626);
 
 	var _Slider2 = _interopRequireDefault(_Slider);
 
-	var _reactTapEventPlugin = __webpack_require__(743);
-
-	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// Required by Material-UI library.
-	(0, _reactTapEventPlugin2.default)();
 
 	var Authoring = function Authoring(props) {
 	  var handleCheckboxChange = function handleCheckboxChange(evt) {
@@ -35554,25 +36065,21 @@
 	  });
 
 	  return _react2.default.createElement(
-	    _MuiThemeProvider2.default,
-	    null,
+	    'div',
+	    { className: 'authoring-form' },
 	    _react2.default.createElement(
-	      'div',
-	      { className: 'authoring-form' },
-	      _react2.default.createElement(
-	        'h3',
-	        null,
-	        'Authoring'
-	      ),
-	      inputs
-	    )
+	      'h3',
+	      null,
+	      'Authoring'
+	    ),
+	    inputs
 	  );
 	};
 
 	exports.default = Authoring;
 
 /***/ },
-/* 764 */
+/* 767 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -35581,15 +36088,15 @@
 	  value: true
 	});
 
-	var _interactive = __webpack_require__(765);
+	var _interactive = __webpack_require__(768);
 
 	var _interactive2 = _interopRequireDefault(_interactive);
 
-	var _model = __webpack_require__(766);
+	var _model = __webpack_require__(769);
 
 	var _model2 = _interopRequireDefault(_model);
 
-	var _emptyModel = __webpack_require__(767);
+	var _emptyModel = __webpack_require__(770);
 
 	var _emptyModel2 = _interopRequireDefault(_emptyModel);
 
@@ -35602,7 +36109,7 @@
 	};
 
 /***/ },
-/* 765 */
+/* 768 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -35620,7 +36127,7 @@
 	};
 
 /***/ },
-/* 766 */
+/* 769 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -35814,7 +36321,7 @@
 	};
 
 /***/ },
-/* 767 */
+/* 770 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -35936,7 +36443,7 @@
 	};
 
 /***/ },
-/* 768 */
+/* 771 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -36035,13 +36542,50 @@
 	};
 
 /***/ },
-/* 769 */
+/* 772 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _pure = __webpack_require__(669);
+
+	var _pure2 = _interopRequireDefault(_pure);
+
+	var _SvgIcon = __webpack_require__(678);
+
+	var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ActionDeleteForever = function ActionDeleteForever(props) {
+	  return _react2.default.createElement(
+	    _SvgIcon2.default,
+	    props,
+	    _react2.default.createElement('path', { d: 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z' })
+	  );
+	};
+	ActionDeleteForever = (0, _pure2.default)(ActionDeleteForever);
+	ActionDeleteForever.displayName = 'ActionDeleteForever';
+	ActionDeleteForever.muiName = 'SvgIcon';
+
+	exports.default = ActionDeleteForever;
+
+/***/ },
+/* 773 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(770);
+	var content = __webpack_require__(774);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -36061,7 +36605,7 @@
 	}
 
 /***/ },
-/* 770 */
+/* 774 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -36069,7 +36613,7 @@
 
 
 	// module
-	exports.push([module.id, ".new-atom-bin {\n  position: absolute;\n  top: calc(50% - 138px);\n  left: calc(50% - 253px);\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.new-atom-bin .new-atom.new-atom-0 div {\n  background: -webkit-radial-gradient(8px 8px circle, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.new-atom-bin .new-atom.new-atom-1 div {\n  background: -webkit-radial-gradient(8px 8px circle, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n.authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 50px;\n  color: #444;\n}\n.authoring-form h3 {\n  padding-bottom: 10px;\n}\nbutton {\n  position: absolute;\n  z-index: 3;\n  bottom: calc(50% - 160px);\n  left: calc(50% - 255px);\n  padding: 4px;\n}\n", ""]);
+	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 50px;\n  color: #444;\n}\n.authoring-form h3 {\n  padding-bottom: 10px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: -webkit-radial-gradient(8px 8px circle, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: -webkit-radial-gradient(8px 8px circle, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n.lab-ui button {\n  position: absolute;\n  top: -60px;\n  left: 20px;\n  padding: 4px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\n", ""]);
 
 	// exports
 

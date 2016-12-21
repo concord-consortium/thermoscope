@@ -29439,19 +29439,19 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(743);
+	var _reactTapEventPlugin = __webpack_require__(744);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensor = __webpack_require__(748);
+	var _sensor = __webpack_require__(749);
 
 	var _sensor2 = _interopRequireDefault(_sensor);
 
-	var _sensorLabquest2Interface = __webpack_require__(755);
+	var _sensorLabquest2Interface = __webpack_require__(756);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(760);
+	__webpack_require__(761);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37039,11 +37039,15 @@
 
 	var _labModel2 = _interopRequireDefault(_labModel);
 
-	var _models = __webpack_require__(732);
+	var _meter = __webpack_require__(732);
+
+	var _meter2 = _interopRequireDefault(_meter);
+
+	var _models = __webpack_require__(733);
 
 	var _models2 = _interopRequireDefault(_models);
 
-	__webpack_require__(741);
+	__webpack_require__(742);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37074,6 +37078,7 @@
 	    _this.handleMaterialTypeChange = _this.handleMaterialTypeChange.bind(_this);
 	    _this.handleMaterialIdxChange = _this.handleMaterialIdxChange.bind(_this);
 	    _this.props.sensor.on('statusReceived', _this.liveDataHandler.bind(_this));
+	    _this.onMeterChange = _this.onMeterChange.bind(_this);
 	    return _this;
 	  }
 
@@ -37101,6 +37106,11 @@
 	      }
 	    }
 	  }, {
+	    key: 'onMeterChange',
+	    value: function onMeterChange(value) {
+	      this.setState({ temperature: value });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _state = this.state,
@@ -37108,13 +37118,17 @@
 	          materialType = _state.materialType,
 	          materialIdx = _state.materialIdx,
 	          liveData = _state.liveData;
-	      var embeddableSrc = this.props.embeddableSrc;
+	      var _props = this.props,
+	          embeddableSrc = _props.embeddableSrc,
+	          showMeter = _props.showMeter,
+	          meterSegments = _props.meterSegments;
 
 	      var model = _models2.default[materialType][materialIdx];
 
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'thermoscope' },
+	        showMeter && _react2.default.createElement(_meter2.default, { minValue: _models.MIN_TEMP, maxValue: _models.MAX_TEMP, currentValue: temperature, background: '#444', segments: meterSegments, onMeterChange: this.onMeterChange }),
 	        _react2.default.createElement(_labModel2.default, { temperature: temperature,
 	          model: model.json,
 	          tempScale: model.tempScale,
@@ -53021,37 +53035,313 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Slider = __webpack_require__(626);
+
+	var _Slider2 = _interopRequireDefault(_Slider);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Meter = function (_PureComponent) {
+	  _inherits(Meter, _PureComponent);
+
+	  function Meter(props) {
+	    _classCallCheck(this, Meter);
+
+	    var _this = _possibleConstructorReturn(this, (Meter.__proto__ || Object.getPrototypeOf(Meter)).call(this, props));
+
+	    _this.handleSliderChange = _this.handleSliderChange.bind(_this);
+	    _this.startDragging = _this.startDragging.bind(_this);
+	    _this.onDrag = _this.onDrag.bind(_this);
+	    _this.finishDragging = _this.finishDragging.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(Meter, [{
+	    key: 'scaleValue',
+	    value: function scaleValue(val) {
+	      var _props = this.props,
+	          minValue = _props.minValue,
+	          maxValue = _props.maxValue;
+
+	      var range = maxValue - minValue;
+	      var scaledValue = minValue != 0 ? val - minValue : val;
+	      return scaledValue / range;
+	    }
+	  }, {
+	    key: 'absoluteValue',
+	    value: function absoluteValue(val) {
+	      var _props2 = this.props,
+	          minValue = _props2.minValue,
+	          maxValue = _props2.maxValue;
+
+	      var range = maxValue - minValue;
+	      var absValue = Math.round(val * range);
+	      absValue = minValue != 0 ? absValue + minValue : absValue;
+	      return absValue;
+	    }
+	  }, {
+	    key: 'handleSliderChange',
+	    value: function handleSliderChange(event, value) {
+	      this.setMeterValue(value);
+	    }
+	  }, {
+	    key: 'setMeterValue',
+	    value: function setMeterValue(val) {
+	      // sanity check, clamp the value between 0 and 1
+	      val = val < 0 ? 0 : val > 1 ? 1 : val;
+	      if (this.props.onMeterChange) {
+	        this.props.onMeterChange(this.absoluteValue(val));
+	      }
+	    }
+	  }, {
+	    key: 'describeArc',
+	    value: function describeArc(cx, cy, radius, angleStart) {
+	      var angleEnd = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+	      // arc draws backwards, so start is the offset point, end is at 0%
+	      var start = this.getPoint(cx, cy, radius, angleStart);
+	      var end = this.getPoint(cx, cy, radius, angleEnd);
+	      var d = ["M", start.x, start.y, "A", radius, radius, 0, 0, 0, end.x, end.y].join(" ");
+	      return d;
+	    }
+	  }, {
+	    key: 'getPoint',
+	    value: function getPoint(cx, cy, r, angle) {
+	      var rad = (angle - 180) * Math.PI / 180;
+	      var dx = cx + r * Math.cos(rad);
+	      var dy = cy + r * Math.sin(rad);
+	      var point = { x: dx, y: dy };
+	      return point;
+	    }
+	  }, {
+	    key: 'drawMeterLine',
+	    value: function drawMeterLine(cx, cy, length, angle, pointerWidth) {
+	      var end = this.getPoint(cx, cy, length, angle);
+	      var d = ["M", cx, cy, "L", end.x, end.y, "Z"].join(" ");
+	      return d;
+	    }
+	  }, {
+	    key: 'generateSegments',
+	    value: function generateSegments() {
+	      var _props3 = this.props,
+	          cx = _props3.cx,
+	          cy = _props3.cy,
+	          r = _props3.r,
+	          segments = _props3.segments,
+	          arcWidth = _props3.arcWidth;
+
+	      var arcSegments = [];
+	      var width = r / 6;
+
+	      for (var i = 0; i < segments.length; i++) {
+	        var segmentId = "arc-s" + i;
+	        var angleStart = segments[i].end;
+	        var angleEnd = segments[i].start;
+	        arcSegments.push(_react2.default.createElement('path', { id: segmentId, key: segmentId, fill: 'none', stroke: segments[i].color, strokeWidth: width, d: this.describeArc(cx, cy, r - width / 2 - arcWidth, angleStart, angleEnd) }));
+	      }
+	      return arcSegments;
+	    }
+	  }, {
+	    key: 'startDragging',
+	    value: function startDragging(event) {
+	      if (this.props.draggable) {
+	        var targetRect = this.meter.getBoundingClientRect(),
+	            centerX = targetRect.width / 2 + targetRect.left,
+	            min = centerX - this.props.r,
+	            max = centerX + this.props.r,
+	            clampedX = this.clampPosition(event.clientX, min, max);
+	        this.updateMeterPosition(clampedX, min);
+	      }
+
+	      document.addEventListener('mousemove', this.onDrag);
+	      document.addEventListener('mouseup', this.finishDragging);
+
+	      event.preventDefault();
+	    }
+	  }, {
+	    key: 'clampPosition',
+	    value: function clampPosition(pos, min, max) {
+	      return pos < min ? min : pos > max ? max : pos;
+	    }
+	  }, {
+	    key: 'updateMeterPosition',
+	    value: function updateMeterPosition(pos, min) {
+	      var r = this.props.r,
+	          val = (pos - min) / (r * 2);
+	      this.setMeterValue(val);
+	    }
+	  }, {
+	    key: 'onDrag',
+	    value: function onDrag(event) {
+	      if (this.props.draggable) {
+	        var targetRect = this.meter.getBoundingClientRect(),
+	            centerX = targetRect.width / 2 + targetRect.left,
+	            min = centerX - this.props.r,
+	            max = centerX + this.props.r,
+	            clampedX = this.clampPosition(event.clientX, min, max);
+	        this.updateMeterPosition(clampedX, min);
+	      }
+	    }
+	  }, {
+	    key: 'finishDragging',
+	    value: function finishDragging(event) {
+	      document.removeEventListener('mousemove', this.onDrag);
+	      document.removeEventListener('mouseup', this.finishDragging);
+	      event.preventDefault();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _props4 = this.props,
+	          cx = _props4.cx,
+	          cy = _props4.cy,
+	          r = _props4.r,
+	          showSlider = _props4.showSlider,
+	          segments = _props4.segments,
+	          background = _props4.background,
+	          needleColor = _props4.needleColor,
+	          arcWidth = _props4.arcWidth,
+	          needleWidth = _props4.needleWidth,
+	          currentValue = _props4.currentValue;
+
+
+	      var meterValue = this.scaleValue(currentValue);
+	      var angle = 180 * meterValue;
+	      var meterLineLength = r - 10;
+	      var sliderWidth = r * 2 + "px";
+	      var sliderStyle = { width: sliderWidth, margin: 'auto' };
+	      var arcSegments = segments ? _react2.default.createElement(
+	        'g',
+	        { className: 'segments' },
+	        this.generateSegments()
+	      ) : undefined;
+	      var backgroundArc = background ? _react2.default.createElement('path', { id: 'arc-bg', fill: 'none', stroke: background, strokeWidth: 2 * r - arcWidth, d: this.describeArc(cx, cy, 1, 180) }) : undefined;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'meter' },
+	        _react2.default.createElement(
+	          'svg',
+	          {
+	            onTouchStart: this.startDragging,
+	            onMouseDown: this.startDragging,
+	            ref: function ref(m) {
+	              _this2.meter = m;
+	            } },
+	          backgroundArc,
+	          arcSegments,
+	          _react2.default.createElement('path', { id: 'arc-incomplete', fill: 'none', stroke: '#cccccc', strokeWidth: arcWidth, d: this.describeArc(cx, cy, r, 180) }),
+	          _react2.default.createElement('path', { id: 'arc', fill: 'none', stroke: '#446688', strokeWidth: arcWidth, d: this.describeArc(cx, cy, r, angle) }),
+	          _react2.default.createElement('path', { id: 'meterLine', fill: 'none', stroke: '#000', strokeWidth: needleWidth, d: this.drawMeterLine(cx, cy, meterLineLength, angle, 1) }),
+	          _react2.default.createElement('path', { id: 'meterLine', fill: 'none', stroke: needleColor, strokeWidth: needleWidth - 1, d: this.drawMeterLine(cx, cy, meterLineLength, angle, 1) }),
+	          _react2.default.createElement('circle', { id: 'meterLineBase', cx: cx, cy: cy, r: '12', stroke: 'black', strokeWidth: '1', fill: needleColor })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'slider' },
+	          showSlider && _react2.default.createElement(_Slider2.default, { min: 0, max: 1, value: meterValue,
+	            style: sliderStyle,
+	            name: 'temperature',
+	            onChange: this.handleSliderChange })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Meter;
+	}(_react.PureComponent);
+
+	exports.default = Meter;
+
+
+	Meter.PropTypes = {
+	  cx: _react2.default.PropTypes.object.number,
+	  cy: _react2.default.PropTypes.number,
+	  r: _react2.default.PropTypes.number,
+	  arcWidth: _react2.default.PropTypes.number,
+	  needleWidth: _react2.default.PropTypes.number,
+	  minValue: _react2.default.PropTypes.number,
+	  maxValue: _react2.default.PropTypes.number,
+	  currentValue: _react2.default.PropTypes.number,
+	  showSlider: _react2.default.PropTypes.bool,
+	  segments: _react2.default.PropTypes.array,
+	  background: _react2.default.PropTypes.string,
+	  needleColor: _react2.default.PropTypes.string,
+	  draggable: _react2.default.PropTypes.bool,
+	  onMeterChange: _react2.default.PropTypes.func
+	};
+
+	Meter.defaultProps = {
+	  cx: 150,
+	  cy: 150,
+	  r: 100,
+	  arcWidth: 4,
+	  needleWidth: 3,
+	  minValue: 0,
+	  maxValue: 100,
+	  currentValue: 30,
+	  showSlider: false,
+	  segments: undefined,
+	  background: undefined,
+	  needleColor: "#ccc",
+	  draggable: true
+	};
+
+/***/ },
+/* 733 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 	exports.MAX_TEMP = exports.MIN_TEMP = undefined;
 
-	var _solid = __webpack_require__(733);
+	var _solid = __webpack_require__(734);
 
 	var _solid2 = _interopRequireDefault(_solid);
 
-	var _solid3 = __webpack_require__(734);
+	var _solid3 = __webpack_require__(735);
 
 	var _solid4 = _interopRequireDefault(_solid3);
 
-	var _solid5 = __webpack_require__(735);
+	var _solid5 = __webpack_require__(736);
 
 	var _solid6 = _interopRequireDefault(_solid5);
 
-	var _liquid = __webpack_require__(736);
+	var _liquid = __webpack_require__(737);
 
 	var _liquid2 = _interopRequireDefault(_liquid);
 
-	var _liquid3 = __webpack_require__(737);
+	var _liquid3 = __webpack_require__(738);
 
 	var _liquid4 = _interopRequireDefault(_liquid3);
 
-	var _liquid5 = __webpack_require__(738);
+	var _liquid5 = __webpack_require__(739);
 
 	var _liquid6 = _interopRequireDefault(_liquid5);
 
-	var _gas = __webpack_require__(739);
+	var _gas = __webpack_require__(740);
 
 	var _gas2 = _interopRequireDefault(_gas);
 
-	var _gas3 = __webpack_require__(740);
+	var _gas3 = __webpack_require__(741);
 
 	var _gas4 = _interopRequireDefault(_gas3);
 
@@ -53134,7 +53424,7 @@
 	};
 
 /***/ },
-/* 733 */
+/* 734 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -53758,7 +54048,7 @@
 	};
 
 /***/ },
-/* 734 */
+/* 735 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -54407,7 +54697,7 @@
 	};
 
 /***/ },
-/* 735 */
+/* 736 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -56752,7 +57042,7 @@
 	};
 
 /***/ },
-/* 736 */
+/* 737 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -57568,7 +57858,7 @@
 	};
 
 /***/ },
-/* 737 */
+/* 738 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -59327,7 +59617,7 @@
 	};
 
 /***/ },
-/* 738 */
+/* 739 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -61672,7 +61962,7 @@
 	};
 
 /***/ },
-/* 739 */
+/* 740 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -61960,7 +62250,7 @@
 	};
 
 /***/ },
-/* 740 */
+/* 741 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -62667,13 +62957,13 @@
 	};
 
 /***/ },
-/* 741 */
+/* 742 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(742);
+	var content = __webpack_require__(743);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -62693,7 +62983,7 @@
 	}
 
 /***/ },
-/* 742 */
+/* 743 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -62701,17 +62991,17 @@
 
 
 	// module
-	exports.push([module.id, ".thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
+	exports.push([module.id, ".thermoscope {\n  position: relative;\n}\n.thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n.thermoscope .meter {\n  position: absolute;\n  top: -220px;\n  left: 50px;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 743 */
+/* 744 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(744);
+	var defaultClickRejectionStrategy = __webpack_require__(745);
 
 	var alreadyInjected = false;
 
@@ -62733,14 +63023,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(745)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(746)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 744 */
+/* 745 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -62751,7 +63041,7 @@
 
 
 /***/ },
-/* 745 */
+/* 746 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -62779,10 +63069,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(746);
+	var TouchEventUtils = __webpack_require__(747);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(747);
+	var keyOf = __webpack_require__(748);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -62928,7 +63218,7 @@
 
 
 /***/ },
-/* 746 */
+/* 747 */
 /***/ function(module, exports) {
 
 	/**
@@ -62976,7 +63266,7 @@
 
 
 /***/ },
-/* 747 */
+/* 748 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -63015,7 +63305,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 748 */
+/* 749 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -63034,15 +63324,15 @@
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
-	var _LinearProgress = __webpack_require__(749);
+	var _LinearProgress = __webpack_require__(750);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
-	var _RaisedButton = __webpack_require__(751);
+	var _RaisedButton = __webpack_require__(752);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
-	__webpack_require__(753);
+	__webpack_require__(754);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63064,6 +63354,7 @@
 	    _this.connectedSensor = _this.props.sensor;
 	    _this.handleIPAddressChange = _this.handleIPAddressChange.bind(_this);
 	    _this.connect = _this.connect.bind(_this);
+	    _this.enterkey = _this.enterkey.bind(_this);
 	    _this.toggleDisplay = _this.toggleDisplay.bind(_this);
 	    return _this;
 	  }
@@ -63074,8 +63365,20 @@
 	      this.setState({ ipAddress: event.target.value });
 	    }
 	  }, {
+	    key: 'enterkey',
+	    value: function enterkey(event, value) {
+	      if (event.keyCode == 13) {
+	        this.connectSensor();
+	      }
+	    }
+	  }, {
 	    key: 'connect',
 	    value: function connect(event, value) {
+	      this.connectSensor();
+	    }
+	  }, {
+	    key: 'connectSensor',
+	    value: function connectSensor() {
 	      if (!this.state.connected) {
 	        this.setState({ connecting: true });
 	        this.connectedSensor.connect(this.state.ipAddress);
@@ -63116,7 +63419,7 @@
 	        showDetails && _react2.default.createElement(
 	          'div',
 	          { className: 'sensorDetails' },
-	          _react2.default.createElement(_TextField2.default, { hintText: 'IP Address', ref: 'ip', type: 'text', id: 'ipAddress', onChange: this.handleIPAddressChange }),
+	          _react2.default.createElement(_TextField2.default, { hintText: 'IP Address', ref: 'ip', type: 'text', id: 'ipAddress', onChange: this.handleIPAddressChange, onKeyDown: this.enterkey }),
 	          _react2.default.createElement(
 	            _RaisedButton2.default,
 	            { id: 'connect', onClick: this.connect },
@@ -63139,7 +63442,7 @@
 	exports.default = Sensor;
 
 /***/ },
-/* 749 */
+/* 750 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -63149,7 +63452,7 @@
 	});
 	exports.default = undefined;
 
-	var _LinearProgress = __webpack_require__(750);
+	var _LinearProgress = __webpack_require__(751);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
@@ -63158,7 +63461,7 @@
 	exports.default = _LinearProgress2.default;
 
 /***/ },
-/* 750 */
+/* 751 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -63389,7 +63692,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 751 */
+/* 752 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -63399,7 +63702,7 @@
 	});
 	exports.default = undefined;
 
-	var _RaisedButton = __webpack_require__(752);
+	var _RaisedButton = __webpack_require__(753);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -63408,7 +63711,7 @@
 	exports.default = _RaisedButton2.default;
 
 /***/ },
-/* 752 */
+/* 753 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -63889,13 +64192,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 753 */
+/* 754 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(754);
+	var content = __webpack_require__(755);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -63915,7 +64218,7 @@
 	}
 
 /***/ },
-/* 754 */
+/* 755 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -63929,7 +64232,7 @@
 
 
 /***/ },
-/* 755 */
+/* 756 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -63949,9 +64252,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(756);
+	var RSVP = __webpack_require__(757);
 
-	var EventEmitter2 = __webpack_require__(759).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(760).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -64284,7 +64587,7 @@
 
 
 /***/ },
-/* 756 */
+/* 757 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -66671,7 +66974,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(758);
+	    var vertx = __webpack_require__(759);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -66787,10 +67090,10 @@
 
 	})));
 	//# sourceMappingURL=rsvp.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(757).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(758).setImmediate, (function() { return this; }())))
 
 /***/ },
-/* 757 */
+/* 758 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(294).nextTick;
@@ -66869,16 +67172,16 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(757).setImmediate, __webpack_require__(757).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(758).setImmediate, __webpack_require__(758).clearImmediate))
 
 /***/ },
-/* 758 */
+/* 759 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 759 */
+/* 760 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -67606,13 +67909,13 @@
 
 
 /***/ },
-/* 760 */
+/* 761 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(761);
+	var content = __webpack_require__(762);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -67632,7 +67935,7 @@
 	}
 
 /***/ },
-/* 761 */
+/* 762 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
