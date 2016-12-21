@@ -82,54 +82,44 @@ export default class Meter extends PureComponent {
 
   startDragging(event) {
     if (this.props.draggable) {
-      let targetRect = event.currentTarget.getBoundingClientRect();
-      let centerX = (targetRect.width / 2) + targetRect.left;
-      this.setState({ centerX: centerX, minX: centerX - this.props.r, maxX: centerX + this.props.r });
-      let clampedX = this.checkPosition(event.clientX);
-      if (clampedX) {
-        this.updateMeterPosition(clampedX);
-      }
+      let targetRect = this.meter.getBoundingClientRect(),
+          centerX = (targetRect.width / 2) + targetRect.left,
+          min = centerX - this.props.r,
+          max = centerX + this.props.r,
+          clampedX = this.clampPosition(event.clientX, min, max);
+      this.updateMeterPosition(clampedX, min);
     }
+
+    document.addEventListener('mousemove', this.onDrag);
+    document.addEventListener('mouseup', this.finishDragging);
+
     event.preventDefault();
   }
-  checkPosition(pos) {
-    if (!this.state) return false;
-    let {centerX, minX, maxX} = this.state;
-    let r = this.props.r;
-    let padding = 10;
 
-    if (centerX && pos > (minX - padding) && pos < (maxX + padding)) {
-      // clamp position for meter controls while allowing a slight padded tolerance on dragging
-      let clampedPos = pos < minX ? minX : pos > maxX ? maxX : pos;
-      return clampedPos;
-    } else if (centerX) {
-      // was dragging, but now out of bounds
-      this.endDrag();
-    }
-    // not dragging
-    return false;
+  clampPosition(pos, min, max) {
+    return pos < min ? min : pos > max ? max : pos;
   }
 
-  updateMeterPosition(pos) {
-    let minX = this.state.minX;
-    let r = this.props.r;
-    let val = (pos - minX) / (r * 2);
+  updateMeterPosition(pos, min) {
+    let r = this.props.r,
+        val = (pos - min) / (r * 2);
     this.setMeterValue(val);
   }
 
   onDrag(event) {
-    if (this.props.draggable && this.state && this.state.centerX) {
-      let clampedX = this.checkPosition(event.clientX);
-      if (clampedX) {
-        this.updateMeterPosition(clampedX);
-      }
+    if (this.props.draggable) {
+      let targetRect = this.meter.getBoundingClientRect(),
+          centerX = (targetRect.width / 2) + targetRect.left,
+          min = centerX - this.props.r,
+          max = centerX + this.props.r,
+          clampedX = this.clampPosition(event.clientX, min, max);
+      this.updateMeterPosition(clampedX, min);
     }
   }
-  endDrag() {
-    this.setState({centerX: undefined, minX: undefined, maxX: undefined});
-  }
+
   finishDragging(event) {
-    this.endDrag();
+    document.removeEventListener('mousemove', this.onDrag)
+    document.removeEventListener('mouseup', this.finishDragging)
     event.preventDefault();
   }
 
@@ -155,11 +145,7 @@ export default class Meter extends PureComponent {
         <svg
           onTouchStart={this.startDragging}
           onMouseDown={this.startDragging}
-          onTouchMove={this.onDrag}
-          onMouseMove={this.onDrag}
-          onMouseLeave={this.finishDragging}
-          onTouchEnd={this.finishDragging}
-          onMouseUp={this.finishDragging}>
+          ref={(m) => { this.meter = m }}>
           {backgroundArc}
           {arcSegments}
           <path id="arc-incomplete" fill="none" stroke="#cccccc" strokeWidth={arcWidth} d={this.describeArc(cx, cy, r, 180)} />
