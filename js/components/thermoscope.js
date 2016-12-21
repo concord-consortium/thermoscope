@@ -53,30 +53,12 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
-    const {embeddableSrc} = this.props;
+    const {embeddableSrc, showMeter, meterSegments} = this.props;
     const model = models[materialType][materialIdx];
-
-    let meterSegments = [
-      {
-        color: "#800000",
-        start: 0,
-        end: 45
-      },
-      {
-        color: "#a0a000",
-        start: 45,
-        end: 145
-      },
-      {
-        color: "#008000",
-        start: 145,
-        end: 180
-      }
-    ];
 
     return (
       <div className="thermoscope">
-        <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={this.onMeterChange}/>
+        {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={this.onMeterChange} />}
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={model.tempScale}

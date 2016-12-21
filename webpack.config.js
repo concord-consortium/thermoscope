@@ -5,7 +5,8 @@ module.exports = {
   entry: {
     'app': './js/index.js',
     'particle-modeler': './js/particle-modeler/index.js',
-    'three-thermoscope':'./js/three-thermoscope/index.js'
+    'three-thermoscope': './js/three-thermoscope/index.js',
+    'meter':'./js/meter/index.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),
