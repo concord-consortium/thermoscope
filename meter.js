@@ -29507,7 +29507,6 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'thermoscope' },
-	        showMeter && _react2.default.createElement(_meter2.default, { minValue: _models.MIN_TEMP, maxValue: _models.MAX_TEMP, currentValue: temperature, background: '#444', segments: meterSegments, onMeterChange: this.onMeterChange }),
 	        _react2.default.createElement(_labModel2.default, { temperature: temperature,
 	          model: model.json,
 	          tempScale: model.tempScale,
@@ -29515,6 +29514,7 @@
 	          width: MODEL_WIDTH, height: MODEL_HEIGHT,
 	          embeddableSrc: embeddableSrc
 	        }),
+	        showMeter && _react2.default.createElement(_meter2.default, { minValue: _models.MIN_TEMP, maxValue: _models.MAX_TEMP, currentValue: temperature, background: '#444', segments: meterSegments, onMeterChange: this.onMeterChange }),
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -45537,17 +45537,19 @@
 	    key: 'startDragging',
 	    value: function startDragging(event) {
 	      if (this.props.draggable) {
+	        var xPos = event.clientX ? event.clientX : event.touches[0].clientX;
+
 	        var targetRect = this.meter.getBoundingClientRect(),
 	            centerX = targetRect.width / 2 + targetRect.left,
 	            min = centerX - this.props.r,
 	            max = centerX + this.props.r,
-	            clampedX = this.clampPosition(event.clientX, min, max);
+	            clampedX = this.clampPosition(xPos, min, max);
 	        this.updateMeterPosition(clampedX, min);
 	      }
 
 	      document.addEventListener('mousemove', this.onDrag);
 	      document.addEventListener('mouseup', this.finishDragging);
-	      document.addEventListener('touchstart', this.onDrag);
+	      document.addEventListener('touchmove', this.onDrag);
 	      document.addEventListener('touchend', this.finishDragging);
 
 	      event.preventDefault();
@@ -45568,11 +45570,13 @@
 	    key: 'onDrag',
 	    value: function onDrag(event) {
 	      if (this.props.draggable) {
+	        var xPos = event.clientX ? event.clientX : event.touches[0].clientX;
+
 	        var targetRect = this.meter.getBoundingClientRect(),
 	            centerX = targetRect.width / 2 + targetRect.left,
 	            min = centerX - this.props.r,
 	            max = centerX + this.props.r,
-	            clampedX = this.clampPosition(event.clientX, min, max);
+	            clampedX = this.clampPosition(xPos, min, max);
 	        this.updateMeterPosition(clampedX, min);
 	      }
 	    }
@@ -45581,7 +45585,7 @@
 	    value: function finishDragging(event) {
 	      document.removeEventListener('mousemove', this.onDrag);
 	      document.removeEventListener('mouseup', this.finishDragging);
-	      document.removeEventListener('touchstart', this.onDrag);
+	      document.removeEventListener('touchmove', this.onDrag);
 	      document.removeEventListener('touchend', this.finishDragging);
 
 	      event.preventDefault();
@@ -55375,7 +55379,7 @@
 
 
 	// module
-	exports.push([module.id, ".thermoscope {\n  position: relative;\n}\n.thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n.thermoscope .meter {\n  position: absolute;\n  top: -220px;\n  left: 50px;\n}\n", ""]);
+	exports.push([module.id, ".thermoscope {\n  position: relative;\n}\n.thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
 
 	// exports
 
@@ -60329,7 +60333,7 @@
 
 
 	// module
-	exports.push([module.id, ".meter-thermoscope {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.meter-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.meter-thermoscope .meter {\n  position: absolute;\n  top: -200px;\n  left: 50px;\n}\n", ""]);
+	exports.push([module.id, ".meter-thermoscope {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.meter-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.meter-thermoscope .meter {\n  height: 150px;\n  width: 400px;\n  text-align: center;\n  margin: -30px auto 30px;\n  display: block;\n}\n", ""]);
 
 	// exports
 
