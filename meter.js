@@ -45547,6 +45547,8 @@
 
 	      document.addEventListener('mousemove', this.onDrag);
 	      document.addEventListener('mouseup', this.finishDragging);
+	      document.addEventListener('touchstart', this.onDrag);
+	      document.addEventListener('touchend', this.finishDragging);
 
 	      event.preventDefault();
 	    }
@@ -45579,6 +45581,9 @@
 	    value: function finishDragging(event) {
 	      document.removeEventListener('mousemove', this.onDrag);
 	      document.removeEventListener('mouseup', this.finishDragging);
+	      document.removeEventListener('touchstart', this.onDrag);
+	      document.removeEventListener('touchend', this.finishDragging);
+
 	      event.preventDefault();
 	    }
 	  }, {
