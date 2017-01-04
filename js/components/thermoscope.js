@@ -62,6 +62,7 @@ export default class Thermoscope extends PureComponent {
                   model={model.json}
                   tempScale={model.tempScale}
                   timeStepScale={model.timeStepScale}
+                  gravityScale={model.gravityScale}
                   width={MODEL_WIDTH} height={MODEL_HEIGHT}
                   embeddableSrc={embeddableSrc}
           />
