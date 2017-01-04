@@ -7,7 +7,9 @@ import Thermoscope from '../components/thermoscope';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import LabQuest2 from 'sensor-labquest-2-interface';
 
+import '../../css/meter.less';
 import '../../css/three-thermoscope.less';
+
 // Required by Material-UI library.
 injectTapEventPlugin();
 
@@ -19,21 +21,38 @@ export default class ThreeThermoscope extends PureComponent {
     super(props);
   }
 
-  render () {
+  render() {
+    let meterSegments = [
+      {
+        color: "#800000",
+        start: 0,
+        end: 45
+      },
+      {
+        color: "#a0a000",
+        start: 45,
+        end: 145
+      },
+      {
+        color: "#008000",
+        start: 145,
+        end: 180
+      }
+    ];
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="three-thermoscope">
           <div className="thermoscope-container">
             <div className="label">A</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html'/>
+            <Thermoscope sensor={LabQuest2} probeIndex={0} temperature={5} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments} minClamp={0} maxClamp={0.25}/>
           </div>
           <div className="thermoscope-container">
             <div className="label">B</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html'/>
+            <Thermoscope sensor={LabQuest2} probeIndex={1} temperature={30}  material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments} minClamp={0.25} maxClamp={0.8}/>
           </div>
           <div className="thermoscope-container">
             <div className="label">C</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={2} material="gas" embeddableSrc='../lab/embeddable.html'/>
+            <Thermoscope sensor={LabQuest2} probeIndex={2} temperature={50} material="gas" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments} minClamp={0.8} maxClamp={1}/>
           </div>
         </div>
       </MuiThemeProvider>
