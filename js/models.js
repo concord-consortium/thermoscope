@@ -98,10 +98,31 @@ export default {
       name: 'Uniform',
       json: uniform,
       tempScale: function (temp) {
-        return normalizeTemp(temp) * 5000 + 1500;
+        let t = normalizeTemp(temp);
+        if (t < 0.27)
+          return t * 2000 + 1000;
+        else if (t < 0.71)
+          return t * 7000;
+        else
+          return t * 7000 + 1000;
       },
       timeStepScale: function (temp) {
-        return normalizeTemp(temp) * 1.0 + 0.2;
+        return normalizeTemp(temp) * 0.3 + 0.6;
+      },
+      gravityScale: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t < 0.27)
+          return 1e-6
+        else if (t < 0.71)
+          return 3e-7
+        else
+          return 1e-8
+      },
+      coulombForcesSettings: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t > 0.27 && t < 0.71 )
+          return true
+        return false
       }
     }
   ]

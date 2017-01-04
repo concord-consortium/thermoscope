@@ -46,7 +46,7 @@ export default class OneThermoscope extends PureComponent {
           <div className="app-container">
             <div className="three-thermoscope">
               <div className="thermoscope-container">
-                <Thermoscope sensor={LabQuest2} probeIndex={0} showMaterialControls={false} material="uniform" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
+                <Thermoscope sensor={LabQuest2} probeIndex={0} temperature={5} showMaterialControls={false} material="uniform" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
               </div>
             </div>
           </div>
