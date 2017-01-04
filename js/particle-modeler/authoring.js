@@ -79,12 +79,14 @@ const Authoring = (props) => {
     for (let i = 0, ii = pairwiseUI.use.length; i < ii; i++) {
       for (let j = i, jj=pairwiseUI.use[i].length; j < jj; j++) {
         if (pairwiseUI.use[i][j]) {
+          let pair = (i+1) + "-" + (j+1);
+
           rows.push(
-            <tr>
-              <td>{i+1}-{j+1}</td>
-              <td>{pairwiseUI.use[i][j]}</td>
-              <td>{pairwiseUI.epsilon[i][j]}</td>
-              <td>{pairwiseUI.sigma[i][j]}</td>
+            <tr key={pair}>
+              <td key={"id" + pair}>{pair}</td>
+              <td key={"use" + pair}>{pairwiseUI.use[i][j]}</td>
+              <td key={"epsilon" + pair}>{pairwiseUI.epsilon[i][j]}</td>
+              <td key={"sigma" + pair}>{pairwiseUI.sigma[i][j]}</td>
             </tr>
           );
         }
@@ -92,12 +94,14 @@ const Authoring = (props) => {
     }
     return (
       <table>
-        <tr>
-          <th>Pair</th>
-          <th>Use?</th>
-          <th>Epsilon</th>
-          <th>Sigma</th>
-        </tr>
+        <thead>
+          <tr>
+            <th>Pair</th>
+            <th>Use?</th>
+            <th>Epsilon</th>
+            <th>Sigma</th>
+          </tr>
+        </thead>
         <tbody>
           { rows }
         </tbody>
