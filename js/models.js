@@ -6,6 +6,7 @@ import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
 import gas1 from '../models/gas-1.json';
 import gas2 from '../models/gas-2.json';
+import uniform from '../models/uniform.json';
 
 export const MIN_TEMP = -6; // *C
 export const MAX_TEMP = 60; // *C
@@ -89,6 +90,18 @@ export default {
       },
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.65 + 0.03;
+      }
+    }
+  ],
+  uniform: [
+    {
+      name: 'Uniform',
+      json: uniform,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 5000 + 1500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 1.0 + 0.2;
       }
     }
   ]
