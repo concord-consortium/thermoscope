@@ -110,5 +110,143 @@ module.exports = {
     value: 30,
     min: 10,
     max: 1000
+  },
+
+  pair11Forces: {
+    element1: 0,
+    element2: 0,
+    property: "use",
+    value: false
+  },
+  pair11Epsilon: {
+    element1: 0,
+    element2: 0,
+    property: "epsilon",
+    value: -0.05,
+    min: -0.5,
+    max: 0
+  },
+  pair11Sigma: {
+    element1: 0,
+    element2: 0,
+    property: "sigma",
+    value: 0.1915,
+    min: 0.01,
+    max: 0.5
+  },
+
+  pair12Forces: {
+    element1: 0,
+    element2: 1,
+    property: "use",
+    value: false
+  },
+  pair12Epsilon: {
+    element1: 0,
+    element2: 1,
+    property: "epsilon",
+    value: -0.05,
+    min: -0.5,
+    max: 0
+  },
+  pair12Sigma: {
+    element1: 0,
+    element2: 1,
+    property: "sigma",
+    value: 0.1915,
+    min: 0.01,
+    max: 0.5
+  },
+
+  pair13Forces: {
+    element1: 0,
+    element2: 2,
+    property: "use",
+    value: false
+  },
+  pair13Epsilon: {
+    element1: 0,
+    element2: 2,
+    property: "epsilon",
+    value: -0.05,
+    min: -0.5,
+    max: 0
+  },
+  pair13Sigma: {
+    element1: 0,
+    element2: 2,
+    property: "sigma",
+    value: 0.1915,
+    min: 0.01,
+    max: 0.5
+  },
+
+  pair22Forces: {
+    element1: 1,
+    element2: 1,
+    property: "use",
+    value: false
+  },
+  pair22Epsilon: {
+    element1: 1,
+    element2: 1,
+    property: "epsilon",
+    value: -0.05,
+    min: -0.5,
+    max: 0
+  },
+  pair22Sigma: {
+    element1: 1,
+    element2: 1,
+    property: "sigma",
+    value: 0.1915,
+    min: 0.01,
+    max: 0.5
+  },
+
+  pair23Forces: {
+    element1: 1,
+    element2: 2,
+    property: "use",
+    value: false
+  },
+  pair23Epsilon: {
+    element1: 1,
+    element2: 2,
+    property: "epsilon",
+    value: -0.05,
+    min: -0.5,
+    max: 0
+  },
+  pair23Sigma: {
+    element1: 1,
+    element2: 2,
+    property: "sigma",
+    value: 0.1915,
+    min: 0.01,
+    max: 0.5
+  },
+
+  pair33Forces: {
+    element1: 2,
+    element2: 2,
+    property: "use",
+    value: false
+  },
+  pair33Epsilon: {
+    element1: 2,
+    element2: 2,
+    property: "epsilon",
+    value: -0.05,
+    min: -0.5,
+    max: 0
+  },
+  pair33Sigma: {
+    element1: 2,
+    element2: 2,
+    property: "sigma",
+    value: 0.1915,
+    min: 0.01,
+    max: 0.5
   }
 }
