@@ -93,4 +93,38 @@
     left: 489px;
     pointer-events: none;
   }
+
+  h4 {
+    padding-top: 3px;
+    padding-bottom: 3px;
+  }
+
+  .authoring-slider {
+    display: flex;
+    flex-direction: column;
+
+    &.mini {
+      flex-direction: row;
+      justify-content: space-between;
+      width: 300px;
+      margin-bottom: -8px;
+    }
+  }
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #cccccc;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #efefef;
+}
+
+table {
+  background-color: white;
+  border: 1px solid #777;
+}
+
+td {
+  text-align: center;
 }

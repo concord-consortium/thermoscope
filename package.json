@@ -21,7 +21,7 @@
     "material-ui": "^0.16.4",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-lab": "0.5.0",
+    "react-lab": "0.7.0",
     "react-tap-event-plugin": "^2.0.1",
     "sensor-labquest-2-interface": "^0.1.0"
   },

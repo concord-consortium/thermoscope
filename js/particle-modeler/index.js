@@ -4,6 +4,8 @@ import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
 import Authoring from './authoring';
 import models from './models/';
+// Set of authorable properties which can be overwritten by the url hash.
+import authorableProps from './models/authorable-props';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
@@ -29,54 +31,13 @@ let atomBox = {
       height: 0.146
     };
 
-// Set of authorable properties which can be overwritten by the url hash.
-let authoredDefaults = {
-  authoring: false,
-  temperatureControl: {
-    label: "Heatbath",
-    value: false
-  },
-  targetTemperature: {
-    label: "Heatbath temperature",
-    value: 0,
-    min: 0,
-    max: 1000
-  },
-  gravitationalField: {
-    label: "Gravity",
-    value: 0,
-    min: 0,
-    max: 1e-5
-  },
-  timeStep: {
-    label: "Time step",
-    value: 1,
-    min: 0,
-    max: 5
-  },
-  viscosity: {
-    label: "Viscosity",
-    value: 1,
-    min: 0,
-    max: 10
-  },
-  showFreezeButton: {
-    label: "Show Freeze Button",
-    value: false
-  },
-  startWithAtoms: {
-    label: "Start With Existing Atoms",
-    value: false
-  }
-};
-
 export default class Interactive extends PureComponent {
 
   constructor(props) {
     super(props);
 
     let hashParams = window.location.hash.substring(1),
-        authoredState = getStateFromHashWithDefaults(hashParams, authoredDefaults),
+        authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
         model = authoredState.startWithAtoms.value ? models.baseModel : models.emptyModel;
 
     this.state = {
@@ -96,13 +57,38 @@ export default class Interactive extends PureComponent {
   }
 
   setModelProps(prevState = {}) {
-    let newModelProperties = {}
-    for (let prop in this.state.model) {
-      if (this.state[prop] !== "" && this.state[prop] !== prevState[prop]) {
-        newModelProperties[prop] = parseToPrimitive(this.state[prop]);
+    let newModelProperties = {},
+        newElementProperties = [{}, {}, {}],
+        newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
+    for (let prop in authorableProps) {
+      let value = this.state[prop];
+      if (value !== "" && value !== prevState[prop]) {
+        if (value.hasOwnProperty("element")) {
+          newElementProperties[value.element][value.property] = parseToPrimitive(value);
+        } else if (value.hasOwnProperty("element1")) {
+          newPairwiseProperties[parseToPrimitive(value.element1)][parseToPrimitive(value.element2)][value.property] = parseToPrimitive(value);
+        } else {
+          newModelProperties[prop] = parseToPrimitive(value);
+        }
       }
     }
+
     api.set(newModelProperties);
+    for (let elem in newElementProperties) {
+      api.setElementProperties(elem, newElementProperties[elem]);
+    }
+    for (let elem1 = 0; elem1 < newPairwiseProperties.length; elem1++) {
+      for (let elem2 = 0; elem2 < newPairwiseProperties[elem1].length; elem2++) {
+        let pairValue = newPairwiseProperties[elem1][elem2];
+        if (Object.keys(pairValue).length > 0) {
+          if (this.state[`pair${(elem1+1)}${(elem2+1)}Forces`].value) {
+            api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Epsilon`].value) });
+          } else {
+            api.removePairwiseLJProperties(elem1, elem2);
+          }
+        }
+      }
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -113,7 +99,7 @@ export default class Interactive extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let hash = getDiffedHashParams(this.state, authoredDefaults);
+    let hash = getDiffedHashParams(this.state, authorableProps);
     window.location.hash = hash;
 
     this.setModelProps(prevState);
@@ -123,9 +109,9 @@ export default class Interactive extends PureComponent {
     api = lab.scriptingAPI;
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
-        let el = d.element,
+        let el = d.element - 3,
             newState = {};
-        api.setAtomProperties(i, {pinned: 0});
+        api.setAtomProperties(i, {pinned: 0, element: el});
         newState["showNewAtom"+el] = false;
         this.setState(newState);
         this.addNewDraggableAtom(el);
@@ -166,7 +152,7 @@ export default class Interactive extends PureComponent {
 
   addNewDraggableAtom(el=0) {
     let y = atomBox.y - (el * atomBox.spacing),
-        added = api.addAtom({x: atomBox.x, y: y, element: el, draggable: 1, pinned: 1});
+        added = api.addAtom({x: atomBox.x, y: y, element: (el+3), draggable: 1, pinned: 1});
     if (!added) {
       setTimeout(() => this.addNewDraggableAtom(el), 2000);
     } else {
