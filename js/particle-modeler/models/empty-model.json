@@ -38,6 +38,7 @@
     "chargeShading": false,
     "useThreeLetterCode": true,
     "aminoAcidColorScheme": "hydrophobicity",
+    "aminoAcidLabels": false,
     "showChargeSymbols": true,
     "showVDWLines": false,
     "VDWLinesCutoff": "medium",
@@ -72,24 +73,81 @@
     },
     "forceVectorsDirectionOnly": false
   },
-  "pairwiseLJProperties": [],
+  "pairwiseLJProperties": [
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 0,
+      "element2": 3
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 0,
+      "element2": 4
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 0,
+      "element2": 5
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 1,
+      "element2": 3
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 1,
+      "element2": 4
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 1,
+      "element2": 5
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 2,
+      "element2": 3
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 2,
+      "element2": 4
+    },
+    {
+      "sigma": 0.3,
+      "epsilon": 0,
+      "element1": 2,
+      "element2": 5
+    }
+  ],
   "elements": {
     "mass": [
       20,
       100,
       30,
-      80,
-      600
+      20,
+      100,
+      30
     ],
     "sigma": [
       0.19149999618530272,
       0.19149999618530272,
       0.19149999618530272,
-      0.28,
-      0.3
+      0.19149999618530272,
+      0.19149999618530272,
+      0.19149999618530272
     ],
-    "epsilon": [-0.05, -0.1, -0.000001, -0.1, -0.1],
-    "color": [-855310, -9066941, -13159, -2539040, -855310]
+    "epsilon": [-0.05, -0.1, -0.000001, 0, 0, 0],
+    "color": [-855310, -9066941, -13159, -855310, -9066941, -13159]
   },
   "atoms": {
     "x": [
