@@ -92,10 +92,6 @@
 
 	var _deleteForever2 = _interopRequireDefault(_deleteForever);
 
-	var _meter = __webpack_require__(732);
-
-	var _meter2 = _interopRequireDefault(_meter);
-
 	var _reactTapEventPlugin = __webpack_require__(744);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
@@ -130,22 +126,7 @@
 	  y: 0.141,
 	  width: 0.141,
 	  height: 0.146
-	},
-	    MIN_TEMP = 50,
-	    MAX_TEMP = 1000,
-	    meterSegments = [{
-	  color: "#4444ff",
-	  start: 0,
-	  end: 50
-	}, {
-	  color: "#ffff00",
-	  start: 50,
-	  end: 130
-	}, {
-	  color: "#ff0000",
-	  start: 130,
-	  end: 180
-	}];
+	};
 
 	var Interactive = function (_PureComponent) {
 	  _inherits(Interactive, _PureComponent);
@@ -172,7 +153,6 @@
 	    _this.addNewDraggableAtom = _this.addNewDraggableAtom.bind(_this);
 	    _this.handleAuthoringPropChange = _this.handleAuthoringPropChange.bind(_this);
 	    _this.freeze = _this.freeze.bind(_this);
-	    _this.onMeterChange = _this.onMeterChange.bind(_this);
 	    return _this;
 	  }
 
@@ -317,20 +297,11 @@
 	      this.setState(newState);
 	    }
 	  }, {
-	    key: 'onMeterChange',
-	    value: function onMeterChange(value) {
-	      var newState = {};
-	      newState.targetTemperature = _extends({}, this.state.targetTemperature);
-	      newState.targetTemperature.value = (0, _utils.parseToPrimitive)(value);
-	      this.setState(newState);
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var appClass = "app",
 	          authoringPanel = null,
-	          freezeButton = null,
-	          gauge = null;
+	          freezeButton = null;
 	      if (this.state.authoring) {
 	        appClass += " authoring";
 	        authoringPanel = _react2.default.createElement(_authoring2.default, _extends({}, this.state, { onChange: this.handleAuthoringPropChange }));
@@ -343,9 +314,6 @@
 	          'Freeze'
 	        );
 	      }
-	      if (this.state.showGauge.value === true) {
-	        gauge = _react2.default.createElement(_meter2.default, { r: 40, minValue: MIN_TEMP, maxValue: MAX_TEMP, currentValue: this.state.targetTemperature.value, background: '#444', segments: meterSegments, onMeterChange: this.onMeterChange });
-	      }
 	      var deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
 
 	      return _react2.default.createElement(
@@ -356,21 +324,24 @@
 	          { className: appClass },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'lab-wrapper' },
-	            _react2.default.createElement(_reactLab2.default, { ref: function ref(node) {
-	                return lab = node;
-	              }, model: this.state.model, interactive: this.state.interactive, height: '380px',
-	              playing: true, onModelLoad: this.handleModelLoad, embeddableSrc: '../lab/embeddable.html' }),
+	            { className: 'app-container' },
 	            _react2.default.createElement(
 	              'div',
-	              { className: 'lab-ui' },
-	              _react2.default.createElement(_newAtomBin2.default, { showAtom0: this.state.showNewAtom0, showAtom1: this.state.showNewAtom1, showAtom2: this.state.showNewAtom2 }),
-	              freezeButton,
-	              gauge,
-	              _react2.default.createElement(_deleteForever2.default, { className: 'delete-icon', style: { width: 45, height: 50, opacity: deleteOpacity } })
-	            )
-	          ),
-	          authoringPanel
+	              { className: 'lab-wrapper' },
+	              _react2.default.createElement(_reactLab2.default, { ref: function ref(node) {
+	                  return lab = node;
+	                }, model: this.state.model, interactive: this.state.interactive, height: '380px',
+	                playing: true, onModelLoad: this.handleModelLoad, embeddableSrc: '../lab/embeddable.html' }),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'lab-ui' },
+	                _react2.default.createElement(_newAtomBin2.default, { showAtom0: this.state.showNewAtom0, showAtom1: this.state.showNewAtom1, showAtom2: this.state.showNewAtom2 }),
+	                freezeButton,
+	                _react2.default.createElement(_deleteForever2.default, { className: 'delete-icon', style: { width: 45, height: 50, opacity: deleteOpacity } })
+	              )
+	            ),
+	            authoringPanel
+	          )
 	        )
 	      );
 	    }
@@ -35625,291 +35596,7 @@
 
 
 /***/ },
-/* 732 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _react = __webpack_require__(298);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _Slider = __webpack_require__(626);
-
-	var _Slider2 = _interopRequireDefault(_Slider);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var Meter = function (_PureComponent) {
-	  _inherits(Meter, _PureComponent);
-
-	  function Meter(props) {
-	    _classCallCheck(this, Meter);
-
-	    var _this = _possibleConstructorReturn(this, (Meter.__proto__ || Object.getPrototypeOf(Meter)).call(this, props));
-
-	    _this.handleSliderChange = _this.handleSliderChange.bind(_this);
-	    _this.startDragging = _this.startDragging.bind(_this);
-	    _this.onDrag = _this.onDrag.bind(_this);
-	    _this.finishDragging = _this.finishDragging.bind(_this);
-	    return _this;
-	  }
-
-	  _createClass(Meter, [{
-	    key: 'scaleValue',
-	    value: function scaleValue(val) {
-	      var _props = this.props,
-	          minValue = _props.minValue,
-	          maxValue = _props.maxValue;
-
-	      var range = maxValue - minValue;
-	      var scaledValue = minValue != 0 ? val - minValue : val;
-	      return scaledValue / range;
-	    }
-	  }, {
-	    key: 'absoluteValue',
-	    value: function absoluteValue(val) {
-	      var _props2 = this.props,
-	          minValue = _props2.minValue,
-	          maxValue = _props2.maxValue;
-
-	      var range = maxValue - minValue;
-	      var absValue = Math.round(val * range);
-	      absValue = minValue != 0 ? absValue + minValue : absValue;
-	      return absValue;
-	    }
-	  }, {
-	    key: 'handleSliderChange',
-	    value: function handleSliderChange(event, value) {
-	      this.setMeterValue(value);
-	    }
-	  }, {
-	    key: 'setMeterValue',
-	    value: function setMeterValue(val) {
-	      // sanity check, clamp the value between 0 and 1
-	      val = val < 0 ? 0 : val > 1 ? 1 : val;
-	      if (this.props.onMeterChange) {
-	        this.props.onMeterChange(this.absoluteValue(val));
-	      }
-	    }
-	  }, {
-	    key: 'describeArc',
-	    value: function describeArc(cx, cy, radius, angleStart) {
-	      var angleEnd = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
-
-	      // arc draws backwards, so start is the offset point, end is at 0%
-	      var start = this.getPoint(cx, cy, radius, angleStart);
-	      var end = this.getPoint(cx, cy, radius, angleEnd);
-	      var d = ["M", start.x, start.y, "A", radius, radius, 0, 0, 0, end.x, end.y].join(" ");
-	      return d;
-	    }
-	  }, {
-	    key: 'getPoint',
-	    value: function getPoint(cx, cy, r, angle) {
-	      var rad = (angle - 180) * Math.PI / 180;
-	      var dx = cx + r * Math.cos(rad);
-	      var dy = cy + r * Math.sin(rad);
-	      var point = { x: dx, y: dy };
-	      return point;
-	    }
-	  }, {
-	    key: 'drawMeterLine',
-	    value: function drawMeterLine(cx, cy, length, angle, pointerWidth) {
-	      var end = this.getPoint(cx, cy, length, angle);
-	      var d = ["M", cx, cy, "L", end.x, end.y, "Z"].join(" ");
-	      return d;
-	    }
-	  }, {
-	    key: 'generateSegments',
-	    value: function generateSegments() {
-	      var _props3 = this.props,
-	          cx = _props3.cx,
-	          cy = _props3.cy,
-	          r = _props3.r,
-	          segments = _props3.segments,
-	          arcWidth = _props3.arcWidth;
-
-	      var arcSegments = [];
-	      var width = r / 6;
-
-	      for (var i = 0; i < segments.length; i++) {
-	        var segmentId = "arc-s" + i;
-	        var angleStart = segments[i].end;
-	        var angleEnd = segments[i].start;
-	        arcSegments.push(_react2.default.createElement('path', { id: segmentId, key: segmentId, fill: 'none', stroke: segments[i].color, strokeWidth: width, d: this.describeArc(cx, cy, r - width / 2 - arcWidth, angleStart, angleEnd) }));
-	      }
-	      return arcSegments;
-	    }
-	  }, {
-	    key: 'startDragging',
-	    value: function startDragging(event) {
-	      if (this.props.draggable) {
-	        var xPos = event.clientX ? event.clientX : event.touches[0].clientX;
-
-	        var targetRect = this.meter.getBoundingClientRect(),
-	            centerX = targetRect.width / 2 + targetRect.left,
-	            min = centerX - this.props.r,
-	            max = centerX + this.props.r,
-	            clampedX = this.clampPosition(xPos, min, max);
-	        this.updateMeterPosition(clampedX, min);
-	      }
-
-	      document.addEventListener('mousemove', this.onDrag);
-	      document.addEventListener('mouseup', this.finishDragging);
-	      document.addEventListener('touchmove', this.onDrag);
-	      document.addEventListener('touchend', this.finishDragging);
-
-	      event.preventDefault();
-	    }
-	  }, {
-	    key: 'clampPosition',
-	    value: function clampPosition(pos, min, max) {
-	      return pos < min ? min : pos > max ? max : pos;
-	    }
-	  }, {
-	    key: 'updateMeterPosition',
-	    value: function updateMeterPosition(pos, min) {
-	      var r = this.props.r,
-	          val = (pos - min) / (r * 2);
-	      this.setMeterValue(val);
-	    }
-	  }, {
-	    key: 'onDrag',
-	    value: function onDrag(event) {
-	      if (this.props.draggable) {
-	        var xPos = event.clientX ? event.clientX : event.touches[0].clientX;
-
-	        var targetRect = this.meter.getBoundingClientRect(),
-	            centerX = targetRect.width / 2 + targetRect.left,
-	            min = centerX - this.props.r,
-	            max = centerX + this.props.r,
-	            clampedX = this.clampPosition(xPos, min, max);
-	        this.updateMeterPosition(clampedX, min);
-	      }
-	    }
-	  }, {
-	    key: 'finishDragging',
-	    value: function finishDragging(event) {
-	      document.removeEventListener('mousemove', this.onDrag);
-	      document.removeEventListener('mouseup', this.finishDragging);
-	      document.removeEventListener('touchmove', this.onDrag);
-	      document.removeEventListener('touchend', this.finishDragging);
-
-	      event.preventDefault();
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _this2 = this;
-
-	      var _props4 = this.props,
-	          cx = _props4.cx,
-	          cy = _props4.cy,
-	          r = _props4.r,
-	          showSlider = _props4.showSlider,
-	          segments = _props4.segments,
-	          background = _props4.background,
-	          needleColor = _props4.needleColor,
-	          arcWidth = _props4.arcWidth,
-	          needleWidth = _props4.needleWidth,
-	          currentValue = _props4.currentValue;
-
-
-	      var meterValue = this.scaleValue(currentValue);
-	      var angle = 180 * meterValue;
-	      var meterLineLength = r - 10;
-	      var sliderWidth = r * 2 + "px";
-	      var sliderStyle = { width: sliderWidth, margin: 'auto' };
-	      var arcSegments = segments ? _react2.default.createElement(
-	        'g',
-	        { className: 'segments' },
-	        this.generateSegments()
-	      ) : undefined;
-	      var backgroundArc = background ? _react2.default.createElement('path', { id: 'arc-bg', fill: 'none', stroke: background, strokeWidth: 2 * r - arcWidth, d: this.describeArc(cx, cy, 1, 180) }) : undefined;
-
-	      return _react2.default.createElement(
-	        'div',
-	        { className: 'meter' },
-	        _react2.default.createElement(
-	          'svg',
-	          {
-	            onTouchStart: this.startDragging,
-	            onMouseDown: this.startDragging,
-	            ref: function ref(m) {
-	              _this2.meter = m;
-	            } },
-	          backgroundArc,
-	          arcSegments,
-	          _react2.default.createElement('path', { id: 'arc-incomplete', fill: 'none', stroke: '#cccccc', strokeWidth: arcWidth, d: this.describeArc(cx, cy, r, 180) }),
-	          _react2.default.createElement('path', { id: 'arc', fill: 'none', stroke: '#446688', strokeWidth: arcWidth, d: this.describeArc(cx, cy, r, angle) }),
-	          _react2.default.createElement('path', { id: 'meterLine', fill: 'none', stroke: '#000', strokeWidth: needleWidth, d: this.drawMeterLine(cx, cy, meterLineLength, angle, 1) }),
-	          _react2.default.createElement('path', { id: 'meterLine', fill: 'none', stroke: needleColor, strokeWidth: needleWidth - 1, d: this.drawMeterLine(cx, cy, meterLineLength, angle, 1) }),
-	          _react2.default.createElement('circle', { id: 'meterLineBase', cx: cx, cy: cy, r: '12', stroke: 'black', strokeWidth: '1', fill: needleColor })
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'slider' },
-	          showSlider && _react2.default.createElement(_Slider2.default, { min: 0, max: 1, value: meterValue,
-	            style: sliderStyle,
-	            name: 'temperature',
-	            onChange: this.handleSliderChange })
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Meter;
-	}(_react.PureComponent);
-
-	exports.default = Meter;
-
-
-	Meter.PropTypes = {
-	  cx: _react2.default.PropTypes.object.number,
-	  cy: _react2.default.PropTypes.number,
-	  r: _react2.default.PropTypes.number,
-	  arcWidth: _react2.default.PropTypes.number,
-	  needleWidth: _react2.default.PropTypes.number,
-	  minValue: _react2.default.PropTypes.number,
-	  maxValue: _react2.default.PropTypes.number,
-	  currentValue: _react2.default.PropTypes.number,
-	  showSlider: _react2.default.PropTypes.bool,
-	  segments: _react2.default.PropTypes.array,
-	  background: _react2.default.PropTypes.string,
-	  needleColor: _react2.default.PropTypes.string,
-	  draggable: _react2.default.PropTypes.bool,
-	  onMeterChange: _react2.default.PropTypes.func
-	};
-
-	Meter.defaultProps = {
-	  cx: 150,
-	  cy: 150,
-	  r: 100,
-	  arcWidth: 4,
-	  needleWidth: 3,
-	  minValue: 0,
-	  maxValue: 100,
-	  currentValue: 30,
-	  showSlider: false,
-	  segments: undefined,
-	  background: undefined,
-	  needleColor: "#ccc",
-	  draggable: true
-	};
-
-/***/ },
+/* 732 */,
 /* 733 */,
 /* 734 */,
 /* 735 */,
@@ -36275,7 +35962,7 @@
 
 
 	// module
-	exports.push([module.id, ".app {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n", ""]);
 
 	// exports
 
@@ -36443,29 +36130,29 @@
 	    for (var i = 0, ii = pairwiseUI.use.length; i < ii; i++) {
 	      for (var j = i, jj = pairwiseUI.use[i].length; j < jj; j++) {
 	        if (pairwiseUI.use[i][j]) {
+	          var pair = i + 1 + "-" + (j + 1);
+
 	          rows.push(_react2.default.createElement(
 	            'tr',
-	            null,
+	            { key: pair },
 	            _react2.default.createElement(
 	              'td',
-	              null,
-	              i + 1,
-	              '-',
-	              j + 1
+	              { key: "id" + pair },
+	              pair
 	            ),
 	            _react2.default.createElement(
 	              'td',
-	              null,
+	              { key: "use" + pair },
 	              pairwiseUI.use[i][j]
 	            ),
 	            _react2.default.createElement(
 	              'td',
-	              null,
+	              { key: "epsilon" + pair },
 	              pairwiseUI.epsilon[i][j]
 	            ),
 	            _react2.default.createElement(
 	              'td',
-	              null,
+	              { key: "sigma" + pair },
 	              pairwiseUI.sigma[i][j]
 	            )
 	          ));
@@ -36476,27 +36163,31 @@
 	      'table',
 	      null,
 	      _react2.default.createElement(
-	        'tr',
+	        'thead',
 	        null,
 	        _react2.default.createElement(
-	          'th',
+	          'tr',
 	          null,
-	          'Pair'
-	        ),
-	        _react2.default.createElement(
-	          'th',
-	          null,
-	          'Use?'
-	        ),
-	        _react2.default.createElement(
-	          'th',
-	          null,
-	          'Epsilon'
-	        ),
-	        _react2.default.createElement(
-	          'th',
-	          null,
-	          'Sigma'
+	          _react2.default.createElement(
+	            'th',
+	            null,
+	            'Pair'
+	          ),
+	          _react2.default.createElement(
+	            'th',
+	            null,
+	            'Use?'
+	          ),
+	          _react2.default.createElement(
+	            'th',
+	            null,
+	            'Epsilon'
+	          ),
+	          _react2.default.createElement(
+	            'th',
+	            null,
+	            'Sigma'
+	          )
 	        )
 	      ),
 	      _react2.default.createElement(
@@ -37053,10 +36744,6 @@
 	    min: 0,
 	    max: 1000
 	  },
-	  showGauge: {
-	    label: "Show Temperature Control",
-	    value: false
-	  },
 	  gravitationalField: {
 	    label: "Gravity",
 	    value: 0,
@@ -37469,7 +37156,7 @@
 
 
 	// module
-	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 50px;\n  color: #444;\n}\n.authoring-form h3 {\n  padding-bottom: 10px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: -webkit-radial-gradient(8px 8px circle, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: -webkit-radial-gradient(8px 8px circle, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n.lab-ui button {\n  position: absolute;\n  top: -60px;\n  left: 20px;\n  padding: 4px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\n.lab-ui .meter {\n  position: absolute;\n  top: -180px;\n  left: -72px;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
+	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 50px;\n  color: #444;\n}\n.authoring-form h3 {\n  padding-bottom: 10px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: -webkit-radial-gradient(8px 8px circle, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: -webkit-radial-gradient(8px 8px circle, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n.lab-ui button {\n  position: absolute;\n  top: -60px;\n  left: 20px;\n  padding: 4px;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
 
 	// exports
 

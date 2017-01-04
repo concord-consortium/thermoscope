@@ -84,6 +84,8 @@
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
+	__webpack_require__(763);
+
 	__webpack_require__(776);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -111,6 +113,19 @@
 	  _createClass(ThreeThermoscope, [{
 	    key: 'render',
 	    value: function render() {
+	      var meterSegments = [{
+	        color: "#800000",
+	        start: 0,
+	        end: 45
+	      }, {
+	        color: "#a0a000",
+	        start: 45,
+	        end: 145
+	      }, {
+	        color: "#008000",
+	        start: 145,
+	        end: 180
+	      }];
 	      return _react2.default.createElement(
 	        _MuiThemeProvider2.default,
 	        { muiTheme: (0, _getMuiTheme2.default)(_darkBaseTheme2.default) },
@@ -125,7 +140,7 @@
 	              { className: 'label' },
 	              'A'
 	            ),
-	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 0, material: 'solid', embeddableSrc: '../lab/embeddable.html' })
+	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 0, temperature: 5, material: 'solid', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments, minClamp: 0, maxClamp: 0.25 })
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -135,7 +150,7 @@
 	              { className: 'label' },
 	              'B'
 	            ),
-	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 1, material: 'liquid', embeddableSrc: '../lab/embeddable.html' })
+	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 1, temperature: 30, material: 'liquid', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments, minClamp: 0.25, maxClamp: 0.8 })
 	          ),
 	          _react2.default.createElement(
 	            'div',
@@ -145,7 +160,7 @@
 	              { className: 'label' },
 	              'C'
 	            ),
-	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 2, material: 'gas', embeddableSrc: '../lab/embeddable.html' })
+	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 2, temperature: 50, material: 'gas', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments, minClamp: 0.8, maxClamp: 1 })
 	          )
 	        )
 	      );
@@ -29438,7 +29453,7 @@
 	    var _this = _possibleConstructorReturn(this, (Thermoscope.__proto__ || Object.getPrototypeOf(Thermoscope)).call(this, props));
 
 	    _this.state = {
-	      temperature: 20,
+	      temperature: _this.props.temperature ? _this.props.temperature : 20,
 	      liveData: false,
 	      materialType: _this.props.material ? _this.props.material : 'solid',
 	      materialIdx: 0
@@ -29490,7 +29505,9 @@
 	      var _props = this.props,
 	          embeddableSrc = _props.embeddableSrc,
 	          showMeter = _props.showMeter,
-	          meterSegments = _props.meterSegments;
+	          meterSegments = _props.meterSegments,
+	          minClamp = _props.minClamp,
+	          maxClamp = _props.maxClamp;
 
 	      var model = _models2.default[materialType][materialIdx];
 
@@ -29504,7 +29521,7 @@
 	          width: MODEL_WIDTH, height: MODEL_HEIGHT,
 	          embeddableSrc: embeddableSrc
 	        }),
-	        showMeter && _react2.default.createElement(_meter2.default, { minValue: _models.MIN_TEMP, maxValue: _models.MAX_TEMP, currentValue: temperature, background: '#444', segments: meterSegments, onMeterChange: this.onMeterChange }),
+	        showMeter && _react2.default.createElement(_meter2.default, { minValue: _models.MIN_TEMP, maxValue: _models.MAX_TEMP, currentValue: temperature, background: '#444', segments: meterSegments, minClamp: minClamp, maxClamp: maxClamp, onMeterChange: this.onMeterChange }),
 	        _react2.default.createElement(
 	          'div',
 	          null,
@@ -29517,7 +29534,7 @@
 	            _react2.default.createElement(
 	              'div',
 	              { className: 'slider' },
-	              !liveData && _react2.default.createElement(_Slider2.default, { min: _models.MIN_TEMP, max: _models.MAX_TEMP, step: 1, value: temperature,
+	              !liveData && !showMeter && _react2.default.createElement(_Slider2.default, { min: _models.MIN_TEMP, max: _models.MAX_TEMP, step: 1, value: temperature,
 	                sliderStyle: { marginTop: 5, marginBottom: 5 },
 	                name: 'temperature',
 	                onChange: this.handleTempSliderChange })
@@ -45497,8 +45514,12 @@
 	  }, {
 	    key: 'setMeterValue',
 	    value: function setMeterValue(val) {
-	      // sanity check, clamp the value between 0 and 1
-	      val = val < 0 ? 0 : val > 1 ? 1 : val;
+	      var _props3 = this.props,
+	          minClamp = _props3.minClamp,
+	          maxClamp = _props3.maxClamp;
+	      // sanity check, clamp the value between 0 and 1 or specified min/max for restricted rendering
+
+	      val = val < minClamp ? minClamp : val > maxClamp ? maxClamp : val;
 	      if (this.props.onMeterChange) {
 	        this.props.onMeterChange(this.absoluteValue(val));
 	      }
@@ -45533,12 +45554,12 @@
 	  }, {
 	    key: 'generateSegments',
 	    value: function generateSegments() {
-	      var _props3 = this.props,
-	          cx = _props3.cx,
-	          cy = _props3.cy,
-	          r = _props3.r,
-	          segments = _props3.segments,
-	          arcWidth = _props3.arcWidth;
+	      var _props4 = this.props,
+	          cx = _props4.cx,
+	          cy = _props4.cy,
+	          r = _props4.r,
+	          segments = _props4.segments,
+	          arcWidth = _props4.arcWidth;
 
 	      var arcSegments = [];
 	      var width = r / 6;
@@ -45613,17 +45634,17 @@
 	    value: function render() {
 	      var _this2 = this;
 
-	      var _props4 = this.props,
-	          cx = _props4.cx,
-	          cy = _props4.cy,
-	          r = _props4.r,
-	          showSlider = _props4.showSlider,
-	          segments = _props4.segments,
-	          background = _props4.background,
-	          needleColor = _props4.needleColor,
-	          arcWidth = _props4.arcWidth,
-	          needleWidth = _props4.needleWidth,
-	          currentValue = _props4.currentValue;
+	      var _props5 = this.props,
+	          cx = _props5.cx,
+	          cy = _props5.cy,
+	          r = _props5.r,
+	          showSlider = _props5.showSlider,
+	          segments = _props5.segments,
+	          background = _props5.background,
+	          needleColor = _props5.needleColor,
+	          arcWidth = _props5.arcWidth,
+	          needleWidth = _props5.needleWidth,
+	          currentValue = _props5.currentValue;
 
 
 	      var meterValue = this.scaleValue(currentValue);
@@ -45683,6 +45704,8 @@
 	  needleWidth: _react2.default.PropTypes.number,
 	  minValue: _react2.default.PropTypes.number,
 	  maxValue: _react2.default.PropTypes.number,
+	  minClamp: _react2.default.PropTypes.number,
+	  maxClamp: _react2.default.PropTypes.number,
 	  currentValue: _react2.default.PropTypes.number,
 	  showSlider: _react2.default.PropTypes.bool,
 	  segments: _react2.default.PropTypes.array,
@@ -45700,6 +45723,8 @@
 	  needleWidth: 3,
 	  minValue: 0,
 	  maxValue: 100,
+	  minClamp: 0,
+	  maxClamp: 1,
 	  currentValue: 30,
 	  showSlider: false,
 	  segments: undefined,
@@ -50253,7 +50278,7 @@
 				-0.1
 			],
 			"color": [
-				-4000769,
+				-13057,
 				-9066941,
 				-9092186,
 				-2539040,
@@ -59397,8 +59422,46 @@
 /***/ },
 /* 761 */,
 /* 762 */,
-/* 763 */,
-/* 764 */,
+/* 763 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(764);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(731)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./meter.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./meter.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 764 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(730)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".meter-thermoscope {\n  background: #333;\n  color: #ccc;\n  height: 100%;\n}\n.meter-thermoscope .app-container {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n}\n.meter-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.meter {\n  height: 150px;\n  width: 400px;\n  text-align: center;\n  margin: -30px auto 30px;\n  display: block;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
 /* 765 */,
 /* 766 */,
 /* 767 */,
@@ -59444,7 +59507,7 @@
 
 
 	// module
-	exports.push([module.id, ".three-thermoscope {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.three-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.three-thermoscope.authoring {\n  background: white;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 300px;\n  height: 300px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n.lab-container {\n  text-align: center;\n}\n.lab-container iframe {\n  width: 350px;\n  height: 350px;\n}\n.lab-container .overlay {\n  width: 350px;\n}\n.thermoscope .slider {\n  width: 200px;\n  height: 28px;\n  margin-left: 15px;\n  display: block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 350px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 20px;\n  width: 235px;\n}\n.thermoscope .material-select > * {\n  width: 235px !important;\n}\n", ""]);
+	exports.push([module.id, ".three-thermoscope {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.three-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.three-thermoscope.authoring {\n  background: white;\n}\n.three-thermoscope .meter {\n  width: 300px;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 300px;\n  height: 300px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n.lab-container {\n  text-align: center;\n}\n.lab-container iframe {\n  width: 350px;\n  height: 350px;\n}\n.lab-container .overlay {\n  width: 350px;\n}\n.thermoscope .slider {\n  width: 200px;\n  height: 28px;\n  margin-left: 15px;\n  display: block;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 350px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 20px;\n  width: 235px;\n}\n.thermoscope .material-select > * {\n  width: 235px !important;\n}\n", ""]);
 
 	// exports
 
