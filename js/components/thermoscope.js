@@ -53,7 +53,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
-    const {embeddableSrc, showMeter, meterSegments, minClamp, maxClamp} = this.props;
+    const {embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls} = this.props;
     const model = models[materialType][materialIdx];
 
     return (
@@ -76,24 +76,29 @@ export default class Thermoscope extends PureComponent {
                 onChange={this.handleTempSliderChange} />}
             </div>
           </div>
-          <div className="controls-row">
-            <div className="material-type-select">
-              <RadioButtonGroup name="material-type" valueSelected={materialType} onChange={this.handleMaterialTypeChange}>
-                <RadioButton value="solid" label="Solid"/>
-                <RadioButton value="liquid" label="Liquid"/>
-                <RadioButton value="gas" label="Gas"/>
-              </RadioButtonGroup>
+          {showMaterialControls && <div className="controls-row">
+              <div className="material-type-select">
+                <RadioButtonGroup name="material-type" valueSelected={materialType} onChange={this.handleMaterialTypeChange}>
+                  <RadioButton value="solid" label="Solid"/>
+                  <RadioButton value="liquid" label="Liquid"/>
+                  <RadioButton value="gas" label="Gas"/>
+                </RadioButtonGroup>
+              </div>
+              <div className="material-select">
+                <SelectField floatingLabelText="Material" value={materialIdx} onChange={this.handleMaterialIdxChange}>
+                  {models[materialType].map((model, idx) =>
+                    <MenuItem key={idx} value={idx} primaryText={model.name}/>
+                  )}
+                </SelectField>
+              </div>
             </div>
-            <div className="material-select">
-              <SelectField floatingLabelText="Material" value={materialIdx} onChange={this.handleMaterialIdxChange}>
-                {models[materialType].map((model, idx) =>
-                  <MenuItem key={idx} value={idx} primaryText={model.name}/>
-                )}
-              </SelectField>
-            </div>
-          </div>
+          }
         </div>
       </div>
     );
   }
+}
+
+Thermoscope.defaultProps = {
+  showMaterialControls: true
 }
