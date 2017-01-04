@@ -10,6 +10,10 @@ module.exports = {
     min: 0,
     max: 1000
   },
+  showGauge: {
+    label: "Show Temperature Control",
+    value: false
+  },
   gravitationalField: {
     label: "Gravity",
     value: 0,

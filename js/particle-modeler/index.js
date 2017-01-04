@@ -9,6 +9,7 @@ import authorableProps from './models/authorable-props';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import Meter from './../components/meter';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import '../../css/app.less';
@@ -29,7 +30,26 @@ let atomBox = {
       y: 0.141,
       width: 0.141,
       height: 0.146
-    };
+    },
+    MIN_TEMP = 50,
+    MAX_TEMP = 1000,
+    meterSegments = [
+      {
+        color: "#4444ff",
+        start: 0,
+        end: 50
+      },
+      {
+        color: "#ffff00",
+        start: 50,
+        end: 130
+      },
+      {
+        color: "#ff0000",
+        start: 130,
+        end: 180
+      }
+    ];
 
 export default class Interactive extends PureComponent {
 
@@ -54,6 +74,7 @@ export default class Interactive extends PureComponent {
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
     this.freeze = this.freeze.bind(this);
+    this.onMeterChange = this.onMeterChange.bind(this);
   }
 
   setModelProps(prevState = {}) {
@@ -180,8 +201,15 @@ export default class Interactive extends PureComponent {
     this.setState(newState);
   }
 
+  onMeterChange(value) {
+    let newState = {};
+    newState.targetTemperature = {...this.state.targetTemperature};
+    newState.targetTemperature.value = parseToPrimitive(value);
+    this.setState(newState);
+  }
+
   render () {
-    let appClass = "app", authoringPanel = null, freezeButton = null;
+    let appClass = "app", authoringPanel = null, freezeButton = null, gauge = null;
     if (this.state.authoring) {
       appClass += " authoring";
       authoringPanel = <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
@@ -189,6 +217,9 @@ export default class Interactive extends PureComponent {
 
     if (this.state.showFreezeButton.value === true) {
       freezeButton = <button onClick={this.freeze}>Freeze</button>
+    }
+    if (this.state.showGauge.value === true) {
+      gauge = <Meter r={40} minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={this.state.targetTemperature.value} background="#444" segments={meterSegments} onMeterChange={this.onMeterChange} />
     }
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
 
@@ -201,6 +232,7 @@ export default class Interactive extends PureComponent {
             <div className="lab-ui">
               <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
               { freezeButton }
+              { gauge }
               <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
             </div>
           </div>
