@@ -30,8 +30,9 @@ export default class Meter extends PureComponent {
   }
 
   setMeterValue(val) {
-    // sanity check, clamp the value between 0 and 1
-    val = val < 0 ? 0 : val > 1 ? 1 : val;
+    let {minClamp, maxClamp} = this.props;
+    // sanity check, clamp the value between 0 and 1 or specified min/max for restricted rendering
+    val = val < minClamp ? minClamp : val > maxClamp ? maxClamp : val;
     if (this.props.onMeterChange) {
       this.props.onMeterChange(this.absoluteValue(val));
     }
@@ -182,6 +183,8 @@ Meter.PropTypes = {
   needleWidth: React.PropTypes.number,
   minValue: React.PropTypes.number,
   maxValue: React.PropTypes.number,
+  minClamp: React.PropTypes.number,
+  maxClamp: React.PropTypes.number,
   currentValue: React.PropTypes.number,
   showSlider: React.PropTypes.bool,
   segments: React.PropTypes.array,
@@ -199,6 +202,8 @@ Meter.defaultProps = {
   needleWidth: 3,
   minValue: 0,
   maxValue: 100,
+  minClamp: 0,
+  maxClamp: 1,
   currentValue: 30,
   showSlider: false,
   segments: undefined,

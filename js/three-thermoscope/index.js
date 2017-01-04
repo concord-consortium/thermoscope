@@ -44,15 +44,15 @@ export default class ThreeThermoscope extends PureComponent {
         <div className="three-thermoscope">
           <div className="thermoscope-container">
             <div className="label">A</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true}  meterSegments={meterSegments}/>
+            <Thermoscope sensor={LabQuest2} probeIndex={0} temperature={5} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments} minClamp={0} maxClamp={0.25}/>
           </div>
           <div className="thermoscope-container">
             <div className="label">B</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true}  meterSegments={meterSegments}/>
+            <Thermoscope sensor={LabQuest2} probeIndex={1} temperature={30}  material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments} minClamp={0.25} maxClamp={0.8}/>
           </div>
           <div className="thermoscope-container">
             <div className="label">C</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={2} material="gas" embeddableSrc='../lab/embeddable.html' showMeter={true}  meterSegments={meterSegments}/>
+            <Thermoscope sensor={LabQuest2} probeIndex={2} temperature={50} material="gas" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments} minClamp={0.8} maxClamp={1}/>
           </div>
         </div>
       </MuiThemeProvider>

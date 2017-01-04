@@ -16,7 +16,7 @@ export default class Thermoscope extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      temperature: 20,
+      temperature: this.props.temperature ? this.props.temperature : 20,
       liveData: false,
       materialType: this.props.material ? this.props.material : 'solid',
       materialIdx: 0
@@ -53,7 +53,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData } = this.state;
-    const {embeddableSrc, showMeter, meterSegments} = this.props;
+    const {embeddableSrc, showMeter, meterSegments, minClamp, maxClamp} = this.props;
     const model = models[materialType][materialIdx];
 
     return (
@@ -65,12 +65,12 @@ export default class Thermoscope extends PureComponent {
                   width={MODEL_WIDTH} height={MODEL_HEIGHT}
                   embeddableSrc={embeddableSrc}
           />
-        {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} onMeterChange={this.onMeterChange} />}
+        {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />}
         <div>
           <div className="controls-row">
             Temperature {temperature}°C
             <div className="slider">
-              {!liveData && <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
+              {!liveData && !showMeter && <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
                 sliderStyle={{ marginTop: 5, marginBottom: 5 }}
                 name="temperature"
                 onChange={this.handleTempSliderChange} />}
