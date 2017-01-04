@@ -78,15 +78,23 @@
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _utils = __webpack_require__(771);
+	var _authorableProps = __webpack_require__(771);
+
+	var _authorableProps2 = _interopRequireDefault(_authorableProps);
+
+	var _utils = __webpack_require__(772);
 
 	var _MuiThemeProvider = __webpack_require__(475);
 
 	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
-	var _deleteForever = __webpack_require__(772);
+	var _deleteForever = __webpack_require__(773);
 
 	var _deleteForever2 = _interopRequireDefault(_deleteForever);
+
+	var _meter = __webpack_require__(732);
+
+	var _meter2 = _interopRequireDefault(_meter);
 
 	var _reactTapEventPlugin = __webpack_require__(744);
 
@@ -94,7 +102,7 @@
 
 	__webpack_require__(761);
 
-	__webpack_require__(773);
+	__webpack_require__(774);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -103,6 +111,8 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	// Set of authorable properties which can be overwritten by the url hash.
+
 
 	// Required by Material-UI library.
 	(0, _reactTapEventPlugin2.default)();
@@ -120,48 +130,22 @@
 	  y: 0.141,
 	  width: 0.141,
 	  height: 0.146
-	};
-
-	// Set of authorable properties which can be overwritten by the url hash.
-	var authoredDefaults = {
-	  authoring: false,
-	  temperatureControl: {
-	    label: "Heatbath",
-	    value: false
-	  },
-	  targetTemperature: {
-	    label: "Heatbath temperature",
-	    value: 0,
-	    min: 0,
-	    max: 1000
-	  },
-	  gravitationalField: {
-	    label: "Gravity",
-	    value: 0,
-	    min: 0,
-	    max: 1e-5
-	  },
-	  timeStep: {
-	    label: "Time step",
-	    value: 1,
-	    min: 0,
-	    max: 5
-	  },
-	  viscosity: {
-	    label: "Viscosity",
-	    value: 1,
-	    min: 0,
-	    max: 10
-	  },
-	  showFreezeButton: {
-	    label: "Show Freeze Button",
-	    value: false
-	  },
-	  startWithAtoms: {
-	    label: "Start With Existing Atoms",
-	    value: false
-	  }
-	};
+	},
+	    MIN_TEMP = 50,
+	    MAX_TEMP = 1000,
+	    meterSegments = [{
+	  color: "#4444ff",
+	  start: 0,
+	  end: 50
+	}, {
+	  color: "#ffff00",
+	  start: 50,
+	  end: 130
+	}, {
+	  color: "#ff0000",
+	  start: 130,
+	  end: 180
+	}];
 
 	var Interactive = function (_PureComponent) {
 	  _inherits(Interactive, _PureComponent);
@@ -172,7 +156,7 @@
 	    var _this = _possibleConstructorReturn(this, (Interactive.__proto__ || Object.getPrototypeOf(Interactive)).call(this, props));
 
 	    var hashParams = window.location.hash.substring(1),
-	        authoredState = (0, _utils.getStateFromHashWithDefaults)(hashParams, authoredDefaults),
+	        authoredState = (0, _utils.getStateFromHashWithDefaults)(hashParams, _authorableProps2.default),
 	        model = authoredState.startWithAtoms.value ? _models2.default.baseModel : _models2.default.emptyModel;
 
 	    _this.state = _extends({
@@ -188,6 +172,7 @@
 	    _this.addNewDraggableAtom = _this.addNewDraggableAtom.bind(_this);
 	    _this.handleAuthoringPropChange = _this.handleAuthoringPropChange.bind(_this);
 	    _this.freeze = _this.freeze.bind(_this);
+	    _this.onMeterChange = _this.onMeterChange.bind(_this);
 	    return _this;
 	  }
 
@@ -196,13 +181,38 @@
 	    value: function setModelProps() {
 	      var prevState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-	      var newModelProperties = {};
-	      for (var prop in this.state.model) {
-	        if (this.state[prop] !== "" && this.state[prop] !== prevState[prop]) {
-	          newModelProperties[prop] = (0, _utils.parseToPrimitive)(this.state[prop]);
+	      var newModelProperties = {},
+	          newElementProperties = [{}, {}, {}],
+	          newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
+	      for (var prop in _authorableProps2.default) {
+	        var value = this.state[prop];
+	        if (value !== "" && value !== prevState[prop]) {
+	          if (value.hasOwnProperty("element")) {
+	            newElementProperties[value.element][value.property] = (0, _utils.parseToPrimitive)(value);
+	          } else if (value.hasOwnProperty("element1")) {
+	            newPairwiseProperties[(0, _utils.parseToPrimitive)(value.element1)][(0, _utils.parseToPrimitive)(value.element2)][value.property] = (0, _utils.parseToPrimitive)(value);
+	          } else {
+	            newModelProperties[prop] = (0, _utils.parseToPrimitive)(value);
+	          }
 	        }
 	      }
+
 	      api.set(newModelProperties);
+	      for (var elem in newElementProperties) {
+	        api.setElementProperties(elem, newElementProperties[elem]);
+	      }
+	      for (var elem1 = 0; elem1 < newPairwiseProperties.length; elem1++) {
+	        for (var elem2 = 0; elem2 < newPairwiseProperties[elem1].length; elem2++) {
+	          var pairValue = newPairwiseProperties[elem1][elem2];
+	          if (Object.keys(pairValue).length > 0) {
+	            if (this.state['pair' + (elem1 + 1) + (elem2 + 1) + 'Forces'].value) {
+	              api.setPairwiseLJProperties(elem1, elem2, { sigma: (0, _utils.parseToPrimitive)(this.state['pair' + (elem1 + 1) + (elem2 + 1) + 'Sigma'].value), epsilon: (0, _utils.parseToPrimitive)(this.state['pair' + (elem1 + 1) + (elem2 + 1) + 'Epsilon'].value) });
+	            } else {
+	              api.removePairwiseLJProperties(elem1, elem2);
+	            }
+	          }
+	        }
+	      }
 	    }
 	  }, {
 	    key: 'componentWillUpdate',
@@ -215,7 +225,7 @@
 	  }, {
 	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate(prevProps, prevState) {
-	      var hash = (0, _utils.getDiffedHashParams)(this.state, authoredDefaults);
+	      var hash = (0, _utils.getDiffedHashParams)(this.state, _authorableProps2.default);
 	      window.location.hash = hash;
 
 	      this.setModelProps(prevState);
@@ -228,9 +238,9 @@
 	      api = lab.scriptingAPI;
 	      api.onDrag('atom', function (x, y, d, i) {
 	        if (d.pinned === 1) {
-	          var el = d.element,
+	          var el = d.element - 3,
 	              newState = {};
-	          api.setAtomProperties(i, { pinned: 0 });
+	          api.setAtomProperties(i, { pinned: 0, element: el });
 	          newState["showNewAtom" + el] = false;
 	          _this2.setState(newState);
 	          _this2.addNewDraggableAtom(el);
@@ -275,7 +285,7 @@
 	      var el = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 	      var y = atomBox.y - el * atomBox.spacing,
-	          added = api.addAtom({ x: atomBox.x, y: y, element: el, draggable: 1, pinned: 1 });
+	          added = api.addAtom({ x: atomBox.x, y: y, element: el + 3, draggable: 1, pinned: 1 });
 	      if (!added) {
 	        setTimeout(function () {
 	          return _this3.addNewDraggableAtom(el);
@@ -307,11 +317,20 @@
 	      this.setState(newState);
 	    }
 	  }, {
+	    key: 'onMeterChange',
+	    value: function onMeterChange(value) {
+	      var newState = {};
+	      newState.targetTemperature = _extends({}, this.state.targetTemperature);
+	      newState.targetTemperature.value = (0, _utils.parseToPrimitive)(value);
+	      this.setState(newState);
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var appClass = "app",
 	          authoringPanel = null,
-	          freezeButton = null;
+	          freezeButton = null,
+	          gauge = null;
 	      if (this.state.authoring) {
 	        appClass += " authoring";
 	        authoringPanel = _react2.default.createElement(_authoring2.default, _extends({}, this.state, { onChange: this.handleAuthoringPropChange }));
@@ -323,6 +342,9 @@
 	          { onClick: this.freeze },
 	          'Freeze'
 	        );
+	      }
+	      if (this.state.showGauge.value === true) {
+	        gauge = _react2.default.createElement(_meter2.default, { r: 40, minValue: MIN_TEMP, maxValue: MAX_TEMP, currentValue: this.state.targetTemperature.value, background: '#444', segments: meterSegments, onMeterChange: this.onMeterChange });
 	      }
 	      var deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
 
@@ -344,6 +366,7 @@
 	              { className: 'lab-ui' },
 	              _react2.default.createElement(_newAtomBin2.default, { showAtom0: this.state.showNewAtom0, showAtom1: this.state.showNewAtom1, showAtom2: this.state.showNewAtom2 }),
 	              freezeButton,
+	              gauge,
 	              _react2.default.createElement(_deleteForever2.default, { className: 'delete-icon', style: { width: 45, height: 50, opacity: deleteOpacity } })
 	            )
 	          ),
@@ -33589,6 +33612,10 @@
 
 		var _iframePhone2 = _interopRequireDefault(_iframePhone);
 
+		var _modelOnlyInteractive = __webpack_require__(66);
+
+		var _modelOnlyInteractive2 = _interopRequireDefault(_modelOnlyInteractive);
+
 		var DEF_UPDATE_DELAY = 75; // ms
 
 		var Lab = (function (_React$Component) {
@@ -33836,10 +33863,10 @@
 		exports['default'] = Lab;
 
 		Lab.PropTypes = {
-		  // Lab interactive JSON (parsed).
-		  interactive: _react2['default'].PropTypes.object.isRequired,
 		  // Lab model JSON (parsed).
 		  model: _react2['default'].PropTypes.object.isRequired,
+		  // Lab interactive JSON (parsed). If not provided, MODEL_ONLY_INTERACTIVE will be used.
+		  interactive: _react2['default'].PropTypes.object,
 		  // Source to Lab embeddable page. Needs to be under the same domain as the application.
 		  // This package is providing lab distribution that can be used (/lab).
 		  embeddableSrc: _react2['default'].PropTypes.string,
@@ -33865,6 +33892,7 @@
 		};
 
 		Lab.defaultProps = {
+		  interactive: _modelOnlyInteractive2['default'],
 		  embeddableSrc: 'lab/embeddable.html',
 		  width: '565px',
 		  height: '435px',
@@ -35255,6 +35283,29 @@
 		};
 
 
+	/***/ },
+	/* 66 */
+	/***/ function(module, exports) {
+
+		// Simple Lab interactive that ensures that only Lab model is visible.
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+		exports["default"] = {
+		  "title": "Lab Interactive",
+		  "aspectRatio": 1,
+		  "theme": "no-framing",
+		  "showTopBar": false,
+		  "showBottomBar": false,
+		  "models": [{
+		    "type": "md2d",
+		    "id": "model"
+		  }]
+		};
+		module.exports = exports["default"];
+
 	/***/ }
 	/******/ ])
 	});
@@ -35574,7 +35625,291 @@
 
 
 /***/ },
-/* 732 */,
+/* 732 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _Slider = __webpack_require__(626);
+
+	var _Slider2 = _interopRequireDefault(_Slider);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Meter = function (_PureComponent) {
+	  _inherits(Meter, _PureComponent);
+
+	  function Meter(props) {
+	    _classCallCheck(this, Meter);
+
+	    var _this = _possibleConstructorReturn(this, (Meter.__proto__ || Object.getPrototypeOf(Meter)).call(this, props));
+
+	    _this.handleSliderChange = _this.handleSliderChange.bind(_this);
+	    _this.startDragging = _this.startDragging.bind(_this);
+	    _this.onDrag = _this.onDrag.bind(_this);
+	    _this.finishDragging = _this.finishDragging.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(Meter, [{
+	    key: 'scaleValue',
+	    value: function scaleValue(val) {
+	      var _props = this.props,
+	          minValue = _props.minValue,
+	          maxValue = _props.maxValue;
+
+	      var range = maxValue - minValue;
+	      var scaledValue = minValue != 0 ? val - minValue : val;
+	      return scaledValue / range;
+	    }
+	  }, {
+	    key: 'absoluteValue',
+	    value: function absoluteValue(val) {
+	      var _props2 = this.props,
+	          minValue = _props2.minValue,
+	          maxValue = _props2.maxValue;
+
+	      var range = maxValue - minValue;
+	      var absValue = Math.round(val * range);
+	      absValue = minValue != 0 ? absValue + minValue : absValue;
+	      return absValue;
+	    }
+	  }, {
+	    key: 'handleSliderChange',
+	    value: function handleSliderChange(event, value) {
+	      this.setMeterValue(value);
+	    }
+	  }, {
+	    key: 'setMeterValue',
+	    value: function setMeterValue(val) {
+	      // sanity check, clamp the value between 0 and 1
+	      val = val < 0 ? 0 : val > 1 ? 1 : val;
+	      if (this.props.onMeterChange) {
+	        this.props.onMeterChange(this.absoluteValue(val));
+	      }
+	    }
+	  }, {
+	    key: 'describeArc',
+	    value: function describeArc(cx, cy, radius, angleStart) {
+	      var angleEnd = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+
+	      // arc draws backwards, so start is the offset point, end is at 0%
+	      var start = this.getPoint(cx, cy, radius, angleStart);
+	      var end = this.getPoint(cx, cy, radius, angleEnd);
+	      var d = ["M", start.x, start.y, "A", radius, radius, 0, 0, 0, end.x, end.y].join(" ");
+	      return d;
+	    }
+	  }, {
+	    key: 'getPoint',
+	    value: function getPoint(cx, cy, r, angle) {
+	      var rad = (angle - 180) * Math.PI / 180;
+	      var dx = cx + r * Math.cos(rad);
+	      var dy = cy + r * Math.sin(rad);
+	      var point = { x: dx, y: dy };
+	      return point;
+	    }
+	  }, {
+	    key: 'drawMeterLine',
+	    value: function drawMeterLine(cx, cy, length, angle, pointerWidth) {
+	      var end = this.getPoint(cx, cy, length, angle);
+	      var d = ["M", cx, cy, "L", end.x, end.y, "Z"].join(" ");
+	      return d;
+	    }
+	  }, {
+	    key: 'generateSegments',
+	    value: function generateSegments() {
+	      var _props3 = this.props,
+	          cx = _props3.cx,
+	          cy = _props3.cy,
+	          r = _props3.r,
+	          segments = _props3.segments,
+	          arcWidth = _props3.arcWidth;
+
+	      var arcSegments = [];
+	      var width = r / 6;
+
+	      for (var i = 0; i < segments.length; i++) {
+	        var segmentId = "arc-s" + i;
+	        var angleStart = segments[i].end;
+	        var angleEnd = segments[i].start;
+	        arcSegments.push(_react2.default.createElement('path', { id: segmentId, key: segmentId, fill: 'none', stroke: segments[i].color, strokeWidth: width, d: this.describeArc(cx, cy, r - width / 2 - arcWidth, angleStart, angleEnd) }));
+	      }
+	      return arcSegments;
+	    }
+	  }, {
+	    key: 'startDragging',
+	    value: function startDragging(event) {
+	      if (this.props.draggable) {
+	        var xPos = event.clientX ? event.clientX : event.touches[0].clientX;
+
+	        var targetRect = this.meter.getBoundingClientRect(),
+	            centerX = targetRect.width / 2 + targetRect.left,
+	            min = centerX - this.props.r,
+	            max = centerX + this.props.r,
+	            clampedX = this.clampPosition(xPos, min, max);
+	        this.updateMeterPosition(clampedX, min);
+	      }
+
+	      document.addEventListener('mousemove', this.onDrag);
+	      document.addEventListener('mouseup', this.finishDragging);
+	      document.addEventListener('touchmove', this.onDrag);
+	      document.addEventListener('touchend', this.finishDragging);
+
+	      event.preventDefault();
+	    }
+	  }, {
+	    key: 'clampPosition',
+	    value: function clampPosition(pos, min, max) {
+	      return pos < min ? min : pos > max ? max : pos;
+	    }
+	  }, {
+	    key: 'updateMeterPosition',
+	    value: function updateMeterPosition(pos, min) {
+	      var r = this.props.r,
+	          val = (pos - min) / (r * 2);
+	      this.setMeterValue(val);
+	    }
+	  }, {
+	    key: 'onDrag',
+	    value: function onDrag(event) {
+	      if (this.props.draggable) {
+	        var xPos = event.clientX ? event.clientX : event.touches[0].clientX;
+
+	        var targetRect = this.meter.getBoundingClientRect(),
+	            centerX = targetRect.width / 2 + targetRect.left,
+	            min = centerX - this.props.r,
+	            max = centerX + this.props.r,
+	            clampedX = this.clampPosition(xPos, min, max);
+	        this.updateMeterPosition(clampedX, min);
+	      }
+	    }
+	  }, {
+	    key: 'finishDragging',
+	    value: function finishDragging(event) {
+	      document.removeEventListener('mousemove', this.onDrag);
+	      document.removeEventListener('mouseup', this.finishDragging);
+	      document.removeEventListener('touchmove', this.onDrag);
+	      document.removeEventListener('touchend', this.finishDragging);
+
+	      event.preventDefault();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _props4 = this.props,
+	          cx = _props4.cx,
+	          cy = _props4.cy,
+	          r = _props4.r,
+	          showSlider = _props4.showSlider,
+	          segments = _props4.segments,
+	          background = _props4.background,
+	          needleColor = _props4.needleColor,
+	          arcWidth = _props4.arcWidth,
+	          needleWidth = _props4.needleWidth,
+	          currentValue = _props4.currentValue;
+
+
+	      var meterValue = this.scaleValue(currentValue);
+	      var angle = 180 * meterValue;
+	      var meterLineLength = r - 10;
+	      var sliderWidth = r * 2 + "px";
+	      var sliderStyle = { width: sliderWidth, margin: 'auto' };
+	      var arcSegments = segments ? _react2.default.createElement(
+	        'g',
+	        { className: 'segments' },
+	        this.generateSegments()
+	      ) : undefined;
+	      var backgroundArc = background ? _react2.default.createElement('path', { id: 'arc-bg', fill: 'none', stroke: background, strokeWidth: 2 * r - arcWidth, d: this.describeArc(cx, cy, 1, 180) }) : undefined;
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'meter' },
+	        _react2.default.createElement(
+	          'svg',
+	          {
+	            onTouchStart: this.startDragging,
+	            onMouseDown: this.startDragging,
+	            ref: function ref(m) {
+	              _this2.meter = m;
+	            } },
+	          backgroundArc,
+	          arcSegments,
+	          _react2.default.createElement('path', { id: 'arc-incomplete', fill: 'none', stroke: '#cccccc', strokeWidth: arcWidth, d: this.describeArc(cx, cy, r, 180) }),
+	          _react2.default.createElement('path', { id: 'arc', fill: 'none', stroke: '#446688', strokeWidth: arcWidth, d: this.describeArc(cx, cy, r, angle) }),
+	          _react2.default.createElement('path', { id: 'meterLine', fill: 'none', stroke: '#000', strokeWidth: needleWidth, d: this.drawMeterLine(cx, cy, meterLineLength, angle, 1) }),
+	          _react2.default.createElement('path', { id: 'meterLine', fill: 'none', stroke: needleColor, strokeWidth: needleWidth - 1, d: this.drawMeterLine(cx, cy, meterLineLength, angle, 1) }),
+	          _react2.default.createElement('circle', { id: 'meterLineBase', cx: cx, cy: cy, r: '12', stroke: 'black', strokeWidth: '1', fill: needleColor })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'slider' },
+	          showSlider && _react2.default.createElement(_Slider2.default, { min: 0, max: 1, value: meterValue,
+	            style: sliderStyle,
+	            name: 'temperature',
+	            onChange: this.handleSliderChange })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Meter;
+	}(_react.PureComponent);
+
+	exports.default = Meter;
+
+
+	Meter.PropTypes = {
+	  cx: _react2.default.PropTypes.object.number,
+	  cy: _react2.default.PropTypes.number,
+	  r: _react2.default.PropTypes.number,
+	  arcWidth: _react2.default.PropTypes.number,
+	  needleWidth: _react2.default.PropTypes.number,
+	  minValue: _react2.default.PropTypes.number,
+	  maxValue: _react2.default.PropTypes.number,
+	  currentValue: _react2.default.PropTypes.number,
+	  showSlider: _react2.default.PropTypes.bool,
+	  segments: _react2.default.PropTypes.array,
+	  background: _react2.default.PropTypes.string,
+	  needleColor: _react2.default.PropTypes.string,
+	  draggable: _react2.default.PropTypes.bool,
+	  onMeterChange: _react2.default.PropTypes.func
+	};
+
+	Meter.defaultProps = {
+	  cx: 150,
+	  cy: 150,
+	  r: 100,
+	  arcWidth: 4,
+	  needleWidth: 3,
+	  minValue: 0,
+	  maxValue: 100,
+	  currentValue: 30,
+	  showSlider: false,
+	  segments: undefined,
+	  background: undefined,
+	  needleColor: "#ccc",
+	  draggable: true
+	};
+
+/***/ },
 /* 733 */,
 /* 734 */,
 /* 735 */,
@@ -36021,48 +36356,162 @@
 	  };
 
 	  var createCheckboxInput = function createCheckboxInput(prop, values) {
+	    var label = values.label ? _react2.default.createElement(
+	      'span',
+	      null,
+	      values.label,
+	      ': '
+	    ) : null;
 	    return _react2.default.createElement(
 	      'div',
 	      { key: prop },
-	      values.label,
-	      ':',
+	      label,
 	      _react2.default.createElement('input', { type: 'checkbox', 'data-prop': prop, checked: values.value, onChange: handleCheckboxChange })
 	    );
 	  };
 
-	  var createSliderInput = function createSliderInput(prop, values) {
+	  var createSliderInput = function createSliderInput(prop, values, mini, table) {
 	    var scale = values.max - values.min > 1 ? 1 : 1 / (values.max - values.min),
 	        handleChange = function handleChange(evt, val) {
 	      val /= scale;
-	      val = val < 1 && val > 0 ? val.toPrecision(2) : val;
+	      val = val < 1 && val > -1 && val != 0 ? val.toPrecision(3) : val;
 	      props.onChange(prop, val);
-	    };
+	    },
+	        wrapperClass = "authoring-slider",
+	        label = values.label ? _react2.default.createElement(
+	      'span',
+	      null,
+	      values.label,
+	      ': '
+	    ) : null;
+	    if (mini) {
+	      wrapperClass += " mini";
+	    }
 	    return _react2.default.createElement(
 	      'div',
-	      { key: prop },
-	      values.label,
-	      ': ',
-	      values.value,
+	      { className: wrapperClass, key: prop },
+	      _react2.default.createElement(
+	        'div',
+	        null,
+	        label,
+	        values.value
+	      ),
 	      _react2.default.createElement(_Slider2.default, {
 	        min: values.min * scale,
 	        max: values.max * scale,
 	        value: values.value * scale,
 	        step: (values.max - values.min) * scale / 100,
 	        onChange: handleChange,
-	        sliderStyle: { marginTop: 5, marginBottom: 5, width: "200px" }
+	        sliderStyle: { marginTop: 5, marginBottom: 5, width: table ? "160px" : "200px" }
 	      })
 	    );
 	  };
 
-	  var inputs = Object.keys(props).map(function (key) {
-	    if (!props[key].hasOwnProperty("label")) {
+	  function modelInputMap(key) {
+	    if (!props[key].hasOwnProperty("label") || props[key].hasOwnProperty("element")) {
 	      return null;
 	    } else if (typeof props[key].value === "number") {
 	      return createSliderInput(key, props[key]);
 	    } else {
 	      return createCheckboxInput(key, props[key]);
 	    }
-	  });
+	  }
+
+	  function elementInputMap(element) {
+	    return function (key) {
+	      if (props[key].hasOwnProperty("element") && props[key].element == element) {
+	        return createSliderInput(key, props[key], true);
+	      }
+	    };
+	  }
+
+	  function createPairwiseTable() {
+	    var pairwiseUI = { use: [[], [], []], epsilon: [[], [], []], sigma: [[], [], []] };
+	    for (var key in props) {
+	      var prop = props[key];
+	      if (prop.hasOwnProperty("element1")) {
+	        var ui = void 0;
+	        if (prop.property == "use") {
+	          ui = createCheckboxInput(key, prop);
+	        } else {
+	          ui = createSliderInput(key, prop, false, true);
+	        }
+	        pairwiseUI[prop.property][prop.element1][prop.element2] = ui;
+	      }
+	    }
+	    var rows = [];
+	    for (var i = 0, ii = pairwiseUI.use.length; i < ii; i++) {
+	      for (var j = i, jj = pairwiseUI.use[i].length; j < jj; j++) {
+	        if (pairwiseUI.use[i][j]) {
+	          rows.push(_react2.default.createElement(
+	            'tr',
+	            null,
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              i + 1,
+	              '-',
+	              j + 1
+	            ),
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              pairwiseUI.use[i][j]
+	            ),
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              pairwiseUI.epsilon[i][j]
+	            ),
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              pairwiseUI.sigma[i][j]
+	            )
+	          ));
+	        }
+	      }
+	    }
+	    return _react2.default.createElement(
+	      'table',
+	      null,
+	      _react2.default.createElement(
+	        'tr',
+	        null,
+	        _react2.default.createElement(
+	          'th',
+	          null,
+	          'Pair'
+	        ),
+	        _react2.default.createElement(
+	          'th',
+	          null,
+	          'Use?'
+	        ),
+	        _react2.default.createElement(
+	          'th',
+	          null,
+	          'Epsilon'
+	        ),
+	        _react2.default.createElement(
+	          'th',
+	          null,
+	          'Sigma'
+	        )
+	      ),
+	      _react2.default.createElement(
+	        'tbody',
+	        null,
+	        rows
+	      )
+	    );
+	  }
+
+	  var inputs = Object.keys(props).map(modelInputMap),
+	      elem1 = Object.keys(props).map(elementInputMap(0)),
+	      elem2 = Object.keys(props).map(elementInputMap(1)),
+	      elem3 = Object.keys(props).map(elementInputMap(2)),
+	      pairwiseTable = createPairwiseTable();
 
 	  return _react2.default.createElement(
 	    'div',
@@ -36072,7 +36521,31 @@
 	      null,
 	      'Authoring'
 	    ),
-	    inputs
+	    inputs,
+	    _react2.default.createElement(
+	      'h4',
+	      null,
+	      'Element 1'
+	    ),
+	    elem1,
+	    _react2.default.createElement(
+	      'h4',
+	      null,
+	      'Element 2'
+	    ),
+	    elem2,
+	    _react2.default.createElement(
+	      'h4',
+	      null,
+	      'Element 3'
+	    ),
+	    elem3,
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      'Pairwise Forces'
+	    ),
+	    pairwiseTable
 	  );
 	};
 
@@ -36170,6 +36643,7 @@
 			"chargeShading": false,
 			"useThreeLetterCode": true,
 			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": false,
 			"showChargeSymbols": true,
 			"showVDWLines": false,
 			"VDWLinesCutoff": "medium",
@@ -36204,35 +36678,94 @@
 			},
 			"forceVectorsDirectionOnly": false
 		},
-		"pairwiseLJProperties": [],
+		"pairwiseLJProperties": [
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 0,
+				"element2": 3
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 0,
+				"element2": 4
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 0,
+				"element2": 5
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 1,
+				"element2": 3
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 1,
+				"element2": 4
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 1,
+				"element2": 5
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 2,
+				"element2": 3
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 2,
+				"element2": 4
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 2,
+				"element2": 5
+			}
+		],
 		"elements": {
 			"mass": [
 				20,
 				100,
 				30,
-				80,
-				600
+				20,
+				100,
+				30
 			],
 			"sigma": [
 				0.19149999618530272,
 				0.19149999618530272,
 				0.19149999618530272,
-				0.28,
-				0.3
+				0.19149999618530272,
+				0.19149999618530272,
+				0.19149999618530272
 			],
 			"epsilon": [
 				-0.05,
 				-0.1,
 				-0.000001,
-				-0.1,
-				-0.1
+				0,
+				0,
+				0
 			],
 			"color": [
 				-855310,
 				-9066941,
 				-13159,
-				-2539040,
-				-855310
+				-855310,
+				-9066941,
+				-13159
 			]
 		},
 		"atoms": {
@@ -36364,6 +36897,7 @@
 			"chargeShading": false,
 			"useThreeLetterCode": true,
 			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": false,
 			"showChargeSymbols": true,
 			"showVDWLines": false,
 			"VDWLinesCutoff": "medium",
@@ -36398,35 +36932,94 @@
 			},
 			"forceVectorsDirectionOnly": false
 		},
-		"pairwiseLJProperties": [],
+		"pairwiseLJProperties": [
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 0,
+				"element2": 3
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 0,
+				"element2": 4
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 0,
+				"element2": 5
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 1,
+				"element2": 3
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 1,
+				"element2": 4
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 1,
+				"element2": 5
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 2,
+				"element2": 3
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 2,
+				"element2": 4
+			},
+			{
+				"sigma": 0.3,
+				"epsilon": 0,
+				"element1": 2,
+				"element2": 5
+			}
+		],
 		"elements": {
 			"mass": [
 				20,
 				100,
 				30,
-				80,
-				600
+				20,
+				100,
+				30
 			],
 			"sigma": [
 				0.19149999618530272,
 				0.19149999618530272,
 				0.19149999618530272,
-				0.28,
-				0.3
+				0.19149999618530272,
+				0.19149999618530272,
+				0.19149999618530272
 			],
 			"epsilon": [
 				-0.05,
 				-0.1,
 				-0.000001,
-				-0.1,
-				-0.1
+				0,
+				0,
+				0
 			],
 			"color": [
 				-855310,
 				-9066941,
 				-13159,
-				-2539040,
-				-855310
+				-855310,
+				-9066941,
+				-13159
 			]
 		},
 		"atoms": {
@@ -36444,6 +37037,269 @@
 
 /***/ },
 /* 771 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = {
+	  authoring: false,
+	  temperatureControl: {
+	    label: "Heatbath",
+	    value: false
+	  },
+	  targetTemperature: {
+	    label: "Heatbath temperature",
+	    value: 0,
+	    min: 0,
+	    max: 1000
+	  },
+	  showGauge: {
+	    label: "Show Temperature Control",
+	    value: false
+	  },
+	  gravitationalField: {
+	    label: "Gravity",
+	    value: 0,
+	    min: 0,
+	    max: 1e-5
+	  },
+	  timeStep: {
+	    label: "Time step",
+	    value: 1,
+	    min: 0,
+	    max: 5
+	  },
+	  viscosity: {
+	    label: "Viscosity",
+	    value: 1,
+	    min: 0,
+	    max: 10
+	  },
+	  showFreezeButton: {
+	    label: "Show Freeze Button",
+	    value: false
+	  },
+	  startWithAtoms: {
+	    label: "Start With Existing Atoms",
+	    value: false
+	  },
+
+	  element1Sigma: {
+	    label: "Sigma",
+	    element: 0,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+	  element1Epsilon: {
+	    label: "Epsilon",
+	    element: 0,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  element1Mass: {
+	    label: "Mass",
+	    element: 0,
+	    property: "mass",
+	    value: 20,
+	    min: 10,
+	    max: 1000
+	  },
+
+	  element2Sigma: {
+	    label: "Sigma",
+	    element: 1,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+	  element2Epsilon: {
+	    label: "Epsilon",
+	    element: 1,
+	    property: "epsilon",
+	    value: -0.1,
+	    min: -0.5,
+	    max: 0
+	  },
+	  element2Mass: {
+	    label: "Mass",
+	    element: 1,
+	    property: "mass",
+	    value: 100,
+	    min: 10,
+	    max: 1000
+	  },
+
+	  element3Sigma: {
+	    label: "Sigma",
+	    element: 2,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+	  element3Epsilon: {
+	    label: "Epsilon",
+	    element: 2,
+	    property: "epsilon",
+	    value: -0.000001,
+	    min: -0.5,
+	    max: 0
+	  },
+	  element3Mass: {
+	    label: "Mass",
+	    element: 2,
+	    property: "mass",
+	    value: 30,
+	    min: 10,
+	    max: 1000
+	  },
+
+	  pair11Forces: {
+	    element1: 0,
+	    element2: 0,
+	    property: "use",
+	    value: false
+	  },
+	  pair11Epsilon: {
+	    element1: 0,
+	    element2: 0,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  pair11Sigma: {
+	    element1: 0,
+	    element2: 0,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+
+	  pair12Forces: {
+	    element1: 0,
+	    element2: 1,
+	    property: "use",
+	    value: false
+	  },
+	  pair12Epsilon: {
+	    element1: 0,
+	    element2: 1,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  pair12Sigma: {
+	    element1: 0,
+	    element2: 1,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+
+	  pair13Forces: {
+	    element1: 0,
+	    element2: 2,
+	    property: "use",
+	    value: false
+	  },
+	  pair13Epsilon: {
+	    element1: 0,
+	    element2: 2,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  pair13Sigma: {
+	    element1: 0,
+	    element2: 2,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+
+	  pair22Forces: {
+	    element1: 1,
+	    element2: 1,
+	    property: "use",
+	    value: false
+	  },
+	  pair22Epsilon: {
+	    element1: 1,
+	    element2: 1,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  pair22Sigma: {
+	    element1: 1,
+	    element2: 1,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+
+	  pair23Forces: {
+	    element1: 1,
+	    element2: 2,
+	    property: "use",
+	    value: false
+	  },
+	  pair23Epsilon: {
+	    element1: 1,
+	    element2: 2,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  pair23Sigma: {
+	    element1: 1,
+	    element2: 2,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  },
+
+	  pair33Forces: {
+	    element1: 2,
+	    element2: 2,
+	    property: "use",
+	    value: false
+	  },
+	  pair33Epsilon: {
+	    element1: 2,
+	    element2: 2,
+	    property: "epsilon",
+	    value: -0.05,
+	    min: -0.5,
+	    max: 0
+	  },
+	  pair33Sigma: {
+	    element1: 2,
+	    element2: 2,
+	    property: "sigma",
+	    value: 0.1915,
+	    min: 0.01,
+	    max: 0.5
+	  }
+	};
+
+/***/ },
+/* 772 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -36542,7 +37398,7 @@
 	};
 
 /***/ },
-/* 772 */
+/* 773 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36579,13 +37435,13 @@
 	exports.default = ActionDeleteForever;
 
 /***/ },
-/* 773 */
+/* 774 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(774);
+	var content = __webpack_require__(775);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -36605,7 +37461,7 @@
 	}
 
 /***/ },
-/* 774 */
+/* 775 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -36613,7 +37469,7 @@
 
 
 	// module
-	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 50px;\n  color: #444;\n}\n.authoring-form h3 {\n  padding-bottom: 10px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: -webkit-radial-gradient(8px 8px circle, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: -webkit-radial-gradient(8px 8px circle, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n.lab-ui button {\n  position: absolute;\n  top: -60px;\n  left: 20px;\n  padding: 4px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\n", ""]);
+	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 50px;\n  color: #444;\n}\n.authoring-form h3 {\n  padding-bottom: 10px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  -webkit-transition: background 1.5s;\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: -webkit-radial-gradient(8px 8px circle, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  -webkit-transition: opacity 1.5s;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: -webkit-radial-gradient(8px 8px circle, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: -webkit-radial-gradient(8px 8px circle, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  -webkit-transition: background 0s;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  -webkit-transition: opacity 0s;\n  transition: opacity 0s;\n}\n.lab-ui button {\n  position: absolute;\n  top: -60px;\n  left: 20px;\n  padding: 4px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\n.lab-ui .meter {\n  position: absolute;\n  top: -180px;\n  left: -72px;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
 
 	// exports
 

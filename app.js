@@ -50696,6 +50696,10 @@
 
 		var _iframePhone2 = _interopRequireDefault(_iframePhone);
 
+		var _modelOnlyInteractive = __webpack_require__(66);
+
+		var _modelOnlyInteractive2 = _interopRequireDefault(_modelOnlyInteractive);
+
 		var DEF_UPDATE_DELAY = 75; // ms
 
 		var Lab = (function (_React$Component) {
@@ -50943,10 +50947,10 @@
 		exports['default'] = Lab;
 
 		Lab.PropTypes = {
-		  // Lab interactive JSON (parsed).
-		  interactive: _react2['default'].PropTypes.object.isRequired,
 		  // Lab model JSON (parsed).
 		  model: _react2['default'].PropTypes.object.isRequired,
+		  // Lab interactive JSON (parsed). If not provided, MODEL_ONLY_INTERACTIVE will be used.
+		  interactive: _react2['default'].PropTypes.object,
 		  // Source to Lab embeddable page. Needs to be under the same domain as the application.
 		  // This package is providing lab distribution that can be used (/lab).
 		  embeddableSrc: _react2['default'].PropTypes.string,
@@ -50972,6 +50976,7 @@
 		};
 
 		Lab.defaultProps = {
+		  interactive: _modelOnlyInteractive2['default'],
 		  embeddableSrc: 'lab/embeddable.html',
 		  width: '565px',
 		  height: '435px',
@@ -52361,6 +52366,29 @@
 		    this.disconnect = disconnect.bind(this);
 		};
 
+
+	/***/ },
+	/* 66 */
+	/***/ function(module, exports) {
+
+		// Simple Lab interactive that ensures that only Lab model is visible.
+		"use strict";
+
+		Object.defineProperty(exports, "__esModule", {
+		  value: true
+		});
+		exports["default"] = {
+		  "title": "Lab Interactive",
+		  "aspectRatio": 1,
+		  "theme": "no-framing",
+		  "showTopBar": false,
+		  "showBottomBar": false,
+		  "models": [{
+		    "type": "md2d",
+		    "id": "model"
+		  }]
+		};
+		module.exports = exports["default"];
 
 	/***/ }
 	/******/ ])
