@@ -58,20 +58,36 @@ export default class Interactive extends PureComponent {
 
   setModelProps(prevState = {}) {
     let newModelProperties = {},
-        newElementProperties = [{}, {}, {}];
+        newElementProperties = [{}, {}, {}],
+        newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
     for (let prop in authorableProps) {
       let value = this.state[prop];
       if (value !== "" && value !== prevState[prop]) {
         if (value.hasOwnProperty("element")) {
           newElementProperties[value.element][value.property] = parseToPrimitive(value);
+        } else if (value.hasOwnProperty("element1")) {
+          newPairwiseProperties[parseToPrimitive(value.element1)][parseToPrimitive(value.element2)][value.property] = parseToPrimitive(value);
         } else {
           newModelProperties[prop] = parseToPrimitive(value);
         }
       }
     }
+
     api.set(newModelProperties);
     for (let elem in newElementProperties) {
       api.setElementProperties(elem, newElementProperties[elem]);
+    }
+    for (let elem1 = 0; elem1 < newPairwiseProperties.length; elem1++) {
+      for (let elem2 = 0; elem2 < newPairwiseProperties[elem1].length; elem2++) {
+        let pairValue = newPairwiseProperties[elem1][elem2];
+        if (Object.keys(pairValue).length > 0) {
+          if (this.state[`pair${(elem1+1)}${(elem2+1)}Forces`].value) {
+            api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Epsilon`].value) });
+          } else {
+            api.removePairwiseLJProperties(elem1, elem2);
+          }
+        }
+      }
     }
   }
 
