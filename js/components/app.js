@@ -18,15 +18,17 @@ darkBaseTheme.palette.textColor = '#ccc';
 const App = () => (
   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
     <div className="app">
+      <div className="app-container">
+        <div className="thermoscope-container">
+          <div className="label">A</div>
+          <Thermoscope sensor={LabQuest2} probeIndex={0}/>
+        </div>
+        <div className="thermoscope-container">
+          <div className="label">B</div>
+          <Thermoscope sensor={LabQuest2} probeIndex={1}/>
+        </div>
+      </div>
       <Sensor sensor={LabQuest2}/>
-      <div className="thermoscope-container">
-        <div className="label">A</div>
-        <Thermoscope sensor={LabQuest2} probeIndex={0}/>
-      </div>
-      <div className="thermoscope-container">
-        <div className="label">B</div>
-        <Thermoscope sensor={LabQuest2} probeIndex={1}/>
-      </div>
     </div>
   </MuiThemeProvider>
 );

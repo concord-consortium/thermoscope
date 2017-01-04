@@ -195,16 +195,18 @@ export default class Interactive extends PureComponent {
     return (
       <MuiThemeProvider>
         <div className={appClass}>
-          <div className="lab-wrapper">
-            <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
-                playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
-            <div className="lab-ui">
-              <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
-              { freezeButton }
-              <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
+          <div className="app-container">
+            <div className="lab-wrapper">
+              <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
+                  playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
+              <div className="lab-ui">
+                <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
+                { freezeButton }
+                <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
+              </div>
             </div>
+            {authoringPanel}
           </div>
-          { authoringPanel }
         </div>
       </MuiThemeProvider>
     );
