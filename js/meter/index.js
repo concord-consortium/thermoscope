@@ -43,14 +43,16 @@ export default class MeterThermoscope extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="meter-thermoscope">
-          <Sensor sensor={LabQuest2}/>
-          <div className="thermoscope-container">
-            <div className="label">A</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
-          </div>
-          <div className="thermoscope-container">
-            <div className="label">B</div>
-            <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
+          <Sensor sensor={LabQuest2} />
+          <div className="app-container">
+            <div className="thermoscope-container">
+              <div className="label">A</div>
+              <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
+            </div>
+            <div className="thermoscope-container">
+              <div className="label">B</div>
+              <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
+            </div>
           </div>
         </div>
       </MuiThemeProvider>
