@@ -80,11 +80,15 @@
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
+	var _sensor = __webpack_require__(750);
+
+	var _sensor2 = _interopRequireDefault(_sensor);
+
 	var _sensorLabquest2Interface = __webpack_require__(757);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(764);
+	__webpack_require__(762);
 
 	__webpack_require__(766);
 
@@ -101,79 +105,64 @@
 
 	_darkBaseTheme2.default.palette.textColor = '#ccc';
 
-	var ThreeThermoscope = function (_PureComponent) {
-	  _inherits(ThreeThermoscope, _PureComponent);
+	var meterSegments = [{
+	  color: "#4444ff",
+	  start: 0,
+	  end: 50
+	}, {
+	  color: "#cccc00",
+	  start: 50,
+	  end: 130
+	}, {
+	  color: "#ff0000",
+	  start: 130,
+	  end: 180
+	}];
 
-	  function ThreeThermoscope(props) {
-	    _classCallCheck(this, ThreeThermoscope);
+	var OneThermoscope = function (_PureComponent) {
+	  _inherits(OneThermoscope, _PureComponent);
 
-	    return _possibleConstructorReturn(this, (ThreeThermoscope.__proto__ || Object.getPrototypeOf(ThreeThermoscope)).call(this, props));
+	  function OneThermoscope(props) {
+	    _classCallCheck(this, OneThermoscope);
+
+	    return _possibleConstructorReturn(this, (OneThermoscope.__proto__ || Object.getPrototypeOf(OneThermoscope)).call(this, props));
 	  }
 
-	  _createClass(ThreeThermoscope, [{
+	  _createClass(OneThermoscope, [{
 	    key: 'render',
 	    value: function render() {
-	      var meterSegments = [{
-	        color: "#800000",
-	        start: 0,
-	        end: 45
-	      }, {
-	        color: "#a0a000",
-	        start: 45,
-	        end: 145
-	      }, {
-	        color: "#008000",
-	        start: 145,
-	        end: 180
-	      }];
 	      return _react2.default.createElement(
 	        _MuiThemeProvider2.default,
 	        { muiTheme: (0, _getMuiTheme2.default)(_darkBaseTheme2.default) },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'three-thermoscope' },
+	          { className: 'app' },
 	          _react2.default.createElement(
 	            'div',
-	            { className: 'thermoscope-container' },
+	            { className: 'app-container' },
 	            _react2.default.createElement(
 	              'div',
-	              { className: 'label' },
-	              'A'
-	            ),
-	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 0, temperature: 5, material: 'solid', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments, minClamp: 0, maxClamp: 0.25 })
+	              { className: 'three-thermoscope' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'thermoscope-container' },
+	                _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 0, temperature: 5, showMaterialControls: false, material: 'uniform', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments })
+	              )
+	            )
 	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'thermoscope-container' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'label' },
-	              'B'
-	            ),
-	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 1, temperature: 30, material: 'liquid', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments, minClamp: 0.25, maxClamp: 0.8 })
-	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'thermoscope-container' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'label' },
-	              'C'
-	            ),
-	            _react2.default.createElement(_thermoscope2.default, { sensor: _sensorLabquest2Interface2.default, probeIndex: 2, temperature: 50, material: 'gas', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments, minClamp: 0.8, maxClamp: 1 })
-	          )
+	          _react2.default.createElement(_sensor2.default, { sensor: _sensorLabquest2Interface2.default })
 	        )
 	      );
 	    }
 	  }]);
 
-	  return ThreeThermoscope;
+	  return OneThermoscope;
 	}(_react.PureComponent);
 
-	exports.default = ThreeThermoscope;
+	exports.default = OneThermoscope;
 
 
-	_reactDom2.default.render(_react2.default.createElement(ThreeThermoscope, null), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(OneThermoscope, null), document.getElementById('app'));
 
 /***/ },
 /* 1 */,
@@ -56401,13 +56390,933 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 750 */,
-/* 751 */,
-/* 752 */,
-/* 753 */,
-/* 754 */,
-/* 755 */,
-/* 756 */,
+/* 750 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _TextField = __webpack_require__(684);
+
+	var _TextField2 = _interopRequireDefault(_TextField);
+
+	var _LinearProgress = __webpack_require__(751);
+
+	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
+
+	var _RaisedButton = __webpack_require__(753);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	__webpack_require__(755);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var Sensor = function (_PureComponent) {
+	  _inherits(Sensor, _PureComponent);
+
+	  function Sensor(props) {
+	    _classCallCheck(this, Sensor);
+
+	    var _this = _possibleConstructorReturn(this, (Sensor.__proto__ || Object.getPrototypeOf(Sensor)).call(this, props));
+
+	    _this.state = { connected: false, connecting: false, showDetails: false };
+	    _this.connectedSensor = _this.props.sensor;
+	    _this.handleIPAddressChange = _this.handleIPAddressChange.bind(_this);
+	    _this.connect = _this.connect.bind(_this);
+	    _this.enterkey = _this.enterkey.bind(_this);
+	    _this.toggleDisplay = _this.toggleDisplay.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(Sensor, [{
+	    key: 'handleIPAddressChange',
+	    value: function handleIPAddressChange(event) {
+	      this.setState({ ipAddress: event.target.value });
+	    }
+	  }, {
+	    key: 'enterkey',
+	    value: function enterkey(event, value) {
+	      if (event.keyCode == 13) {
+	        this.connectSensor();
+	      }
+	    }
+	  }, {
+	    key: 'connect',
+	    value: function connect(event, value) {
+	      this.connectSensor();
+	    }
+	  }, {
+	    key: 'connectSensor',
+	    value: function connectSensor() {
+	      if (!this.state.connected) {
+	        this.setState({ connecting: true });
+	        this.connectedSensor.connect(this.state.ipAddress);
+	        this.connectedSensor.on('connected', this.connected.bind(this));
+	      }
+	    }
+	  }, {
+	    key: 'connected',
+	    value: function connected(event) {
+	      this.setState({ connected: true, connecting: false });
+	    }
+	  }, {
+	    key: 'toggleDisplay',
+	    value: function toggleDisplay(event) {
+	      this.setState({ showDetails: this.state.showDetails ? false : true });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _state = this.state,
+	          connected = _state.connected,
+	          connecting = _state.connecting,
+	          showDetails = _state.showDetails;
+
+	      var connectStatus = connected ? "Connected." : "";
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'sensorConnect' },
+	        _react2.default.createElement(
+	          'div',
+	          { id: 'toggleSensorDisplay', onClick: this.toggleDisplay },
+	          _react2.default.createElement(
+	            'i',
+	            { className: 'material-icons' },
+	            'settings_input_antenna'
+	          )
+	        ),
+	        showDetails && _react2.default.createElement(
+	          'div',
+	          { className: 'sensorDetails' },
+	          _react2.default.createElement(_TextField2.default, { hintText: 'IP Address', ref: 'ip', type: 'text', id: 'ipAddress', onChange: this.handleIPAddressChange, onKeyDown: this.enterkey }),
+	          _react2.default.createElement(
+	            _RaisedButton2.default,
+	            { id: 'connect', onClick: this.connect },
+	            'Connect'
+	          ),
+	          connecting && _react2.default.createElement(_LinearProgress2.default, null),
+	          !connecting && _react2.default.createElement(
+	            'div',
+	            { id: 'sensorConnectionStatus' },
+	            connectStatus
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Sensor;
+	}(_react.PureComponent);
+
+	exports.default = Sensor;
+
+/***/ },
+/* 751 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _LinearProgress = __webpack_require__(752);
+
+	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _LinearProgress2.default;
+
+/***/ },
+/* 752 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getRelativeValue(value, min, max) {
+	  var clampedValue = Math.min(Math.max(min, value), max);
+	  var rangeValue = max - min;
+	  var relValue = Math.round((clampedValue - min) / rangeValue * 10000) / 10000;
+	  return relValue * 100;
+	}
+
+	function getStyles(props, context) {
+	  var max = props.max,
+	      min = props.min,
+	      value = props.value;
+	  var palette = context.muiTheme.baseTheme.palette;
+
+
+	  var styles = {
+	    root: {
+	      position: 'relative',
+	      height: 4,
+	      display: 'block',
+	      width: '100%',
+	      backgroundColor: palette.primary3Color,
+	      borderRadius: 2,
+	      margin: 0,
+	      overflow: 'hidden'
+	    },
+	    bar: {
+	      height: '100%'
+	    },
+	    barFragment1: {},
+	    barFragment2: {}
+	  };
+
+	  if (props.mode === 'indeterminate') {
+	    styles.barFragment1 = {
+	      position: 'absolute',
+	      backgroundColor: props.color || palette.primary1Color,
+	      top: 0,
+	      left: 0,
+	      bottom: 0,
+	      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.650, 0.815, 0.735, 0.395)')
+	    };
+
+	    styles.barFragment2 = {
+	      position: 'absolute',
+	      backgroundColor: props.color || palette.primary1Color,
+	      top: 0,
+	      left: 0,
+	      bottom: 0,
+	      transition: _transitions2.default.create('all', '840ms', null, 'cubic-bezier(0.165, 0.840, 0.440, 1.000)')
+	    };
+	  } else {
+	    styles.bar.backgroundColor = props.color || palette.primary1Color;
+	    styles.bar.transition = _transitions2.default.create('width', '.3s', null, 'linear');
+	    styles.bar.width = getRelativeValue(value, min, max) + '%';
+	  }
+
+	  return styles;
+	}
+
+	var LinearProgress = function (_Component) {
+	  (0, _inherits3.default)(LinearProgress, _Component);
+
+	  function LinearProgress() {
+	    (0, _classCallCheck3.default)(this, LinearProgress);
+	    return (0, _possibleConstructorReturn3.default)(this, (LinearProgress.__proto__ || (0, _getPrototypeOf2.default)(LinearProgress)).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(LinearProgress, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this2 = this;
+
+	      this.timers = {};
+
+	      this.timers.bar1 = this.barUpdate('bar1', 0, this.refs.bar1, [[-35, 100], [100, -90]]);
+
+	      this.timers.bar2 = setTimeout(function () {
+	        _this2.barUpdate('bar2', 0, _this2.refs.bar2, [[-200, 100], [107, -8]]);
+	      }, 850);
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      clearTimeout(this.timers.bar1);
+	      clearTimeout(this.timers.bar2);
+	    }
+	  }, {
+	    key: 'barUpdate',
+	    value: function barUpdate(id, step, barElement, stepValues) {
+	      var _this3 = this;
+
+	      if (this.props.mode !== 'indeterminate') return;
+
+	      step = step || 0;
+	      step %= 4;
+
+	      var right = this.context.muiTheme.isRtl ? 'left' : 'right';
+	      var left = this.context.muiTheme.isRtl ? 'right' : 'left';
+
+	      if (step === 0) {
+	        barElement.style[left] = stepValues[0][0] + '%';
+	        barElement.style[right] = stepValues[0][1] + '%';
+	      } else if (step === 1) {
+	        barElement.style.transitionDuration = '840ms';
+	      } else if (step === 2) {
+	        barElement.style[left] = stepValues[1][0] + '%';
+	        barElement.style[right] = stepValues[1][1] + '%';
+	      } else if (step === 3) {
+	        barElement.style.transitionDuration = '0ms';
+	      }
+	      this.timers[id] = setTimeout(function () {
+	        return _this3.barUpdate(id, step + 1, barElement, stepValues);
+	      }, 420);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['style']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context);
+
+	      return _react2.default.createElement(
+	        'div',
+	        (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
+	        _react2.default.createElement(
+	          'div',
+	          { style: prepareStyles(styles.bar) },
+	          _react2.default.createElement('div', { ref: 'bar1', style: prepareStyles(styles.barFragment1) }),
+	          _react2.default.createElement('div', { ref: 'bar2', style: prepareStyles(styles.barFragment2) })
+	        )
+	      );
+	    }
+	  }]);
+	  return LinearProgress;
+	}(_react.Component);
+
+	LinearProgress.defaultProps = {
+	  mode: 'indeterminate',
+	  value: 0,
+	  min: 0,
+	  max: 100
+	};
+	LinearProgress.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? LinearProgress.propTypes = {
+	  /**
+	   * The mode of show your progress, indeterminate for
+	   * when there is no value for progress.
+	   */
+	  color: _react.PropTypes.string,
+	  /**
+	   * The max value of progress, only works in determinate mode.
+	   */
+	  max: _react.PropTypes.number,
+	  /**
+	   * The min value of progress, only works in determinate mode.
+	   */
+	  min: _react.PropTypes.number,
+	  /**
+	   * The mode of show your progress, indeterminate for when
+	   * there is no value for progress.
+	   */
+	  mode: _react.PropTypes.oneOf(['determinate', 'indeterminate']),
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * The value of progress, only works in determinate mode.
+	   */
+	  value: _react.PropTypes.number
+	} : void 0;
+	exports.default = LinearProgress;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
+/* 753 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _RaisedButton = __webpack_require__(754);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _RaisedButton2.default;
+
+/***/ },
+/* 754 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _colorManipulator = __webpack_require__(575);
+
+	var _childUtils = __webpack_require__(711);
+
+	var _EnhancedButton = __webpack_require__(710);
+
+	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
+
+	var _Paper = __webpack_require__(665);
+
+	var _Paper2 = _interopRequireDefault(_Paper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function validateLabel(props, propName, componentName) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
+	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
+	    }
+	  }
+	}
+
+	function getStyles(props, context, state) {
+	  var _context$muiTheme = context.muiTheme,
+	      baseTheme = _context$muiTheme.baseTheme,
+	      button = _context$muiTheme.button,
+	      raisedButton = _context$muiTheme.raisedButton;
+	  var disabled = props.disabled,
+	      disabledBackgroundColor = props.disabledBackgroundColor,
+	      disabledLabelColor = props.disabledLabelColor,
+	      fullWidth = props.fullWidth,
+	      icon = props.icon,
+	      label = props.label,
+	      labelPosition = props.labelPosition,
+	      primary = props.primary,
+	      secondary = props.secondary,
+	      style = props.style;
+
+
+	  var amount = primary || secondary ? 0.4 : 0.08;
+
+	  var backgroundColor = raisedButton.color;
+	  var labelColor = raisedButton.textColor;
+
+	  if (disabled) {
+	    backgroundColor = disabledBackgroundColor || raisedButton.disabledColor;
+	    labelColor = disabledLabelColor || raisedButton.disabledTextColor;
+	  } else if (primary) {
+	    backgroundColor = raisedButton.primaryColor;
+	    labelColor = raisedButton.primaryTextColor;
+	  } else if (secondary) {
+	    backgroundColor = raisedButton.secondaryColor;
+	    labelColor = raisedButton.secondaryTextColor;
+	  } else {
+	    if (props.backgroundColor) {
+	      backgroundColor = props.backgroundColor;
+	    }
+	    if (props.labelColor) {
+	      labelColor = props.labelColor;
+	    }
+	  }
+
+	  var buttonHeight = style && style.height || button.height;
+	  var borderRadius = 2;
+
+	  return {
+	    root: {
+	      display: 'inline-block',
+	      transition: _transitions2.default.easeOut(),
+	      minWidth: fullWidth ? '100%' : button.minWidth
+	    },
+	    button: {
+	      position: 'relative',
+	      height: buttonHeight,
+	      lineHeight: buttonHeight + 'px',
+	      width: '100%',
+	      padding: 0,
+	      borderRadius: borderRadius,
+	      transition: _transitions2.default.easeOut(),
+	      backgroundColor: backgroundColor,
+	      // That's the default value for a button but not a link
+	      textAlign: 'center'
+	    },
+	    label: {
+	      position: 'relative',
+	      opacity: 1,
+	      fontSize: raisedButton.fontSize,
+	      letterSpacing: 0,
+	      textTransform: raisedButton.textTransform || button.textTransform || 'uppercase',
+	      fontWeight: raisedButton.fontWeight,
+	      margin: 0,
+	      userSelect: 'none',
+	      paddingLeft: icon && labelPosition !== 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
+	      paddingRight: icon && labelPosition === 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
+	      color: labelColor
+	    },
+	    icon: {
+	      verticalAlign: 'middle',
+	      marginLeft: label && labelPosition !== 'before' ? 12 : 0,
+	      marginRight: label && labelPosition === 'before' ? 12 : 0
+	    },
+	    overlay: {
+	      height: buttonHeight,
+	      borderRadius: borderRadius,
+	      backgroundColor: (state.keyboardFocused || state.hovered) && !disabled && (0, _colorManipulator.fade)(labelColor, amount),
+	      transition: _transitions2.default.easeOut(),
+	      top: 0
+	    },
+	    ripple: {
+	      color: labelColor,
+	      opacity: !(primary || secondary) ? 0.1 : 0.16
+	    }
+	  };
+	}
+
+	var RaisedButton = function (_Component) {
+	  (0, _inherits3.default)(RaisedButton, _Component);
+
+	  function RaisedButton() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, RaisedButton);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = RaisedButton.__proto__ || (0, _getPrototypeOf2.default)(RaisedButton)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false,
+	      keyboardFocused: false,
+	      touched: false,
+	      initialZDepth: 0,
+	      zDepth: 0
+	    }, _this.handleMouseDown = function (event) {
+	      // only listen to left clicks
+	      if (event.button === 0) {
+	        _this.setState({
+	          zDepth: _this.state.initialZDepth + 1
+	        });
+	      }
+	      if (_this.props.onMouseDown) {
+	        _this.props.onMouseDown(event);
+	      }
+	    }, _this.handleMouseUp = function (event) {
+	      _this.setState({
+	        zDepth: _this.state.initialZDepth
+	      });
+	      if (_this.props.onMouseUp) {
+	        _this.props.onMouseUp(event);
+	      }
+	    }, _this.handleMouseLeave = function (event) {
+	      if (!_this.state.keyboardFocused) {
+	        _this.setState({
+	          zDepth: _this.state.initialZDepth,
+	          hovered: false
+	        });
+	      }
+	      if (_this.props.onMouseLeave) {
+	        _this.props.onMouseLeave(event);
+	      }
+	    }, _this.handleMouseEnter = function (event) {
+	      if (!_this.state.keyboardFocused && !_this.state.touched) {
+	        _this.setState({
+	          hovered: true
+	        });
+	      }
+	      if (_this.props.onMouseEnter) {
+	        _this.props.onMouseEnter(event);
+	      }
+	    }, _this.handleTouchStart = function (event) {
+	      _this.setState({
+	        touched: true,
+	        zDepth: _this.state.initialZDepth + 1
+	      });
+
+	      if (_this.props.onTouchStart) {
+	        _this.props.onTouchStart(event);
+	      }
+	    }, _this.handleTouchEnd = function (event) {
+	      _this.setState({
+	        touched: true,
+	        zDepth: _this.state.initialZDepth
+	      });
+
+	      if (_this.props.onTouchEnd) {
+	        _this.props.onTouchEnd(event);
+	      }
+	    }, _this.handleKeyboardFocus = function (event, keyboardFocused) {
+	      var zDepth = keyboardFocused && !_this.props.disabled ? _this.state.initialZDepth + 1 : _this.state.initialZDepth;
+
+	      _this.setState({
+	        zDepth: zDepth,
+	        keyboardFocused: keyboardFocused
+	      });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(RaisedButton, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var zDepth = this.props.disabled ? 0 : 1;
+	      this.setState({
+	        zDepth: zDepth,
+	        initialZDepth: zDepth
+	      });
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var zDepth = nextProps.disabled ? 0 : 1;
+	      var nextState = {
+	        zDepth: zDepth,
+	        initialZDepth: zDepth
+	      };
+
+	      if (nextProps.disabled) {
+	        nextState.hovered = false;
+	      }
+
+	      this.setState(nextState);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          backgroundColor = _props.backgroundColor,
+	          buttonStyle = _props.buttonStyle,
+	          children = _props.children,
+	          className = _props.className,
+	          disabled = _props.disabled,
+	          disabledBackgroundColor = _props.disabledBackgroundColor,
+	          disabledLabelColor = _props.disabledLabelColor,
+	          fullWidth = _props.fullWidth,
+	          icon = _props.icon,
+	          label = _props.label,
+	          labelColor = _props.labelColor,
+	          labelPosition = _props.labelPosition,
+	          labelStyle = _props.labelStyle,
+	          overlayStyle = _props.overlayStyle,
+	          primary = _props.primary,
+	          rippleStyle = _props.rippleStyle,
+	          secondary = _props.secondary,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['backgroundColor', 'buttonStyle', 'children', 'className', 'disabled', 'disabledBackgroundColor', 'disabledLabelColor', 'fullWidth', 'icon', 'label', 'labelColor', 'labelPosition', 'labelStyle', 'overlayStyle', 'primary', 'rippleStyle', 'secondary', 'style']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+	      var mergedRippleStyles = (0, _simpleAssign2.default)({}, styles.ripple, rippleStyle);
+
+	      var buttonEventHandlers = disabled ? {} : {
+	        onMouseDown: this.handleMouseDown,
+	        onMouseUp: this.handleMouseUp,
+	        onMouseLeave: this.handleMouseLeave,
+	        onMouseEnter: this.handleMouseEnter,
+	        onTouchStart: this.handleTouchStart,
+	        onTouchEnd: this.handleTouchEnd,
+	        onKeyboardFocus: this.handleKeyboardFocus
+	      };
+
+	      var labelElement = label && _react2.default.createElement(
+	        'span',
+	        { style: prepareStyles((0, _simpleAssign2.default)(styles.label, labelStyle)) },
+	        label
+	      );
+
+	      var iconCloned = icon && (0, _react.cloneElement)(icon, {
+	        color: icon.props.color || styles.label.color,
+	        style: (0, _simpleAssign2.default)(styles.icon, icon.props.style)
+	      });
+
+	      // Place label before or after children.
+	      var childrenFragment = labelPosition === 'before' ? {
+	        labelElement: labelElement,
+	        iconCloned: iconCloned,
+	        children: children
+	      } : {
+	        children: children,
+	        iconCloned: iconCloned,
+	        labelElement: labelElement
+	      };
+
+	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
+
+	      return _react2.default.createElement(
+	        _Paper2.default,
+	        {
+	          className: className,
+	          style: (0, _simpleAssign2.default)(styles.root, style),
+	          zDepth: this.state.zDepth
+	        },
+	        _react2.default.createElement(
+	          _EnhancedButton2.default,
+	          (0, _extends3.default)({}, other, buttonEventHandlers, {
+	            ref: 'container',
+	            disabled: disabled,
+	            style: (0, _simpleAssign2.default)(styles.button, buttonStyle),
+	            focusRippleColor: mergedRippleStyles.color,
+	            touchRippleColor: mergedRippleStyles.color,
+	            focusRippleOpacity: mergedRippleStyles.opacity,
+	            touchRippleOpacity: mergedRippleStyles.opacity
+	          }),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              ref: 'overlay',
+	              style: prepareStyles((0, _simpleAssign2.default)(styles.overlay, overlayStyle))
+	            },
+	            enhancedButtonChildren
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return RaisedButton;
+	}(_react.Component);
+
+	RaisedButton.muiName = 'RaisedButton';
+	RaisedButton.defaultProps = {
+	  disabled: false,
+	  labelPosition: 'after',
+	  fullWidth: false,
+	  primary: false,
+	  secondary: false
+	};
+	RaisedButton.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? RaisedButton.propTypes = {
+	  /**
+	   * Override the default background color for the button,
+	   * but not the default disabled background color
+	   * (use `disabledBackgroundColor` for this).
+	   */
+	  backgroundColor: _react.PropTypes.string,
+	  /**
+	   * Override the inline-styles of the button element.
+	   */
+	  buttonStyle: _react.PropTypes.object,
+	  /**
+	   * The content of the button.
+	   * If a label is provided via the `label` prop, the text within the label
+	   * will be displayed in addition to the content provided here.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * The CSS class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * If true, the button will be disabled.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	   * Override the default background color for the button
+	   * when it is disabled.
+	   */
+	  disabledBackgroundColor: _react.PropTypes.string,
+	  /**
+	   * The color of the button's label when the button is disabled.
+	   */
+	  disabledLabelColor: _react.PropTypes.string,
+	  /**
+	   * If true, the button will take up the full width of its container.
+	   */
+	  fullWidth: _react.PropTypes.bool,
+	  /**
+	   * The URL to link to when the button is clicked.
+	   */
+	  href: _react.PropTypes.string,
+	  /**
+	   * An icon to be displayed within the button.
+	   */
+	  icon: _react.PropTypes.node,
+	  /**
+	   * The label to be displayed within the button.
+	   * If content is provided via the `children` prop, that content will be
+	   * displayed in addition to the label provided here.
+	   */
+	  label: validateLabel,
+	  /**
+	   * The color of the button's label.
+	   */
+	  labelColor: _react.PropTypes.string,
+	  /**
+	   * The position of the button's label relative to the button's `children`.
+	   */
+	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
+	  /**
+	   * Override the inline-styles of the button's label element.
+	   */
+	  labelStyle: _react.PropTypes.object,
+	  /** @ignore */
+	  onMouseDown: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseUp: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchEnd: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchStart: _react.PropTypes.func,
+	  /**
+	   * Override the inline style of the button overlay.
+	   */
+	  overlayStyle: _react.PropTypes.object,
+	  /**
+	   * If true, the button will use the theme's primary color.
+	   */
+	  primary: _react.PropTypes.bool,
+	  /**
+	   * Override the inline style of the ripple element.
+	   */
+	  rippleStyle: _react.PropTypes.object,
+	  /**
+	   * If true, the button will use the theme's secondary color.
+	   * If both `secondary` and `primary` are true, the button will use
+	   * the theme's primary color.
+	   */
+	  secondary: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = RaisedButton;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
+/* 755 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(756);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(731)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./sensor-connect.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./sensor-connect.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 756 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(730)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".sensorConnect {\n  position: absolute;\n  top: 10px;\n  left: 10px;\n  color: #ccc;\n  margin-right: 4px;\n}\n.sensorConnect button {\n  color: #ccc;\n}\n.sensorConnect i {\n  cursor: pointer;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
 /* 757 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -60085,15 +60994,13 @@
 
 
 /***/ },
-/* 762 */,
-/* 763 */,
-/* 764 */
+/* 762 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(765);
+	var content = __webpack_require__(763);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -60102,8 +61009,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./meter.less", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./meter.less");
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./app.less", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/less-loader/index.js!./../node_modules/autoprefixer-loader/index.js!./app.less");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -60113,7 +61020,7 @@
 	}
 
 /***/ },
-/* 765 */
+/* 763 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -60121,12 +61028,14 @@
 
 
 	// module
-	exports.push([module.id, ".meter-thermoscope {\n  background: #333;\n  color: #ccc;\n  height: 100%;\n}\n.meter-thermoscope .app-container {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n}\n.meter-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.meter {\n  height: 150px;\n  width: 400px;\n  text-align: center;\n  margin: -30px auto 30px;\n  display: block;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
+/* 764 */,
+/* 765 */,
 /* 766 */
 /***/ function(module, exports, __webpack_require__) {
 

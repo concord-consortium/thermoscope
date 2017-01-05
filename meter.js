@@ -76,19 +76,19 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(744);
+	var _reactTapEventPlugin = __webpack_require__(745);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensor = __webpack_require__(749);
+	var _sensor = __webpack_require__(750);
 
 	var _sensor2 = _interopRequireDefault(_sensor);
 
-	var _sensorLabquest2Interface = __webpack_require__(756);
+	var _sensorLabquest2Interface = __webpack_require__(757);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(763);
+	__webpack_require__(764);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29430,7 +29430,7 @@
 
 	var _models2 = _interopRequireDefault(_models);
 
-	__webpack_require__(742);
+	__webpack_require__(743);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29506,7 +29506,8 @@
 	          showMeter = _props.showMeter,
 	          meterSegments = _props.meterSegments,
 	          minClamp = _props.minClamp,
-	          maxClamp = _props.maxClamp;
+	          maxClamp = _props.maxClamp,
+	          showMaterialControls = _props.showMaterialControls;
 
 	      var model = _models2.default[materialType][materialIdx];
 
@@ -29517,6 +29518,8 @@
 	          model: model.json,
 	          tempScale: model.tempScale,
 	          timeStepScale: model.timeStepScale,
+	          gravityScale: model.gravityScale,
+	          coulombForcesSettings: model.coulombForcesSettings,
 	          width: MODEL_WIDTH, height: MODEL_HEIGHT,
 	          embeddableSrc: embeddableSrc
 	        }),
@@ -29539,7 +29542,7 @@
 	                onChange: this.handleTempSliderChange })
 	            )
 	          ),
-	          _react2.default.createElement(
+	          showMaterialControls && _react2.default.createElement(
 	            'div',
 	            { className: 'controls-row' },
 	            _react2.default.createElement(
@@ -29574,6 +29577,11 @@
 	}(_react.PureComponent);
 
 	exports.default = Thermoscope;
+
+
+	Thermoscope.defaultProps = {
+	  showMaterialControls: true
+	};
 
 /***/ },
 /* 626 */
@@ -42956,13 +42964,21 @@
 	      var _props2 = this.props,
 	          temperature = _props2.temperature,
 	          tempScale = _props2.tempScale,
-	          timeStepScale = _props2.timeStepScale;
+	          timeStepScale = _props2.timeStepScale,
+	          gravityScale = _props2.gravityScale,
+	          coulombForcesSettings = _props2.coulombForcesSettings;
 
 	      var props = {
 	        targetTemperature: tempScale(temperature)
 	      };
 	      if (timeStepScale) {
 	        props.timeStep = timeStepScale(temperature);
+	      }
+	      if (gravityScale) {
+	        props.gravitationalField = gravityScale(temperature);
+	      }
+	      if (coulombForcesSettings) {
+	        props.coulombForces = coulombForcesSettings(temperature);
 	      }
 	      return props;
 	    }
@@ -45601,8 +45617,9 @@
 	    key: 'updateMeterPosition',
 	    value: function updateMeterPosition(pos, min) {
 	      var r = this.props.r,
-	          val = (pos - min) / (r * 2);
-	      this.setMeterValue(val);
+	          val = (pos - min) / (r * 2),
+	          angleVal = Math.acos(-2 * (val - 0.5)) / Math.PI;
+	      this.setMeterValue(angleVal);
 	    }
 	  }, {
 	    key: 'onDrag',
@@ -45775,6 +45792,10 @@
 
 	var _gas4 = _interopRequireDefault(_gas3);
 
+	var _uniform = __webpack_require__(742);
+
+	var _uniform2 = _interopRequireDefault(_uniform);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var MIN_TEMP = exports.MIN_TEMP = -6; // *C
@@ -45849,6 +45870,26 @@
 	    },
 	    timeStepScale: function timeStepScale(temp) {
 	      return normalizeTemp(temp) * 0.65 + 0.03;
+	    }
+	  }],
+	  uniform: [{
+	    name: 'Uniform',
+	    json: _uniform2.default,
+	    tempScale: function tempScale(temp) {
+	      var t = normalizeTemp(temp);
+	      if (t < 0.27) return t * 2000 + 1000;else if (t < 0.71) return t * 7000;else return t * 7000 + 1000;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 0.3 + 0.6;
+	    },
+	    gravityScale: function gravityScale(temp) {
+	      var t = normalizeTemp(temp);
+	      if (t < 0.27) return 1e-6;else if (t < 0.71) return 3e-7;else return 1e-8;
+	    },
+	    coulombForcesSettings: function coulombForcesSettings(temp) {
+	      var t = normalizeTemp(temp);
+	      if (t > 0.27 && t < 0.71) return true;
+	      return false;
 	    }
 	  }]
 	};
@@ -55388,12 +55429,636 @@
 
 /***/ },
 /* 742 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"type": "md2d",
+		"imagePath": "",
+		"width": 2.6,
+		"height": 8,
+		"unitsScheme": "md2d",
+		"lennardJonesForces": true,
+		"coulombForces": true,
+		"temperatureControl": true,
+		"gravitationalField": 0.000004,
+		"timeStep": 1,
+		"dielectricConstant": 1,
+		"realisticDielectricEffect": true,
+		"solventForceFactor": 1.25,
+		"solventForceType": 0,
+		"additionalSolventForceMult": 4,
+		"additionalSolventForceThreshold": 10,
+		"polarAAEpsilon": -2,
+		"viscosity": 1,
+		"timeStepsPerTick": 50,
+		"DNAState": "dna",
+		"DNA": "",
+		"DNAMutations": true,
+		"useQuantumDynamics": false,
+		"useChemicalReactions": false,
+		"useDuration": "codap",
+		"requestedDuration": null,
+		"skipPECheckOnAddAtom": false,
+		"viewOptions": {
+			"viewPortWidth": 2.5,
+			"viewPortHeight": 2.5,
+			"viewPortZoom": 1,
+			"viewPortX": 0.05,
+			"viewPortY": 0,
+			"viewPortDrag": false,
+			"backgroundColor": "#eee",
+			"showClock": false,
+			"markColor": "#f8b500",
+			"atomRadiusScale": 1,
+			"keShading": false,
+			"keShadingMinEnergy": 0,
+			"keShadingMaxEnergy": 0.2,
+			"chargeShading": false,
+			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": true,
+			"useThreeLetterCode": true,
+			"showChargeSymbols": false,
+			"showVDWLines": false,
+			"VDWLinesCutoff": "medium",
+			"showVelocityVectors": false,
+			"showForceVectors": false,
+			"showElectricField": false,
+			"electricFieldDensity": 18,
+			"electricFieldColor": "auto",
+			"showAtomTrace": false,
+			"images": [],
+			"imageMapping": {},
+			"textBoxes": [],
+			"xlabel": false,
+			"ylabel": false,
+			"xunits": false,
+			"yunits": false,
+			"controlButtons": "play_reset",
+			"gridLines": false,
+			"atomNumbers": false,
+			"enableAtomTooltips": false,
+			"enableKeyboardHandlers": true,
+			"atomTraceColor": "#6913c5",
+			"velocityVectors": {
+				"color": "#000",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectors": {
+				"color": "#169C30",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectorsDirectionOnly": false,
+			"onAtomDrag": "translate"
+		},
+		"atoms": {
+			"x": [
+				2.2593157230694683,
+				1.959442753470773,
+				1.972728375625846,
+				1.3861438306706004,
+				0.7921535139683007,
+				1.087334968194759,
+				1.6675780843574954,
+				1.6671159902615829,
+				1.958511313663236,
+				2.2558155818755004,
+				2.557583113299741,
+				2.2668000354574405,
+				2.551319780769505,
+				1.677025447906193,
+				0.48840459353004473,
+				0.5049060469239146,
+				0.7908401466209649,
+				1.3732450886468683,
+				1.0782805516372334,
+				1.3641975769722232,
+				2.2577365748153486,
+				2.5648981679649503,
+				2.2734744036068006,
+				1.6804832266552574,
+				1.9870914150959487,
+				0.7920080158509597,
+				1.0733863466351647,
+				1.6684934474764952,
+				1.3803648727564086,
+				2.2827733132174584,
+				1.9633139896708354,
+				2.2500311967906086,
+				1.9637747628317483,
+				1.3718871343298247,
+				1.650312510701168,
+				1.6682219236901945,
+				0.7809936418886816,
+				0.49815319456492557,
+				1.964313659673179,
+				0.5039022988754345,
+				1.0846990469714215,
+				0.8016208333191714,
+				1.3879113374837675,
+				2.573059509819279,
+				1.0914855365972966,
+				0.7706047965289065,
+				0.18758527257652233,
+				0.21417929722139437,
+				1.0665396521482635,
+				2.552146122165523,
+				0.4669414230060067,
+				2.554807941153877,
+				1.0482495153739035,
+				0.20768862106388994,
+				0.4839233833375334,
+				1.3606348658318717,
+				0.758707991523798,
+				0.4486644718834474,
+				0.19452499265412823,
+				0.16777881741842368,
+				0.19318153403986202
+			],
+			"y": [
+				1.0306888607632274,
+				1.1760212869822024,
+				0.5163808061511307,
+				0.5076389813640515,
+				1.1547935020869695,
+				0.6813720867370401,
+				1.3501500445042822,
+				2.007437694525442,
+				1.8337985698984736,
+				1.3558154958775321,
+				0.5279092465054629,
+				0.7011425053211653,
+				1.1778977700784037,
+				0.6974289917026283,
+				1.3387176880981266,
+				0.6788190901802174,
+				0.4961669580769805,
+				1.1723934166132344,
+				1.3435273054085388,
+				1.8246436893206626,
+				2.006356511628929,
+				0.8550276655764654,
+				0.373045707720151,
+				0.36908692861982845,
+				0.18744141187549984,
+				0.8268269845244799,
+				1.6696703148156604,
+				1.6765249738721217,
+				0.8396431262756235,
+				2.3308200318635737,
+				2.1606119640077246,
+				1.6828357818077508,
+				1.5038556637221776,
+				1.4957998807549087,
+				2.335724625383672,
+				1.0250060002763735,
+				1.487993917656424,
+				1.0103969118230187,
+				0.8461331075740433,
+				0.343314727198111,
+				1.0111332863029971,
+				0.17177550071204933,
+				0.17982145051975124,
+				2.1508561121818524,
+				0.3552563779309764,
+				1.8176733906713485,
+				1.805071010397386,
+				0.5036792707831327,
+				1.9982964211981404,
+				1.831253703916032,
+				1.9931722571253812,
+				1.502460539881153,
+				2.330584810407891,
+				0.8299195850437826,
+				1.6620516313775189,
+				2.1489596816489795,
+				2.1418491941562747,
+				2.321035300788749,
+				1.4803696198031553,
+				2.131444247671352,
+				1.1547583124390186
+			],
+			"element": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"vx": [
+				-0.000028007452222460638,
+				-0.00003206913008245524,
+				0.00012084156887449255,
+				-0.00004853592382567735,
+				-0.00017412497616838308,
+				-0.0000827304791703167,
+				0.000011510951268325878,
+				0.00004247967231539358,
+				0.000004969725295511981,
+				-0.000037951380570436286,
+				-0.000007937539891841839,
+				0.000022677587704472138,
+				-0.000101507030306633,
+				0.000028180705931474163,
+				-0.00007648673267803971,
+				0.00010109135369761456,
+				0.000012767077326473758,
+				-0.00008352685471913607,
+				0.0000252531315628611,
+				0.0000293373033418745,
+				0.000017048452539080848,
+				-0.00000742380244821206,
+				-0.000030390876953925264,
+				-0.000023288598960864855,
+				-0.0000015480380884153277,
+				-0.000006728714704395285,
+				0.000016461862176093107,
+				-0.00009532743819861073,
+				-0.00007801676989071682,
+				0.000007739908923427654,
+				-0.000018274780222746197,
+				0.000005111774575502011,
+				0.00010976581203692649,
+				-0.00014962311459108184,
+				0.0001355492941955095,
+				-0.000045301156309303126,
+				-0.00009618549072676367,
+				0.0001080373583170587,
+				-0.00001746125846716357,
+				0.00012183426997859039,
+				0.0001444000369683278,
+				0.00014304040058747095,
+				0.00003697543996077801,
+				0.000025570453606534154,
+				-0.00009837310619249774,
+				-0.000026640405567670216,
+				-0.00001278119481433525,
+				0.00014718734912945317,
+				-0.00010531288381141591,
+				-0.00004197094780195177,
+				0.000036661484606356264,
+				-0.00006363104330212285,
+				0.00009057459409344319,
+				0.00016271224838986203,
+				-0.00008276433953268719,
+				-0.000030396204258015675,
+				0.00013553983817500066,
+				-0.00008284389703343686,
+				-0.0000026045862258220962,
+				-0.00007547883594918376,
+				0.00012343574473343725
+			],
+			"vy": [
+				-0.0000752356182071923,
+				0.00004314283156650063,
+				0.0000729223259884432,
+				-0.0001551934149040607,
+				0.0000044793289942052145,
+				0.00009504890837528209,
+				0.000009558677305693073,
+				-0.00009355924915798906,
+				-0.000013147343685372792,
+				0.00013297934962788527,
+				0.00009996426961428869,
+				-0.00005155610676825053,
+				-0.000027041520233537605,
+				0.00007274138118654512,
+				-0.000079968675862214,
+				0.00004120177990796731,
+				0.0001104334021351443,
+				0.000013636216273066057,
+				-0.00007337558793821545,
+				-0.00018747589604612943,
+				0.000021513005725330155,
+				-0.00007109688473775657,
+				0.00006420834533940831,
+				-0.00007786615247161001,
+				0.00005429217124978322,
+				-0.00010398234663528174,
+				0.0000821663169064222,
+				0.00023405038246284465,
+				0.000046779092093418226,
+				-0.0000067691161876593775,
+				-0.00005583252580300058,
+				0.00005382629137797028,
+				0.00002091469582157531,
+				-0.00003536705657981025,
+				-0.00007250278399736718,
+				0.000027332391886985616,
+				-0.00007820467519970063,
+				0.000037699582642930904,
+				0.000007613715552273089,
+				-0.000006990673485441996,
+				0.00007003403118030968,
+				-0.0000438014958685538,
+				-1.6155675651810402e-7,
+				-0.00005862862786024413,
+				0.00006915047195084291,
+				-0.00011126228682257286,
+				-0.00008875777985089495,
+				-0.00009613138400172092,
+				-0.00009223356717522547,
+				0.000031725027751461684,
+				-0.00003507192419898774,
+				0.00004832080515834101,
+				-0.000034188409941446205,
+				-0.00002244910585353404,
+				-0.00009645322755329319,
+				-0.00000531355378982973,
+				-0.000054269241273297977,
+				0.000032511168054167256,
+				0.000030903715242806095,
+				-0.000015981576852440908,
+				-0.0000517691865628003
+			],
+			"charge": [
+				-1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				-1,
+				-1,
+				-1,
+				1,
+				-1,
+				1,
+				-1,
+				-1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				-1,
+				-1,
+				-1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			],
+			"friction": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"pinned": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			]
+		},
+		"elements": {
+			"mass": [
+				120,
+				240,
+				360,
+				480,
+				600
+			],
+			"sigma": [
+				0.3,
+				0.18,
+				0.25,
+				0.28,
+				0.3
+			],
+			"epsilon": [
+				-0.2,
+				-0.1,
+				-0.1,
+				-0.1,
+				-0.1
+			],
+			"color": [
+				-13057,
+				-3381505,
+				-16711936,
+				-2539040,
+				-855310
+			]
+		},
+		"pairwiseLJProperties": []
+	};
+
+/***/ },
+/* 743 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(743);
+	var content = __webpack_require__(744);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -55413,7 +56078,7 @@
 	}
 
 /***/ },
-/* 743 */
+/* 744 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -55427,11 +56092,11 @@
 
 
 /***/ },
-/* 744 */
+/* 745 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(745);
+	var defaultClickRejectionStrategy = __webpack_require__(746);
 
 	var alreadyInjected = false;
 
@@ -55453,14 +56118,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(746)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(747)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 745 */
+/* 746 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -55471,7 +56136,7 @@
 
 
 /***/ },
-/* 746 */
+/* 747 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -55499,10 +56164,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(747);
+	var TouchEventUtils = __webpack_require__(748);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(748);
+	var keyOf = __webpack_require__(749);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -55648,7 +56313,7 @@
 
 
 /***/ },
-/* 747 */
+/* 748 */
 /***/ function(module, exports) {
 
 	/**
@@ -55696,7 +56361,7 @@
 
 
 /***/ },
-/* 748 */
+/* 749 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -55735,7 +56400,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 749 */
+/* 750 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55754,15 +56419,15 @@
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
-	var _LinearProgress = __webpack_require__(750);
+	var _LinearProgress = __webpack_require__(751);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
-	var _RaisedButton = __webpack_require__(752);
+	var _RaisedButton = __webpack_require__(753);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
-	__webpack_require__(754);
+	__webpack_require__(755);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55872,7 +56537,7 @@
 	exports.default = Sensor;
 
 /***/ },
-/* 750 */
+/* 751 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -55882,7 +56547,7 @@
 	});
 	exports.default = undefined;
 
-	var _LinearProgress = __webpack_require__(751);
+	var _LinearProgress = __webpack_require__(752);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
@@ -55891,7 +56556,7 @@
 	exports.default = _LinearProgress2.default;
 
 /***/ },
-/* 751 */
+/* 752 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -56122,7 +56787,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 752 */
+/* 753 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -56132,7 +56797,7 @@
 	});
 	exports.default = undefined;
 
-	var _RaisedButton = __webpack_require__(753);
+	var _RaisedButton = __webpack_require__(754);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -56141,7 +56806,7 @@
 	exports.default = _RaisedButton2.default;
 
 /***/ },
-/* 753 */
+/* 754 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -56622,13 +57287,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 754 */
+/* 755 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(755);
+	var content = __webpack_require__(756);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -56648,7 +57313,7 @@
 	}
 
 /***/ },
-/* 755 */
+/* 756 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -56662,7 +57327,7 @@
 
 
 /***/ },
-/* 756 */
+/* 757 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -56682,9 +57347,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(757);
+	var RSVP = __webpack_require__(758);
 
-	var EventEmitter2 = __webpack_require__(760).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(761).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -57017,7 +57682,7 @@
 
 
 /***/ },
-/* 757 */
+/* 758 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -59404,7 +60069,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(759);
+	    var vertx = __webpack_require__(760);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -59520,10 +60185,10 @@
 
 	})));
 	//# sourceMappingURL=rsvp.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(758).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(759).setImmediate, (function() { return this; }())))
 
 /***/ },
-/* 758 */
+/* 759 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(294).nextTick;
@@ -59602,16 +60267,16 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(758).setImmediate, __webpack_require__(758).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(759).setImmediate, __webpack_require__(759).clearImmediate))
 
 /***/ },
-/* 759 */
+/* 760 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 760 */
+/* 761 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -60339,15 +61004,15 @@
 
 
 /***/ },
-/* 761 */,
 /* 762 */,
-/* 763 */
+/* 763 */,
+/* 764 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(764);
+	var content = __webpack_require__(765);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -60367,7 +61032,7 @@
 	}
 
 /***/ },
-/* 764 */
+/* 765 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
