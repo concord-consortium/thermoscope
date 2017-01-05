@@ -107,8 +107,9 @@ export default class Meter extends PureComponent {
 
   updateMeterPosition(pos, min) {
     let r = this.props.r,
-        val = (pos - min) / (r * 2);
-    this.setMeterValue(val);
+        val = (pos - min) / (r * 2),
+        angleVal = Math.acos(-2 * (val - 0.5)) / Math.PI;
+    this.setMeterValue(angleVal);
   }
 
   onDrag(event) {

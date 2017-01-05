@@ -6,6 +6,7 @@ import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
 import gas1 from '../models/gas-1.json';
 import gas2 from '../models/gas-2.json';
+import uniform from '../models/uniform.json';
 
 export const MIN_TEMP = -6; // *C
 export const MAX_TEMP = 60; // *C
@@ -89,6 +90,39 @@ export default {
       },
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.65 + 0.03;
+      }
+    }
+  ],
+  uniform: [
+    {
+      name: 'Uniform',
+      json: uniform,
+      tempScale: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t < 0.27)
+          return t * 2000 + 1000;
+        else if (t < 0.71)
+          return t * 7000;
+        else
+          return t * 7000 + 1000;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.3 + 0.6;
+      },
+      gravityScale: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t < 0.27)
+          return 1e-6
+        else if (t < 0.71)
+          return 3e-7
+        else
+          return 1e-8
+      },
+      coulombForcesSettings: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t > 0.27 && t < 0.71 )
+          return true
+        return false
       }
     }
   ]

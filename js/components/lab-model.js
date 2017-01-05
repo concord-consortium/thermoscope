@@ -15,12 +15,18 @@ export default class LabModel extends PureComponent {
   }
 
   get labProps() {
-    const { temperature, tempScale, timeStepScale } = this.props;
+    const { temperature, tempScale, timeStepScale, gravityScale, coulombForcesSettings } = this.props;
     const props = {
       targetTemperature: tempScale(temperature)
     };
     if (timeStepScale) {
       props.timeStep = timeStepScale(temperature);
+    }
+    if (gravityScale) {
+      props.gravitationalField = gravityScale(temperature);
+    }
+    if (coulombForcesSettings) {
+      props.coulombForces = coulombForcesSettings(temperature);
     }
     return props;
   }
