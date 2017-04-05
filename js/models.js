@@ -1,11 +1,14 @@
 import solid1 from '../models/solid-1.json';
 import solid2 from '../models/solid-2.json';
 import solid3 from '../models/solid-3.json';
+import solid4 from '../models/solid-4.json';
 import liquid1 from '../models/liquid-1.json';
 import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
+import liquid4 from '../models/liquid-4.json';
 import gas1 from '../models/gas-1.json';
 import gas2 from '../models/gas-2.json';
+import gas4 from '../models/gas-4.json';
 import uniform from '../models/uniform.json';
 
 export const MIN_TEMP = -6; // *C
@@ -34,6 +37,13 @@ export default {
     {
       name: 'Solid 3',
       json: solid3,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 800 + 10;
+      }
+    },
+    {
+      name: 'Solid 4',
+      json: solid4,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 800 + 10;
       }
@@ -69,6 +79,17 @@ export default {
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.85 + 0.15;
       }
+    },
+    {
+      name: 'Liquid 4',
+      json: liquid4,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 900 + 700;
+      },
+      timeStepScale: function (temp) {
+        console.log(temp, normalizeTemp(temp));
+        return normalizeTemp(temp) * 0.45 + 0.2;
+      }
     }
   ],
   gas: [
@@ -90,6 +111,16 @@ export default {
       },
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.65 + 0.03;
+      }
+    },
+    {
+      name: 'Gas 4',
+      json: gas4,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 5000 + 1500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 1.0 + 0.2;
       }
     }
   ],
