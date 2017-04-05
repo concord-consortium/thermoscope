@@ -87,7 +87,6 @@ export default {
         return normalizeTemp(temp) * 900 + 700;
       },
       timeStepScale: function (temp) {
-        console.log(temp, normalizeTemp(temp));
         return normalizeTemp(temp) * 0.45 + 0.2;
       }
     }
