@@ -88,7 +88,7 @@
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	var _bleSensor = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./ble-sensor.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _bleSensor = __webpack_require__(765);
 
 	var _bleSensor2 = _interopRequireDefault(_bleSensor);
 
@@ -61945,7 +61945,132 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 765 */,
+/* 765 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var EventEmitter2 = __webpack_require__(764).EventEmitter2;
+	var events = new EventEmitter2({
+	  wildcard: true
+	});
+
+	var tagIdentifier = 0xaa80;
+	var tempAServiceAddr = 'f000aa00-0451-4000-b000-000000000000';
+	var tempAValueAddr = 'f000aa01-0451-4000-b000-000000000000';
+	var tempBServiceAddr = 'f000bb00-0451-4000-b000-000000000000';
+	var tempBValueAddr = 'f000bb01-0451-4000-b000-000000000000';
+
+	var service;
+
+	var chartDataA = [];
+	var chartDataB = [];
+
+	var valueA = 0;
+	var valueB = 0;
+
+	var liveSensors = {};
+	var isConnected = false;
+
+	var startTime = Date.now();
+
+	var computeTemp = function computeTemp(byteArray) {
+	  // javascript integers are 32bits so this should work
+	  // There is a DataView object that would might be better to try here it allows
+	  // the user to control the endianess of the value can can read from any buffer
+	  var temp100 = byteArray.getUint8(3) << 24 | byteArray.getUint8(2) << 16 | byteArray.getUint8(1) << 8 | byteArray.getUint8(0);
+
+	  // the temperature data is returned in celcius times 100 so we need to divide
+	  return temp100 / 100.0;
+	};
+
+	var readTemp = function readTemp(byteArrayA, byteArrayB) {
+	  valueA = { liveValue: computeTemp(byteArrayA) };
+	  valueB = { liveValue: computeTemp(byteArrayB) };
+	  liveSensors = [valueA, valueB];
+	};
+
+	module.exports = {
+	  connect: function connect(address) {
+	    var request = navigator.bluetooth.requestDevice({
+	      filters: [{ name: "Thermoscope" }],
+	      optionalServices: [tempAServiceAddr, tempBServiceAddr]
+	    });
+
+	    var characteristicA = void 0,
+	        characteristicB = void 0;
+
+	    // Step 2: Connect to it
+	    request.then(function (device) {
+	      events.emit('connected');
+	      return device.gatt.connect();
+	    }).catch(function (error) {
+	      events.emit('connectionLost');
+	      console.error('Connection failed!', error);
+	      isConnected = false;
+	    })
+	    // Step 3: Get the Service
+	    .then(function (server) {
+	      isConnected = true;
+	      window.server = server;
+	      return server.getPrimaryService(tempAServiceAddr);
+	    }).catch(function (error) {
+	      events.emit('connectionLost');
+	      console.error('Failed to get Primary Service at address A', error);
+	      isConnected = false;
+	    }).then(function (service) {
+	      return service.getCharacteristic(0x0001);
+	    }).then(function (_characteristicA) {
+	      characteristicA = _characteristicA;
+	      // get second service
+	      return server.getPrimaryService(tempBServiceAddr);
+	    }).catch(function (error) {
+	      events.emit('connectionLost');
+	      console.error('Failed to get Primary Service at address B', error);
+	      isConnected = false;
+	    }).then(function (service) {
+	      return service.getCharacteristic(0x0001);
+	    }).then(function (characteristicB) {
+	      startTime = Date.now();
+	      var takeReading = function takeReading() {
+	        var arrayA = void 0;
+	        characteristicA.readValue().then(function (_arrayA) {
+	          arrayA = _arrayA;
+	          return characteristicB.readValue();
+	        }).then(function (arrayB) {
+	          readTemp(arrayA, arrayB);
+	          events.emit('statusReceived');
+	        });
+	      };
+	      if (isConnected) {
+	        window.takeReadingIntervalID = setInterval(takeReading, 600);
+	      } else {
+	        window.takeReadingIntervalID = null;
+	      }
+	    }).catch(function (error) {
+	      events.emit('connectionLost');
+	      console.error('Connection failed!', error);
+	      isConnected = false;
+	    });
+	  },
+	  on: function on() {
+	    events.on.apply(events, arguments);
+	  },
+
+	  off: function off() {
+	    events.off.apply(events, arguments);
+	  },
+
+	  get liveSensors() {
+	    return liveSensors;
+	  },
+
+	  get isConnected() {
+	    return isConnected;
+	  }
+	};
+
+/***/ },
 /* 766 */,
 /* 767 */,
 /* 768 */
