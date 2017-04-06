@@ -7,6 +7,9 @@ import Thermoscope from '../components/thermoscope';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from '../components/sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
+import bleSensor from './ble-sensor.js';
+
+const sensor = bleSensor;
 
 import '../../css/meter.less';
 // Required by Material-UI library.
@@ -43,15 +46,15 @@ export default class MeterThermoscope extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="meter-thermoscope">
-          <Sensor sensor={LabQuest2} />
+          <Sensor sensor={sensor} />
           <div className="app-container">
             <div className="thermoscope-container">
               <div className="label">A</div>
-              <Thermoscope sensor={LabQuest2} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
+              <Thermoscope sensor={sensor} probeIndex={0} material="solid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
             </div>
             <div className="thermoscope-container">
               <div className="label">B</div>
-              <Thermoscope sensor={LabQuest2} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
+              <Thermoscope sensor={sensor} probeIndex={1} material="liquid" embeddableSrc='../lab/embeddable.html' showMeter={true} meterSegments={meterSegments}/>
             </div>
           </div>
         </div>

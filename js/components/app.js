@@ -6,6 +6,9 @@ import Thermoscope from './thermoscope';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from './sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
+import bleSensor from './ble-sensor.js';
+
+const sensor = bleSensor;
 
 import '../../css/app.less';
 
@@ -21,14 +24,14 @@ const App = () => (
       <div className="app-container">
         <div className="thermoscope-container">
           <div className="label">A</div>
-          <Thermoscope sensor={LabQuest2} probeIndex={0}/>
+          <Thermoscope sensor={sensor} probeIndex={0}/>
         </div>
         <div className="thermoscope-container">
           <div className="label">B</div>
-          <Thermoscope sensor={LabQuest2} probeIndex={1}/>
+          <Thermoscope sensor={sensor} probeIndex={1}/>
         </div>
       </div>
-      <Sensor sensor={LabQuest2}/>
+      <Sensor sensor={sensor}/>
     </div>
   </MuiThemeProvider>
 );
