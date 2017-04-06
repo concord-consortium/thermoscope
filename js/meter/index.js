@@ -7,7 +7,7 @@ import Thermoscope from '../components/thermoscope';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from '../components/sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
-import bleSensor from './ble-sensor.js';
+import bleSensor from '../components/ble-sensor.js';
 
 const sensor = bleSensor;
 
