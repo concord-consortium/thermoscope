@@ -76,17 +76,17 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(745);
+	var _reactTapEventPlugin = __webpack_require__(748);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensorLabquest2Interface = __webpack_require__(757);
+	var _sensorLabquest2Interface = __webpack_require__(760);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(764);
+	__webpack_require__(768);
 
-	__webpack_require__(766);
+	__webpack_require__(770);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29431,7 +29431,7 @@
 
 	var _models2 = _interopRequireDefault(_models);
 
-	__webpack_require__(743);
+	__webpack_require__(746);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45773,27 +45773,39 @@
 
 	var _solid6 = _interopRequireDefault(_solid5);
 
-	var _liquid = __webpack_require__(737);
+	var _solid7 = __webpack_require__(737);
+
+	var _solid8 = _interopRequireDefault(_solid7);
+
+	var _liquid = __webpack_require__(738);
 
 	var _liquid2 = _interopRequireDefault(_liquid);
 
-	var _liquid3 = __webpack_require__(738);
+	var _liquid3 = __webpack_require__(739);
 
 	var _liquid4 = _interopRequireDefault(_liquid3);
 
-	var _liquid5 = __webpack_require__(739);
+	var _liquid5 = __webpack_require__(740);
 
 	var _liquid6 = _interopRequireDefault(_liquid5);
 
-	var _gas = __webpack_require__(740);
+	var _liquid7 = __webpack_require__(741);
+
+	var _liquid8 = _interopRequireDefault(_liquid7);
+
+	var _gas = __webpack_require__(742);
 
 	var _gas2 = _interopRequireDefault(_gas);
 
-	var _gas3 = __webpack_require__(741);
+	var _gas3 = __webpack_require__(743);
 
 	var _gas4 = _interopRequireDefault(_gas3);
 
-	var _uniform = __webpack_require__(742);
+	var _gas5 = __webpack_require__(744);
+
+	var _gas6 = _interopRequireDefault(_gas5);
+
+	var _uniform = __webpack_require__(745);
 
 	var _uniform2 = _interopRequireDefault(_uniform);
 
@@ -45825,6 +45837,12 @@
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 800 + 10;
 	    }
+	  }, {
+	    name: 'Solid 4',
+	    json: _solid8.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 800 + 10;
+	    }
 	  }],
 	  liquid: [{
 	    name: 'Liquid 1',
@@ -45853,6 +45871,15 @@
 	    timeStepScale: function timeStepScale(temp) {
 	      return normalizeTemp(temp) * 0.85 + 0.15;
 	    }
+	  }, {
+	    name: 'Liquid 4',
+	    json: _liquid8.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 900 + 700;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 0.45 + 0.2;
+	    }
 	  }],
 	  gas: [{
 	    name: 'Gas 1',
@@ -45871,6 +45898,15 @@
 	    },
 	    timeStepScale: function timeStepScale(temp) {
 	      return normalizeTemp(temp) * 0.65 + 0.03;
+	    }
+	  }, {
+	    name: 'Gas 4',
+	    json: _gas6.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 5000 + 1500;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 1.0 + 0.2;
 	    }
 	  }],
 	  uniform: [{
@@ -49553,6 +49589,295 @@
 			"viewPortY": 0,
 			"viewPortDrag": false,
 			"backgroundColor": "#eee",
+			"showClock": false,
+			"markColor": "#f8b500",
+			"atomRadiusScale": 1,
+			"keShading": false,
+			"keShadingMinEnergy": 0,
+			"keShadingMaxEnergy": 0.2,
+			"chargeShading": false,
+			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": true,
+			"useThreeLetterCode": true,
+			"showChargeSymbols": false,
+			"showVDWLines": false,
+			"VDWLinesCutoff": "medium",
+			"showVelocityVectors": false,
+			"showForceVectors": false,
+			"showElectricField": false,
+			"electricFieldDensity": 18,
+			"electricFieldColor": "auto",
+			"showAtomTrace": false,
+			"images": [],
+			"imageMapping": {},
+			"textBoxes": [],
+			"xlabel": false,
+			"ylabel": false,
+			"xunits": false,
+			"yunits": false,
+			"controlButtons": "play_reset",
+			"gridLines": false,
+			"atomNumbers": false,
+			"enableAtomTooltips": false,
+			"enableKeyboardHandlers": true,
+			"atomTraceColor": "#6913c5",
+			"velocityVectors": {
+				"color": "#000",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectors": {
+				"color": "#169C30",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectorsDirectionOnly": false,
+			"onAtomDrag": "translate"
+		},
+		"atoms": {
+			"x": [
+				2.1,
+				1.8,
+				1.5,
+				1.2,
+				0.9,
+				2.25,
+				1.95,
+				1.65,
+				1.35,
+				1.05,
+				0.75,
+				2.1,
+				1.8,
+				1.5,
+				1.2,
+				0.9
+			],
+			"y": [
+				0.9,
+				0.9,
+				0.9,
+				0.9,
+				0.9,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.5,
+				1.5,
+				1.5,
+				1.5,
+				1.5
+			],
+			"element": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"vx": [
+				-0.000028007452222460638,
+				-0.00003206913008245524,
+				0.00012084156887449255,
+				-0.00004853592382567735,
+				-0.00017412497616838308,
+				-0.0000827304791703167,
+				0.000011510951268325878,
+				0.00004247967231539358,
+				0.000004969725295511981,
+				-0.000037951380570436286,
+				-0.000007937539891841839,
+				0.000022677587704472138,
+				-0.000101507030306633,
+				0.000028180705931474163,
+				-0.00007648673267803971,
+				0.00010109135369761456
+			],
+			"vy": [
+				-0.0000752356182071923,
+				0.00004314283156650063,
+				0.0000729223259884432,
+				-0.0001551934149040607,
+				0.0000044793289942052145,
+				0.00009504890837528209,
+				0.000009558677305693073,
+				-0.00009355924915798906,
+				-0.000013147343685372792,
+				0.00013297934962788527,
+				0.00009996426961428869,
+				-0.00005155610676825053,
+				-0.000027041520233537605,
+				0.00007274138118654512,
+				-0.000079968675862214,
+				0.00004120177990796731
+			],
+			"charge": [
+				1,
+				-1,
+				1,
+				-1,
+				1,
+				-1,
+				1,
+				-1,
+				1,
+				-1,
+				1,
+				-1,
+				1,
+				-1,
+				1,
+				-1
+			],
+			"friction": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"pinned": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			]
+		},
+		"elements": {
+			"mass": [
+				120
+			],
+			"sigma": [
+				0.3
+			],
+			"epsilon": [
+				-0.6000000238418579
+			],
+			"color": [
+				-13057
+			]
+		},
+		"pairwiseLJProperties": [],
+		"shapes": {
+			"type": [
+				"rectangle"
+			],
+			"x": [
+				0.75
+			],
+			"y": [
+				0
+			],
+			"height": [
+				2.5
+			],
+			"width": [
+				2.6
+			],
+			"fence": [
+				1
+			],
+			"color": [
+				"rgba(0,128,192,0)"
+			],
+			"lineColor": [
+				"black"
+			],
+			"lineWeight": [
+				1
+			],
+			"lineDashes": [
+				"none"
+			],
+			"layer": [
+				1
+			],
+			"layerPosition": [
+				1
+			],
+			"visible": [
+				1
+			]
+		}
+	};
+
+/***/ },
+/* 738 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"type": "md2d",
+		"imagePath": "",
+		"width": 4,
+		"height": 2.5,
+		"unitsScheme": "md2d",
+		"lennardJonesForces": true,
+		"coulombForces": true,
+		"temperatureControl": true,
+		"gravitationalField": false,
+		"timeStep": 0.5,
+		"dielectricConstant": 1,
+		"realisticDielectricEffect": true,
+		"solventForceFactor": 1.25,
+		"solventForceType": 0,
+		"additionalSolventForceMult": 4,
+		"additionalSolventForceThreshold": 10,
+		"polarAAEpsilon": -2,
+		"viscosity": 1,
+		"timeStepsPerTick": 50,
+		"DNAState": "dna",
+		"DNA": "",
+		"DNAMutations": true,
+		"useQuantumDynamics": false,
+		"useChemicalReactions": false,
+		"useDuration": "codap",
+		"requestedDuration": null,
+		"skipPECheckOnAddAtom": false,
+		"viewOptions": {
+			"viewPortWidth": 2.5,
+			"viewPortHeight": 2.5,
+			"viewPortZoom": 1,
+			"viewPortX": 0.75,
+			"viewPortY": 0,
+			"viewPortDrag": false,
+			"backgroundColor": "#eee",
 			"showClock": true,
 			"markColor": "#ff0",
 			"atomRadiusScale": 1,
@@ -50330,7 +50655,7 @@
 	};
 
 /***/ },
-/* 738 */
+/* 739 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -52089,7 +52414,7 @@
 	};
 
 /***/ },
-/* 739 */
+/* 740 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -54434,7 +54759,296 @@
 	};
 
 /***/ },
-/* 740 */
+/* 741 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"type": "md2d",
+		"imagePath": "",
+		"width": 4,
+		"height": 2.5,
+		"unitsScheme": "md2d",
+		"lennardJonesForces": true,
+		"coulombForces": true,
+		"temperatureControl": true,
+		"gravitationalField": false,
+		"timeStep": 0.5,
+		"dielectricConstant": 1,
+		"realisticDielectricEffect": true,
+		"solventForceFactor": 1.25,
+		"solventForceType": 0,
+		"additionalSolventForceMult": 4,
+		"additionalSolventForceThreshold": 10,
+		"polarAAEpsilon": -2,
+		"viscosity": 1,
+		"timeStepsPerTick": 35,
+		"DNAState": "dna",
+		"DNA": "",
+		"DNAMutations": true,
+		"useQuantumDynamics": false,
+		"useChemicalReactions": false,
+		"useDuration": "codap",
+		"requestedDuration": null,
+		"skipPECheckOnAddAtom": false,
+		"viewOptions": {
+			"viewPortWidth": 2.5,
+			"viewPortHeight": 2.5,
+			"viewPortZoom": 1,
+			"viewPortX": 0.75,
+			"viewPortY": 0,
+			"viewPortDrag": false,
+			"backgroundColor": "#eee",
+			"showClock": true,
+			"markColor": "#ff0",
+			"atomRadiusScale": 1,
+			"keShading": false,
+			"keShadingMinEnergy": 0,
+			"keShadingMaxEnergy": 0.2,
+			"chargeShading": false,
+			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": true,
+			"useThreeLetterCode": true,
+			"showChargeSymbols": true,
+			"showVDWLines": false,
+			"VDWLinesCutoff": "medium",
+			"showVelocityVectors": false,
+			"showForceVectors": false,
+			"showElectricField": false,
+			"electricFieldDensity": 18,
+			"electricFieldColor": "auto",
+			"showAtomTrace": false,
+			"images": [],
+			"imageMapping": {},
+			"textBoxes": [],
+			"xlabel": false,
+			"ylabel": false,
+			"xunits": false,
+			"yunits": false,
+			"controlButtons": "play_reset",
+			"gridLines": false,
+			"atomNumbers": false,
+			"enableAtomTooltips": false,
+			"enableKeyboardHandlers": true,
+			"atomTraceColor": "#ff0",
+			"velocityVectors": {
+				"color": "#000",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectors": {
+				"color": "#169C30",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectorsDirectionOnly": false,
+			"onAtomDrag": "translate"
+		},
+		"atoms": {
+			"x": [
+				2.1,
+				1.8,
+				1.5,
+				1.2,
+				0.9,
+				2.25,
+				1.95,
+				1.65,
+				1.35,
+				1.05,
+				0.75,
+				2.1,
+				1.8,
+				1.5,
+				1.2,
+				0.9
+			],
+			"y": [
+				0.9,
+				0.9,
+				0.9,
+				0.9,
+				0.9,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.5,
+				1.5,
+				1.5,
+				1.5,
+				1.5
+			],
+			"element": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"vx": [
+				0.0004130494070254688,
+				0.00011776351368894916,
+				-0.0002090839883748339,
+				-0.0002653218381197367,
+				-0.0005263877116421397,
+				-0.0006543884783894852,
+				-0.00020913610602975075,
+				0.0008317065447116474,
+				-0.0005324622912918357,
+				-0.0002610821964884297,
+				-0.0010721629877837662,
+				0.000010409151095277342,
+				-0.00003090559636372495,
+				0.0003316464383559914,
+				0.0012571424714915508,
+				-0.00016383286135820475
+			],
+			"vy": [
+				-0.0000199088517908269,
+				0.0010347901410523736,
+				-0.0009026162920589373,
+				-0.0001461760299410712,
+				0.0002558833190405782,
+				0.00030868763528971323,
+				-0.0003502761480274452,
+				-0.00064159191482169,
+				-0.0013184552022669947,
+				0.001546831607211189,
+				0.0009337561641306642,
+				0.0002846828925233498,
+				0.0006198170062793852,
+				-0.00012160919713158889,
+				-0.00036765220012301397,
+				0.0003583724681781249
+			],
+			"charge": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"friction": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"pinned": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			]
+		},
+		"elements": {
+			"mass": [
+				20
+			],
+			"sigma": [
+				0.3
+			],
+			"epsilon": [
+				-0.3
+			],
+			"color": [
+				-13057
+			]
+		},
+		"pairwiseLJProperties": [],
+		"shapes": {
+			"type": [
+				"rectangle"
+			],
+			"x": [
+				0.75
+			],
+			"y": [
+				0
+			],
+			"height": [
+				2.5
+			],
+			"width": [
+				2.6
+			],
+			"fence": [
+				1
+			],
+			"color": [
+				"rgba(0,128,192,0)"
+			],
+			"lineColor": [
+				"black"
+			],
+			"lineWeight": [
+				1
+			],
+			"lineDashes": [
+				"none"
+			],
+			"layer": [
+				1
+			],
+			"layerPosition": [
+				1
+			],
+			"visible": [
+				1
+			]
+		}
+	};
+
+/***/ },
+/* 742 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -54722,7 +55336,7 @@
 	};
 
 /***/ },
-/* 741 */
+/* 743 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -55429,7 +56043,273 @@
 	};
 
 /***/ },
-/* 742 */
+/* 744 */
+/***/ function(module, exports) {
+
+	module.exports = {
+		"type": "md2d",
+		"imagePath": "",
+		"width": 4,
+		"height": 2.5,
+		"unitsScheme": "md2d",
+		"lennardJonesForces": true,
+		"coulombForces": true,
+		"temperatureControl": true,
+		"gravitationalField": false,
+		"timeStep": 1,
+		"dielectricConstant": 1,
+		"realisticDielectricEffect": true,
+		"solventForceFactor": 1.25,
+		"solventForceType": 0,
+		"additionalSolventForceMult": 4,
+		"additionalSolventForceThreshold": 10,
+		"polarAAEpsilon": -2,
+		"viscosity": 1,
+		"timeStepsPerTick": 50,
+		"DNAState": "dna",
+		"DNA": "",
+		"DNAMutations": true,
+		"useQuantumDynamics": false,
+		"useChemicalReactions": false,
+		"useDuration": "codap",
+		"requestedDuration": null,
+		"skipPECheckOnAddAtom": false,
+		"viewOptions": {
+			"viewPortWidth": 2.5,
+			"viewPortHeight": 2.5,
+			"viewPortZoom": 1,
+			"viewPortX": 0.75,
+			"viewPortY": 0,
+			"viewPortDrag": false,
+			"backgroundColor": "#eee",
+			"showClock": true,
+			"markColor": "#ff0",
+			"atomRadiusScale": 1,
+			"keShading": false,
+			"keShadingMinEnergy": 0,
+			"keShadingMaxEnergy": 0.2,
+			"chargeShading": false,
+			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": true,
+			"useThreeLetterCode": true,
+			"showChargeSymbols": true,
+			"showVDWLines": false,
+			"VDWLinesCutoff": "medium",
+			"showVelocityVectors": false,
+			"showForceVectors": false,
+			"showElectricField": false,
+			"electricFieldDensity": 18,
+			"electricFieldColor": "auto",
+			"showAtomTrace": false,
+			"images": [],
+			"imageMapping": {},
+			"textBoxes": [],
+			"xlabel": false,
+			"ylabel": false,
+			"xunits": false,
+			"yunits": false,
+			"controlButtons": "play_reset",
+			"gridLines": false,
+			"atomNumbers": false,
+			"enableAtomTooltips": false,
+			"enableKeyboardHandlers": true,
+			"atomTraceColor": "#ff0",
+			"velocityVectors": {
+				"color": "#000",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectors": {
+				"color": "#169C30",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectorsDirectionOnly": false,
+			"onAtomDrag": "translate"
+		},
+		"atoms": {
+			"x": [
+				2.1,
+				1.8,
+				1.5,
+				1.2,
+				0.9,
+				2.25,
+				1.95,
+				1.65,
+				1.35,
+				1.05,
+				0.75,
+				2.1,
+				1.8,
+				1.5,
+				1.2,
+				0.9
+			],
+			"y": [
+				0.9,
+				0.9,
+				0.9,
+				0.9,
+				0.9,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.2,
+				1.5,
+				1.5,
+				1.5,
+				1.5,
+				1.5
+			],
+			"element": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"vx": [
+				0.001046653920455706,
+				-0.0006907315777099916,
+				0.0005861094040131489,
+				-0.00012805639539792621,
+				-0.00006053055847728456,
+				-0.000724283646585693,
+				0.00012286129077253142,
+				-0.0007968407871324333,
+				-0.001310099816377784,
+				-0.0010137935139927067,
+				0.0023731131968944994,
+				0.00027268127308844616,
+				-0.0000932477637017198,
+				-0.00010343540538717825,
+				-0.0002090038519112623,
+				0.0009240649223631547,
+				-0.0006497562230197251,
+				-0.000029977665154621094,
+				-0.0009278891344108284
+			],
+			"vy": [
+				-0.001071258013929987,
+				-0.0009201730277321494,
+				0.0009621080956095185,
+				-0.0002945895392753749,
+				0.0013769141830991746,
+				0.0005895599519093366,
+				0.0011360423396582738,
+				0.0003702538558061598,
+				-0.0006853974936849647,
+				-0.0010199624165568768,
+				0.001111448539748007,
+				-0.0006005970581497491,
+				0.0009315500471589078,
+				0.00028766999825920224,
+				0.000003761608349364352,
+				-0.000641323883756177,
+				-0.00019476818277450192,
+				-0.0007416177197934516,
+				-0.002098419264121062
+			],
+			"charge": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"friction": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"pinned": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			]
+		},
+		"elements": {
+			"mass": [
+				20
+			],
+			"sigma": [
+				0.3
+			],
+			"epsilon": [
+				-0.05
+			],
+			"color": [
+				-13057
+			]
+		},
+		"pairwiseLJProperties": []
+	};
+
+/***/ },
+/* 745 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -56053,13 +56933,13 @@
 	};
 
 /***/ },
-/* 743 */
+/* 746 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(744);
+	var content = __webpack_require__(747);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -56079,7 +56959,7 @@
 	}
 
 /***/ },
-/* 744 */
+/* 747 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -56093,11 +56973,11 @@
 
 
 /***/ },
-/* 745 */
+/* 748 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(746);
+	var defaultClickRejectionStrategy = __webpack_require__(749);
 
 	var alreadyInjected = false;
 
@@ -56119,14 +56999,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(747)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(750)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 746 */
+/* 749 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -56137,7 +57017,7 @@
 
 
 /***/ },
-/* 747 */
+/* 750 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -56165,10 +57045,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(748);
+	var TouchEventUtils = __webpack_require__(751);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(749);
+	var keyOf = __webpack_require__(752);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -56314,7 +57194,7 @@
 
 
 /***/ },
-/* 748 */
+/* 751 */
 /***/ function(module, exports) {
 
 	/**
@@ -56362,7 +57242,7 @@
 
 
 /***/ },
-/* 749 */
+/* 752 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -56401,14 +57281,14 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 750 */,
-/* 751 */,
-/* 752 */,
 /* 753 */,
 /* 754 */,
 /* 755 */,
 /* 756 */,
-/* 757 */
+/* 757 */,
+/* 758 */,
+/* 759 */,
+/* 760 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -56428,9 +57308,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(758);
+	var RSVP = __webpack_require__(761);
 
-	var EventEmitter2 = __webpack_require__(761).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(764).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -56763,7 +57643,7 @@
 
 
 /***/ },
-/* 758 */
+/* 761 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -59150,7 +60030,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(760);
+	    var vertx = __webpack_require__(763);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -59266,10 +60146,10 @@
 
 	})));
 	//# sourceMappingURL=rsvp.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(759).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(762).setImmediate, (function() { return this; }())))
 
 /***/ },
-/* 759 */
+/* 762 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(294).nextTick;
@@ -59348,19 +60228,19 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(759).setImmediate, __webpack_require__(759).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(762).setImmediate, __webpack_require__(762).clearImmediate))
 
 /***/ },
-/* 760 */
+/* 763 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 761 */
+/* 764 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
+	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/*!
 	 * EventEmitter2
 	 * https://github.com/hij1nx/EventEmitter2
 	 *
@@ -59386,7 +60266,8 @@
 	      this._conf = conf;
 
 	      conf.delimiter && (this.delimiter = conf.delimiter);
-	      this._events.maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
+	      this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
+
 	      conf.wildcard && (this.wildcard = conf.wildcard);
 	      conf.newListener && (this.newListener = conf.newListener);
 	      conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
@@ -59395,24 +60276,31 @@
 	        this.listenerTree = {};
 	      }
 	    } else {
-	      this._events.maxListeners = defaultMaxListeners;
+	      this._maxListeners = defaultMaxListeners;
 	    }
 	  }
 
 	  function logPossibleMemoryLeak(count, eventName) {
 	    var errorMsg = '(node) warning: possible EventEmitter memory ' +
-	        'leak detected. %d listeners added. ' +
+	        'leak detected. ' + count + ' listeners added. ' +
 	        'Use emitter.setMaxListeners() to increase limit.';
 
 	    if(this.verboseMemoryLeak){
-	      errorMsg += ' Event name: %s.';
-	      console.error(errorMsg, count, eventName);
-	    } else {
-	      console.error(errorMsg, count);
+	      errorMsg += ' Event name: ' + eventName + '.';
 	    }
 
-	    if (console.trace){
-	      console.trace();
+	    if(typeof process !== 'undefined' && process.emitWarning){
+	      var e = new Error(errorMsg);
+	      e.name = 'MaxListenersExceededWarning';
+	      e.emitter = this;
+	      e.count = count;
+	      process.emitWarning(e);
+	    } else {
+	      console.error(errorMsg);
+
+	      if (console.trace){
+	        console.trace();
+	      }
 	    }
 	  }
 
@@ -59573,8 +60461,8 @@
 
 	          if (
 	            !tree._listeners.warned &&
-	            this._events.maxListeners > 0 &&
-	            tree._listeners.length > this._events.maxListeners
+	            this._maxListeners > 0 &&
+	            tree._listeners.length > this._maxListeners
 	          ) {
 	            tree._listeners.warned = true;
 	            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
@@ -59598,8 +60486,7 @@
 
 	  EventEmitter.prototype.setMaxListeners = function(n) {
 	    if (n !== undefined) {
-	      this._events || init.call(this);
-	      this._events.maxListeners = n;
+	      this._maxListeners = n;
 	      if (!this._conf) this._conf = {};
 	      this._conf.maxListeners = n;
 	    }
@@ -59607,12 +60494,29 @@
 
 	  EventEmitter.prototype.event = '';
 
+
 	  EventEmitter.prototype.once = function(event, fn) {
-	    this.many(event, 1, fn);
+	    return this._once(event, fn, false);
+	  };
+
+	  EventEmitter.prototype.prependOnceListener = function(event, fn) {
+	    return this._once(event, fn, true);
+	  };
+
+	  EventEmitter.prototype._once = function(event, fn, prepend) {
+	    this._many(event, 1, fn, prepend);
 	    return this;
 	  };
 
 	  EventEmitter.prototype.many = function(event, ttl, fn) {
+	    return this._many(event, ttl, fn, false);
+	  }
+
+	  EventEmitter.prototype.prependMany = function(event, ttl, fn) {
+	    return this._many(event, ttl, fn, true);
+	  }
+
+	  EventEmitter.prototype._many = function(event, ttl, fn, prepend) {
 	    var self = this;
 
 	    if (typeof fn !== 'function') {
@@ -59623,12 +60527,12 @@
 	      if (--ttl === 0) {
 	        self.off(event, listener);
 	      }
-	      fn.apply(this, arguments);
+	      return fn.apply(this, arguments);
 	    }
 
 	    listener._origin = fn;
 
-	    this.on(event, listener);
+	    this._on(event, listener, prepend);
 
 	    return self;
 	  };
@@ -59804,6 +60708,7 @@
 	        promises.push(handler.apply(this, args));
 	      }
 	    } else if (handler && handler.length) {
+	      handler = handler.slice();
 	      if (al > 3) {
 	        args = new Array(al - 1);
 	        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
@@ -59836,8 +60741,45 @@
 	  };
 
 	  EventEmitter.prototype.on = function(type, listener) {
+	    return this._on(type, listener, false);
+	  };
+
+	  EventEmitter.prototype.prependListener = function(type, listener) {
+	    return this._on(type, listener, true);
+	  };
+
+	  EventEmitter.prototype.onAny = function(fn) {
+	    return this._onAny(fn, false);
+	  };
+
+	  EventEmitter.prototype.prependAny = function(fn) {
+	    return this._onAny(fn, true);
+	  };
+
+	  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+	  EventEmitter.prototype._onAny = function(fn, prepend){
+	    if (typeof fn !== 'function') {
+	      throw new Error('onAny only accepts instances of Function');
+	    }
+
+	    if (!this._all) {
+	      this._all = [];
+	    }
+
+	    // Add the function to the event listener collection.
+	    if(prepend){
+	      this._all.unshift(fn);
+	    }else{
+	      this._all.push(fn);
+	    }
+
+	    return this;
+	  }
+
+	  EventEmitter.prototype._on = function(type, listener, prepend) {
 	    if (typeof type === 'function') {
-	      this.onAny(type);
+	      this._onAny(type, listener);
 	      return this;
 	    }
 
@@ -59865,14 +60807,18 @@
 	        this._events[type] = [this._events[type]];
 	      }
 
-	      // If we've already got an array, just append.
-	      this._events[type].push(listener);
+	      // If we've already got an array, just add
+	      if(prepend){
+	        this._events[type].unshift(listener);
+	      }else{
+	        this._events[type].push(listener);
+	      }
 
 	      // Check for listener leak
 	      if (
 	        !this._events[type].warned &&
-	        this._events.maxListeners > 0 &&
-	        this._events[type].length > this._events.maxListeners
+	        this._maxListeners > 0 &&
+	        this._events[type].length > this._maxListeners
 	      ) {
 	        this._events[type].warned = true;
 	        logPossibleMemoryLeak.call(this, this._events[type].length, type);
@@ -59880,23 +60826,7 @@
 	    }
 
 	    return this;
-	  };
-
-	  EventEmitter.prototype.onAny = function(fn) {
-	    if (typeof fn !== 'function') {
-	      throw new Error('onAny only accepts instances of Function');
-	    }
-
-	    if (!this._all) {
-	      this._all = [];
-	    }
-
-	    // Add the function to the event listener collection.
-	    this._all.push(fn);
-	    return this;
-	  };
-
-	  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+	  }
 
 	  EventEmitter.prototype.off = function(type, listener) {
 	    if (typeof listener !== 'function') {
@@ -60053,6 +60983,10 @@
 	    return this._events[type];
 	  };
 
+	  EventEmitter.prototype.eventNames = function(){
+	    return Object.keys(this._events);
+	  }
+
 	  EventEmitter.prototype.listenerCount = function(type) {
 	    return this.listeners(type).length;
 	  };
@@ -60083,17 +61017,19 @@
 	  }
 	}();
 
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 762 */,
-/* 763 */,
-/* 764 */
+/* 765 */,
+/* 766 */,
+/* 767 */,
+/* 768 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(765);
+	var content = __webpack_require__(769);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -60113,7 +61049,7 @@
 	}
 
 /***/ },
-/* 765 */
+/* 769 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -60127,13 +61063,13 @@
 
 
 /***/ },
-/* 766 */
+/* 770 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(767);
+	var content = __webpack_require__(771);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -60153,7 +61089,7 @@
 	}
 
 /***/ },
-/* 767 */
+/* 771 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();

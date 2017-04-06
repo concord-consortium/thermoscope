@@ -66,39 +66,39 @@
 
 	var _reactLab2 = _interopRequireDefault(_reactLab);
 
-	var _newAtomBin = __webpack_require__(768);
+	var _newAtomBin = __webpack_require__(772);
 
 	var _newAtomBin2 = _interopRequireDefault(_newAtomBin);
 
-	var _authoring = __webpack_require__(769);
+	var _authoring = __webpack_require__(773);
 
 	var _authoring2 = _interopRequireDefault(_authoring);
 
-	var _models = __webpack_require__(770);
+	var _models = __webpack_require__(774);
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _authorableProps = __webpack_require__(774);
+	var _authorableProps = __webpack_require__(778);
 
 	var _authorableProps2 = _interopRequireDefault(_authorableProps);
 
-	var _utils = __webpack_require__(775);
+	var _utils = __webpack_require__(779);
 
 	var _MuiThemeProvider = __webpack_require__(475);
 
 	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
-	var _deleteForever = __webpack_require__(776);
+	var _deleteForever = __webpack_require__(780);
 
 	var _deleteForever2 = _interopRequireDefault(_deleteForever);
 
-	var _reactTapEventPlugin = __webpack_require__(745);
+	var _reactTapEventPlugin = __webpack_require__(748);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	__webpack_require__(762);
+	__webpack_require__(766);
 
-	__webpack_require__(777);
+	__webpack_require__(781);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35609,11 +35609,14 @@
 /* 742 */,
 /* 743 */,
 /* 744 */,
-/* 745 */
+/* 745 */,
+/* 746 */,
+/* 747 */,
+/* 748 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(746);
+	var defaultClickRejectionStrategy = __webpack_require__(749);
 
 	var alreadyInjected = false;
 
@@ -35635,14 +35638,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(747)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(750)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 746 */
+/* 749 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -35653,7 +35656,7 @@
 
 
 /***/ },
-/* 747 */
+/* 750 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35681,10 +35684,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(748);
+	var TouchEventUtils = __webpack_require__(751);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(749);
+	var keyOf = __webpack_require__(752);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -35830,7 +35833,7 @@
 
 
 /***/ },
-/* 748 */
+/* 751 */
 /***/ function(module, exports) {
 
 	/**
@@ -35878,7 +35881,7 @@
 
 
 /***/ },
-/* 749 */
+/* 752 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -35917,9 +35920,6 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 750 */,
-/* 751 */,
-/* 752 */,
 /* 753 */,
 /* 754 */,
 /* 755 */,
@@ -35929,13 +35929,17 @@
 /* 759 */,
 /* 760 */,
 /* 761 */,
-/* 762 */
+/* 762 */,
+/* 763 */,
+/* 764 */,
+/* 765 */,
+/* 766 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(763);
+	var content = __webpack_require__(767);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -35955,7 +35959,7 @@
 	}
 
 /***/ },
-/* 763 */
+/* 767 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -35969,11 +35973,11 @@
 
 
 /***/ },
-/* 764 */,
-/* 765 */,
-/* 766 */,
-/* 767 */,
-/* 768 */
+/* 768 */,
+/* 769 */,
+/* 770 */,
+/* 771 */,
+/* 772 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -36021,7 +36025,7 @@
 	exports.default = NewAtomBin;
 
 /***/ },
-/* 769 */
+/* 773 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36246,7 +36250,7 @@
 	exports.default = Authoring;
 
 /***/ },
-/* 770 */
+/* 774 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36255,15 +36259,15 @@
 	  value: true
 	});
 
-	var _interactive = __webpack_require__(771);
+	var _interactive = __webpack_require__(775);
 
 	var _interactive2 = _interopRequireDefault(_interactive);
 
-	var _model = __webpack_require__(772);
+	var _model = __webpack_require__(776);
 
 	var _model2 = _interopRequireDefault(_model);
 
-	var _emptyModel = __webpack_require__(773);
+	var _emptyModel = __webpack_require__(777);
 
 	var _emptyModel2 = _interopRequireDefault(_emptyModel);
 
@@ -36276,7 +36280,7 @@
 	};
 
 /***/ },
-/* 771 */
+/* 775 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36294,7 +36298,7 @@
 	};
 
 /***/ },
-/* 772 */
+/* 776 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36548,7 +36552,7 @@
 	};
 
 /***/ },
-/* 773 */
+/* 777 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36730,7 +36734,7 @@
 	};
 
 /***/ },
-/* 774 */
+/* 778 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -36989,7 +36993,7 @@
 	};
 
 /***/ },
-/* 775 */
+/* 779 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -37088,7 +37092,7 @@
 	};
 
 /***/ },
-/* 776 */
+/* 780 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37125,13 +37129,13 @@
 	exports.default = ActionDeleteForever;
 
 /***/ },
-/* 777 */
+/* 781 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(778);
+	var content = __webpack_require__(782);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -37151,7 +37155,7 @@
 	}
 
 /***/ },
-/* 778 */
+/* 782 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
