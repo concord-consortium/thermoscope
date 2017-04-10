@@ -21,6 +21,13 @@ function normalizeTemp(temp) {
 export default {
   solid: [
     {
+      name: 'Solid 4',
+      json: solid4,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 800 + 10;
+      }
+    },
+    {
       name: 'Solid 1',
       json: solid1,
       tempScale: function (temp) {
@@ -40,16 +47,19 @@ export default {
       tempScale: function (temp) {
         return normalizeTemp(temp) * 800 + 10;
       }
-    },
-    {
-      name: 'Solid 4',
-      json: solid4,
-      tempScale: function (temp) {
-        return normalizeTemp(temp) * 800 + 10;
-      }
     }
   ],
   liquid: [
+    {
+      name: 'Liquid 4',
+      json: liquid4,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 900 + 700;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.45 + 0.2;
+      }
+    },
     {
       name: 'Liquid 1',
       json: liquid1,
@@ -79,19 +89,19 @@ export default {
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.85 + 0.15;
       }
-    },
-    {
-      name: 'Liquid 4',
-      json: liquid4,
-      tempScale: function (temp) {
-        return normalizeTemp(temp) * 900 + 700;
-      },
-      timeStepScale: function (temp) {
-        return normalizeTemp(temp) * 0.45 + 0.2;
-      }
     }
   ],
   gas: [
+    {
+      name: 'Gas 4',
+      json: gas4,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 5000 + 1500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 1.0 + 0.2;
+      }
+    },
     {
       name: 'Gas 1',
       json: gas1,
@@ -110,16 +120,6 @@ export default {
       },
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.65 + 0.03;
-      }
-    },
-    {
-      name: 'Gas 4',
-      json: gas4,
-      tempScale: function (temp) {
-        return normalizeTemp(temp) * 5000 + 1500;
-      },
-      timeStepScale: function (temp) {
-        return normalizeTemp(temp) * 1.0 + 0.2;
       }
     }
   ],
