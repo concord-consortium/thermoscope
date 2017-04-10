@@ -8,12 +8,13 @@ import '../../css/sensor-connect.less';
 export default class Sensor extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { connected: false, connecting: false, showDetails: false };
+    this.state = { connected: false, connecting: false, showDetails: false, debug: true, debugMessages: "" };
     this.connectedSensor = this.props.sensor;
     this.handleIPAddressChange = this.handleIPAddressChange.bind(this);
     this.connect = this.connect.bind(this);
     this.enterkey = this.enterkey.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
+    this.screenConsole = this.screenConsole.bind(this);
   }
 
   handleIPAddressChange(event) {
@@ -35,6 +36,7 @@ export default class Sensor extends PureComponent {
       this.setState({ connecting: true });
       this.connectedSensor.connect(this.state.ipAddress);
       this.connectedSensor.on('connected', this.connected.bind(this));
+      this.connectedSensor.on('screenConsole', this.screenConsole.bind(this));
     }
   }
 
@@ -46,8 +48,16 @@ export default class Sensor extends PureComponent {
     this.setState({ showDetails: this.state.showDetails ? false : true });
   }
 
+  screenConsole(event) {
+    const { debugMessages } = this.state;
+    console.log("console message event", event);
+
+    let newMessages = debugMessages + "\n" + event;
+    this.setState({ debugMessages: newMessages });
+  }
+
   render() {
-    const { connected, connecting, showDetails } = this.state;
+    const { connected, connecting, showDetails, debug, debugMessages } = this.state;
     let connectStatus = connected ? "Connected." : "";
     return (
       <div className="sensorConnect">
@@ -60,6 +70,9 @@ export default class Sensor extends PureComponent {
               <LinearProgress />
             }
             {!connecting && <div id="sensorConnectionStatus">{connectStatus}</div>}
+            {debug &&
+              <div id="screenConsole">{debugMessages}</div>
+            }
           </div>}
       </div>
     )
