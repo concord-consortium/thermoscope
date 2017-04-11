@@ -66,23 +66,23 @@
 
 	var _reactLab2 = _interopRequireDefault(_reactLab);
 
-	var _newAtomBin = __webpack_require__(772);
+	var _newAtomBin = __webpack_require__(773);
 
 	var _newAtomBin2 = _interopRequireDefault(_newAtomBin);
 
-	var _authoring = __webpack_require__(773);
+	var _authoring = __webpack_require__(774);
 
 	var _authoring2 = _interopRequireDefault(_authoring);
 
-	var _models = __webpack_require__(774);
+	var _models = __webpack_require__(775);
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _authorableProps = __webpack_require__(778);
+	var _authorableProps = __webpack_require__(779);
 
 	var _authorableProps2 = _interopRequireDefault(_authorableProps);
 
-	var _utils = __webpack_require__(779);
+	var _utils = __webpack_require__(746);
 
 	var _MuiThemeProvider = __webpack_require__(475);
 
@@ -92,11 +92,11 @@
 
 	var _deleteForever2 = _interopRequireDefault(_deleteForever);
 
-	var _reactTapEventPlugin = __webpack_require__(748);
+	var _reactTapEventPlugin = __webpack_require__(749);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	__webpack_require__(766);
+	__webpack_require__(767);
 
 	__webpack_require__(781);
 
@@ -35610,13 +35610,127 @@
 /* 743 */,
 /* 744 */,
 /* 745 */,
-/* 746 */,
+/* 746 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/**
+	 * Creates an object given uri-encoded key-values pairs:
+	 * getObjectFromHashParams("a=true&b=0&c=Hello%20world")
+	 * => {a: true, b: 0, c: "Hello world"}
+	 */
+	function getObjectFromHashParams(str) {
+	  var pairs = str.split(/&/),
+	      ret = {};
+	  for (var i = 0; i < pairs.length; i++) {
+	    var kv = pairs[i].split(/=/);
+	    if (kv.length == 2) {
+	      ret[decodeURIComponent(kv[0])] = parseToPrimitive(decodeURIComponent(kv[1]));
+	    }
+	  }
+	  return ret;
+	}
+
+	function parseToPrimitive(value) {
+	  try {
+	    return JSON.parse(val(value));
+	  } catch (e) {
+	    return val(value).toString();
+	  }
+	}
+
+	/**
+	 * Inverse of the above function
+	 */
+	function getHashParamsFromObject(obj) {
+	  var hashPartBuffer = [];
+	  for (var k in obj) {
+	    hashPartBuffer.push(encodeURIComponent(k), '=', encodeURIComponent(val(obj[k])), '&');
+	  }
+	  if (hashPartBuffer.length) {
+	    // Remove the last '&'
+	    hashPartBuffer.pop();
+	  }
+	  return hashPartBuffer.join('');
+	}
+
+	/**
+	 * Given some defaults {a: false, b: false}
+	 * and the the state   {a: true,  b: false, c: true},
+	 * this will check only those properties that are in the defaults ("a" and "b"), and make
+	 * any that differ into a url parameter, producing "a=true" for the above.
+	 */
+	function getDiffedHashParams(state, defaults) {
+	  var diff = {};
+	  for (var k in defaults) {
+	    if (state.hasOwnProperty(k) && val(state[k]) !== val(defaults[k])) {
+	      diff[k] = state[k];
+	    }
+	  }
+	  return getHashParamsFromObject(diff);
+	}
+
+	/**
+	 * Given the defaults {a: false, b: false}
+	 * and the hash       "a=true&z=true",
+	 * this will check only those properties that are in the defaults ("a" and "b"), and
+	 * update any that are defined in the hash, producing {a:true, b: false} for the above.
+	 */
+	function getStateFromHashWithDefaults(hash, defaults) {
+	  var hashObj = getObjectFromHashParams(hash),
+	      ret = JSON.parse(JSON.stringify(defaults)); // deep clone
+	  for (var k in ret) {
+	    if (hashObj.hasOwnProperty(k)) {
+	      if (ret[k].hasOwnProperty("value")) {
+	        ret[k].value = hashObj[k];
+	      } else {
+	        ret[k] = hashObj[k];
+	      }
+	    }
+	  }
+	  return ret;
+	}
+
+	// We can pass in either primitives or objects of form {value: val, ...}
+	function val(prop) {
+	  if (prop.hasOwnProperty("value")) {
+	    return prop.value;
+	  }
+	  return prop;
+	}
+
+	// parse URL parameters
+	function getURLParam(name) {
+	  var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+	  var url = window.location.href;
+	  name = name.replace(/[\[\]]/g, "\\$&");
+	  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+	  var results = regex.exec(url);
+	  if (!results) return defaultValue;
+	  if (!results[2]) return true;
+	  var value = decodeURIComponent(results[2].replace(/\+/g, " "));
+	  return value;
+	}
+
+	module.exports = {
+	  getObjectFromHashParams: getObjectFromHashParams,
+	  getHashParamsFromObject: getHashParamsFromObject,
+	  getDiffedHashParams: getDiffedHashParams,
+	  getStateFromHashWithDefaults: getStateFromHashWithDefaults,
+	  parseToPrimitive: parseToPrimitive,
+	  getURLParam: getURLParam
+	};
+
+/***/ },
 /* 747 */,
-/* 748 */
+/* 748 */,
+/* 749 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(749);
+	var defaultClickRejectionStrategy = __webpack_require__(750);
 
 	var alreadyInjected = false;
 
@@ -35638,14 +35752,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(750)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(751)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 749 */
+/* 750 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -35656,7 +35770,7 @@
 
 
 /***/ },
-/* 750 */
+/* 751 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -35684,10 +35798,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(751);
+	var TouchEventUtils = __webpack_require__(752);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(752);
+	var keyOf = __webpack_require__(753);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -35833,7 +35947,7 @@
 
 
 /***/ },
-/* 751 */
+/* 752 */
 /***/ function(module, exports) {
 
 	/**
@@ -35881,7 +35995,7 @@
 
 
 /***/ },
-/* 752 */
+/* 753 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -35920,7 +36034,6 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 753 */,
 /* 754 */,
 /* 755 */,
 /* 756 */,
@@ -35933,13 +36046,14 @@
 /* 763 */,
 /* 764 */,
 /* 765 */,
-/* 766 */
+/* 766 */,
+/* 767 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(767);
+	var content = __webpack_require__(768);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -35959,7 +36073,7 @@
 	}
 
 /***/ },
-/* 767 */
+/* 768 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -35973,11 +36087,11 @@
 
 
 /***/ },
-/* 768 */,
 /* 769 */,
 /* 770 */,
 /* 771 */,
-/* 772 */
+/* 772 */,
+/* 773 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -36025,7 +36139,7 @@
 	exports.default = NewAtomBin;
 
 /***/ },
-/* 773 */
+/* 774 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36250,7 +36364,7 @@
 	exports.default = Authoring;
 
 /***/ },
-/* 774 */
+/* 775 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36259,15 +36373,15 @@
 	  value: true
 	});
 
-	var _interactive = __webpack_require__(775);
+	var _interactive = __webpack_require__(776);
 
 	var _interactive2 = _interopRequireDefault(_interactive);
 
-	var _model = __webpack_require__(776);
+	var _model = __webpack_require__(777);
 
 	var _model2 = _interopRequireDefault(_model);
 
-	var _emptyModel = __webpack_require__(777);
+	var _emptyModel = __webpack_require__(778);
 
 	var _emptyModel2 = _interopRequireDefault(_emptyModel);
 
@@ -36280,7 +36394,7 @@
 	};
 
 /***/ },
-/* 775 */
+/* 776 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36298,7 +36412,7 @@
 	};
 
 /***/ },
-/* 776 */
+/* 777 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36552,7 +36666,7 @@
 	};
 
 /***/ },
-/* 777 */
+/* 778 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -36734,7 +36848,7 @@
 	};
 
 /***/ },
-/* 778 */
+/* 779 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -36990,105 +37104,6 @@
 	    min: 0.01,
 	    max: 0.5
 	  }
-	};
-
-/***/ },
-/* 779 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	/**
-	 * Creates an object given uri-encoded key-values pairs:
-	 * getObjectFromHashParams("a=true&b=0&c=Hello%20world")
-	 * => {a: true, b: 0, c: "Hello world"}
-	 */
-	function getObjectFromHashParams(str) {
-	  var pairs = str.split(/&/),
-	      ret = {};
-	  for (var i = 0; i < pairs.length; i++) {
-	    var kv = pairs[i].split(/=/);
-	    if (kv.length == 2) {
-	      ret[decodeURIComponent(kv[0])] = parseToPrimitive(decodeURIComponent(kv[1]));
-	    }
-	  }
-	  return ret;
-	}
-
-	function parseToPrimitive(value) {
-	  try {
-	    return JSON.parse(val(value));
-	  } catch (e) {
-	    return val(value).toString();
-	  }
-	}
-
-	/**
-	 * Inverse of the above function
-	 */
-	function getHashParamsFromObject(obj) {
-	  var hashPartBuffer = [];
-	  for (var k in obj) {
-	    hashPartBuffer.push(encodeURIComponent(k), '=', encodeURIComponent(val(obj[k])), '&');
-	  }
-	  if (hashPartBuffer.length) {
-	    // Remove the last '&'
-	    hashPartBuffer.pop();
-	  }
-	  return hashPartBuffer.join('');
-	}
-
-	/**
-	 * Given some defaults {a: false, b: false}
-	 * and the the state   {a: true,  b: false, c: true},
-	 * this will check only those properties that are in the defaults ("a" and "b"), and make
-	 * any that differ into a url parameter, producing "a=true" for the above.
-	 */
-	function getDiffedHashParams(state, defaults) {
-	  var diff = {};
-	  for (var k in defaults) {
-	    if (state.hasOwnProperty(k) && val(state[k]) !== val(defaults[k])) {
-	      diff[k] = state[k];
-	    }
-	  }
-	  return getHashParamsFromObject(diff);
-	}
-
-	/**
-	 * Given the defaults {a: false, b: false}
-	 * and the hash       "a=true&z=true",
-	 * this will check only those properties that are in the defaults ("a" and "b"), and
-	 * update any that are defined in the hash, producing {a:true, b: false} for the above.
-	 */
-	function getStateFromHashWithDefaults(hash, defaults) {
-	  var hashObj = getObjectFromHashParams(hash),
-	      ret = JSON.parse(JSON.stringify(defaults)); // deep clone
-	  for (var k in ret) {
-	    if (hashObj.hasOwnProperty(k)) {
-	      if (ret[k].hasOwnProperty("value")) {
-	        ret[k].value = hashObj[k];
-	      } else {
-	        ret[k] = hashObj[k];
-	      }
-	    }
-	  }
-	  return ret;
-	}
-
-	// We can pass in either primitives or objects of form {value: val, ...}
-	function val(prop) {
-	  if (prop.hasOwnProperty("value")) {
-	    return prop.value;
-	  }
-	  return prop;
-	}
-
-	module.exports = {
-	  getObjectFromHashParams: getObjectFromHashParams,
-	  getHashParamsFromObject: getHashParamsFromObject,
-	  getDiffedHashParams: getDiffedHashParams,
-	  getStateFromHashWithDefaults: getStateFromHashWithDefaults,
-	  parseToPrimitive: parseToPrimitive
 	};
 
 /***/ },

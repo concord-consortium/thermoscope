@@ -76,21 +76,21 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(748);
+	var _reactTapEventPlugin = __webpack_require__(749);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensor = __webpack_require__(753);
+	var _sensor = __webpack_require__(754);
 
 	var _sensor2 = _interopRequireDefault(_sensor);
 
-	var _sensorLabquest2Interface = __webpack_require__(760);
+	var _sensorLabquest2Interface = __webpack_require__(761);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(766);
+	__webpack_require__(767);
 
-	__webpack_require__(770);
+	__webpack_require__(771);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29420,7 +29420,9 @@
 
 	var _models2 = _interopRequireDefault(_models);
 
-	__webpack_require__(746);
+	var _utils = __webpack_require__(746);
+
+	__webpack_require__(747);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29430,6 +29432,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var SHOW_MATERIAL_CONTROLS = (0, _utils.getURLParam)('controls');
 	var MODEL_WIDTH = 400;
 	var MODEL_HEIGHT = 400;
 
@@ -29501,6 +29504,12 @@
 
 	      var model = _models2.default[materialType][materialIdx];
 
+	      var showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
+	      // props can turn on or off the controls from a parent container
+	      var showControls = showMaterialControls != null ? showMaterialControls : true;
+	      // a url parameter will override the props setting
+	      if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'thermoscope' },
@@ -29532,7 +29541,7 @@
 	                onChange: this.handleTempSliderChange })
 	            )
 	          ),
-	          showMaterialControls && _react2.default.createElement(
+	          showControls && _react2.default.createElement(
 	            'div',
 	            { className: 'controls-row' },
 	            _react2.default.createElement(
@@ -29570,7 +29579,7 @@
 
 
 	Thermoscope.defaultProps = {
-	  showMaterialControls: true
+	  showMaterialControls: null
 	};
 
 /***/ },
@@ -45809,6 +45818,12 @@
 
 	exports.default = {
 	  solid: [{
+	    name: 'Solid 4',
+	    json: _solid8.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 800 + 10;
+	    }
+	  }, {
 	    name: 'Solid 1',
 	    json: _solid2.default,
 	    tempScale: function tempScale(temp) {
@@ -45826,14 +45841,17 @@
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 800 + 10;
 	    }
-	  }, {
-	    name: 'Solid 4',
-	    json: _solid8.default,
-	    tempScale: function tempScale(temp) {
-	      return normalizeTemp(temp) * 800 + 10;
-	    }
 	  }],
 	  liquid: [{
+	    name: 'Liquid 4',
+	    json: _liquid8.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 900 + 700;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 0.45 + 0.2;
+	    }
+	  }, {
 	    name: 'Liquid 1',
 	    json: _liquid2.default,
 	    tempScale: function tempScale(temp) {
@@ -45860,17 +45878,17 @@
 	    timeStepScale: function timeStepScale(temp) {
 	      return normalizeTemp(temp) * 0.85 + 0.15;
 	    }
-	  }, {
-	    name: 'Liquid 4',
-	    json: _liquid8.default,
-	    tempScale: function tempScale(temp) {
-	      return normalizeTemp(temp) * 900 + 700;
-	    },
-	    timeStepScale: function timeStepScale(temp) {
-	      return normalizeTemp(temp) * 0.45 + 0.2;
-	    }
 	  }],
 	  gas: [{
+	    name: 'Gas 4',
+	    json: _gas6.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 5000 + 1500;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 1.0 + 0.2;
+	    }
+	  }, {
 	    name: 'Gas 1',
 	    json: _gas2.default,
 	    tempScale: function tempScale(temp) {
@@ -45887,15 +45905,6 @@
 	    },
 	    timeStepScale: function timeStepScale(temp) {
 	      return normalizeTemp(temp) * 0.65 + 0.03;
-	    }
-	  }, {
-	    name: 'Gas 4',
-	    json: _gas6.default,
-	    tempScale: function tempScale(temp) {
-	      return normalizeTemp(temp) * 5000 + 1500;
-	    },
-	    timeStepScale: function timeStepScale(temp) {
-	      return normalizeTemp(temp) * 1.0 + 0.2;
 	    }
 	  }],
 	  uniform: [{
@@ -49545,7 +49554,7 @@
 	module.exports = {
 		"type": "md2d",
 		"imagePath": "",
-		"width": 4,
+		"width": 2.6,
 		"height": 2.5,
 		"unitsScheme": "md2d",
 		"lennardJonesForces": true,
@@ -49574,7 +49583,7 @@
 			"viewPortWidth": 2.5,
 			"viewPortHeight": 2.5,
 			"viewPortZoom": 1,
-			"viewPortX": 0.75,
+			"viewPortX": 0,
 			"viewPortY": 0,
 			"viewPortDrag": false,
 			"backgroundColor": "#eee",
@@ -49784,44 +49793,187 @@
 			]
 		},
 		"pairwiseLJProperties": [],
-		"shapes": {
-			"type": [
-				"rectangle"
+		"lines": {
+			"x1": [
+				1.57,
+				0.93,
+				0.37,
+				0,
+				0,
+				0.37,
+				0.93,
+				1.57,
+				2.16,
+				2.5,
+				2.5,
+				2.16
 			],
-			"x": [
-				0.75
+			"y1": [
+				0,
+				0,
+				0.3,
+				0.93,
+				1.57,
+				2.16,
+				2.45,
+				2.45,
+				2.16,
+				1.57,
+				0.93,
+				0.3
 			],
-			"y": [
+			"x2": [
+				0.93,
+				0.37,
+				0,
+				0,
+				0.37,
+				0.93,
+				1.57,
+				2.16,
+				2.5,
+				2.5,
+				2.16,
+				1.57
+			],
+			"y2": [
+				0,
+				0.3,
+				0.93,
+				1.57,
+				2.16,
+				2.45,
+				2.45,
+				2.16,
+				1.57,
+				0.93,
+				0.3,
 				0
 			],
-			"height": [
-				2.5
+			"beginStyle": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
 			],
-			"width": [
-				2.6
+			"endStyle": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
 			],
 			"fence": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
-			"color": [
-				"rgba(0,128,192,0)"
-			],
 			"lineColor": [
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
 				"black"
 			],
 			"lineWeight": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
 			"lineDashes": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
 				"none"
 			],
 			"layer": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
 			"layerPosition": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
 			"visible": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			]
 		}
@@ -54754,7 +54906,7 @@
 	module.exports = {
 		"type": "md2d",
 		"imagePath": "",
-		"width": 4,
+		"width": 2.5,
 		"height": 2.5,
 		"unitsScheme": "md2d",
 		"lennardJonesForces": true,
@@ -54783,7 +54935,7 @@
 			"viewPortWidth": 2.5,
 			"viewPortHeight": 2.5,
 			"viewPortZoom": 1,
-			"viewPortX": 0.75,
+			"viewPortX": 0,
 			"viewPortY": 0,
 			"viewPortDrag": false,
 			"backgroundColor": "#eee",
@@ -54993,44 +55145,187 @@
 			]
 		},
 		"pairwiseLJProperties": [],
-		"shapes": {
-			"type": [
-				"rectangle"
+		"lines": {
+			"x1": [
+				1.57,
+				0.93,
+				0.37,
+				0,
+				0,
+				0.37,
+				0.93,
+				1.57,
+				2.16,
+				2.5,
+				2.5,
+				2.16
 			],
-			"x": [
-				0.75
+			"y1": [
+				0,
+				0,
+				0.3,
+				0.93,
+				1.57,
+				2.16,
+				2.45,
+				2.45,
+				2.16,
+				1.57,
+				0.93,
+				0.3
 			],
-			"y": [
+			"x2": [
+				0.93,
+				0.37,
+				0,
+				0,
+				0.37,
+				0.93,
+				1.57,
+				2.16,
+				2.5,
+				2.5,
+				2.16,
+				1.57
+			],
+			"y2": [
+				0,
+				0.3,
+				0.93,
+				1.57,
+				2.16,
+				2.45,
+				2.45,
+				2.16,
+				1.57,
+				0.93,
+				0.3,
 				0
 			],
-			"height": [
-				2.5
+			"beginStyle": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
 			],
-			"width": [
-				2.6
+			"endStyle": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
 			],
 			"fence": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
-			"color": [
-				"rgba(0,128,192,0)"
-			],
 			"lineColor": [
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
 				"black"
 			],
 			"lineWeight": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
 			"lineDashes": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
 				"none"
 			],
 			"layer": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
 			"layerPosition": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			],
 			"visible": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
 				1
 			]
 		}
@@ -56038,7 +56333,7 @@
 	module.exports = {
 		"type": "md2d",
 		"imagePath": "",
-		"width": 4,
+		"width": 2.5,
 		"height": 2.5,
 		"unitsScheme": "md2d",
 		"lennardJonesForces": true,
@@ -56067,7 +56362,7 @@
 			"viewPortWidth": 2.5,
 			"viewPortHeight": 2.5,
 			"viewPortZoom": 1,
-			"viewPortX": 0.75,
+			"viewPortX": 0,
 			"viewPortY": 0,
 			"viewPortDrag": false,
 			"backgroundColor": "#eee",
@@ -56294,7 +56589,191 @@
 				-13057
 			]
 		},
-		"pairwiseLJProperties": []
+		"pairwiseLJProperties": [],
+		"lines": {
+			"x1": [
+				1.57,
+				0.93,
+				0.37,
+				0,
+				0,
+				0.37,
+				0.93,
+				1.57,
+				2.16,
+				2.5,
+				2.5,
+				2.16
+			],
+			"y1": [
+				0,
+				0,
+				0.3,
+				0.93,
+				1.57,
+				2.16,
+				2.45,
+				2.45,
+				2.16,
+				1.57,
+				0.93,
+				0.3
+			],
+			"x2": [
+				0.93,
+				0.37,
+				0,
+				0,
+				0.37,
+				0.93,
+				1.57,
+				2.16,
+				2.5,
+				2.5,
+				2.16,
+				1.57
+			],
+			"y2": [
+				0,
+				0.3,
+				0.93,
+				1.57,
+				2.16,
+				2.45,
+				2.45,
+				2.16,
+				1.57,
+				0.93,
+				0.3,
+				0
+			],
+			"beginStyle": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
+			],
+			"endStyle": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
+			],
+			"fence": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			],
+			"lineColor": [
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black",
+				"black"
+			],
+			"lineWeight": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			],
+			"lineDashes": [
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none",
+				"none"
+			],
+			"layer": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			],
+			"layerPosition": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			],
+			"visible": [
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			]
+		}
 	};
 
 /***/ },
@@ -56923,12 +57402,126 @@
 
 /***/ },
 /* 746 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	/**
+	 * Creates an object given uri-encoded key-values pairs:
+	 * getObjectFromHashParams("a=true&b=0&c=Hello%20world")
+	 * => {a: true, b: 0, c: "Hello world"}
+	 */
+	function getObjectFromHashParams(str) {
+	  var pairs = str.split(/&/),
+	      ret = {};
+	  for (var i = 0; i < pairs.length; i++) {
+	    var kv = pairs[i].split(/=/);
+	    if (kv.length == 2) {
+	      ret[decodeURIComponent(kv[0])] = parseToPrimitive(decodeURIComponent(kv[1]));
+	    }
+	  }
+	  return ret;
+	}
+
+	function parseToPrimitive(value) {
+	  try {
+	    return JSON.parse(val(value));
+	  } catch (e) {
+	    return val(value).toString();
+	  }
+	}
+
+	/**
+	 * Inverse of the above function
+	 */
+	function getHashParamsFromObject(obj) {
+	  var hashPartBuffer = [];
+	  for (var k in obj) {
+	    hashPartBuffer.push(encodeURIComponent(k), '=', encodeURIComponent(val(obj[k])), '&');
+	  }
+	  if (hashPartBuffer.length) {
+	    // Remove the last '&'
+	    hashPartBuffer.pop();
+	  }
+	  return hashPartBuffer.join('');
+	}
+
+	/**
+	 * Given some defaults {a: false, b: false}
+	 * and the the state   {a: true,  b: false, c: true},
+	 * this will check only those properties that are in the defaults ("a" and "b"), and make
+	 * any that differ into a url parameter, producing "a=true" for the above.
+	 */
+	function getDiffedHashParams(state, defaults) {
+	  var diff = {};
+	  for (var k in defaults) {
+	    if (state.hasOwnProperty(k) && val(state[k]) !== val(defaults[k])) {
+	      diff[k] = state[k];
+	    }
+	  }
+	  return getHashParamsFromObject(diff);
+	}
+
+	/**
+	 * Given the defaults {a: false, b: false}
+	 * and the hash       "a=true&z=true",
+	 * this will check only those properties that are in the defaults ("a" and "b"), and
+	 * update any that are defined in the hash, producing {a:true, b: false} for the above.
+	 */
+	function getStateFromHashWithDefaults(hash, defaults) {
+	  var hashObj = getObjectFromHashParams(hash),
+	      ret = JSON.parse(JSON.stringify(defaults)); // deep clone
+	  for (var k in ret) {
+	    if (hashObj.hasOwnProperty(k)) {
+	      if (ret[k].hasOwnProperty("value")) {
+	        ret[k].value = hashObj[k];
+	      } else {
+	        ret[k] = hashObj[k];
+	      }
+	    }
+	  }
+	  return ret;
+	}
+
+	// We can pass in either primitives or objects of form {value: val, ...}
+	function val(prop) {
+	  if (prop.hasOwnProperty("value")) {
+	    return prop.value;
+	  }
+	  return prop;
+	}
+
+	// parse URL parameters
+	function getURLParam(name) {
+	  var defaultValue = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+	  var url = window.location.href;
+	  name = name.replace(/[\[\]]/g, "\\$&");
+	  var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+	  var results = regex.exec(url);
+	  if (!results) return defaultValue;
+	  if (!results[2]) return true;
+	  var value = decodeURIComponent(results[2].replace(/\+/g, " "));
+	  return value;
+	}
+
+	module.exports = {
+	  getObjectFromHashParams: getObjectFromHashParams,
+	  getHashParamsFromObject: getHashParamsFromObject,
+	  getDiffedHashParams: getDiffedHashParams,
+	  getStateFromHashWithDefaults: getStateFromHashWithDefaults,
+	  parseToPrimitive: parseToPrimitive,
+	  getURLParam: getURLParam
+	};
+
+/***/ },
+/* 747 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(747);
+	var content = __webpack_require__(748);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -56948,7 +57541,7 @@
 	}
 
 /***/ },
-/* 747 */
+/* 748 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -56962,11 +57555,11 @@
 
 
 /***/ },
-/* 748 */
+/* 749 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(749);
+	var defaultClickRejectionStrategy = __webpack_require__(750);
 
 	var alreadyInjected = false;
 
@@ -56988,14 +57581,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(750)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(751)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 749 */
+/* 750 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -57006,7 +57599,7 @@
 
 
 /***/ },
-/* 750 */
+/* 751 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -57034,10 +57627,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(751);
+	var TouchEventUtils = __webpack_require__(752);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(752);
+	var keyOf = __webpack_require__(753);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -57183,7 +57776,7 @@
 
 
 /***/ },
-/* 751 */
+/* 752 */
 /***/ function(module, exports) {
 
 	/**
@@ -57231,7 +57824,7 @@
 
 
 /***/ },
-/* 752 */
+/* 753 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -57270,7 +57863,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 753 */
+/* 754 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57289,15 +57882,17 @@
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
-	var _LinearProgress = __webpack_require__(754);
+	var _LinearProgress = __webpack_require__(755);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
-	var _RaisedButton = __webpack_require__(756);
+	var _RaisedButton = __webpack_require__(757);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
-	__webpack_require__(758);
+	var _utils = __webpack_require__(746);
+
+	__webpack_require__(759);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57307,6 +57902,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+	var DEBUG = (0, _utils.getURLParam)('debug') || 'false';
+
 	var Sensor = function (_PureComponent) {
 	  _inherits(Sensor, _PureComponent);
 
@@ -57315,12 +57912,13 @@
 
 	    var _this = _possibleConstructorReturn(this, (Sensor.__proto__ || Object.getPrototypeOf(Sensor)).call(this, props));
 
-	    _this.state = { connected: false, connecting: false, showDetails: false };
+	    _this.state = { connected: false, connecting: false, showDetails: false, debugMessages: "" };
 	    _this.connectedSensor = _this.props.sensor;
 	    _this.handleIPAddressChange = _this.handleIPAddressChange.bind(_this);
 	    _this.connect = _this.connect.bind(_this);
 	    _this.enterkey = _this.enterkey.bind(_this);
 	    _this.toggleDisplay = _this.toggleDisplay.bind(_this);
+	    _this.screenConsole = _this.screenConsole.bind(_this);
 	    return _this;
 	  }
 
@@ -57348,6 +57946,7 @@
 	        this.setState({ connecting: true });
 	        this.connectedSensor.connect(this.state.ipAddress);
 	        this.connectedSensor.on('connected', this.connected.bind(this));
+	        this.connectedSensor.on('screenConsole', this.screenConsole.bind(this));
 	      }
 	    }
 	  }, {
@@ -57361,12 +57960,25 @@
 	      this.setState({ showDetails: this.state.showDetails ? false : true });
 	    }
 	  }, {
+	    key: 'screenConsole',
+	    value: function screenConsole(event) {
+	      var debugMessages = this.state.debugMessages;
+
+	      console.log("console message event", event);
+
+	      var newMessages = debugMessages + "\n" + event;
+	      this.setState({ debugMessages: newMessages });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _state = this.state,
 	          connected = _state.connected,
 	          connecting = _state.connecting,
-	          showDetails = _state.showDetails;
+	          showDetails = _state.showDetails,
+	          debugMessages = _state.debugMessages;
+
+	      var showDebug = DEBUG && DEBUG.toLowerCase() === "true";
 
 	      var connectStatus = connected ? "Connected." : "";
 	      return _react2.default.createElement(
@@ -57395,6 +58007,11 @@
 	            'div',
 	            { id: 'sensorConnectionStatus' },
 	            connectStatus
+	          ),
+	          showDebug && _react2.default.createElement(
+	            'div',
+	            { id: 'screenConsole' },
+	            debugMessages
 	          )
 	        )
 	      );
@@ -57406,8 +58023,13 @@
 
 	exports.default = Sensor;
 
+
+	Sensor.defaultProps = {
+	  debug: false
+	};
+
 /***/ },
-/* 754 */
+/* 755 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57417,7 +58039,7 @@
 	});
 	exports.default = undefined;
 
-	var _LinearProgress = __webpack_require__(755);
+	var _LinearProgress = __webpack_require__(756);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
@@ -57426,7 +58048,7 @@
 	exports.default = _LinearProgress2.default;
 
 /***/ },
-/* 755 */
+/* 756 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -57657,7 +58279,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 756 */
+/* 757 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -57667,7 +58289,7 @@
 	});
 	exports.default = undefined;
 
-	var _RaisedButton = __webpack_require__(757);
+	var _RaisedButton = __webpack_require__(758);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
@@ -57676,7 +58298,7 @@
 	exports.default = _RaisedButton2.default;
 
 /***/ },
-/* 757 */
+/* 758 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -58157,13 +58779,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 758 */
+/* 759 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(759);
+	var content = __webpack_require__(760);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -58183,7 +58805,7 @@
 	}
 
 /***/ },
-/* 759 */
+/* 760 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -58191,13 +58813,13 @@
 
 
 	// module
-	exports.push([module.id, ".sensorConnect {\n  position: absolute;\n  top: 10px;\n  left: 10px;\n  color: #ccc;\n  margin-right: 4px;\n}\n.sensorConnect button {\n  color: #ccc;\n}\n.sensorConnect i {\n  cursor: pointer;\n}\n", ""]);
+	exports.push([module.id, ".sensorConnect {\n  position: absolute;\n  top: 10px;\n  left: 10px;\n  color: #ccc;\n  margin-right: 4px;\n}\n.sensorConnect button {\n  color: #ccc;\n}\n.sensorConnect i {\n  cursor: pointer;\n}\n.sensorConnect div {\n  white-space: pre-line;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 760 */
+/* 761 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -58217,9 +58839,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(761);
+	var RSVP = __webpack_require__(762);
 
-	var EventEmitter2 = __webpack_require__(764).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(765).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -58552,7 +59174,7 @@
 
 
 /***/ },
-/* 761 */
+/* 762 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -60939,7 +61561,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(763);
+	    var vertx = __webpack_require__(764);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -61055,10 +61677,10 @@
 
 	})));
 	//# sourceMappingURL=rsvp.map
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(762).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(763).setImmediate, (function() { return this; }())))
 
 /***/ },
-/* 762 */
+/* 763 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(294).nextTick;
@@ -61137,16 +61759,16 @@
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(762).setImmediate, __webpack_require__(762).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(763).setImmediate, __webpack_require__(763).clearImmediate))
 
 /***/ },
-/* 763 */
+/* 764 */
 /***/ function(module, exports) {
 
 	/* (ignored) */
 
 /***/ },
-/* 764 */
+/* 765 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/*!
@@ -61929,14 +62551,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 765 */,
-/* 766 */
+/* 766 */,
+/* 767 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(767);
+	var content = __webpack_require__(768);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -61956,7 +62578,7 @@
 	}
 
 /***/ },
-/* 767 */
+/* 768 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
@@ -61970,15 +62592,15 @@
 
 
 /***/ },
-/* 768 */,
 /* 769 */,
-/* 770 */
+/* 770 */,
+/* 771 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(771);
+	var content = __webpack_require__(772);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(731)(content, {});
@@ -61998,7 +62620,7 @@
 	}
 
 /***/ },
-/* 771 */
+/* 772 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(730)();
