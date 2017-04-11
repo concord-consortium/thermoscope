@@ -2,8 +2,11 @@ import React, { PureComponent, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
 import RaisedButton from 'material-ui/RaisedButton';
+import { getURLParam } from '../utils';
 
 import '../../css/sensor-connect.less';
+
+const DEBUG = getURLParam('debug') || 'false';
 
 export default class Sensor extends PureComponent {
   constructor(props) {
@@ -58,8 +61,7 @@ export default class Sensor extends PureComponent {
 
   render() {
     const { connected, connecting, showDetails, debugMessages } = this.state;
-    const { debug } = this.props;
-    let showDebug = debug && debug.toLowerCase() === "true";
+    let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
 
     let connectStatus = connected ? "Connected." : "";
     return (

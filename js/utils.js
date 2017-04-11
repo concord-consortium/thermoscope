@@ -91,7 +91,6 @@ function getURLParam(name, defaultValue = null) {
   if (!results) return defaultValue;
   if (!results[2]) return true;
   const value = decodeURIComponent(results[2].replace(/\+/g, " "));
-  if (value === 'false') return false;
   return value;
 }
 

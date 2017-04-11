@@ -5,10 +5,12 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import LabModel from './lab-model';
 import Meter from './meter';
-import models, {MIN_TEMP, MAX_TEMP} from '../models';
+import models, { MIN_TEMP, MAX_TEMP } from '../models';
+import { getURLParam } from '../utils';
 
 import '../../css/thermoscope.less';
 
+const SHOW_MATERIAL_CONTROLS = getURLParam('controls');
 const MODEL_WIDTH = 400;
 const MODEL_HEIGHT = 400;
 
@@ -56,6 +58,12 @@ export default class Thermoscope extends PureComponent {
     const {embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls} = this.props;
     const model = models[materialType][materialIdx];
 
+    let showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
+    // props can turn on or off the controls from a parent container
+    let showControls = showMaterialControls != null ? showMaterialControls : true;
+    // a url parameter will override the props setting
+    if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
+
     return (
       <div className="thermoscope">
         <LabModel temperature={temperature}
@@ -78,7 +86,7 @@ export default class Thermoscope extends PureComponent {
                 onChange={this.handleTempSliderChange} />}
             </div>
           </div>
-          {showMaterialControls && <div className="controls-row">
+          {showControls && <div className="controls-row">
               <div className="material-type-select">
                 <RadioButtonGroup name="material-type" valueSelected={materialType} onChange={this.handleMaterialTypeChange}>
                   <RadioButton value="solid" label="Solid"/>
@@ -102,5 +110,5 @@ export default class Thermoscope extends PureComponent {
 }
 
 Thermoscope.defaultProps = {
-  showMaterialControls: true
+  showMaterialControls: null
 }
