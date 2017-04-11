@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, PropTypes } from 'react';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -8,7 +8,7 @@ import '../../css/sensor-connect.less';
 export default class Sensor extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { connected: false, connecting: false, showDetails: false, debug: true, debugMessages: "" };
+    this.state = { connected: false, connecting: false, showDetails: false, debugMessages: "" };
     this.connectedSensor = this.props.sensor;
     this.handleIPAddressChange = this.handleIPAddressChange.bind(this);
     this.connect = this.connect.bind(this);
@@ -57,7 +57,10 @@ export default class Sensor extends PureComponent {
   }
 
   render() {
-    const { connected, connecting, showDetails, debug, debugMessages } = this.state;
+    const { connected, connecting, showDetails, debugMessages } = this.state;
+    const { debug } = this.props;
+    let showDebug = debug && debug.toLowerCase() === "true";
+
     let connectStatus = connected ? "Connected." : "";
     return (
       <div className="sensorConnect">
@@ -70,7 +73,7 @@ export default class Sensor extends PureComponent {
               <LinearProgress />
             }
             {!connecting && <div id="sensorConnectionStatus">{connectStatus}</div>}
-            {debug &&
+            {showDebug &&
               <div id="screenConsole">{debugMessages}</div>
             }
           </div>}
@@ -78,3 +81,7 @@ export default class Sensor extends PureComponent {
     )
   }
 }
+
+Sensor.defaultProps = {
+  debug: false
+};

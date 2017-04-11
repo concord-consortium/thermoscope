@@ -114,8 +114,6 @@ module.exports = {
             .then(function (arrayB) {
               readTemp(arrayA, arrayB);
               events.emit('statusReceived');
-              logMessage(arrayA);
-              logMessage(arrayB);
             });
         };
         if (isConnected) {

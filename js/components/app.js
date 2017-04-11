@@ -7,11 +7,12 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from './sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
 import bleSensor from './ble-sensor.js';
+import { getURLParam } from '../utils';
 
 const sensor = bleSensor;
 
 import '../../css/app.less';
-
+const DEBUG = getURLParam('debug') || 'false';
 // Required by Material-UI library.
 injectTapEventPlugin();
 
@@ -31,7 +32,7 @@ const App = () => (
           <Thermoscope sensor={sensor} probeIndex={1}/>
         </div>
       </div>
-      <Sensor sensor={sensor}/>
+      <Sensor sensor={sensor} debug={DEBUG}/>
     </div>
   </MuiThemeProvider>
 );
