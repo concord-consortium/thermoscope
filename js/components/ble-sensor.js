@@ -44,6 +44,17 @@ const readTemp = function(byteArrayA, byteArrayB) {
   liveSensors = [valueA, valueB];
 };
 
+const logMessage = function (message, error) {
+  if (error) {
+    console.error(message, error);
+    events.emit('screenConsole', message);
+    events.emit('screenConsole', error);
+  } else {
+    console.log(message);
+    events.emit('screenConsole', message);
+  }
+}
+
 
 module.exports = {
   connect: function (address) {
@@ -61,7 +72,7 @@ module.exports = {
     })
       .catch(function (error) {
         events.emit('connectionLost');
-        console.error('Connection failed!', error);
+        logMessage('Connection failed!', error);
         isConnected = false;
       })
       // Step 3: Get the Service
@@ -72,7 +83,7 @@ module.exports = {
       })
       .catch(function (error) {
         events.emit('connectionLost');
-        console.error('Failed to get Primary Service at address A', error);
+        logMessage('Failed to get Primary Service at address A', error);
         isConnected = false;
       })
       .then(function (service) {
@@ -85,7 +96,7 @@ module.exports = {
       })
       .catch(function (error) {
         events.emit('connectionLost');
-        console.error('Failed to get Primary Service at address B', error);
+        logMessage('Failed to get Primary Service at address B', error);
         isConnected = false;
       })
       .then(function (service) {
@@ -113,7 +124,7 @@ module.exports = {
       })
       .catch(function (error) {
         events.emit('connectionLost');
-        console.error('Connection failed!', error);
+        logMessage('Connection failed!', error);
         isConnected = false;
       });
   },
