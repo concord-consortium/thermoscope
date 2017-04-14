@@ -29446,6 +29446,7 @@
 	var SHOW_MATERIAL_CONTROLS = (0, _utils.getURLParam)('controls');
 	var MODEL_WIDTH = 400;
 	var MODEL_HEIGHT = 400;
+	var MATERIAL_TYPES = ['solid', 'liquid', 'gas'];
 
 	var Thermoscope = function (_PureComponent) {
 	  _inherits(Thermoscope, _PureComponent);
@@ -29514,6 +29515,7 @@
 	          showMaterialControls = _props.showMaterialControls;
 
 	      var model = _models2.default[materialType][materialIdx];
+	      var material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
 
 	      var showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
 	      // props can turn on or off the controls from a parent container
@@ -29560,7 +29562,7 @@
 	              { className: 'material-type-select' },
 	              _react2.default.createElement(
 	                _RadioButton.RadioButtonGroup,
-	                { name: 'material-type', valueSelected: materialType, onChange: this.handleMaterialTypeChange },
+	                { name: 'material-type', valueSelected: material, onChange: this.handleMaterialTypeChange },
 	                _react2.default.createElement(_RadioButton.RadioButton, { value: 'solid', label: 'Solid' }),
 	                _react2.default.createElement(_RadioButton.RadioButton, { value: 'liquid', label: 'Liquid' }),
 	                _react2.default.createElement(_RadioButton.RadioButton, { value: 'gas', label: 'Gas' })
@@ -29572,7 +29574,7 @@
 	              _react2.default.createElement(
 	                _SelectField2.default,
 	                { floatingLabelText: 'Material', value: materialIdx, onChange: this.handleMaterialIdxChange },
-	                _models2.default[materialType].map(function (model, idx) {
+	                _models2.default[material].map(function (model, idx) {
 	                  return _react2.default.createElement(_MenuItem2.default, { key: idx, value: idx, primaryText: model.name });
 	                })
 	              )
