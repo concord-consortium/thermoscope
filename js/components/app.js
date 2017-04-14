@@ -7,6 +7,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from './sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
 import bleSensor from './ble-sensor.js';
+import { getURLParam } from '../utils';
 
 const sensor = bleSensor;
 
@@ -24,11 +25,11 @@ const App = () => (
       <div className="app-container">
         <div className="thermoscope-container">
           <div className="label">A</div>
-          <Thermoscope sensor={sensor} probeIndex={0}/>
+          <Thermoscope sensor={sensor} material={getURLParam('A')} probeIndex={0}/>
         </div>
         <div className="thermoscope-container">
           <div className="label">B</div>
-          <Thermoscope sensor={sensor} probeIndex={1}/>
+          <Thermoscope sensor={sensor} material={getURLParam('B')} probeIndex={1}/>
         </div>
       </div>
       <Sensor sensor={sensor}/>

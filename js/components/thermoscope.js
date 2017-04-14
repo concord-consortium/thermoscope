@@ -13,6 +13,7 @@ import '../../css/thermoscope.less';
 const SHOW_MATERIAL_CONTROLS = getURLParam('controls');
 const MODEL_WIDTH = 400;
 const MODEL_HEIGHT = 400;
+const MATERIAL_TYPES = ['solid', 'liquid', 'gas'];
 
 export default class Thermoscope extends PureComponent {
   constructor(props) {
@@ -57,6 +58,7 @@ export default class Thermoscope extends PureComponent {
     const { temperature, materialType, materialIdx, liveData } = this.state;
     const {embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls} = this.props;
     const model = models[materialType][materialIdx];
+    let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
 
     let showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
     // props can turn on or off the controls from a parent container
@@ -88,7 +90,7 @@ export default class Thermoscope extends PureComponent {
           </div>
           {showControls && <div className="controls-row">
               <div className="material-type-select">
-                <RadioButtonGroup name="material-type" valueSelected={materialType} onChange={this.handleMaterialTypeChange}>
+                <RadioButtonGroup name="material-type" valueSelected={material} onChange={this.handleMaterialTypeChange}>
                   <RadioButton value="solid" label="Solid"/>
                   <RadioButton value="liquid" label="Liquid"/>
                   <RadioButton value="gas" label="Gas"/>
@@ -96,7 +98,7 @@ export default class Thermoscope extends PureComponent {
               </div>
               <div className="material-select">
                 <SelectField floatingLabelText="Material" value={materialIdx} onChange={this.handleMaterialIdxChange}>
-                  {models[materialType].map((model, idx) =>
+                  {models[material].map((model, idx) =>
                     <MenuItem key={idx} value={idx} primaryText={model.name}/>
                   )}
                 </SelectField>
