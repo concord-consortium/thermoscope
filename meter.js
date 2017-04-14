@@ -57980,7 +57980,6 @@
 	    value: function screenConsole(event) {
 	      var debugMessages = this.state.debugMessages;
 
-	      console.log("console message event", event);
 
 	      var newMessages = debugMessages + "\n" + event;
 	      this.setState({ debugMessages: newMessages });
@@ -62607,6 +62606,15 @@
 	};
 
 	var readTemp = function readTemp(byteArrayA, byteArrayB) {
+
+	  logMessage(byteArrayA);
+
+	  var debugArrayData = [];
+	  for (var i = 0; i < byteArrayA.length; i++) {
+	    debugArrayData.push(byteArrayA[i]);
+	  }
+	  logMessage(debugArrayData.join(''));
+
 	  valueA = { liveValue: computeTemp(byteArrayA) };
 	  valueB = { liveValue: computeTemp(byteArrayB) };
 	  liveSensors = [valueA, valueB];
@@ -62676,7 +62684,7 @@
 	        });
 	      };
 	      if (isConnected) {
-	        window.takeReadingIntervalID = setInterval(takeReading, 600);
+	        window.takeReadingIntervalID = setInterval(takeReading, 6000);
 	      } else {
 	        window.takeReadingIntervalID = null;
 	      }

@@ -57964,7 +57964,6 @@
 	    value: function screenConsole(event) {
 	      var debugMessages = this.state.debugMessages;
 
-	      console.log("console message event", event);
 
 	      var newMessages = debugMessages + "\n" + event;
 	      this.setState({ debugMessages: newMessages });
