@@ -53,7 +53,6 @@ export default class Sensor extends PureComponent {
 
   screenConsole(event) {
     const { debugMessages } = this.state;
-    console.log("console message event", event);
 
     let newMessages = debugMessages + "\n" + event;
     this.setState({ debugMessages: newMessages });

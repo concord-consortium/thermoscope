@@ -38,10 +38,20 @@ const computeTemp = function(byteArray) {
   return temp100/ 100.0;
 };
 
-const readTemp = function(byteArrayA, byteArrayB) {
+const readTemp = function (byteArrayA, byteArrayB) {
+
+  logMessage(byteArrayA);
+
+  var debugArrayData = [];
+  for (var i = 0; i < byteArrayA.length; i++) {
+    debugArrayData.push(byteArrayA[i]);
+  }
+  logMessage(debugArrayData.join(''));
+
   valueA = { liveValue: computeTemp(byteArrayA) };
   valueB = { liveValue: computeTemp(byteArrayB) };
   liveSensors = [valueA, valueB];
+
 };
 
 const logMessage = function (message, error) {
@@ -117,7 +127,7 @@ module.exports = {
             });
         };
         if (isConnected) {
-          window.takeReadingIntervalID = setInterval(takeReading, 600);
+          window.takeReadingIntervalID = setInterval(takeReading, 6000);
         } else {
           window.takeReadingIntervalID = null;
         }
