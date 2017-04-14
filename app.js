@@ -70227,15 +70227,6 @@
 	};
 
 	var readTemp = function readTemp(byteArrayA, byteArrayB) {
-
-	  logMessage(byteArrayA);
-
-	  var debugArrayData = [];
-	  for (var i = 0; i < byteArrayA.length; i++) {
-	    debugArrayData.push(byteArrayA[i]);
-	  }
-	  logMessage(debugArrayData.join(''));
-
 	  valueA = { liveValue: computeTemp(byteArrayA) };
 	  valueB = { liveValue: computeTemp(byteArrayB) };
 	  liveSensors = [valueA, valueB];
@@ -70305,7 +70296,7 @@
 	        });
 	      };
 	      if (isConnected) {
-	        window.takeReadingIntervalID = setInterval(takeReading, 6000);
+	        window.takeReadingIntervalID = setInterval(takeReading, 600);
 	      } else {
 	        window.takeReadingIntervalID = null;
 	      }
