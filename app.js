@@ -29500,7 +29500,7 @@
 	          _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('B'), probeIndex: 1 })
 	        )
 	      ),
-	      _react2.default.createElement(_sensor2.default, { sensor: sensor })
+	      _react2.default.createElement(_sensor2.default, { sensor: sensor, showAddressBox: false })
 	    )
 	  );
 	};
@@ -65578,7 +65578,11 @@
 	  }, {
 	    key: 'connect',
 	    value: function connect(event, value) {
-	      this.connectSensor();
+	      if (!this.state.connected) {
+	        this.connectSensor();
+	      } else {
+	        window.location.reload();
+	      }
 	    }
 	  }, {
 	    key: 'connectSensor',
@@ -65617,10 +65621,13 @@
 	          connecting = _state.connecting,
 	          showDetails = _state.showDetails,
 	          debugMessages = _state.debugMessages;
+	      var showAddressBox = this.props.showAddressBox;
 
 	      var showDebug = DEBUG && DEBUG.toLowerCase() === "true";
 
 	      var connectStatus = connected ? "Connected." : "";
+	      var connectButtonText = connected ? "Disconnect" : "Connect";
+
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'sensorConnect' },
@@ -65636,11 +65643,11 @@
 	        showDetails && _react2.default.createElement(
 	          'div',
 	          { className: 'sensorDetails' },
-	          _react2.default.createElement(_TextField2.default, { hintText: 'IP Address', ref: 'ip', type: 'text', id: 'ipAddress', onChange: this.handleIPAddressChange, onKeyDown: this.enterkey }),
+	          showAddressBox && _react2.default.createElement(_TextField2.default, { hintText: 'IP Address', ref: 'ip', type: 'text', id: 'ipAddress', onChange: this.handleIPAddressChange, onKeyDown: this.enterkey }),
 	          _react2.default.createElement(
 	            _RaisedButton2.default,
 	            { id: 'connect', onClick: this.connect },
-	            'Connect'
+	            connectButtonText
 	          ),
 	          connecting && _react2.default.createElement(_LinearProgress2.default, null),
 	          !connecting && _react2.default.createElement(
