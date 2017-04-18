@@ -32,7 +32,7 @@ const App = () => (
           <Thermoscope sensor={sensor} material={getURLParam('B')} probeIndex={1}/>
         </div>
       </div>
-      <Sensor sensor={sensor}/>
+      <Sensor sensor={sensor} showAddressBox={false} />
     </div>
   </MuiThemeProvider>
 );

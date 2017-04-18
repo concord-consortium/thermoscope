@@ -31,7 +31,11 @@ export default class Sensor extends PureComponent {
   }
 
   connect(event, value) {
-    this.connectSensor();
+    if (!this.state.connected) {
+      this.connectSensor();
+    } else {
+      window.location.reload();
+    }
   }
 
   connectSensor() {
@@ -60,16 +64,19 @@ export default class Sensor extends PureComponent {
 
   render() {
     const { connected, connecting, showDetails, debugMessages } = this.state;
+    const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
 
     let connectStatus = connected ? "Connected." : "";
+    let connectButtonText = connected ? "Disconnect" : "Connect";
+
     return (
       <div className="sensorConnect">
         <div id="toggleSensorDisplay" onClick={this.toggleDisplay}><i className="material-icons">settings_input_antenna</i></div>
         {showDetails &&
           <div className="sensorDetails">
-            <TextField hintText="IP Address" ref="ip" type="text" id="ipAddress" onChange={this.handleIPAddressChange} onKeyDown={this.enterkey}></TextField>
-            <RaisedButton id="connect" onClick={this.connect}>Connect</RaisedButton>
+            {showAddressBox && <TextField hintText="IP Address" ref="ip" type="text" id="ipAddress" onChange={this.handleIPAddressChange} onKeyDown={this.enterkey}></TextField>}
+            <RaisedButton id="connect" onClick={this.connect}>{connectButtonText}</RaisedButton>
             {connecting &&
               <LinearProgress />
             }
