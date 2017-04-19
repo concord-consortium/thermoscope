@@ -3,6 +3,7 @@ import Slider from 'material-ui/Slider';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import RaisedButton from 'material-ui/RaisedButton';
 import LabModel from './lab-model';
 import Meter from './meter';
 import models, { MIN_TEMP, MAX_TEMP } from '../models';
@@ -22,13 +23,15 @@ export default class Thermoscope extends PureComponent {
       temperature: this.props.temperature ? this.props.temperature : 20,
       liveData: false,
       materialType: this.props.material ? this.props.material : 'solid',
-      materialIdx: 0
+      materialIdx: 0,
+      paused: false
     };
     this.handleTempSliderChange = this.handleTempSliderChange.bind(this);
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
     this.onMeterChange = this.onMeterChange.bind(this);
+    this.togglePause = this.togglePause.bind(this);
   }
 
   handleTempSliderChange(event, value) {
@@ -54,15 +57,27 @@ export default class Thermoscope extends PureComponent {
     this.setState({temperature: value});
   }
 
+  togglePause() {
+    const { paused } = this.state;
+    this.setState({ paused: !paused });
+  }
+
   render() {
-    const { temperature, materialType, materialIdx, liveData } = this.state;
-    const {embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls} = this.props;
+    const { temperature, materialType, materialIdx, liveData, paused } = this.state;
+    const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls } = this.props;
+
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
 
     let showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
     // props can turn on or off the controls from a parent container
     let showControls = showMaterialControls != null ? showMaterialControls : true;
+
+    // simulation pause
+    const zeroTempScale = function (temp) { return 0; };
+    let pauseButtonText = paused ? "Resume" : "Pause";
+    let tempScale = paused ? zeroTempScale : model.tempScale;
+
     // a url parameter will override the props setting
     if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
 
@@ -70,7 +85,7 @@ export default class Thermoscope extends PureComponent {
       <div className="thermoscope">
         <LabModel temperature={temperature}
                   model={model.json}
-                  tempScale={model.tempScale}
+                  tempScale={tempScale}
                   timeStepScale={model.timeStepScale}
                   gravityScale={model.gravityScale}
                   coulombForcesSettings={model.coulombForcesSettings}
@@ -79,16 +94,29 @@ export default class Thermoscope extends PureComponent {
           />
         {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />}
         <div>
-          <div className="controls-row">
-            Temperature {temperature}°C
-            <div className="slider">
-              {!liveData && !showMeter && <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
-                sliderStyle={{ marginTop: 5, marginBottom: 5 }}
-                name="temperature"
-                onChange={this.handleTempSliderChange} />}
+          {!paused &&
+            <div className="controls-row">
+              Temperature {temperature}°C
+              <div className="slider">
+                {!liveData && !showMeter && <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
+                  sliderStyle={{ marginTop: 5, marginBottom: 5 }}
+                  name="temperature"
+                  onChange={this.handleTempSliderChange} />}
+              </div>
             </div>
-          </div>
-          {showControls && <div className="controls-row">
+          }
+          {paused &&
+            <div className="controls-row">
+              <div className="slider">
+                &nbsp;
+              </div>
+            </div>
+          }
+          {showControls && <div>
+            <div className="pause">
+              <RaisedButton id="pause" onClick={this.togglePause}>{pauseButtonText}</RaisedButton>
+            </div>
+            <div className="controls-row">
               <div className="material-type-select">
                 <RadioButtonGroup name="material-type" valueSelected={material} onChange={this.handleMaterialTypeChange}>
                   <RadioButton value="solid" label="Solid"/>
@@ -104,6 +132,7 @@ export default class Thermoscope extends PureComponent {
                 </SelectField>
               </div>
             </div>
+          </div>
           }
         </div>
       </div>
