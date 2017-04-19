@@ -29439,11 +29439,11 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(749);
+	var _reactTapEventPlugin = __webpack_require__(751);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensor = __webpack_require__(754);
+	var _sensor = __webpack_require__(756);
 
 	var _sensor2 = _interopRequireDefault(_sensor);
 
@@ -29455,7 +29455,7 @@
 
 	var _bleSensor2 = _interopRequireDefault(_bleSensor);
 
-	var _utils = __webpack_require__(746);
+	var _utils = __webpack_require__(748);
 
 	__webpack_require__(767);
 
@@ -37047,21 +37047,25 @@
 
 	var _MenuItem2 = _interopRequireDefault(_MenuItem);
 
-	var _labModel = __webpack_require__(723);
+	var _RaisedButton = __webpack_require__(723);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	var _labModel = __webpack_require__(725);
 
 	var _labModel2 = _interopRequireDefault(_labModel);
 
-	var _meter = __webpack_require__(732);
+	var _meter = __webpack_require__(734);
 
 	var _meter2 = _interopRequireDefault(_meter);
 
-	var _models = __webpack_require__(733);
+	var _models = __webpack_require__(735);
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _utils = __webpack_require__(746);
+	var _utils = __webpack_require__(748);
 
-	__webpack_require__(747);
+	__webpack_require__(749);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37088,13 +37092,15 @@
 	      temperature: _this.props.temperature ? _this.props.temperature : 20,
 	      liveData: false,
 	      materialType: _this.props.material ? _this.props.material : 'solid',
-	      materialIdx: 0
+	      materialIdx: 0,
+	      paused: false
 	    };
 	    _this.handleTempSliderChange = _this.handleTempSliderChange.bind(_this);
 	    _this.handleMaterialTypeChange = _this.handleMaterialTypeChange.bind(_this);
 	    _this.handleMaterialIdxChange = _this.handleMaterialIdxChange.bind(_this);
 	    _this.props.sensor.on('statusReceived', _this.liveDataHandler.bind(_this));
 	    _this.onMeterChange = _this.onMeterChange.bind(_this);
+	    _this.togglePause = _this.togglePause.bind(_this);
 	    return _this;
 	  }
 
@@ -37127,13 +37133,21 @@
 	      this.setState({ temperature: value });
 	    }
 	  }, {
+	    key: 'togglePause',
+	    value: function togglePause() {
+	      var paused = this.state.paused;
+
+	      this.setState({ paused: !paused });
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _state = this.state,
 	          temperature = _state.temperature,
 	          materialType = _state.materialType,
 	          materialIdx = _state.materialIdx,
-	          liveData = _state.liveData;
+	          liveData = _state.liveData,
+	          paused = _state.paused;
 	      var _props = this.props,
 	          embeddableSrc = _props.embeddableSrc,
 	          showMeter = _props.showMeter,
@@ -37142,12 +37156,21 @@
 	          maxClamp = _props.maxClamp,
 	          showMaterialControls = _props.showMaterialControls;
 
+
 	      var model = _models2.default[materialType][materialIdx];
 	      var material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
 
 	      var showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
 	      // props can turn on or off the controls from a parent container
 	      var showControls = showMaterialControls != null ? showMaterialControls : true;
+
+	      // simulation pause
+	      var zeroTempScale = function zeroTempScale(temp) {
+	        return 0;
+	      };
+	      var pauseButtonText = paused ? "Resume" : "Pause";
+	      var tempScale = paused ? zeroTempScale : model.tempScale;
+
 	      // a url parameter will override the props setting
 	      if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
 
@@ -37156,7 +37179,7 @@
 	        { className: 'thermoscope' },
 	        _react2.default.createElement(_labModel2.default, { temperature: temperature,
 	          model: model.json,
-	          tempScale: model.tempScale,
+	          tempScale: tempScale,
 	          timeStepScale: model.timeStepScale,
 	          gravityScale: model.gravityScale,
 	          coulombForcesSettings: model.coulombForcesSettings,
@@ -37167,7 +37190,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          null,
-	          _react2.default.createElement(
+	          !paused && _react2.default.createElement(
 	            'div',
 	            { className: 'controls-row' },
 	            'Temperature ',
@@ -37182,29 +37205,51 @@
 	                onChange: this.handleTempSliderChange })
 	            )
 	          ),
-	          showControls && _react2.default.createElement(
+	          paused && _react2.default.createElement(
 	            'div',
 	            { className: 'controls-row' },
 	            _react2.default.createElement(
 	              'div',
-	              { className: 'material-type-select' },
+	              { className: 'slider' },
+	              '\xA0'
+	            )
+	          ),
+	          showControls && _react2.default.createElement(
+	            'div',
+	            null,
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'pause' },
 	              _react2.default.createElement(
-	                _RadioButton.RadioButtonGroup,
-	                { name: 'material-type', valueSelected: material, onChange: this.handleMaterialTypeChange },
-	                _react2.default.createElement(_RadioButton.RadioButton, { value: 'solid', label: 'Solid' }),
-	                _react2.default.createElement(_RadioButton.RadioButton, { value: 'liquid', label: 'Liquid' }),
-	                _react2.default.createElement(_RadioButton.RadioButton, { value: 'gas', label: 'Gas' })
+	                _RaisedButton2.default,
+	                { id: 'pause', onClick: this.togglePause },
+	                pauseButtonText
 	              )
 	            ),
 	            _react2.default.createElement(
 	              'div',
-	              { className: 'material-select' },
+	              { className: 'controls-row' },
 	              _react2.default.createElement(
-	                _SelectField2.default,
-	                { floatingLabelText: 'Material', value: materialIdx, onChange: this.handleMaterialIdxChange },
-	                _models2.default[material].map(function (model, idx) {
-	                  return _react2.default.createElement(_MenuItem2.default, { key: idx, value: idx, primaryText: model.name });
-	                })
+	                'div',
+	                { className: 'material-type-select' },
+	                _react2.default.createElement(
+	                  _RadioButton.RadioButtonGroup,
+	                  { name: 'material-type', valueSelected: material, onChange: this.handleMaterialTypeChange },
+	                  _react2.default.createElement(_RadioButton.RadioButton, { value: 'solid', label: 'Solid' }),
+	                  _react2.default.createElement(_RadioButton.RadioButton, { value: 'liquid', label: 'Liquid' }),
+	                  _react2.default.createElement(_RadioButton.RadioButton, { value: 'gas', label: 'Gas' })
+	                )
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'material-select' },
+	                _react2.default.createElement(
+	                  _SelectField2.default,
+	                  { floatingLabelText: 'Material', value: materialIdx, onChange: this.handleMaterialIdxChange },
+	                  _models2.default[material].map(function (model, idx) {
+	                    return _react2.default.createElement(_MenuItem2.default, { key: idx, value: idx, primaryText: model.name });
+	                  })
+	                )
 	              )
 	            )
 	          )
@@ -50515,6 +50560,506 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.default = undefined;
+
+	var _RaisedButton = __webpack_require__(724);
+
+	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _RaisedButton2.default;
+
+/***/ },
+/* 724 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _colorManipulator = __webpack_require__(575);
+
+	var _childUtils = __webpack_require__(711);
+
+	var _EnhancedButton = __webpack_require__(710);
+
+	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
+
+	var _Paper = __webpack_require__(665);
+
+	var _Paper2 = _interopRequireDefault(_Paper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function validateLabel(props, propName, componentName) {
+	  if (process.env.NODE_ENV !== 'production') {
+	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
+	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
+	    }
+	  }
+	}
+
+	function getStyles(props, context, state) {
+	  var _context$muiTheme = context.muiTheme,
+	      baseTheme = _context$muiTheme.baseTheme,
+	      button = _context$muiTheme.button,
+	      raisedButton = _context$muiTheme.raisedButton;
+	  var disabled = props.disabled,
+	      disabledBackgroundColor = props.disabledBackgroundColor,
+	      disabledLabelColor = props.disabledLabelColor,
+	      fullWidth = props.fullWidth,
+	      icon = props.icon,
+	      label = props.label,
+	      labelPosition = props.labelPosition,
+	      primary = props.primary,
+	      secondary = props.secondary,
+	      style = props.style;
+
+
+	  var amount = primary || secondary ? 0.4 : 0.08;
+
+	  var backgroundColor = raisedButton.color;
+	  var labelColor = raisedButton.textColor;
+
+	  if (disabled) {
+	    backgroundColor = disabledBackgroundColor || raisedButton.disabledColor;
+	    labelColor = disabledLabelColor || raisedButton.disabledTextColor;
+	  } else if (primary) {
+	    backgroundColor = raisedButton.primaryColor;
+	    labelColor = raisedButton.primaryTextColor;
+	  } else if (secondary) {
+	    backgroundColor = raisedButton.secondaryColor;
+	    labelColor = raisedButton.secondaryTextColor;
+	  } else {
+	    if (props.backgroundColor) {
+	      backgroundColor = props.backgroundColor;
+	    }
+	    if (props.labelColor) {
+	      labelColor = props.labelColor;
+	    }
+	  }
+
+	  var buttonHeight = style && style.height || button.height;
+	  var borderRadius = 2;
+
+	  return {
+	    root: {
+	      display: 'inline-block',
+	      transition: _transitions2.default.easeOut(),
+	      minWidth: fullWidth ? '100%' : button.minWidth
+	    },
+	    button: {
+	      position: 'relative',
+	      height: buttonHeight,
+	      lineHeight: buttonHeight + 'px',
+	      width: '100%',
+	      padding: 0,
+	      borderRadius: borderRadius,
+	      transition: _transitions2.default.easeOut(),
+	      backgroundColor: backgroundColor,
+	      // That's the default value for a button but not a link
+	      textAlign: 'center'
+	    },
+	    label: {
+	      position: 'relative',
+	      opacity: 1,
+	      fontSize: raisedButton.fontSize,
+	      letterSpacing: 0,
+	      textTransform: raisedButton.textTransform || button.textTransform || 'uppercase',
+	      fontWeight: raisedButton.fontWeight,
+	      margin: 0,
+	      userSelect: 'none',
+	      paddingLeft: icon && labelPosition !== 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
+	      paddingRight: icon && labelPosition === 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
+	      color: labelColor
+	    },
+	    icon: {
+	      verticalAlign: 'middle',
+	      marginLeft: label && labelPosition !== 'before' ? 12 : 0,
+	      marginRight: label && labelPosition === 'before' ? 12 : 0
+	    },
+	    overlay: {
+	      height: buttonHeight,
+	      borderRadius: borderRadius,
+	      backgroundColor: (state.keyboardFocused || state.hovered) && !disabled && (0, _colorManipulator.fade)(labelColor, amount),
+	      transition: _transitions2.default.easeOut(),
+	      top: 0
+	    },
+	    ripple: {
+	      color: labelColor,
+	      opacity: !(primary || secondary) ? 0.1 : 0.16
+	    }
+	  };
+	}
+
+	var RaisedButton = function (_Component) {
+	  (0, _inherits3.default)(RaisedButton, _Component);
+
+	  function RaisedButton() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, RaisedButton);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = RaisedButton.__proto__ || (0, _getPrototypeOf2.default)(RaisedButton)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false,
+	      keyboardFocused: false,
+	      touched: false,
+	      initialZDepth: 0,
+	      zDepth: 0
+	    }, _this.handleMouseDown = function (event) {
+	      // only listen to left clicks
+	      if (event.button === 0) {
+	        _this.setState({
+	          zDepth: _this.state.initialZDepth + 1
+	        });
+	      }
+	      if (_this.props.onMouseDown) {
+	        _this.props.onMouseDown(event);
+	      }
+	    }, _this.handleMouseUp = function (event) {
+	      _this.setState({
+	        zDepth: _this.state.initialZDepth
+	      });
+	      if (_this.props.onMouseUp) {
+	        _this.props.onMouseUp(event);
+	      }
+	    }, _this.handleMouseLeave = function (event) {
+	      if (!_this.state.keyboardFocused) {
+	        _this.setState({
+	          zDepth: _this.state.initialZDepth,
+	          hovered: false
+	        });
+	      }
+	      if (_this.props.onMouseLeave) {
+	        _this.props.onMouseLeave(event);
+	      }
+	    }, _this.handleMouseEnter = function (event) {
+	      if (!_this.state.keyboardFocused && !_this.state.touched) {
+	        _this.setState({
+	          hovered: true
+	        });
+	      }
+	      if (_this.props.onMouseEnter) {
+	        _this.props.onMouseEnter(event);
+	      }
+	    }, _this.handleTouchStart = function (event) {
+	      _this.setState({
+	        touched: true,
+	        zDepth: _this.state.initialZDepth + 1
+	      });
+
+	      if (_this.props.onTouchStart) {
+	        _this.props.onTouchStart(event);
+	      }
+	    }, _this.handleTouchEnd = function (event) {
+	      _this.setState({
+	        touched: true,
+	        zDepth: _this.state.initialZDepth
+	      });
+
+	      if (_this.props.onTouchEnd) {
+	        _this.props.onTouchEnd(event);
+	      }
+	    }, _this.handleKeyboardFocus = function (event, keyboardFocused) {
+	      var zDepth = keyboardFocused && !_this.props.disabled ? _this.state.initialZDepth + 1 : _this.state.initialZDepth;
+
+	      _this.setState({
+	        zDepth: zDepth,
+	        keyboardFocused: keyboardFocused
+	      });
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(RaisedButton, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var zDepth = this.props.disabled ? 0 : 1;
+	      this.setState({
+	        zDepth: zDepth,
+	        initialZDepth: zDepth
+	      });
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      var zDepth = nextProps.disabled ? 0 : 1;
+	      var nextState = {
+	        zDepth: zDepth,
+	        initialZDepth: zDepth
+	      };
+
+	      if (nextProps.disabled) {
+	        nextState.hovered = false;
+	      }
+
+	      this.setState(nextState);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          backgroundColor = _props.backgroundColor,
+	          buttonStyle = _props.buttonStyle,
+	          children = _props.children,
+	          className = _props.className,
+	          disabled = _props.disabled,
+	          disabledBackgroundColor = _props.disabledBackgroundColor,
+	          disabledLabelColor = _props.disabledLabelColor,
+	          fullWidth = _props.fullWidth,
+	          icon = _props.icon,
+	          label = _props.label,
+	          labelColor = _props.labelColor,
+	          labelPosition = _props.labelPosition,
+	          labelStyle = _props.labelStyle,
+	          overlayStyle = _props.overlayStyle,
+	          primary = _props.primary,
+	          rippleStyle = _props.rippleStyle,
+	          secondary = _props.secondary,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['backgroundColor', 'buttonStyle', 'children', 'className', 'disabled', 'disabledBackgroundColor', 'disabledLabelColor', 'fullWidth', 'icon', 'label', 'labelColor', 'labelPosition', 'labelStyle', 'overlayStyle', 'primary', 'rippleStyle', 'secondary', 'style']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+	      var mergedRippleStyles = (0, _simpleAssign2.default)({}, styles.ripple, rippleStyle);
+
+	      var buttonEventHandlers = disabled ? {} : {
+	        onMouseDown: this.handleMouseDown,
+	        onMouseUp: this.handleMouseUp,
+	        onMouseLeave: this.handleMouseLeave,
+	        onMouseEnter: this.handleMouseEnter,
+	        onTouchStart: this.handleTouchStart,
+	        onTouchEnd: this.handleTouchEnd,
+	        onKeyboardFocus: this.handleKeyboardFocus
+	      };
+
+	      var labelElement = label && _react2.default.createElement(
+	        'span',
+	        { style: prepareStyles((0, _simpleAssign2.default)(styles.label, labelStyle)) },
+	        label
+	      );
+
+	      var iconCloned = icon && (0, _react.cloneElement)(icon, {
+	        color: icon.props.color || styles.label.color,
+	        style: (0, _simpleAssign2.default)(styles.icon, icon.props.style)
+	      });
+
+	      // Place label before or after children.
+	      var childrenFragment = labelPosition === 'before' ? {
+	        labelElement: labelElement,
+	        iconCloned: iconCloned,
+	        children: children
+	      } : {
+	        children: children,
+	        iconCloned: iconCloned,
+	        labelElement: labelElement
+	      };
+
+	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
+
+	      return _react2.default.createElement(
+	        _Paper2.default,
+	        {
+	          className: className,
+	          style: (0, _simpleAssign2.default)(styles.root, style),
+	          zDepth: this.state.zDepth
+	        },
+	        _react2.default.createElement(
+	          _EnhancedButton2.default,
+	          (0, _extends3.default)({}, other, buttonEventHandlers, {
+	            ref: 'container',
+	            disabled: disabled,
+	            style: (0, _simpleAssign2.default)(styles.button, buttonStyle),
+	            focusRippleColor: mergedRippleStyles.color,
+	            touchRippleColor: mergedRippleStyles.color,
+	            focusRippleOpacity: mergedRippleStyles.opacity,
+	            touchRippleOpacity: mergedRippleStyles.opacity
+	          }),
+	          _react2.default.createElement(
+	            'div',
+	            {
+	              ref: 'overlay',
+	              style: prepareStyles((0, _simpleAssign2.default)(styles.overlay, overlayStyle))
+	            },
+	            enhancedButtonChildren
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	  return RaisedButton;
+	}(_react.Component);
+
+	RaisedButton.muiName = 'RaisedButton';
+	RaisedButton.defaultProps = {
+	  disabled: false,
+	  labelPosition: 'after',
+	  fullWidth: false,
+	  primary: false,
+	  secondary: false
+	};
+	RaisedButton.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? RaisedButton.propTypes = {
+	  /**
+	   * Override the default background color for the button,
+	   * but not the default disabled background color
+	   * (use `disabledBackgroundColor` for this).
+	   */
+	  backgroundColor: _react.PropTypes.string,
+	  /**
+	   * Override the inline-styles of the button element.
+	   */
+	  buttonStyle: _react.PropTypes.object,
+	  /**
+	   * The content of the button.
+	   * If a label is provided via the `label` prop, the text within the label
+	   * will be displayed in addition to the content provided here.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * The CSS class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * If true, the button will be disabled.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	   * Override the default background color for the button
+	   * when it is disabled.
+	   */
+	  disabledBackgroundColor: _react.PropTypes.string,
+	  /**
+	   * The color of the button's label when the button is disabled.
+	   */
+	  disabledLabelColor: _react.PropTypes.string,
+	  /**
+	   * If true, the button will take up the full width of its container.
+	   */
+	  fullWidth: _react.PropTypes.bool,
+	  /**
+	   * The URL to link to when the button is clicked.
+	   */
+	  href: _react.PropTypes.string,
+	  /**
+	   * An icon to be displayed within the button.
+	   */
+	  icon: _react.PropTypes.node,
+	  /**
+	   * The label to be displayed within the button.
+	   * If content is provided via the `children` prop, that content will be
+	   * displayed in addition to the label provided here.
+	   */
+	  label: validateLabel,
+	  /**
+	   * The color of the button's label.
+	   */
+	  labelColor: _react.PropTypes.string,
+	  /**
+	   * The position of the button's label relative to the button's `children`.
+	   */
+	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
+	  /**
+	   * Override the inline-styles of the button's label element.
+	   */
+	  labelStyle: _react.PropTypes.object,
+	  /** @ignore */
+	  onMouseDown: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseUp: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchEnd: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchStart: _react.PropTypes.func,
+	  /**
+	   * Override the inline style of the button overlay.
+	   */
+	  overlayStyle: _react.PropTypes.object,
+	  /**
+	   * If true, the button will use the theme's primary color.
+	   */
+	  primary: _react.PropTypes.bool,
+	  /**
+	   * Override the inline style of the ripple element.
+	   */
+	  rippleStyle: _react.PropTypes.object,
+	  /**
+	   * If true, the button will use the theme's secondary color.
+	   * If both `secondary` and `primary` are true, the button will use
+	   * the theme's primary color.
+	   */
+	  secondary: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = RaisedButton;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
+
+/***/ },
+/* 725 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -50522,19 +51067,19 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactLab = __webpack_require__(724);
+	var _reactLab = __webpack_require__(726);
 
 	var _reactLab2 = _interopRequireDefault(_reactLab);
 
-	var _CircularProgress = __webpack_require__(725);
+	var _CircularProgress = __webpack_require__(727);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
-	var _interactive = __webpack_require__(727);
+	var _interactive = __webpack_require__(729);
 
 	var _interactive2 = _interopRequireDefault(_interactive);
 
-	__webpack_require__(728);
+	__webpack_require__(730);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50650,7 +51195,7 @@
 	};
 
 /***/ },
-/* 724 */
+/* 726 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -52437,7 +52982,7 @@
 	;
 
 /***/ },
-/* 725 */
+/* 727 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -52447,7 +52992,7 @@
 	});
 	exports.default = undefined;
 
-	var _CircularProgress = __webpack_require__(726);
+	var _CircularProgress = __webpack_require__(728);
 
 	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
@@ -52456,7 +53001,7 @@
 	exports.default = _CircularProgress2.default;
 
 /***/ },
-/* 726 */
+/* 728 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -52729,7 +53274,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 727 */
+/* 729 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -52748,16 +53293,16 @@
 	};
 
 /***/ },
-/* 728 */
+/* 730 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(729);
+	var content = __webpack_require__(731);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(731)(content, {});
+	var update = __webpack_require__(733)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -52774,10 +53319,10 @@
 	}
 
 /***/ },
-/* 729 */
+/* 731 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(730)();
+	exports = module.exports = __webpack_require__(732)();
 	// imports
 
 
@@ -52788,7 +53333,7 @@
 
 
 /***/ },
-/* 730 */
+/* 732 */
 /***/ function(module, exports) {
 
 	/*
@@ -52844,7 +53389,7 @@
 
 
 /***/ },
-/* 731 */
+/* 733 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -53096,7 +53641,7 @@
 
 
 /***/ },
-/* 732 */
+/* 734 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53390,7 +53935,7 @@
 	};
 
 /***/ },
-/* 733 */
+/* 735 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -53400,51 +53945,51 @@
 	});
 	exports.MAX_TEMP = exports.MIN_TEMP = undefined;
 
-	var _solid = __webpack_require__(734);
+	var _solid = __webpack_require__(736);
 
 	var _solid2 = _interopRequireDefault(_solid);
 
-	var _solid3 = __webpack_require__(735);
+	var _solid3 = __webpack_require__(737);
 
 	var _solid4 = _interopRequireDefault(_solid3);
 
-	var _solid5 = __webpack_require__(736);
+	var _solid5 = __webpack_require__(738);
 
 	var _solid6 = _interopRequireDefault(_solid5);
 
-	var _solid7 = __webpack_require__(737);
+	var _solid7 = __webpack_require__(739);
 
 	var _solid8 = _interopRequireDefault(_solid7);
 
-	var _liquid = __webpack_require__(738);
+	var _liquid = __webpack_require__(740);
 
 	var _liquid2 = _interopRequireDefault(_liquid);
 
-	var _liquid3 = __webpack_require__(739);
+	var _liquid3 = __webpack_require__(741);
 
 	var _liquid4 = _interopRequireDefault(_liquid3);
 
-	var _liquid5 = __webpack_require__(740);
+	var _liquid5 = __webpack_require__(742);
 
 	var _liquid6 = _interopRequireDefault(_liquid5);
 
-	var _liquid7 = __webpack_require__(741);
+	var _liquid7 = __webpack_require__(743);
 
 	var _liquid8 = _interopRequireDefault(_liquid7);
 
-	var _gas = __webpack_require__(742);
+	var _gas = __webpack_require__(744);
 
 	var _gas2 = _interopRequireDefault(_gas);
 
-	var _gas3 = __webpack_require__(743);
+	var _gas3 = __webpack_require__(745);
 
 	var _gas4 = _interopRequireDefault(_gas3);
 
-	var _gas5 = __webpack_require__(744);
+	var _gas5 = __webpack_require__(746);
 
 	var _gas6 = _interopRequireDefault(_gas5);
 
-	var _uniform = __webpack_require__(745);
+	var _uniform = __webpack_require__(747);
 
 	var _uniform2 = _interopRequireDefault(_uniform);
 
@@ -53571,7 +54116,7 @@
 	};
 
 /***/ },
-/* 734 */
+/* 736 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -54195,7 +54740,7 @@
 	};
 
 /***/ },
-/* 735 */
+/* 737 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -54844,7 +55389,7 @@
 	};
 
 /***/ },
-/* 736 */
+/* 738 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -57189,7 +57734,7 @@
 	};
 
 /***/ },
-/* 737 */
+/* 739 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -57621,7 +58166,7 @@
 	};
 
 /***/ },
-/* 738 */
+/* 740 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -58437,7 +58982,7 @@
 	};
 
 /***/ },
-/* 739 */
+/* 741 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -60196,7 +60741,7 @@
 	};
 
 /***/ },
-/* 740 */
+/* 742 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -62541,7 +63086,7 @@
 	};
 
 /***/ },
-/* 741 */
+/* 743 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -62973,7 +63518,7 @@
 	};
 
 /***/ },
-/* 742 */
+/* 744 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -63261,7 +63806,7 @@
 	};
 
 /***/ },
-/* 743 */
+/* 745 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -63968,7 +64513,7 @@
 	};
 
 /***/ },
-/* 744 */
+/* 746 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -64418,7 +64963,7 @@
 	};
 
 /***/ },
-/* 745 */
+/* 747 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -65042,7 +65587,7 @@
 	};
 
 /***/ },
-/* 746 */
+/* 748 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -65156,16 +65701,16 @@
 	};
 
 /***/ },
-/* 747 */
+/* 749 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(748);
+	var content = __webpack_require__(750);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(731)(content, {});
+	var update = __webpack_require__(733)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -65182,25 +65727,25 @@
 	}
 
 /***/ },
-/* 748 */
+/* 750 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(730)();
+	exports = module.exports = __webpack_require__(732)();
 	// imports
 
 
 	// module
-	exports.push([module.id, ".thermoscope {\n  position: relative;\n}\n.thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n", ""]);
+	exports.push([module.id, ".thermoscope {\n  position: relative;\n}\n.thermoscope .slider {\n  width: 270px;\n  height: 28px;\n  margin-left: 15px;\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .controls-row {\n  margin-top: 10px;\n  margin-bottom: 10px;\n  width: 400px;\n}\n.thermoscope .controls-row > * {\n  display: inline-block;\n  vertical-align: middle;\n}\n.thermoscope .material-select {\n  margin-top: -15px;\n  margin-left: 60px;\n}\n.thermoscope button {\n  color: #ccc;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 749 */
+/* 751 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(750);
+	var defaultClickRejectionStrategy = __webpack_require__(752);
 
 	var alreadyInjected = false;
 
@@ -65222,14 +65767,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(751)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(753)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 750 */
+/* 752 */
 /***/ function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -65240,7 +65785,7 @@
 
 
 /***/ },
-/* 751 */
+/* 753 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -65268,10 +65813,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(752);
+	var TouchEventUtils = __webpack_require__(754);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(753);
+	var keyOf = __webpack_require__(755);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -65417,7 +65962,7 @@
 
 
 /***/ },
-/* 752 */
+/* 754 */
 /***/ function(module, exports) {
 
 	/**
@@ -65465,7 +66010,7 @@
 
 
 /***/ },
-/* 753 */
+/* 755 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -65504,7 +66049,7 @@
 	module.exports = keyOf;
 
 /***/ },
-/* 754 */
+/* 756 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65523,15 +66068,15 @@
 
 	var _TextField2 = _interopRequireDefault(_TextField);
 
-	var _LinearProgress = __webpack_require__(755);
+	var _LinearProgress = __webpack_require__(757);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
-	var _RaisedButton = __webpack_require__(757);
+	var _RaisedButton = __webpack_require__(723);
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
-	var _utils = __webpack_require__(746);
+	var _utils = __webpack_require__(748);
 
 	__webpack_require__(759);
 
@@ -65676,7 +66221,7 @@
 	};
 
 /***/ },
-/* 755 */
+/* 757 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65686,7 +66231,7 @@
 	});
 	exports.default = undefined;
 
-	var _LinearProgress = __webpack_require__(756);
+	var _LinearProgress = __webpack_require__(758);
 
 	var _LinearProgress2 = _interopRequireDefault(_LinearProgress);
 
@@ -65695,7 +66240,7 @@
 	exports.default = _LinearProgress2.default;
 
 /***/ },
-/* 756 */
+/* 758 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -65926,506 +66471,6 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ },
-/* 757 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _RaisedButton = __webpack_require__(758);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _RaisedButton2.default;
-
-/***/ },
-/* 758 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(628);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _objectWithoutProperties2 = __webpack_require__(633);
-
-	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-	var _getPrototypeOf = __webpack_require__(476);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(502);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(503);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(507);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(554);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _simpleAssign = __webpack_require__(635);
-
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-
-	var _react = __webpack_require__(298);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _transitions = __webpack_require__(637);
-
-	var _transitions2 = _interopRequireDefault(_transitions);
-
-	var _colorManipulator = __webpack_require__(575);
-
-	var _childUtils = __webpack_require__(711);
-
-	var _EnhancedButton = __webpack_require__(710);
-
-	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
-
-	var _Paper = __webpack_require__(665);
-
-	var _Paper2 = _interopRequireDefault(_Paper);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function validateLabel(props, propName, componentName) {
-	  if (process.env.NODE_ENV !== 'production') {
-	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
-	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
-	    }
-	  }
-	}
-
-	function getStyles(props, context, state) {
-	  var _context$muiTheme = context.muiTheme,
-	      baseTheme = _context$muiTheme.baseTheme,
-	      button = _context$muiTheme.button,
-	      raisedButton = _context$muiTheme.raisedButton;
-	  var disabled = props.disabled,
-	      disabledBackgroundColor = props.disabledBackgroundColor,
-	      disabledLabelColor = props.disabledLabelColor,
-	      fullWidth = props.fullWidth,
-	      icon = props.icon,
-	      label = props.label,
-	      labelPosition = props.labelPosition,
-	      primary = props.primary,
-	      secondary = props.secondary,
-	      style = props.style;
-
-
-	  var amount = primary || secondary ? 0.4 : 0.08;
-
-	  var backgroundColor = raisedButton.color;
-	  var labelColor = raisedButton.textColor;
-
-	  if (disabled) {
-	    backgroundColor = disabledBackgroundColor || raisedButton.disabledColor;
-	    labelColor = disabledLabelColor || raisedButton.disabledTextColor;
-	  } else if (primary) {
-	    backgroundColor = raisedButton.primaryColor;
-	    labelColor = raisedButton.primaryTextColor;
-	  } else if (secondary) {
-	    backgroundColor = raisedButton.secondaryColor;
-	    labelColor = raisedButton.secondaryTextColor;
-	  } else {
-	    if (props.backgroundColor) {
-	      backgroundColor = props.backgroundColor;
-	    }
-	    if (props.labelColor) {
-	      labelColor = props.labelColor;
-	    }
-	  }
-
-	  var buttonHeight = style && style.height || button.height;
-	  var borderRadius = 2;
-
-	  return {
-	    root: {
-	      display: 'inline-block',
-	      transition: _transitions2.default.easeOut(),
-	      minWidth: fullWidth ? '100%' : button.minWidth
-	    },
-	    button: {
-	      position: 'relative',
-	      height: buttonHeight,
-	      lineHeight: buttonHeight + 'px',
-	      width: '100%',
-	      padding: 0,
-	      borderRadius: borderRadius,
-	      transition: _transitions2.default.easeOut(),
-	      backgroundColor: backgroundColor,
-	      // That's the default value for a button but not a link
-	      textAlign: 'center'
-	    },
-	    label: {
-	      position: 'relative',
-	      opacity: 1,
-	      fontSize: raisedButton.fontSize,
-	      letterSpacing: 0,
-	      textTransform: raisedButton.textTransform || button.textTransform || 'uppercase',
-	      fontWeight: raisedButton.fontWeight,
-	      margin: 0,
-	      userSelect: 'none',
-	      paddingLeft: icon && labelPosition !== 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
-	      paddingRight: icon && labelPosition === 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
-	      color: labelColor
-	    },
-	    icon: {
-	      verticalAlign: 'middle',
-	      marginLeft: label && labelPosition !== 'before' ? 12 : 0,
-	      marginRight: label && labelPosition === 'before' ? 12 : 0
-	    },
-	    overlay: {
-	      height: buttonHeight,
-	      borderRadius: borderRadius,
-	      backgroundColor: (state.keyboardFocused || state.hovered) && !disabled && (0, _colorManipulator.fade)(labelColor, amount),
-	      transition: _transitions2.default.easeOut(),
-	      top: 0
-	    },
-	    ripple: {
-	      color: labelColor,
-	      opacity: !(primary || secondary) ? 0.1 : 0.16
-	    }
-	  };
-	}
-
-	var RaisedButton = function (_Component) {
-	  (0, _inherits3.default)(RaisedButton, _Component);
-
-	  function RaisedButton() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, RaisedButton);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = RaisedButton.__proto__ || (0, _getPrototypeOf2.default)(RaisedButton)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      hovered: false,
-	      keyboardFocused: false,
-	      touched: false,
-	      initialZDepth: 0,
-	      zDepth: 0
-	    }, _this.handleMouseDown = function (event) {
-	      // only listen to left clicks
-	      if (event.button === 0) {
-	        _this.setState({
-	          zDepth: _this.state.initialZDepth + 1
-	        });
-	      }
-	      if (_this.props.onMouseDown) {
-	        _this.props.onMouseDown(event);
-	      }
-	    }, _this.handleMouseUp = function (event) {
-	      _this.setState({
-	        zDepth: _this.state.initialZDepth
-	      });
-	      if (_this.props.onMouseUp) {
-	        _this.props.onMouseUp(event);
-	      }
-	    }, _this.handleMouseLeave = function (event) {
-	      if (!_this.state.keyboardFocused) {
-	        _this.setState({
-	          zDepth: _this.state.initialZDepth,
-	          hovered: false
-	        });
-	      }
-	      if (_this.props.onMouseLeave) {
-	        _this.props.onMouseLeave(event);
-	      }
-	    }, _this.handleMouseEnter = function (event) {
-	      if (!_this.state.keyboardFocused && !_this.state.touched) {
-	        _this.setState({
-	          hovered: true
-	        });
-	      }
-	      if (_this.props.onMouseEnter) {
-	        _this.props.onMouseEnter(event);
-	      }
-	    }, _this.handleTouchStart = function (event) {
-	      _this.setState({
-	        touched: true,
-	        zDepth: _this.state.initialZDepth + 1
-	      });
-
-	      if (_this.props.onTouchStart) {
-	        _this.props.onTouchStart(event);
-	      }
-	    }, _this.handleTouchEnd = function (event) {
-	      _this.setState({
-	        touched: true,
-	        zDepth: _this.state.initialZDepth
-	      });
-
-	      if (_this.props.onTouchEnd) {
-	        _this.props.onTouchEnd(event);
-	      }
-	    }, _this.handleKeyboardFocus = function (event, keyboardFocused) {
-	      var zDepth = keyboardFocused && !_this.props.disabled ? _this.state.initialZDepth + 1 : _this.state.initialZDepth;
-
-	      _this.setState({
-	        zDepth: zDepth,
-	        keyboardFocused: keyboardFocused
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(RaisedButton, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var zDepth = this.props.disabled ? 0 : 1;
-	      this.setState({
-	        zDepth: zDepth,
-	        initialZDepth: zDepth
-	      });
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var zDepth = nextProps.disabled ? 0 : 1;
-	      var nextState = {
-	        zDepth: zDepth,
-	        initialZDepth: zDepth
-	      };
-
-	      if (nextProps.disabled) {
-	        nextState.hovered = false;
-	      }
-
-	      this.setState(nextState);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props,
-	          backgroundColor = _props.backgroundColor,
-	          buttonStyle = _props.buttonStyle,
-	          children = _props.children,
-	          className = _props.className,
-	          disabled = _props.disabled,
-	          disabledBackgroundColor = _props.disabledBackgroundColor,
-	          disabledLabelColor = _props.disabledLabelColor,
-	          fullWidth = _props.fullWidth,
-	          icon = _props.icon,
-	          label = _props.label,
-	          labelColor = _props.labelColor,
-	          labelPosition = _props.labelPosition,
-	          labelStyle = _props.labelStyle,
-	          overlayStyle = _props.overlayStyle,
-	          primary = _props.primary,
-	          rippleStyle = _props.rippleStyle,
-	          secondary = _props.secondary,
-	          style = _props.style,
-	          other = (0, _objectWithoutProperties3.default)(_props, ['backgroundColor', 'buttonStyle', 'children', 'className', 'disabled', 'disabledBackgroundColor', 'disabledLabelColor', 'fullWidth', 'icon', 'label', 'labelColor', 'labelPosition', 'labelStyle', 'overlayStyle', 'primary', 'rippleStyle', 'secondary', 'style']);
-	      var prepareStyles = this.context.muiTheme.prepareStyles;
-
-	      var styles = getStyles(this.props, this.context, this.state);
-	      var mergedRippleStyles = (0, _simpleAssign2.default)({}, styles.ripple, rippleStyle);
-
-	      var buttonEventHandlers = disabled ? {} : {
-	        onMouseDown: this.handleMouseDown,
-	        onMouseUp: this.handleMouseUp,
-	        onMouseLeave: this.handleMouseLeave,
-	        onMouseEnter: this.handleMouseEnter,
-	        onTouchStart: this.handleTouchStart,
-	        onTouchEnd: this.handleTouchEnd,
-	        onKeyboardFocus: this.handleKeyboardFocus
-	      };
-
-	      var labelElement = label && _react2.default.createElement(
-	        'span',
-	        { style: prepareStyles((0, _simpleAssign2.default)(styles.label, labelStyle)) },
-	        label
-	      );
-
-	      var iconCloned = icon && (0, _react.cloneElement)(icon, {
-	        color: icon.props.color || styles.label.color,
-	        style: (0, _simpleAssign2.default)(styles.icon, icon.props.style)
-	      });
-
-	      // Place label before or after children.
-	      var childrenFragment = labelPosition === 'before' ? {
-	        labelElement: labelElement,
-	        iconCloned: iconCloned,
-	        children: children
-	      } : {
-	        children: children,
-	        iconCloned: iconCloned,
-	        labelElement: labelElement
-	      };
-
-	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
-
-	      return _react2.default.createElement(
-	        _Paper2.default,
-	        {
-	          className: className,
-	          style: (0, _simpleAssign2.default)(styles.root, style),
-	          zDepth: this.state.zDepth
-	        },
-	        _react2.default.createElement(
-	          _EnhancedButton2.default,
-	          (0, _extends3.default)({}, other, buttonEventHandlers, {
-	            ref: 'container',
-	            disabled: disabled,
-	            style: (0, _simpleAssign2.default)(styles.button, buttonStyle),
-	            focusRippleColor: mergedRippleStyles.color,
-	            touchRippleColor: mergedRippleStyles.color,
-	            focusRippleOpacity: mergedRippleStyles.opacity,
-	            touchRippleOpacity: mergedRippleStyles.opacity
-	          }),
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              ref: 'overlay',
-	              style: prepareStyles((0, _simpleAssign2.default)(styles.overlay, overlayStyle))
-	            },
-	            enhancedButtonChildren
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return RaisedButton;
-	}(_react.Component);
-
-	RaisedButton.muiName = 'RaisedButton';
-	RaisedButton.defaultProps = {
-	  disabled: false,
-	  labelPosition: 'after',
-	  fullWidth: false,
-	  primary: false,
-	  secondary: false
-	};
-	RaisedButton.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	process.env.NODE_ENV !== "production" ? RaisedButton.propTypes = {
-	  /**
-	   * Override the default background color for the button,
-	   * but not the default disabled background color
-	   * (use `disabledBackgroundColor` for this).
-	   */
-	  backgroundColor: _react.PropTypes.string,
-	  /**
-	   * Override the inline-styles of the button element.
-	   */
-	  buttonStyle: _react.PropTypes.object,
-	  /**
-	   * The content of the button.
-	   * If a label is provided via the `label` prop, the text within the label
-	   * will be displayed in addition to the content provided here.
-	   */
-	  children: _react.PropTypes.node,
-	  /**
-	   * The CSS class name of the root element.
-	   */
-	  className: _react.PropTypes.string,
-	  /**
-	   * If true, the button will be disabled.
-	   */
-	  disabled: _react.PropTypes.bool,
-	  /**
-	   * Override the default background color for the button
-	   * when it is disabled.
-	   */
-	  disabledBackgroundColor: _react.PropTypes.string,
-	  /**
-	   * The color of the button's label when the button is disabled.
-	   */
-	  disabledLabelColor: _react.PropTypes.string,
-	  /**
-	   * If true, the button will take up the full width of its container.
-	   */
-	  fullWidth: _react.PropTypes.bool,
-	  /**
-	   * The URL to link to when the button is clicked.
-	   */
-	  href: _react.PropTypes.string,
-	  /**
-	   * An icon to be displayed within the button.
-	   */
-	  icon: _react.PropTypes.node,
-	  /**
-	   * The label to be displayed within the button.
-	   * If content is provided via the `children` prop, that content will be
-	   * displayed in addition to the label provided here.
-	   */
-	  label: validateLabel,
-	  /**
-	   * The color of the button's label.
-	   */
-	  labelColor: _react.PropTypes.string,
-	  /**
-	   * The position of the button's label relative to the button's `children`.
-	   */
-	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
-	  /**
-	   * Override the inline-styles of the button's label element.
-	   */
-	  labelStyle: _react.PropTypes.object,
-	  /** @ignore */
-	  onMouseDown: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseEnter: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseLeave: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseUp: _react.PropTypes.func,
-	  /** @ignore */
-	  onTouchEnd: _react.PropTypes.func,
-	  /** @ignore */
-	  onTouchStart: _react.PropTypes.func,
-	  /**
-	   * Override the inline style of the button overlay.
-	   */
-	  overlayStyle: _react.PropTypes.object,
-	  /**
-	   * If true, the button will use the theme's primary color.
-	   */
-	  primary: _react.PropTypes.bool,
-	  /**
-	   * Override the inline style of the ripple element.
-	   */
-	  rippleStyle: _react.PropTypes.object,
-	  /**
-	   * If true, the button will use the theme's secondary color.
-	   * If both `secondary` and `primary` are true, the button will use
-	   * the theme's primary color.
-	   */
-	  secondary: _react.PropTypes.bool,
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object
-	} : void 0;
-	exports.default = RaisedButton;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
-
-/***/ },
 /* 759 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -66435,7 +66480,7 @@
 	var content = __webpack_require__(760);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(731)(content, {});
+	var update = __webpack_require__(733)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -66455,7 +66500,7 @@
 /* 760 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(730)();
+	exports = module.exports = __webpack_require__(732)();
 	// imports
 
 
@@ -70344,7 +70389,7 @@
 	var content = __webpack_require__(768);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(731)(content, {});
+	var update = __webpack_require__(733)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -70364,7 +70409,7 @@
 /* 768 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(730)();
+	exports = module.exports = __webpack_require__(732)();
 	// imports
 
 
