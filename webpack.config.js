@@ -4,6 +4,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     'app': './js/index.js',
+    'thermoscope': './js/two-thermoscope/index.js',
     'particle-modeler': './js/particle-modeler/index.js',
     'one-thermoscope': './js/one-thermoscope/index.js',
     'three-thermoscope': './js/three-thermoscope/index.js',

@@ -2,6 +2,7 @@
   height: 100%;
   background: #333;
   color: #ccc;
+  touch-action: none;
 
   .app-container {
     height:100%;
@@ -17,6 +18,20 @@
 
   &.authoring {
     background: white;
+  }
+
+  h1{
+    padding:10px;
+  }
+  .demo-links {
+    height:100%;
+    display: flex;
+    align-items: left;
+    li{
+      padding:20px;
+      color:#aaa;
+
+    }
   }
 }
 
@@ -34,5 +49,6 @@
     position: relative;
     top: -7px;
     left: -7px;
+    touch-action:none;
   }
 }

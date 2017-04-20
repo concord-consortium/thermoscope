@@ -4,8 +4,8 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
-import LabModel from './lab-model';
-import Meter from './meter';
+import LabModel from '../components/lab-model';
+import Meter from '../components/meter';
 import models, { MIN_TEMP, MAX_TEMP } from '../models';
 import { getURLParam } from '../utils';
 
