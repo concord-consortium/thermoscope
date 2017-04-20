@@ -32,11 +32,11 @@ export default class TwoThermoscope extends PureComponent {
           <div className="app-container">
             <div className="thermoscope-container">
               <div className="label">A</div>
-              <Thermoscope sensor={sensor} material={getURLParam('A')} probeIndex={0}/>
+              <Thermoscope sensor={sensor} material={getURLParam('A')} embeddableSrc='../lab/embeddable.html' probeIndex={0}/>
             </div>
             <div className="thermoscope-container">
               <div className="label">B</div>
-              <Thermoscope sensor={sensor} material={getURLParam('B')} probeIndex={1}/>
+              <Thermoscope sensor={sensor} material={getURLParam('B')} embeddableSrc='../lab/embeddable.html' probeIndex={1}/>
             </div>
           </div>
           <Sensor sensor={sensor} showAddressBox={false} />
