@@ -56,6 +56,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactDom = __webpack_require__(332);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
 	var _MuiThemeProvider = __webpack_require__(479);
 
 	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
@@ -67,10 +71,6 @@
 	var _darkBaseTheme = __webpack_require__(628);
 
 	var _darkBaseTheme2 = _interopRequireDefault(_darkBaseTheme);
-
-	var _reactDom = __webpack_require__(332);
-
-	var _reactDom2 = _interopRequireDefault(_reactDom);
 
 	var _thermoscope = __webpack_require__(629);
 
@@ -92,7 +92,9 @@
 
 	var _bleSensor2 = _interopRequireDefault(_bleSensor);
 
-	__webpack_require__(772);
+	var _utils = __webpack_require__(747);
+
+	__webpack_require__(758);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -109,40 +111,24 @@
 
 	_darkBaseTheme2.default.palette.textColor = '#ccc';
 
-	var MeterThermoscope = function (_PureComponent) {
-	  _inherits(MeterThermoscope, _PureComponent);
+	var TwoThermoscope = function (_PureComponent) {
+	  _inherits(TwoThermoscope, _PureComponent);
 
-	  function MeterThermoscope(props) {
-	    _classCallCheck(this, MeterThermoscope);
+	  function TwoThermoscope(props) {
+	    _classCallCheck(this, TwoThermoscope);
 
-	    return _possibleConstructorReturn(this, (MeterThermoscope.__proto__ || Object.getPrototypeOf(MeterThermoscope)).call(this, props));
+	    return _possibleConstructorReturn(this, (TwoThermoscope.__proto__ || Object.getPrototypeOf(TwoThermoscope)).call(this, props));
 	  }
 
-	  _createClass(MeterThermoscope, [{
+	  _createClass(TwoThermoscope, [{
 	    key: 'render',
 	    value: function render() {
-
-	      var meterSegments = [{
-	        color: "#800000",
-	        start: 0,
-	        end: 45
-	      }, {
-	        color: "#a0a000",
-	        start: 45,
-	        end: 145
-	      }, {
-	        color: "#008000",
-	        start: 145,
-	        end: 180
-	      }];
-
 	      return _react2.default.createElement(
 	        _MuiThemeProvider2.default,
 	        { muiTheme: (0, _getMuiTheme2.default)(_darkBaseTheme2.default) },
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'meter-thermoscope' },
-	          _react2.default.createElement(_sensor2.default, { sensor: sensor }),
+	          { className: 'app' },
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'app-container' },
@@ -154,7 +140,7 @@
 	                { className: 'label' },
 	                'A'
 	              ),
-	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, probeIndex: 0, material: 'solid', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments })
+	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('A'), probeIndex: 0 })
 	            ),
 	            _react2.default.createElement(
 	              'div',
@@ -164,21 +150,22 @@
 	                { className: 'label' },
 	                'B'
 	              ),
-	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, probeIndex: 1, material: 'liquid', embeddableSrc: '../lab/embeddable.html', showMeter: true, meterSegments: meterSegments })
+	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('B'), probeIndex: 1 })
 	            )
-	          )
+	          ),
+	          _react2.default.createElement(_sensor2.default, { sensor: sensor, showAddressBox: false })
 	        )
 	      );
 	    }
 	  }]);
 
-	  return MeterThermoscope;
+	  return TwoThermoscope;
 	}(_react.PureComponent);
 
-	exports.default = MeterThermoscope;
+	exports.default = TwoThermoscope;
 
 
-	_reactDom2.default.render(_react2.default.createElement(MeterThermoscope, null), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(TwoThermoscope, null), document.getElementById('app'));
 
 /***/ }),
 /* 1 */,
@@ -58283,8 +58270,46 @@
 /***/ }),
 /* 756 */,
 /* 757 */,
-/* 758 */,
-/* 759 */,
+/* 758 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(759);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(732)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./app.less", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./app.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 759 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(731)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
 /* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -62829,46 +62854,6 @@
 	    return isConnected;
 	  }
 	};
-
-/***/ }),
-/* 772 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(773);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(732)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./meter.less", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./meter.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ }),
-/* 773 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(731)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".meter-thermoscope {\n  background: #333;\n  color: #ccc;\n  height: 100%;\n}\n.meter-thermoscope .app-container {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  height: 100%;\n}\n.meter-thermoscope .label {\n  font-size: 16px;\n  text-align: center;\n}\n.meter {\n  height: 150px;\n  width: 400px;\n  text-align: center;\n  margin: -30px auto 30px;\n  display: block;\n}\n", ""]);
-
-	// exports
-
 
 /***/ })
 /******/ ]);
