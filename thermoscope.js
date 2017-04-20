@@ -140,7 +140,7 @@
 	                { className: 'label' },
 	                'A'
 	              ),
-	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('A'), probeIndex: 0 })
+	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('A'), embeddableSrc: '../lab/embeddable.html', probeIndex: 0 })
 	            ),
 	            _react2.default.createElement(
 	              'div',
@@ -150,7 +150,7 @@
 	                { className: 'label' },
 	                'B'
 	              ),
-	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('B'), probeIndex: 1 })
+	              _react2.default.createElement(_thermoscope2.default, { sensor: sensor, material: (0, _utils.getURLParam)('B'), embeddableSrc: '../lab/embeddable.html', probeIndex: 1 })
 	            )
 	          ),
 	          _react2.default.createElement(_sensor2.default, { sensor: sensor, showAddressBox: false })
