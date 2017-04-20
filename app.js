@@ -29855,11 +29855,7 @@
 	              'i',
 	              { className: 'material-icons' },
 	              'all_out'
-	            ), initiallyOpen: true, primaryTogglesNestedList: true, nestedItems: [_react2.default.createElement(_List.ListItem, { primaryText: 'Particle Modeler', href: './particle-modeler', key: '3' }), _react2.default.createElement(_List.ListItem, { primaryText: 'Particle Modeler (author mode)', href: './particle-modeler#authoring=true', rightIcon: _react2.default.createElement(
-	                'i',
-	                { className: 'material-icons' },
-	                'build'
-	              ), key: '4' })] })
+	            ), initiallyOpen: true, primaryTogglesNestedList: true, nestedItems: [_react2.default.createElement(_List.ListItem, { primaryText: 'Particle Modeler', href: './particle-modeler', key: '3' })] })
 	        )
 	      )
 	    )
