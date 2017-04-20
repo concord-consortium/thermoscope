@@ -26,8 +26,7 @@ const LandingPage = () => (
               <ListItem primaryText="Thermoscope (gas)" href="./thermoscope?A=gas&B=gas" key="3" />
             ]} />
           <ListItem primaryText="Particle Modeler" leftIcon={<i className="material-icons">all_out</i>} initiallyOpen={true} primaryTogglesNestedList={true} nestedItems={[
-              <ListItem primaryText="Particle Modeler" href="./particle-modeler" key="3" />,
-              <ListItem primaryText="Particle Modeler (author mode)" href="./particle-modeler#authoring=true" rightIcon={<i className="material-icons">build</i>} key="4" />
+              <ListItem primaryText="Particle Modeler" href="./particle-modeler" key="3" />
             ]}/>
         </List>
       </div>
