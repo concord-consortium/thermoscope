@@ -62778,7 +62778,7 @@
 	module.exports = {
 	  connect: function connect(address) {
 	    var request = navigator.bluetooth.requestDevice({
-	      filters: [{ name: "Thermoscope" }],
+	      filters: [{ namePrefix: "Thermoscope" }],
 	      optionalServices: [tempAServiceAddr, tempBServiceAddr]
 	    });
 
