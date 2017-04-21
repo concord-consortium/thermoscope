@@ -122,16 +122,21 @@ const Authoring = (props) => {
 
   return (
     <div className="authoring-form">
-      <h3>Authoring</h3>
-      { inputs }
-      <h4>Element 1</h4>
-      { elem1 }
-      <h4>Element 2</h4>
-      { elem2 }
-      <h4>Element 3</h4>
-      { elem3 }
+      <h3 className="authoring-header">Authoring</h3>
+      <h3>Inputs</h3>
+      <div className="value-block">{inputs}</div>
+
+      <h3>Element 1</h3>
+      <div className="value-block">{elem1}</div>
+
+      <h3>Element 2</h3>
+      <div className="value-block">{elem2}</div>
+
+      <h3>Element 3</h3>
+      <div className="value-block">{elem3}</div>
+
       <h3>Pairwise Forces</h3>
-      { pairwiseTable }
+      <div className="value-block">{ pairwiseTable }</div>
     </div>
   )
 }
