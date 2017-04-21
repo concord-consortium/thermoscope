@@ -59,7 +59,7 @@ const logMessage = function (message, error) {
 module.exports = {
   connect: function (address) {
     let request = navigator.bluetooth.requestDevice({
-      filters: [{ name: "Thermoscope" }],
+      filters: [{ namePrefix: "Thermoscope" }],
       optionalServices: [tempAServiceAddr, tempBServiceAddr]
     })
 
