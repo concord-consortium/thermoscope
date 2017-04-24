@@ -29,7 +29,9 @@ let atomBox = {
       y: 0.141,
       width: 0.141,
       height: 0.146
-    };
+  };
+
+let particleMaxVelocity = 0.01;
 
 export default class Interactive extends PureComponent {
 
@@ -47,6 +49,7 @@ export default class Interactive extends PureComponent {
       showNewAtom1: true,
       showNewAtom2: true,
       deleteHover: false,
+      showRestart: false,
       ...authoredState
     };
 
@@ -54,6 +57,28 @@ export default class Interactive extends PureComponent {
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
     this.freeze = this.freeze.bind(this);
+  }
+
+  componentWillMount() {
+    this.captureErrors();
+  }
+  captureErrors() {
+    window.onerror = (message, file, line, column, errorObject) => {
+      column = column || (window.event && window.event.errorCharacter);
+      var stack = errorObject ? errorObject.stack : null;
+
+      var data = {
+        message: message,
+        file: file,
+        line: line,
+        column: column,
+        errorStack: stack,
+      };
+      console.log(data);
+      if (file.indexOf("lab.min.js") > -1) {
+        this.setState({ showRestart: true });
+      }
+    }
   }
 
   setModelProps(prevState = {}) {
@@ -129,6 +154,18 @@ export default class Interactive extends PureComponent {
       }
     });
 
+    api.onPropertyChange('time', function (t) {
+      // this will fire every tick
+      for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
+        a = api.getAtomProperties(i);
+        if (Math.abs(a.vx) > particleMaxVelocity || Math.abs(a.vy) > particleMaxVelocity) {
+          // particles moving too fast can cause the model to freeze up
+          let adjustedVx = a.vx * 0.01;
+          let adjustedVy = a.vy * 0.01;
+          api.setAtomProperties(i, { vx: adjustedVx, vy: adjustedVy });
+        }
+      }
+    });
     let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
       for (let i=0, ii=api.getNumberOfAtoms(); i<ii; i++) {
@@ -180,16 +217,13 @@ export default class Interactive extends PureComponent {
     this.setState(newState);
   }
 
-  render () {
-    let appClass = "app", authoringPanel = null, freezeButton = null;
-    if (this.state.authoring) {
+  render() {
+    const { authoring, showFreezeButton, showRestart} = this.state;
+    let appClass = "app";
+    if (authoring) {
       appClass += " authoring";
-      authoringPanel = <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
     }
 
-    if (this.state.showFreezeButton.value === true) {
-      freezeButton = <button onClick={this.freeze}>Freeze</button>
-    }
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
 
     return (
@@ -201,11 +235,12 @@ export default class Interactive extends PureComponent {
                   playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
               <div className="lab-ui">
                 <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
-                { freezeButton }
+                { showFreezeButton.value === true &&  <button onClick={this.freeze}>Freeze</button>}
                 <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
               </div>
+              {<div className="restart-button">Restart</div>}
             </div>
-            {authoringPanel}
+            {authoring && <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />}
           </div>
         </div>
       </MuiThemeProvider>
