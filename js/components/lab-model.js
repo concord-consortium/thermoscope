@@ -1,4 +1,5 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import Lab from 'react-lab';
 import CircularProgress from 'material-ui/CircularProgress';
 import interactive from '../../models/interactive.json';
@@ -63,14 +64,14 @@ export default class LabModel extends PureComponent {
   }
 }
 
-LabModel.PropTypes = {
-  model: React.PropTypes.object.isRequired,
-  width: React.PropTypes.number,
-  height: React.PropTypes.number,
-  temperature: React.PropTypes.number,
-  tempScale: React.PropTypes.func,
+LabModel.propTypes = {
+  model: PropTypes.object.isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  temperature: PropTypes.number,
+  tempScale: PropTypes.func,
   // timeStep can be also scaled with temperature to amplify difference in particles speed.
-  timeStepScale: React.PropTypes.func
+  timeStepScale: PropTypes.func
 };
 
 LabModel.defaultProps = {

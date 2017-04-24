@@ -1,4 +1,5 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import Slider from 'material-ui/Slider';
 
 export default class Meter extends PureComponent {
@@ -176,23 +177,23 @@ export default class Meter extends PureComponent {
   }
 }
 
-Meter.PropTypes = {
-  cx: React.PropTypes.object.number,
-  cy: React.PropTypes.number,
-  r: React.PropTypes.number,
-  arcWidth: React.PropTypes.number,
-  needleWidth: React.PropTypes.number,
-  minValue: React.PropTypes.number,
-  maxValue: React.PropTypes.number,
-  minClamp: React.PropTypes.number,
-  maxClamp: React.PropTypes.number,
-  currentValue: React.PropTypes.number,
-  showSlider: React.PropTypes.bool,
-  segments: React.PropTypes.array,
-  background: React.PropTypes.string,
-  needleColor: React.PropTypes.string,
-  draggable: React.PropTypes.bool,
-  onMeterChange: React.PropTypes.func
+Meter.propTypes = {
+  cx: PropTypes.object.number,
+  cy: PropTypes.number,
+  r: PropTypes.number,
+  arcWidth: PropTypes.number,
+  needleWidth: PropTypes.number,
+  minValue: PropTypes.number,
+  maxValue: PropTypes.number,
+  minClamp: PropTypes.number,
+  maxClamp: PropTypes.number,
+  currentValue: PropTypes.number,
+  showSlider: PropTypes.bool,
+  segments: PropTypes.array,
+  background: PropTypes.string,
+  needleColor: PropTypes.string,
+  draggable: PropTypes.bool,
+  onMeterChange: PropTypes.func
 };
 
 Meter.defaultProps = {
