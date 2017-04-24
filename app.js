@@ -29850,12 +29850,12 @@
 	              { className: 'material-icons' },
 	              'group_work'
 	            ), initiallyOpen: true,
-	            primaryTogglesNestedList: true, nestedItems: [_react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (solid)', href: './thermoscope', key: '1' }), _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (liquid)', href: './thermoscope?A=liquid&B=liquid', key: '2' }), _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (gas)', href: './thermoscope?A=gas&B=gas', key: '3' })] }),
+	            primaryTogglesNestedList: true, nestedItems: [_react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (solid)', href: './thermoscope/', key: '1' }), _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (liquid)', href: './thermoscope/?A=liquid&B=liquid', key: '2' }), _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (gas)', href: './thermoscope/?A=gas&B=gas', key: '3' })] }),
 	          _react2.default.createElement(_List.ListItem, { primaryText: 'Particle Modeler', leftIcon: _react2.default.createElement(
 	              'i',
 	              { className: 'material-icons' },
 	              'all_out'
-	            ), initiallyOpen: true, primaryTogglesNestedList: true, nestedItems: [_react2.default.createElement(_List.ListItem, { primaryText: 'Particle Modeler', href: './particle-modeler', key: '3' })] })
+	            ), initiallyOpen: true, primaryTogglesNestedList: true, nestedItems: [_react2.default.createElement(_List.ListItem, { primaryText: 'Particle Modeler', href: './particle-modeler/', key: '3' })] })
 	        )
 	      )
 	    )
