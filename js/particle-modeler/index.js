@@ -8,6 +8,7 @@ import models from './models/';
 import authorableProps from './models/authorable-props';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -45,9 +46,12 @@ export default class Interactive extends PureComponent {
     this.state = {
       interactive: models.interactive,
       model: model,
-      showNewAtom0: true,
-      showNewAtom1: true,
-      showNewAtom2: true,
+      includeAtom0: { value: true },
+      includeAtom1: { value: true },
+      includeAtom2: { value: true },
+      showAtom0: true,
+      showAtom1: true,
+      showAtom2: true,
       deleteHover: false,
       showRestart: false,
       ...authoredState
@@ -57,6 +61,7 @@ export default class Interactive extends PureComponent {
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
     this.freeze = this.freeze.bind(this);
+    this.restart = this.restart.bind(this);
   }
 
   componentWillMount() {
@@ -74,8 +79,10 @@ export default class Interactive extends PureComponent {
         column: column,
         errorStack: stack,
       };
-      console.log(data);
+      // If we want to log externally, use data, or grab on the console for more information
+      // console.log(data);
       if (file.indexOf("lab.min.js") > -1) {
+        // likely indication of divergent lab model - offer a graceful restart button
         this.setState({ showRestart: true });
       }
     }
@@ -135,9 +142,9 @@ export default class Interactive extends PureComponent {
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element - 3,
-            newState = {};
+        newState = {};
         api.setAtomProperties(i, {pinned: 0, element: el});
-        newState["showNewAtom"+el] = false;
+        newState["showAtom"+el] = false;
         this.setState(newState);
         this.addNewDraggableAtom(el);
       } else {
@@ -187,18 +194,23 @@ export default class Interactive extends PureComponent {
     this.setModelProps();
   }
 
-  addNewDraggableAtom(el=0) {
-    let y = atomBox.y - (el * atomBox.spacing),
-        added = api.addAtom({x: atomBox.x, y: y, element: (el+3), draggable: 1, pinned: 1});
-    if (!added) {
-      setTimeout(() => this.addNewDraggableAtom(el), 2000);
-    } else {
-      let newState = {};
-      newState["showNewAtom"+el] = true;
-      this.setState(newState);
+  addNewDraggableAtom(el = 0) {
+    if (this.state["includeAtom" + el].value) {
+      let y = atomBox.y - (el * atomBox.spacing),
+        added = api.addAtom({ x: atomBox.x, y: y, element: (el + 3), draggable: 1, pinned: 1 });
+      if (!added) {
+        setTimeout(() => this.addNewDraggableAtom(el), 2000);
+      } else {
+        let newState = {};
+        newState["showAtom" + el] = true;
+        this.setState(newState);
+      }
     }
   }
-
+  restart() {
+    console.log("restart");
+    window.location.reload();
+  }
   freeze() {
     let oldTemp = this.state.targetTemperature.value,
         oldControl = this.state.temperatureControl.value;
@@ -225,7 +237,10 @@ export default class Interactive extends PureComponent {
     }
 
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
-
+    let newAtomVisibility = {
+      atomsToShow: [this.state.showAtom0, this.state.showAtom1, this.state.showAtom2],
+      atomsToInclude: [this.state.includeAtom0.value, this.state.includeAtom1.value, this.state.includeAtom2.value]
+    };
     return (
       <MuiThemeProvider>
         <div className={appClass}>
@@ -234,11 +249,11 @@ export default class Interactive extends PureComponent {
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
                   playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
               <div className="lab-ui">
-                <NewAtomBin showAtom0={this.state.showNewAtom0} showAtom1={this.state.showNewAtom1} showAtom2={this.state.showNewAtom2}/>
+                <NewAtomBin atomVisibility={newAtomVisibility} />
                 { showFreezeButton.value === true &&  <button onClick={this.freeze}>Freeze</button>}
                 <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
               </div>
-              {<div className="restart-button">Restart</div>}
+              {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
             </div>
             {authoring && <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />}
           </div>
