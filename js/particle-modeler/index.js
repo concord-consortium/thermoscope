@@ -46,9 +46,6 @@ export default class Interactive extends PureComponent {
     this.state = {
       interactive: models.interactive,
       model: model,
-      includeAtom0: { value: true },
-      includeAtom1: { value: true },
-      includeAtom2: { value: true },
       showAtom0: true,
       showAtom1: true,
       showAtom2: true,
@@ -60,6 +57,7 @@ export default class Interactive extends PureComponent {
     this.handleModelLoad = this.handleModelLoad.bind(this);
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
+    this.changeElementCount = this.changeElementCount.bind(this);
     this.freeze = this.freeze.bind(this);
     this.restart = this.restart.bind(this);
   }
@@ -188,14 +186,15 @@ export default class Interactive extends PureComponent {
 
     lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
 
-    this.addNewDraggableAtom(0);
-    this.addNewDraggableAtom(1);
-    this.addNewDraggableAtom(2);
+    for (let i = 0; i < this.state.elements.value; i++){
+      this.addNewDraggableAtom(i);
+    }
+
     this.setModelProps();
   }
 
-  addNewDraggableAtom(el = 0) {
-    if (this.state["includeAtom" + el].value) {
+  addNewDraggableAtom(el = 0, skipCheck = false) {
+    if (skipCheck || this.state.elements.value > el) {
       let y = atomBox.y - (el * atomBox.spacing),
         added = api.addAtom({ x: atomBox.x, y: y, element: (el + 3), draggable: 1, pinned: 1 });
       if (!added) {
@@ -226,7 +225,33 @@ export default class Interactive extends PureComponent {
     let newState = {};
     newState[prop] = {...this.state[prop]};
     newState[prop].value = parseToPrimitive(value);
+
+    if (prop === "elements") {
+      this.changeElementCount(value);
+    }
+
     this.setState(newState);
+  }
+
+  changeElementCount(newElementCount) {
+    // has the number of elements been increased
+    if (newElementCount > this.state.elements.value) {
+      this.addNewDraggableAtom(newElementCount - 1, true);
+    } else {
+      let atomsToDelete = [];
+      // iterate through all atoms, remove any for elements no longer needed
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        if (api.getAtomProperties(i).element >= newElementCount)
+          atomsToDelete.push(i);
+      }
+      for (let i = atomsToDelete.length - 1; i > -1; i--) {
+        api.removeAtom(atomsToDelete[i]);
+      }
+      // because initial draggable elements are a different type, recreate the hidden dragables after deleting
+      for (let i = 0; i < newElementCount; i++){
+        this.addNewDraggableAtom(i, true);
+      }
+    }
   }
 
   render() {
@@ -239,7 +264,7 @@ export default class Interactive extends PureComponent {
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
     let newAtomVisibility = {
       atomsToShow: [this.state.showAtom0, this.state.showAtom1, this.state.showAtom2],
-      atomsToInclude: [this.state.includeAtom0.value, this.state.includeAtom1.value, this.state.includeAtom2.value]
+      count: this.state.elements.value
     };
     return (
       <MuiThemeProvider>
