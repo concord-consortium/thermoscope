@@ -33,7 +33,7 @@ let atomBox = {
       height: 0.146
   };
 
-let particleMaxVelocity = 0.01;
+let particleMaxVelocity = 0.0005;
 
 export default class Interactive extends PureComponent {
 
@@ -165,7 +165,7 @@ export default class Interactive extends PureComponent {
       // this will fire every tick
       for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
         a = api.getAtomProperties(i);
-        if (Math.abs(a.vx) > particleMaxVelocity || Math.abs(a.vy) > particleMaxVelocity) {
+        if (((a.vx * a.vx) + (a.vy * a.vy)) > particleMaxVelocity) {
           // particles moving too fast can cause the model to freeze up
           let adjustedVx = a.vx * 0.01;
           let adjustedVy = a.vy * 0.01;
