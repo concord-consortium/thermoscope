@@ -241,7 +241,9 @@ export default class Interactive extends PureComponent {
   changeElementCount(newElementCount) {
     // has the number of elements been increased
     if (newElementCount > this.state.elements.value) {
-      this.addNewDraggableAtom(newElementCount - 1, true);
+      for (let i = this.state.elements.value; i < newElementCount; i++){
+        this.addNewDraggableAtom(i, true);
+      }
     } else {
       let atomsToDelete = [];
       // iterate through all atoms, remove any for elements no longer needed
