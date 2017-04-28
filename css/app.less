@@ -4,6 +4,59 @@
   color: #ccc;
   touch-action: none;
 
+  .logo-menu{
+    width:250px;
+    height:250px;
+    position:fixed;
+    right:0px;
+
+    top: -80px;
+    padding-top: 60px;
+
+    background-image: url("/css/bubble.svg");
+    background-position: right top;
+    background-size: 250px;
+    background-repeat: no-repeat;
+
+
+    .menu{
+      position: fixed;
+      right: 110px;
+      width: 110px;
+      top: 5px;
+
+      >div{
+        float:left;
+        padding-right:10px;
+      }
+      a{
+        color:#aaa;
+
+        &:hover{
+          color:#888;
+        }
+
+        &:active{
+          color:#888;
+        }
+      }
+    }
+    .cc-logo{
+      position:relative;
+      float:right;
+      right:0px;
+      top: 0px;
+      width:100%;
+    }
+
+    &.small{
+      width:125px;
+      background-size:125px;
+      top: -40px;
+      padding-top: 30px;
+    }
+  }
+
   .app-container {
     height:100%;
     display: flex;

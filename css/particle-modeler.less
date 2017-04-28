@@ -4,7 +4,7 @@
   top: 0px;
   color: #444;
   width:450px;
-  max-height: 700px;
+  max-height: 650px;
   border: 2px solid silver;
   border-radius: 8px;
   overflow-y: scroll;
@@ -12,11 +12,19 @@
 
   h3 {
     padding: 4px 0 4px 0;
-    margin:10px 0 5px 0;
-    width:100%;
+    margin: 10px 0 5px 0;
+    width: 100%;
     background-color:#f8f8f8;
+    input{
+      height: 15px;
+      width: 15px;
+    }
+    span{
+      padding-left: 5px;
+    }
   }
 }
+
 .app{
   &.authoring {
     background: white;
@@ -27,7 +35,7 @@
       display: block;
       top: 20px;
       left: 20px;
-      max-height: 700px;
+      max-height: 650px;
     }
     .value-block{
       margin-left:15px;
@@ -45,6 +53,31 @@
       border-right: none;
       background-color: white;
     }
+    .logo-menu{
+      display:none;
+    }
+  }
+  .restart-button{
+    position: fixed;
+    top: 10px;
+    left:10px;
+    border: 1px solid silver;
+    border-radius: 10px;
+    text-align: center;
+    padding: 4px;
+    color: black;
+    background-color: #fff;
+  }
+
+  .student-button{
+    position: fixed;
+    top: 400px;
+    border: 1px solid silver;
+    border-radius: 10px;
+    text-align: center;
+    padding: 4px;
+    color: black;
+    background-color: #fff;
   }
 }
 

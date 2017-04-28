@@ -36,7 +36,13 @@ module.exports = {
     label: "Start With Existing Atoms",
     value: false
   },
-
+  elements: {
+    label: "Number of unique elements",
+    value: 3,
+    min: 1,
+    max: 3,
+    step: 1
+  },
   element1Sigma: {
     label: "Sigma",
     element: 0,
