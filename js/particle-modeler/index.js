@@ -284,9 +284,9 @@ export default class Interactive extends PureComponent {
                 { showFreezeButton.value === true &&  <button onClick={this.freeze}>Freeze</button>}
                 <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
               </div>
-              {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
-              {authoring && <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>}
             </div>
+            {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
+            {authoring && <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>}
             {authoring && <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />}
           </div>
         </div>
