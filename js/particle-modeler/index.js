@@ -10,6 +10,7 @@ import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } f
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import '../../css/app.less';
@@ -60,6 +61,7 @@ export default class Interactive extends PureComponent {
     this.changeElementCount = this.changeElementCount.bind(this);
     this.freeze = this.freeze.bind(this);
     this.restart = this.restart.bind(this);
+    this.studentView = this.studentView.bind(this);
   }
 
   componentWillMount() {
@@ -210,6 +212,9 @@ export default class Interactive extends PureComponent {
     console.log("restart");
     window.location.reload();
   }
+  studentView() {
+    this.setState({ authoring: false });
+  }
   freeze() {
     let oldTemp = this.state.targetTemperature.value,
         oldControl = this.state.temperatureControl.value;
@@ -269,6 +274,7 @@ export default class Interactive extends PureComponent {
     return (
       <MuiThemeProvider>
         <div className={appClass}>
+          <LogoMenu scale="logo-menu small" showNav="true" />
           <div className="app-container">
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
@@ -279,6 +285,7 @@ export default class Interactive extends PureComponent {
                 <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
               </div>
               {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
+              {authoring && <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>}
             </div>
             {authoring && <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />}
           </div>

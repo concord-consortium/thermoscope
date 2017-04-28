@@ -3,6 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import Thermoscope from './thermoscope';
+import LogoMenu from './logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { List, ListItem } from 'material-ui/List';
 
@@ -17,6 +18,7 @@ const LandingPage = () => (
   <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
     <div className="app">
       <h1>Thermoscope and Particle Modeler Examples</h1>
+      <LogoMenu scale="logo-menu"/>
       <div className="demo-links">
         <List>
           <ListItem primaryText="Thermoscope with BLE Sensor Demos" leftIcon={<i className="material-icons">group_work</i>} initiallyOpen={true}

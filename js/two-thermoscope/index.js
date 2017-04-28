@@ -8,6 +8,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import Sensor from '../components/sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
 import bleSensor from '../components/ble-sensor.js';
+import LogoMenu from '../components/logo-menu';
 import { getURLParam } from '../utils';
 
 const sensor = bleSensor;
@@ -29,6 +30,7 @@ export default class TwoThermoscope extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="app">
+          <LogoMenu scale="logo-menu small" showNav="true" />
           <div className="app-container">
             <div className="thermoscope-container">
               <div className="label">A</div>
