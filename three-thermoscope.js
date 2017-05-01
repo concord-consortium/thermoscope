@@ -76,17 +76,17 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(750);
+	var _reactTapEventPlugin = __webpack_require__(753);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensorLabquest2Interface = __webpack_require__(765);
+	var _sensorLabquest2Interface = __webpack_require__(766);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(772);
+	__webpack_require__(773);
 
-	__webpack_require__(774);
+	__webpack_require__(775);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43198,6 +43198,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _propTypes = __webpack_require__(656);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
 	var _reactLab = __webpack_require__(725);
 
 	var _reactLab2 = _interopRequireDefault(_reactLab);
@@ -43306,14 +43310,14 @@
 	exports.default = LabModel;
 
 
-	LabModel.PropTypes = {
-	  model: _react2.default.PropTypes.object.isRequired,
-	  width: _react2.default.PropTypes.number,
-	  height: _react2.default.PropTypes.number,
-	  temperature: _react2.default.PropTypes.number,
-	  tempScale: _react2.default.PropTypes.func,
+	LabModel.propTypes = {
+	  model: _propTypes2.default.object.isRequired,
+	  width: _propTypes2.default.number,
+	  height: _propTypes2.default.number,
+	  temperature: _propTypes2.default.number,
+	  tempScale: _propTypes2.default.func,
 	  // timeStep can be also scaled with temperature to amplify difference in particles speed.
-	  timeStepScale: _react2.default.PropTypes.func
+	  timeStepScale: _propTypes2.default.func
 	};
 
 	LabModel.defaultProps = {
@@ -45787,6 +45791,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _propTypes = __webpack_require__(656);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
 	var _Slider = __webpack_require__(630);
 
 	var _Slider2 = _interopRequireDefault(_Slider);
@@ -46028,23 +46036,23 @@
 	exports.default = Meter;
 
 
-	Meter.PropTypes = {
-	  cx: _react2.default.PropTypes.object.number,
-	  cy: _react2.default.PropTypes.number,
-	  r: _react2.default.PropTypes.number,
-	  arcWidth: _react2.default.PropTypes.number,
-	  needleWidth: _react2.default.PropTypes.number,
-	  minValue: _react2.default.PropTypes.number,
-	  maxValue: _react2.default.PropTypes.number,
-	  minClamp: _react2.default.PropTypes.number,
-	  maxClamp: _react2.default.PropTypes.number,
-	  currentValue: _react2.default.PropTypes.number,
-	  showSlider: _react2.default.PropTypes.bool,
-	  segments: _react2.default.PropTypes.array,
-	  background: _react2.default.PropTypes.string,
-	  needleColor: _react2.default.PropTypes.string,
-	  draggable: _react2.default.PropTypes.bool,
-	  onMeterChange: _react2.default.PropTypes.func
+	Meter.propTypes = {
+	  cx: _propTypes2.default.object.number,
+	  cy: _propTypes2.default.number,
+	  r: _propTypes2.default.number,
+	  arcWidth: _propTypes2.default.number,
+	  needleWidth: _propTypes2.default.number,
+	  minValue: _propTypes2.default.number,
+	  maxValue: _propTypes2.default.number,
+	  minClamp: _propTypes2.default.number,
+	  maxClamp: _propTypes2.default.number,
+	  currentValue: _propTypes2.default.number,
+	  showSlider: _propTypes2.default.bool,
+	  segments: _propTypes2.default.array,
+	  background: _propTypes2.default.string,
+	  needleColor: _propTypes2.default.string,
+	  draggable: _propTypes2.default.bool,
+	  onMeterChange: _propTypes2.default.func
 	};
 
 	Meter.defaultProps = {
@@ -57872,11 +57880,14 @@
 
 
 /***/ }),
-/* 750 */
+/* 750 */,
+/* 751 */,
+/* 752 */,
+/* 753 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(751);
+	var defaultClickRejectionStrategy = __webpack_require__(754);
 
 	var alreadyInjected = false;
 
@@ -57898,14 +57909,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(342).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(752)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(755)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ }),
-/* 751 */
+/* 754 */
 /***/ (function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -57916,7 +57927,7 @@
 
 
 /***/ }),
-/* 752 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -57940,14 +57951,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(753);
+	var EventConstants = __webpack_require__(756);
 	var EventPluginUtils = __webpack_require__(344);
 	var EventPropagators = __webpack_require__(341);
 	var SyntheticUIEvent = __webpack_require__(375);
-	var TouchEventUtils = __webpack_require__(754);
+	var TouchEventUtils = __webpack_require__(757);
 	var ViewportMetrics = __webpack_require__(376);
 
-	var keyOf = __webpack_require__(755);
+	var keyOf = __webpack_require__(758);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -58093,7 +58104,7 @@
 
 
 /***/ }),
-/* 753 */
+/* 756 */
 /***/ (function(module, exports) {
 
 	/**
@@ -58189,7 +58200,7 @@
 	module.exports = EventConstants;
 
 /***/ }),
-/* 754 */
+/* 757 */
 /***/ (function(module, exports) {
 
 	/**
@@ -58237,7 +58248,7 @@
 
 
 /***/ }),
-/* 755 */
+/* 758 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -58276,16 +58287,14 @@
 	module.exports = keyOf;
 
 /***/ }),
-/* 756 */,
-/* 757 */,
-/* 758 */,
 /* 759 */,
 /* 760 */,
 /* 761 */,
 /* 762 */,
 /* 763 */,
 /* 764 */,
-/* 765 */
+/* 765 */,
+/* 766 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -58305,9 +58314,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(766);
+	var RSVP = __webpack_require__(767);
 
-	var EventEmitter2 = __webpack_require__(770).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(771).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -58640,7 +58649,7 @@
 
 
 /***/ }),
-/* 766 */
+/* 767 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -61068,7 +61077,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(769);
+	    var vertx = __webpack_require__(770);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -61188,10 +61197,10 @@
 
 	//# sourceMappingURL=rsvp.map
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(767).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(768).setImmediate, (function() { return this; }())))
 
 /***/ }),
-/* 767 */
+/* 768 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -61244,13 +61253,13 @@
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(768);
+	__webpack_require__(769);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 768 */
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -61443,13 +61452,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(294)))
 
 /***/ }),
-/* 769 */
+/* 770 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 770 */
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/*!
@@ -62232,14 +62241,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ }),
-/* 771 */,
-/* 772 */
+/* 772 */,
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(773);
+	var content = __webpack_require__(774);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(732)(content, {});
@@ -62259,7 +62268,7 @@
 	}
 
 /***/ }),
-/* 773 */
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(731)();
@@ -62273,13 +62282,13 @@
 
 
 /***/ }),
-/* 774 */
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(775);
+	var content = __webpack_require__(776);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(732)(content, {});
@@ -62299,7 +62308,7 @@
 	}
 
 /***/ }),
-/* 775 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(731)();

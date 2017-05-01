@@ -29812,13 +29812,17 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(750);
+	var _logoMenu = __webpack_require__(750);
+
+	var _logoMenu2 = _interopRequireDefault(_logoMenu);
+
+	var _reactTapEventPlugin = __webpack_require__(753);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _List = __webpack_require__(756);
+	var _List = __webpack_require__(759);
 
-	__webpack_require__(758);
+	__webpack_require__(751);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29839,6 +29843,7 @@
 	        null,
 	        'Thermoscope and Particle Modeler Examples'
 	      ),
+	      _react2.default.createElement(_logoMenu2.default, { scale: 'logo-menu' }),
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'demo-links' },
@@ -50864,6 +50869,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _propTypes = __webpack_require__(656);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
 	var _reactLab = __webpack_require__(725);
 
 	var _reactLab2 = _interopRequireDefault(_reactLab);
@@ -50972,14 +50981,14 @@
 	exports.default = LabModel;
 
 
-	LabModel.PropTypes = {
-	  model: _react2.default.PropTypes.object.isRequired,
-	  width: _react2.default.PropTypes.number,
-	  height: _react2.default.PropTypes.number,
-	  temperature: _react2.default.PropTypes.number,
-	  tempScale: _react2.default.PropTypes.func,
+	LabModel.propTypes = {
+	  model: _propTypes2.default.object.isRequired,
+	  width: _propTypes2.default.number,
+	  height: _propTypes2.default.number,
+	  temperature: _propTypes2.default.number,
+	  tempScale: _propTypes2.default.func,
 	  // timeStep can be also scaled with temperature to amplify difference in particles speed.
-	  timeStepScale: _react2.default.PropTypes.func
+	  timeStepScale: _propTypes2.default.func
 	};
 
 	LabModel.defaultProps = {
@@ -53453,6 +53462,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _propTypes = __webpack_require__(656);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
 	var _Slider = __webpack_require__(630);
 
 	var _Slider2 = _interopRequireDefault(_Slider);
@@ -53694,23 +53707,23 @@
 	exports.default = Meter;
 
 
-	Meter.PropTypes = {
-	  cx: _react2.default.PropTypes.object.number,
-	  cy: _react2.default.PropTypes.number,
-	  r: _react2.default.PropTypes.number,
-	  arcWidth: _react2.default.PropTypes.number,
-	  needleWidth: _react2.default.PropTypes.number,
-	  minValue: _react2.default.PropTypes.number,
-	  maxValue: _react2.default.PropTypes.number,
-	  minClamp: _react2.default.PropTypes.number,
-	  maxClamp: _react2.default.PropTypes.number,
-	  currentValue: _react2.default.PropTypes.number,
-	  showSlider: _react2.default.PropTypes.bool,
-	  segments: _react2.default.PropTypes.array,
-	  background: _react2.default.PropTypes.string,
-	  needleColor: _react2.default.PropTypes.string,
-	  draggable: _react2.default.PropTypes.bool,
-	  onMeterChange: _react2.default.PropTypes.func
+	Meter.propTypes = {
+	  cx: _propTypes2.default.object.number,
+	  cy: _propTypes2.default.number,
+	  r: _propTypes2.default.number,
+	  arcWidth: _propTypes2.default.number,
+	  needleWidth: _propTypes2.default.number,
+	  minValue: _propTypes2.default.number,
+	  maxValue: _propTypes2.default.number,
+	  minClamp: _propTypes2.default.number,
+	  maxClamp: _propTypes2.default.number,
+	  currentValue: _propTypes2.default.number,
+	  showSlider: _propTypes2.default.bool,
+	  segments: _propTypes2.default.array,
+	  background: _propTypes2.default.string,
+	  needleColor: _propTypes2.default.string,
+	  draggable: _propTypes2.default.bool,
+	  onMeterChange: _propTypes2.default.func
 	};
 
 	Meter.defaultProps = {
@@ -65541,8 +65554,147 @@
 /* 750 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(298);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	__webpack_require__(751);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var LogoMenu = function (_PureComponent) {
+	  _inherits(LogoMenu, _PureComponent);
+
+	  function LogoMenu(props) {
+	    _classCallCheck(this, LogoMenu);
+
+	    return _possibleConstructorReturn(this, (LogoMenu.__proto__ || Object.getPrototypeOf(LogoMenu)).call(this, props));
+	  }
+
+	  _createClass(LogoMenu, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          scale = _props.scale,
+	          showNav = _props.showNav;
+
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: scale },
+	        showNav && _react2.default.createElement(
+	          'div',
+	          { className: 'menu' },
+	          _react2.default.createElement(
+	            'div',
+	            { title: 'Home' },
+	            _react2.default.createElement(
+	              'a',
+	              { href: '../' },
+	              _react2.default.createElement(
+	                'i',
+	                { className: 'material-icons' },
+	                'home'
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { title: 'Thermoscope' },
+	            _react2.default.createElement(
+	              'a',
+	              { href: '../thermoscope' },
+	              _react2.default.createElement(
+	                'i',
+	                { className: 'material-icons' },
+	                'group_work'
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { title: 'Particle Modeler' },
+	            _react2.default.createElement(
+	              'a',
+	              { href: '../particle-modeler' },
+	              _react2.default.createElement(
+	                'i',
+	                { className: 'material-icons' },
+	                'all_out'
+	              )
+	            )
+	          )
+	        ),
+	        _react2.default.createElement('img', { className: 'cc-logo', src: '../css/concord-consortium-logo.png' })
+	      );
+	    }
+	  }]);
+
+	  return LogoMenu;
+	}(_react.PureComponent);
+
+	exports.default = LogoMenu;
+
+/***/ }),
+/* 751 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(752);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(732)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./app.less", function() {
+				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./app.less");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 752 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(731)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 250px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(\"/css/bubble.svg\");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 110px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .menu > div {\n  float: left;\n  padding-right: 10px;\n}\n.app .logo-menu .menu a {\n  color: #aaa;\n}\n.app .logo-menu .menu a:hover {\n  color: #888;\n}\n.app .logo-menu .menu a:active {\n  color: #888;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n}\n.app .logo-menu.small {\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 753 */
+/***/ (function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(751);
+	var defaultClickRejectionStrategy = __webpack_require__(754);
 
 	var alreadyInjected = false;
 
@@ -65564,14 +65716,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(342).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(752)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(755)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ }),
-/* 751 */
+/* 754 */
 /***/ (function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -65582,7 +65734,7 @@
 
 
 /***/ }),
-/* 752 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -65606,14 +65758,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(753);
+	var EventConstants = __webpack_require__(756);
 	var EventPluginUtils = __webpack_require__(344);
 	var EventPropagators = __webpack_require__(341);
 	var SyntheticUIEvent = __webpack_require__(375);
-	var TouchEventUtils = __webpack_require__(754);
+	var TouchEventUtils = __webpack_require__(757);
 	var ViewportMetrics = __webpack_require__(376);
 
-	var keyOf = __webpack_require__(755);
+	var keyOf = __webpack_require__(758);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -65759,7 +65911,7 @@
 
 
 /***/ }),
-/* 753 */
+/* 756 */
 /***/ (function(module, exports) {
 
 	/**
@@ -65855,7 +66007,7 @@
 	module.exports = EventConstants;
 
 /***/ }),
-/* 754 */
+/* 757 */
 /***/ (function(module, exports) {
 
 	/**
@@ -65903,7 +66055,7 @@
 
 
 /***/ }),
-/* 755 */
+/* 758 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -65942,7 +66094,7 @@
 	module.exports = keyOf;
 
 /***/ }),
-/* 756 */
+/* 759 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65960,7 +66112,7 @@
 
 	var _ListItem3 = _interopRequireDefault(_ListItem2);
 
-	var _makeSelectable2 = __webpack_require__(757);
+	var _makeSelectable2 = __webpack_require__(760);
 
 	var _makeSelectable3 = _interopRequireDefault(_makeSelectable2);
 
@@ -65972,7 +66124,7 @@
 	exports.default = _List3.default;
 
 /***/ }),
-/* 757 */
+/* 760 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -66142,46 +66294,6 @@
 	};
 
 	exports.default = makeSelectable;
-
-/***/ }),
-/* 758 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(759);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(732)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./app.less", function() {
-				var newContent = require("!!../node_modules/css-loader/index.js!../node_modules/less-loader/index.js!../node_modules/autoprefixer-loader/index.js!./app.less");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ }),
-/* 759 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(731)();
-	// imports
-
-
-	// module
-	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n", ""]);
-
-	// exports
-
 
 /***/ })
 /******/ ]);
