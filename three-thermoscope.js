@@ -76,17 +76,17 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(753);
+	var _reactTapEventPlugin = __webpack_require__(755);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensorLabquest2Interface = __webpack_require__(766);
+	var _sensorLabquest2Interface = __webpack_require__(768);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(773);
-
 	__webpack_require__(775);
+
+	__webpack_require__(777);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -57883,11 +57883,13 @@
 /* 750 */,
 /* 751 */,
 /* 752 */,
-/* 753 */
+/* 753 */,
+/* 754 */,
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(754);
+	var defaultClickRejectionStrategy = __webpack_require__(756);
 
 	var alreadyInjected = false;
 
@@ -57909,14 +57911,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(342).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(755)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(757)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ }),
-/* 754 */
+/* 756 */
 /***/ (function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -57927,7 +57929,7 @@
 
 
 /***/ }),
-/* 755 */
+/* 757 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -57951,14 +57953,14 @@
 
 	"use strict";
 
-	var EventConstants = __webpack_require__(756);
+	var EventConstants = __webpack_require__(758);
 	var EventPluginUtils = __webpack_require__(344);
 	var EventPropagators = __webpack_require__(341);
 	var SyntheticUIEvent = __webpack_require__(375);
-	var TouchEventUtils = __webpack_require__(757);
+	var TouchEventUtils = __webpack_require__(759);
 	var ViewportMetrics = __webpack_require__(376);
 
-	var keyOf = __webpack_require__(758);
+	var keyOf = __webpack_require__(760);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -58104,7 +58106,7 @@
 
 
 /***/ }),
-/* 756 */
+/* 758 */
 /***/ (function(module, exports) {
 
 	/**
@@ -58200,7 +58202,7 @@
 	module.exports = EventConstants;
 
 /***/ }),
-/* 757 */
+/* 759 */
 /***/ (function(module, exports) {
 
 	/**
@@ -58248,7 +58250,7 @@
 
 
 /***/ }),
-/* 758 */
+/* 760 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -58287,14 +58289,14 @@
 	module.exports = keyOf;
 
 /***/ }),
-/* 759 */,
-/* 760 */,
 /* 761 */,
 /* 762 */,
 /* 763 */,
 /* 764 */,
 /* 765 */,
-/* 766 */
+/* 766 */,
+/* 767 */,
+/* 768 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -58314,9 +58316,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(767);
+	var RSVP = __webpack_require__(769);
 
-	var EventEmitter2 = __webpack_require__(771).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(773).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -58649,7 +58651,7 @@
 
 
 /***/ }),
-/* 767 */
+/* 769 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -61077,7 +61079,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(770);
+	    var vertx = __webpack_require__(772);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -61197,10 +61199,10 @@
 
 	//# sourceMappingURL=rsvp.map
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(768).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294), __webpack_require__(770).setImmediate, (function() { return this; }())))
 
 /***/ }),
-/* 768 */
+/* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -61253,13 +61255,13 @@
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(769);
+	__webpack_require__(771);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 769 */
+/* 771 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -61452,13 +61454,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(294)))
 
 /***/ }),
-/* 770 */
+/* 772 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 771 */
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/*!
@@ -62241,14 +62243,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(294)))
 
 /***/ }),
-/* 772 */,
-/* 773 */
+/* 774 */,
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(774);
+	var content = __webpack_require__(776);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(732)(content, {});
@@ -62268,7 +62270,7 @@
 	}
 
 /***/ }),
-/* 774 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(731)();
@@ -62282,13 +62284,13 @@
 
 
 /***/ }),
-/* 775 */
+/* 777 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(776);
+	var content = __webpack_require__(778);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(732)(content, {});
@@ -62308,7 +62310,7 @@
 	}
 
 /***/ }),
-/* 776 */
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(731)();
