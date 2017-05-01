@@ -21,8 +21,8 @@
     "eventemitter2": "^4.1.0",
     "material-ui": "^0.16.4",
     "prop-types": "^15.5.8",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
+    "react": "15.4.1",
+    "react-dom": "15.4.1",
     "react-lab": "0.7.0",
     "react-tap-event-plugin": "^2.0.1",
     "sensor-labquest-2-interface": "^0.1.0"
