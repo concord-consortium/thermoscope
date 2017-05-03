@@ -189,6 +189,7 @@ export default class Interactive extends PureComponent {
     }
 
     lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
+    lab.iframe.contentDocument.body.style.touchAction = "none";
 
     for (let i = 0; i < this.state.elements.value; i++){
       this.addNewDraggableAtom(i);
