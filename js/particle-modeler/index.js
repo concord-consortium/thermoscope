@@ -53,6 +53,7 @@ export default class Interactive extends PureComponent {
       deleteHover: false,
       showRestart: false,
       speedSlow: false,
+      pinnedAtoms: {},
       ...authoredState
     };
 
@@ -143,10 +144,15 @@ export default class Interactive extends PureComponent {
     api = lab.scriptingAPI;
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
-        let el = d.element - 3,
-        newState = {};
+        let el = d.element,
+          newState = {};
+        // initial spawned elements do not interact with the simulation
+        if (el >= this.state.elements.value) {
+          el -= 3;
+          newState["showAtom"+el] = false;
+        }
         api.setAtomProperties(i, {pinned: 0, element: el});
-        newState["showAtom"+el] = false;
+
         this.setState(newState);
         this.addNewDraggableAtom(el);
       } else {
@@ -160,6 +166,18 @@ export default class Interactive extends PureComponent {
           this.setState({deleteHover: false});
           api.setAtomProperties(i, {marked: 0});
         }
+      }
+    });
+
+    api.onClick('atom', (x, y, d, i) => {
+      //console.log(d);
+      if (d.pinned === 0) {
+        api.setAtomProperties(i, { pinned: 1 });
+        let newState = this.state.pinnedAtoms;
+        newState[i] = { x, y };
+        this.setState({ pinnedAtoms: newState });
+      } else {
+        api.setAtomProperties(i, { pinned: 0 });
       }
     });
 
@@ -211,13 +229,16 @@ export default class Interactive extends PureComponent {
       }
     }
   }
+
   restart() {
     console.log("restart");
     window.location.reload();
   }
+
   studentView() {
     this.setState({ authoring: false });
   }
+
   freeze() {
     let oldTemp = this.state.targetTemperature.value,
         oldControl = this.state.temperatureControl.value;
@@ -228,6 +249,7 @@ export default class Interactive extends PureComponent {
       api.set({targetTemperature: oldTemp});
     }, 500)
   }
+
   speed() {
     let speed = !this.state.speedSlow;
     let timeStep = this.state.timeStep;
@@ -238,8 +260,8 @@ export default class Interactive extends PureComponent {
     }
     api.set({timeStep: timeStep.value});
     this.setState({ speedSlow: speed , timeStep: timeStep });
-    console.log("slow/fast toggle");
   }
+
   handleAuthoringPropChange(prop, value) {
     let newState = {};
     newState[prop] = {...this.state[prop]};
