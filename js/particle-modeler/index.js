@@ -52,6 +52,7 @@ export default class Interactive extends PureComponent {
       showAtom2: true,
       deleteHover: false,
       showRestart: false,
+      speedSlow: false,
       ...authoredState
     };
 
@@ -60,6 +61,7 @@ export default class Interactive extends PureComponent {
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
     this.changeElementCount = this.changeElementCount.bind(this);
     this.freeze = this.freeze.bind(this);
+    this.speed = this.speed.bind(this);
     this.restart = this.restart.bind(this);
     this.studentView = this.studentView.bind(this);
   }
@@ -225,7 +227,18 @@ export default class Interactive extends PureComponent {
       api.set({targetTemperature: oldTemp});
     }, 500)
   }
-
+  speed() {
+    let speed = !this.state.speedSlow;
+    let timeStep = this.state.timeStep;
+    if (speed) {
+      timeStep.value /= 10;
+    } else {
+      timeStep.value *= 10;
+    }
+    api.set({timeStep: timeStep.value});
+    this.setState({ speedSlow: speed , timeStep: timeStep });
+    console.log("slow/fast toggle");
+  }
   handleAuthoringPropChange(prop, value) {
     let newState = {};
     newState[prop] = {...this.state[prop]};
@@ -262,7 +275,7 @@ export default class Interactive extends PureComponent {
   }
 
   render() {
-    const { authoring, showFreezeButton, showRestart} = this.state;
+    const { authoring, showFreezeButton, showRestart, speedSlow} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -283,8 +296,16 @@ export default class Interactive extends PureComponent {
                   playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
               <div className="lab-ui">
                 <NewAtomBin atomVisibility={newAtomVisibility} />
-                { showFreezeButton.value === true &&  <button onClick={this.freeze}>Freeze</button>}
-                <DeleteIcon className="delete-icon" style={{width: 45, height: 50, opacity: deleteOpacity}}/>
+                {showFreezeButton.value === true &&
+                  <div>
+                    <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div></button>
+                    <button className="speed-button" onClick={this.speed}><div title="Speed">
+                    {speedSlow && <i className="material-icons">directions_walk</i>}
+                    {!speedSlow && <i className="material-icons">directions_run</i>}
+                    </div></button>
+                  </div>
+                }
+                <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
               </div>
             </div>
             {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
