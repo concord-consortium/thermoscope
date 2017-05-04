@@ -4,6 +4,22 @@ This repository contains the initial code to visualize matter at different tempe
 ## Testing
 Latest published builds for the Thermoscope demo are deployed to https://concord-consortium.github.io/thermoscope/
 
+The main Thermoscope demo page is here: https://concord-consortium.github.io/thermoscope/thermoscope/ and accepts url parameters as follows:
+https://concord-consortium.github.io/thermoscope/thermoscope/?A=liquid&B=liquid&controls=false
+
+where `A` and `B` (case sensitive) represent Thermoscopes A and B's default particle visualization, which can be one of the following states (default is `solid`):
+   ```
+   solid
+   liquid
+   gas
+   ```
+
+Additionally, the `controls` parameter can be used to show or hide the controls at the bottom of the thermoscope (default is true):
+   ```
+   controls=true/false
+   ```
+
+
 The Particle Modeler demo can be found here: https://concord-consortium.github.io/thermoscope/particle-modeler
 To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://concord-consortium.github.io/thermoscope/particle-modeler/#authoring=true
 
