@@ -170,6 +170,9 @@
 	    _this.speed = _this.speed.bind(_this);
 	    _this.restart = _this.restart.bind(_this);
 	    _this.studentView = _this.studentView.bind(_this);
+	    _this.pinnedParticleText = _this.pinnedParticleText.bind(_this);
+	    _this.removePinnedParticleText = _this.removePinnedParticleText.bind(_this);
+
 	    return _this;
 	  }
 
@@ -270,6 +273,9 @@
 	          if (el >= _this3.state.elements.value) {
 	            el -= 3;
 	            newState["showAtom" + el] = false;
+	          } else {
+	            // this was a pinned live particle
+	            _this3.removePinnedParticleText(i);
 	          }
 	          api.setAtomProperties(i, { pinned: 0, element: el });
 
@@ -296,6 +302,9 @@
 	          var newState = _this3.state.pinnedAtoms;
 	          newState[i] = { x: x, y: y };
 	          _this3.setState({ pinnedAtoms: newState });
+	          var textProps = _this3.pinnedParticleText(i);
+
+	          api.addTextBox(textProps);
 	        } else {
 	          api.setAtomProperties(i, { pinned: 0 });
 	        }
@@ -316,7 +325,7 @@
 	      var deleteMarkedAtoms = function deleteMarkedAtoms() {
 	        var atomsToDelete = [];
 	        for (var i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
-	          if (api.getAtomProperties(i).marked) atomsToDelete.push(i);
+	          if (api.getAtomProperties(i).marked && !api.getAtomProperties(i).pinned) atomsToDelete.push(i);
 	        }
 	        for (var _i = atomsToDelete.length - 1; _i > -1; _i--) {
 	          api.removeAtom(atomsToDelete[_i]);
@@ -333,6 +342,32 @@
 	      }
 
 	      this.setModelProps();
+	    }
+	  }, {
+	    key: 'pinnedParticleText',
+	    value: function pinnedParticleText(i) {
+	      var textProps = {
+	        "text": "P",
+	        "hostType": "Atom",
+	        "hostIndex": i,
+	        "layer": 1,
+	        "textAlign": "center",
+	        "width": 0.3
+	      };
+	      return textProps;
+	    }
+	  }, {
+	    key: 'removePinnedParticleText',
+	    value: function removePinnedParticleText(particle) {
+	      var textboxes = api.get('textBoxes');
+	      var textToRemove = -1;
+	      for (var i = 0; i < textboxes.length; i++) {
+	        if (textboxes[i].hostIndex == particle) {
+	          textToRemove = i;
+	          break;
+	        }
+	      }
+	      if (textToRemove > -1) api.removeTextBox(textToRemove);
 	    }
 	  }, {
 	    key: 'addNewDraggableAtom',
