@@ -170,7 +170,6 @@
 	    _this.speed = _this.speed.bind(_this);
 	    _this.restart = _this.restart.bind(_this);
 	    _this.studentView = _this.studentView.bind(_this);
-	    _this.showPinnedAtomIndicator = _this.showPinnedAtomIndicator.bind(_this);
 	    return _this;
 	  }
 
@@ -271,10 +270,6 @@
 	          if (el >= _this3.state.elements.value) {
 	            el -= 3;
 	            newState["showAtom" + el] = false;
-	          } else {
-	            // this was a pinned live particle
-	            console.log("remove textbox for " + i);
-	            api.removeTextBox(i);
 	          }
 	          api.setAtomProperties(i, { pinned: 0, element: el });
 
@@ -301,16 +296,6 @@
 	          var newState = _this3.state.pinnedAtoms;
 	          newState[i] = { x: x, y: y };
 	          _this3.setState({ pinnedAtoms: newState });
-	          var textProps = {
-	            "text": "P",
-	            "hostType": "Atom",
-	            "hostIndex": i,
-	            "layer": 1,
-	            "textAlign": "center",
-	            "width": 0.3
-	          };
-
-	          api.addTextBox(textProps);
 	        } else {
 	          api.setAtomProperties(i, { pinned: 0 });
 	        }
@@ -331,7 +316,7 @@
 	      var deleteMarkedAtoms = function deleteMarkedAtoms() {
 	        var atomsToDelete = [];
 	        for (var i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
-	          if (api.getAtomProperties(i).marked && !api.getAtomProperties(i).pinned) atomsToDelete.push(i);
+	          if (api.getAtomProperties(i).marked) atomsToDelete.push(i);
 	        }
 	        for (var _i = atomsToDelete.length - 1; _i > -1; _i--) {
 	          api.removeAtom(atomsToDelete[_i]);
@@ -444,34 +429,6 @@
 	      }
 	    }
 	  }, {
-	    key: 'showPinnedAtomIndicator',
-	    value: function showPinnedAtomIndicator() {
-	      var _iteratorNormalCompletion = true;
-	      var _didIteratorError = false;
-	      var _iteratorError = undefined;
-
-	      try {
-	        for (var _iterator = Object.keys(this.state.pinnedAtoms)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	          var key = _step.value;
-
-	          console.log(key, this.state.pinnedAtoms[key]);
-	        }
-	      } catch (err) {
-	        _didIteratorError = true;
-	        _iteratorError = err;
-	      } finally {
-	        try {
-	          if (!_iteratorNormalCompletion && _iterator.return) {
-	            _iterator.return();
-	          }
-	        } finally {
-	          if (_didIteratorError) {
-	            throw _iteratorError;
-	          }
-	        }
-	      }
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _state = this.state,
@@ -511,7 +468,6 @@
 	                'div',
 	                { className: 'lab-ui' },
 	                _react2.default.createElement(_newAtomBin2.default, { atomVisibility: newAtomVisibility }),
-	                this.showPinnedAtomIndicator(),
 	                showFreezeButton.value === true && _react2.default.createElement(
 	                  'div',
 	                  null,
@@ -39184,7 +39140,7 @@
 			"viewPortDrag": false,
 			"backgroundColor": "#eeeeee",
 			"showClock": false,
-			"markColor": "#bb99ab",
+			"markColor": "#f8b500",
 			"keShading": false,
 			"chargeShading": false,
 			"useThreeLetterCode": true,
@@ -39300,7 +39256,10 @@
 			"epsilon": [
 				-0.05,
 				-0.1,
-				-0.000001
+				-0.000001,
+				0,
+				0,
+				0
 			],
 			"color": [
 				-855310,
@@ -39308,10 +39267,7 @@
 				-13159,
 				-855310,
 				-9066941,
-				-13159,
-				0,
-				0,
-				0
+				-13159
 			]
 		},
 		"atoms": {
