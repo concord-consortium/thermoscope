@@ -65,6 +65,9 @@ export default class Interactive extends PureComponent {
     this.speed = this.speed.bind(this);
     this.restart = this.restart.bind(this);
     this.studentView = this.studentView.bind(this);
+    this.pinnedParticleText = this.pinnedParticleText.bind(this);
+    this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
+
   }
 
   componentWillMount() {
@@ -150,6 +153,9 @@ export default class Interactive extends PureComponent {
         if (el >= this.state.elements.value) {
           el -= 3;
           newState["showAtom"+el] = false;
+        } else {
+          // this was a pinned live particle
+          this.removePinnedParticleText(i)
         }
         api.setAtomProperties(i, {pinned: 0, element: el});
 
@@ -160,7 +166,8 @@ export default class Interactive extends PureComponent {
           // mark atoms for deletion
           if (!d.marked) {
             this.setState({deleteHover: true});
-            api.setAtomProperties(i, {marked: 1});
+            api.setAtomProperties(i, { marked: 1 });
+
           }
         } else if (d.marked) {
           this.setState({deleteHover: false});
@@ -176,8 +183,11 @@ export default class Interactive extends PureComponent {
         let newState = this.state.pinnedAtoms;
         newState[i] = { x, y };
         this.setState({ pinnedAtoms: newState });
+        let textProps = this.pinnedParticleText(i);
+
+        api.addTextBox(textProps);
       } else {
-        api.setAtomProperties(i, { pinned: 0 });
+        api.setAtomProperties(i, { pinned: 0});
       }
     });
 
@@ -196,7 +206,7 @@ export default class Interactive extends PureComponent {
     let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
       for (let i=0, ii=api.getNumberOfAtoms(); i<ii; i++) {
-        if (api.getAtomProperties(i).marked)
+        if (api.getAtomProperties(i).marked && ! api.getAtomProperties(i).pinned)
           atomsToDelete.push(i);
       }
       for (let i=atomsToDelete.length-1; i>-1; i--) {
@@ -214,6 +224,30 @@ export default class Interactive extends PureComponent {
     }
 
     this.setModelProps();
+  }
+
+  pinnedParticleText(i) {
+      let textProps = {
+          "text": "P",
+          "hostType": "Atom",
+          "hostIndex": i,
+          "layer": 1,
+          "textAlign": "center",
+          "width": 0.3
+        };
+      return textProps;
+  }
+
+  removePinnedParticleText(particle) {
+    let textboxes = api.get('textBoxes');
+    let textToRemove = -1;
+    for (let i = 0; i < textboxes.length; i++){
+      if (textboxes[i].hostIndex == particle) {
+        textToRemove = i;
+        break;
+      }
+    }
+    if (textToRemove > -1) api.removeTextBox(textToRemove);
   }
 
   addNewDraggableAtom(el = 0, skipCheck = false) {
