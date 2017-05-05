@@ -187,7 +187,8 @@ export default class Interactive extends PureComponent {
 
         api.addTextBox(textProps);
       } else {
-        api.setAtomProperties(i, { pinned: 0});
+        api.setAtomProperties(i, { pinned: 0 });
+        this.removePinnedParticleText(i)
       }
     });
 
