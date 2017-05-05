@@ -307,6 +307,7 @@
 	          api.addTextBox(textProps);
 	        } else {
 	          api.setAtomProperties(i, { pinned: 0 });
+	          _this3.removePinnedParticleText(i);
 	        }
 	      });
 
