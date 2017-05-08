@@ -59921,13 +59921,25 @@
 	        this.setState({ connecting: true });
 	        this.connectedSensor.connect(this.state.ipAddress);
 	        this.connectedSensor.on('connected', this.connected.bind(this));
+	        this.connectedSensor.on('connectionLost', this.connectionLost.bind(this));
 	        this.connectedSensor.on('screenConsole', this.screenConsole.bind(this));
+	        this.connectedSensor.on('nameUpdate', this.nameUpdate.bind(this));
 	      }
 	    }
 	  }, {
 	    key: 'connected',
 	    value: function connected(event) {
 	      this.setState({ connected: true, connecting: false });
+	    }
+	  }, {
+	    key: 'connectionLost',
+	    value: function connectionLost(event) {
+	      this.setState({ connected: false, connecting: false });
+	    }
+	  }, {
+	    key: 'nameUpdate',
+	    value: function nameUpdate(event) {
+	      this.setState({ connectedSensorName: event });
 	    }
 	  }, {
 	    key: 'toggleDisplay',
@@ -59949,13 +59961,15 @@
 	      var _state = this.state,
 	          connected = _state.connected,
 	          connecting = _state.connecting,
+	          connectedSensorName = _state.connectedSensorName,
 	          showDetails = _state.showDetails,
 	          debugMessages = _state.debugMessages;
 	      var showAddressBox = this.props.showAddressBox;
 
 	      var showDebug = DEBUG && DEBUG.toLowerCase() === "true";
 
-	      var connectStatus = connected ? "Connected." : "";
+	      var connectStatus = connected ? "Connected" : "";
+	      connectStatus = connectedSensorName ? connectStatus + " to " + connectedSensorName : connectStatus;
 	      var connectButtonText = connected ? "Disconnect" : "Connect";
 
 	      return _react2.default.createElement(
@@ -64312,6 +64326,7 @@
 	    // Step 2: Connect to it
 	    request.then(function (device) {
 	      events.emit('connected');
+	      events.emit('nameUpdate', device.name);
 	      return device.gatt.connect();
 	    }).catch(function (error) {
 	      events.emit('connectionLost');
