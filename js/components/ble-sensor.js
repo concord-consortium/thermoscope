@@ -68,6 +68,7 @@ module.exports = {
     // Step 2: Connect to it
     request.then(function (device) {
       events.emit('connected');
+      events.emit('nameUpdate', device.name);
       return device.gatt.connect();
     })
       .catch(function (error) {

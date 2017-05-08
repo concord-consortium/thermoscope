@@ -43,14 +43,21 @@ export default class Sensor extends PureComponent {
       this.setState({ connecting: true });
       this.connectedSensor.connect(this.state.ipAddress);
       this.connectedSensor.on('connected', this.connected.bind(this));
+      this.connectedSensor.on('connectionLost', this.connectionLost.bind(this));
       this.connectedSensor.on('screenConsole', this.screenConsole.bind(this));
+      this.connectedSensor.on('nameUpdate', this.nameUpdate.bind(this));
     }
   }
 
   connected(event) {
     this.setState({ connected: true, connecting: false });
   }
-
+  connectionLost(event) {
+    this.setState({ connected: false, connecting: false });
+  }
+  nameUpdate(event) {
+    this.setState({ connectedSensorName: event });
+  }
   toggleDisplay(event) {
     this.setState({ showDetails: this.state.showDetails ? false : true });
   }
@@ -63,11 +70,12 @@ export default class Sensor extends PureComponent {
   }
 
   render() {
-    const { connected, connecting, showDetails, debugMessages } = this.state;
+    const { connected, connecting, connectedSensorName, showDetails, debugMessages } = this.state;
     const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
 
-    let connectStatus = connected ? "Connected." : "";
+    let connectStatus = connected ? "Connected" : "";
+    connectStatus = connectedSensorName ? connectStatus + " to " + connectedSensorName : connectStatus;
     let connectButtonText = connected ? "Disconnect" : "Connect";
 
     return (
