@@ -45,6 +45,9 @@ const Authoring = (props) => {
   }
 
   function modelInputMap(key) {
+    if (key === "currentModel") {
+      return createModelLink();
+    }
     if (!props[key].hasOwnProperty("label") || props[key].hasOwnProperty("element")) {
       return null;
     } else if (typeof props[key].value === "number") {
@@ -128,9 +131,20 @@ const Authoring = (props) => {
     return <div>{elementSections}</div>;
   }
 
+  function createModelLink() {
+    let model = props.currentModel;
+    if (model) {
+      let link = JSON.stringify(model);
+      let encodedLink = btoa(link);
+      let hlink = window.location.host + window.location.pathname + "?model=" + encodedLink;
+      return <div key="modelUri"><a href={hlink} target="_blank">Link for Current Model</a></div>;
+    }
+    return null;
+
+  }
+
   let inputs = Object.keys(props).map(modelInputMap),
     elementSections = createElementSections(),
-
     pairwiseTable = createPairwiseTable();
 
   return (

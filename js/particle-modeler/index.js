@@ -6,7 +6,7 @@ import Authoring from './authoring';
 import models from './models/';
 // Set of authorable properties which can be overwritten by the url hash.
 import authorableProps from './models/authorable-props';
-import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive } from '../utils';
+import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive, getURLParam } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
@@ -34,6 +34,7 @@ let atomBox = {
   };
 
 let particleMaxVelocity = 0.0005;
+let saveInterval = 2000;
 
 export default class Interactive extends PureComponent {
 
@@ -41,9 +42,11 @@ export default class Interactive extends PureComponent {
     super(props);
 
     let hashParams = window.location.hash.substring(1),
-        authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
-        model = authoredState.startWithAtoms.value ? models.baseModel : models.emptyModel;
-
+      authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
+      urlModel = getURLParam("model"), model = models.emptyModel;
+      if (urlModel) {
+        model = JSON.parse(atob(urlModel));
+      }
     this.state = {
       interactive: models.interactive,
       model: model,
@@ -54,6 +57,7 @@ export default class Interactive extends PureComponent {
       showRestart: false,
       speedSlow: false,
       pinnedAtoms: {},
+      nextUpdate: Date.now(),
       ...authoredState
     };
 
@@ -131,16 +135,51 @@ export default class Interactive extends PureComponent {
 
   componentWillUpdate(nextProps, nextState) {
     if (this.state.startWithAtoms.value !== nextState.startWithAtoms.value) {
-       let model = nextState.startWithAtoms.value ? models.baseModel : models.emptyModel;
-       this.setState({model: model});
+      let model = nextState.startWithAtoms.value ? models.baseModel: models.emptyModel;
+      //clean out placeholder atoms - they get added separately
+      let ax = [], ay = [], vx = [], vy = [], charge = [], friction = [], element = [], pinned = [], draggable = [];
+      for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
+        a = api.getAtomProperties(i);
+        // only add live elements, not draggable, pinned placeholders
+        if (a.element < this.state.elements.value) {
+          ax.push(a.x);
+          ay.push(a.y);
+          vx.push(a.vx);
+          vy.push(a.vy);
+          charge.push(a.charge);
+          friction.push(a.friction);
+          element.push(a.element);
+          pinned.push(a.pinned);
+          draggable.push(a.draggable);
+        }
+      }
+      let atoms = {
+        x: ax, y: ay, vx, vy, charge, friction, element, pinned, draggable
+      };
+      model.atoms = atoms;
+      this.setState({model: model});
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     let hash = getDiffedHashParams(this.state, authorableProps);
     window.location.hash = hash;
-
     this.setModelProps(prevState);
+    this.saveModel(); // always save on component update
+  }
+
+  diff(newProps, oldProps={}) {
+    let result = {};
+    Object.keys(newProps).forEach(function (key) {
+      if (newProps[key] !== oldProps[key]) result[key] = newProps[key];
+    });
+    return result;
+  }
+
+  saveModel() {
+    let newModel = lab.interactiveController.getModel().serialize();
+    // this is where we'd store the current model snapshot somewhere - timestamped for replay
+    // console.log("save model", newModel);
   }
 
   handleModelLoad() {
@@ -174,6 +213,11 @@ export default class Interactive extends PureComponent {
           api.setAtomProperties(i, {marked: 0});
         }
       }
+      if (this.state.nextUpdate < Date.now()) {
+        // this triggers component update & save
+        let currentModel = lab.interactiveController.getModel().serialize();
+        this.setState({ nextUpdate: Date.now() + saveInterval, currentModel});
+      }
     });
 
     api.onClick('atom', (x, y, d, i) => {
@@ -190,6 +234,8 @@ export default class Interactive extends PureComponent {
         api.setAtomProperties(i, { pinned: 0 });
         this.removePinnedParticleText(i)
       }
+      let currentModel = lab.interactiveController.getModel().serialize();
+      this.setState({ nextUpdate: Date.now(), currentModel});
     });
 
     api.onPropertyChange('time', function (t) {
@@ -306,6 +352,10 @@ export default class Interactive extends PureComponent {
       this.changeElementCount(value);
     }
 
+    let currentModel = lab.interactiveController.getModel().serialize();
+
+    newState.nextUpdate = Date.now();
+    newState.currentModel = currentModel;
     this.setState(newState);
   }
 
