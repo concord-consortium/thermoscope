@@ -6,7 +6,7 @@ import Authoring from './authoring';
 import models from './models/';
 // Set of authorable properties which can be overwritten by the url hash.
 import authorableProps from './models/authorable-props';
-import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive, getURLParam } from '../utils';
+import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive, getURLParam, getModelDiff, loadModelDiff } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
@@ -42,14 +42,17 @@ export default class Interactive extends PureComponent {
     super(props);
 
     let hashParams = window.location.hash.substring(1),
+      model = models.emptyModel,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
-      urlModel = getURLParam("model"), model = models.emptyModel;
-      if (urlModel) {
-        model = JSON.parse(atob(urlModel));
-      }
+      urlModel = getURLParam("model");
+    if (urlModel) {
+      authoredState = loadModelDiff(JSON.parse(atob(urlModel)), authorableProps);
+      if (authoredState.atoms) model.atoms = authoredState.atoms;
+    }
+
     this.state = {
       interactive: models.interactive,
-      model: model,
+      model,
       showAtom0: true,
       showAtom1: true,
       showAtom2: true,
@@ -69,14 +72,16 @@ export default class Interactive extends PureComponent {
     this.speed = this.speed.bind(this);
     this.restart = this.restart.bind(this);
     this.studentView = this.studentView.bind(this);
-    this.pinnedParticleText = this.pinnedParticleText.bind(this);
+    this.generatePinnedParticleText = this.generatePinnedParticleText.bind(this);
+    this.addPinnedParticleText = this.addPinnedParticleText.bind(this);
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
-
+    this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
   }
 
   componentWillMount() {
     this.captureErrors();
   }
+
   captureErrors() {
     window.onerror = (message, file, line, column, errorObject) => {
       column = column || (window.event && window.event.errorCharacter);
@@ -116,6 +121,7 @@ export default class Interactive extends PureComponent {
     }
 
     api.set(newModelProperties);
+
     for (let elem in newElementProperties) {
       api.setElementProperties(elem, newElementProperties[elem]);
     }
@@ -133,57 +139,47 @@ export default class Interactive extends PureComponent {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.startWithAtoms.value !== nextState.startWithAtoms.value) {
-      let model = nextState.startWithAtoms.value ? models.baseModel: models.emptyModel;
-      //clean out placeholder atoms - they get added separately
-      let ax = [], ay = [], vx = [], vy = [], charge = [], friction = [], element = [], pinned = [], draggable = [];
-      for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
-        a = api.getAtomProperties(i);
-        // only add live elements, not draggable, pinned placeholders
-        if (a.element < this.state.elements.value) {
-          ax.push(a.x);
-          ay.push(a.y);
-          vx.push(a.vx);
-          vy.push(a.vy);
-          charge.push(a.charge);
-          friction.push(a.friction);
-          element.push(a.element);
-          pinned.push(a.pinned);
-          draggable.push(a.draggable);
-        }
-      }
-      let atoms = {
-        x: ax, y: ay, vx, vy, charge, friction, element, pinned, draggable
-      };
-      model.atoms = atoms;
-      this.setState({model: model});
-    }
-  }
-
   componentDidUpdate(prevProps, prevState) {
     let hash = getDiffedHashParams(this.state, authorableProps);
     window.location.hash = hash;
     this.setModelProps(prevState);
-    this.saveModel(); // always save on component update
   }
 
-  diff(newProps, oldProps={}) {
-    let result = {};
-    Object.keys(newProps).forEach(function (key) {
-      if (newProps[key] !== oldProps[key]) result[key] = newProps[key];
-    });
-    return result;
+  getAtomsWithoutPlaceholders() {
+    //clean out placeholder atoms - they get added separately
+    let ax = [], ay = [], vx = [], vy = [], charge = [], friction = [], element = [], pinned = [], draggable = [];
+    for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
+      a = api.getAtomProperties(i);
+      // only add live elements, not draggable, pinned placeholders
+      if (a.element < this.state.elements.value) {
+        ax.push(a.x);
+        ay.push(a.y);
+        vx.push(a.vx);
+        vy.push(a.vy);
+        charge.push(a.charge);
+        friction.push(a.friction);
+        element.push(a.element);
+        pinned.push(a.pinned);
+        draggable.push(a.draggable);
+      }
+    }
+    let atoms = {
+      x: ax, y: ay, vx, vy, charge, friction, element, pinned, draggable
+    };
+    return atoms;
   }
 
-  saveModel() {
-    let newModel = lab.interactiveController.getModel().serialize();
-    // this is where we'd store the current model snapshot somewhere - timestamped for replay
-    // console.log("save model", newModel);
+  saveModel(d) {
+    // To save entire model:
+    // let newModel = lab.interactiveController.getModel().serialize();
+    // Alternatively, store the current model snapshot diff timestamped for replay
+    // console.log("save model", d, Date.now());
   }
+
 
   handleModelLoad() {
     api = lab.scriptingAPI;
+    this.addPinnedParticleText();
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element,
@@ -215,8 +211,7 @@ export default class Interactive extends PureComponent {
       }
       if (this.state.nextUpdate < Date.now()) {
         // this triggers component update & save
-        let currentModel = lab.interactiveController.getModel().serialize();
-        this.setState({ nextUpdate: Date.now() + saveInterval, currentModel});
+        this.setState({ nextUpdate: Date.now() + saveInterval, atoms: this.getAtomsWithoutPlaceholders()});
       }
     });
 
@@ -227,15 +222,12 @@ export default class Interactive extends PureComponent {
         let newState = this.state.pinnedAtoms;
         newState[i] = { x, y };
         this.setState({ pinnedAtoms: newState });
-        let textProps = this.pinnedParticleText(i);
-
-        api.addTextBox(textProps);
+        this.addPinnedParticleText(i);
       } else {
         api.setAtomProperties(i, { pinned: 0 });
-        this.removePinnedParticleText(i)
+        this.removePinnedParticleText(i);
       }
-      let currentModel = lab.interactiveController.getModel().serialize();
-      this.setState({ nextUpdate: Date.now(), currentModel});
+      this.setState({ nextUpdate: Date.now(), atoms: this.getAtomsWithoutPlaceholders()});
     });
 
     api.onPropertyChange('time', function (t) {
@@ -273,7 +265,7 @@ export default class Interactive extends PureComponent {
     this.setModelProps();
   }
 
-  pinnedParticleText(i) {
+  generatePinnedParticleText(i) {
       let textProps = {
           "text": "P",
           "hostType": "Atom",
@@ -285,6 +277,24 @@ export default class Interactive extends PureComponent {
       return textProps;
   }
 
+  addPinnedParticleText(particle) {
+    if (!particle) {
+      // add boxes for all pinned particles
+      api.set({ 'textboxes': {} });
+      let textToAdd = [];
+      for (let i = 0; i < api.getNumberOfAtoms(); i++){
+        let a = api.getAtomProperties(i);
+        if (a.pinned && a.element < this.state.elements.value) {
+          let textProps = this.generatePinnedParticleText(i);
+          api.addTextBox(textProps);
+        }
+      }
+    } else {
+      // add box for specific particle
+      let textProps = this.generatePinnedParticleText(particle);
+      api.addTextBox(textProps);
+    }
+  }
   removePinnedParticleText(particle) {
     let textboxes = api.get('textBoxes');
     let textToRemove = -1;
@@ -351,11 +361,8 @@ export default class Interactive extends PureComponent {
     if (prop === "elements") {
       this.changeElementCount(value);
     }
-
-    let currentModel = lab.interactiveController.getModel().serialize();
-
     newState.nextUpdate = Date.now();
-    newState.currentModel = currentModel;
+    newState.atoms = this.getAtomsWithoutPlaceholders();
     this.setState(newState);
   }
 
@@ -380,6 +387,20 @@ export default class Interactive extends PureComponent {
         this.addNewDraggableAtom(i, true);
       }
     }
+  }
+  getCurrentModelLink() {
+    if (this.state.authoring) {
+      let d = getModelDiff(this.state, authorableProps);
+      if (d) {
+        // this is called each render, save model each render
+        this.saveModel(d);
+        let link = JSON.stringify(d);
+        let encodedLink = btoa(link);
+        let hlink = window.location.host + window.location.pathname + "?model=" + encodedLink;
+        return <div key="modelUri"><a href={hlink} target="_blank">Link for Current Model</a></div>;
+      }
+    }
+    return null;
   }
 
   render() {
@@ -419,6 +440,7 @@ export default class Interactive extends PureComponent {
             {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
             {authoring && <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>}
             {authoring && <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />}
+            {this.getCurrentModelLink()}
           </div>
         </div>
       </MuiThemeProvider>
