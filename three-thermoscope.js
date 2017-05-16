@@ -76,17 +76,17 @@
 
 	var _thermoscope2 = _interopRequireDefault(_thermoscope);
 
-	var _reactTapEventPlugin = __webpack_require__(759);
+	var _reactTapEventPlugin = __webpack_require__(761);
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _sensorLabquest2Interface = __webpack_require__(771);
+	var _sensorLabquest2Interface = __webpack_require__(773);
 
 	var _sensorLabquest2Interface2 = _interopRequireDefault(_sensorLabquest2Interface);
 
-	__webpack_require__(778);
-
 	__webpack_require__(780);
+
+	__webpack_require__(782);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29470,9 +29470,9 @@
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _utils = __webpack_require__(751);
+	var _utils = __webpack_require__(753);
 
-	__webpack_require__(752);
+	__webpack_require__(754);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29499,7 +29499,7 @@
 	      temperature: _this.props.temperature ? _this.props.temperature : 20,
 	      liveData: false,
 	      materialType: _this.props.material ? _this.props.material : 'solid',
-	      materialIdx: 0,
+	      materialIdx: _this.props.probeIndex ? _this.props.probeIndex : 0,
 	      paused: false
 	    };
 	    _this.handleTempSliderChange = _this.handleTempSliderChange.bind(_this);
@@ -29569,7 +29569,7 @@
 
 	      var showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
 	      // props can turn on or off the controls from a parent container
-	      var showControls = showMaterialControls != null ? showMaterialControls : true;
+	      var showControls = showMaterialControls != null ? showMaterialControls : false;
 
 	      // simulation pause
 	      var zeroTempScale = function zeroTempScale(temp) {
@@ -29658,6 +29658,16 @@
 	                  })
 	                )
 	              )
+	            )
+	          ),
+	          !showControls && _react2.default.createElement(
+	            'div',
+	            { className: 'controls-row' },
+	            ' ',
+	            _react2.default.createElement(
+	              'div',
+	              null,
+	              model.name
 	            )
 	          )
 	        )
@@ -47580,51 +47590,59 @@
 	});
 	exports.MAX_TEMP = exports.MIN_TEMP = undefined;
 
-	var _solid = __webpack_require__(739);
+	var _solid1Wood = __webpack_require__(739);
+
+	var _solid1Wood2 = _interopRequireDefault(_solid1Wood);
+
+	var _solid1Stone = __webpack_require__(740);
+
+	var _solid1Stone2 = _interopRequireDefault(_solid1Stone);
+
+	var _solid = __webpack_require__(741);
 
 	var _solid2 = _interopRequireDefault(_solid);
 
-	var _solid3 = __webpack_require__(740);
+	var _solid3 = __webpack_require__(742);
 
 	var _solid4 = _interopRequireDefault(_solid3);
 
-	var _solid5 = __webpack_require__(741);
+	var _solid5 = __webpack_require__(743);
 
 	var _solid6 = _interopRequireDefault(_solid5);
 
-	var _solid7 = __webpack_require__(742);
+	var _liquid1Oil = __webpack_require__(744);
 
-	var _solid8 = _interopRequireDefault(_solid7);
+	var _liquid1Oil2 = _interopRequireDefault(_liquid1Oil);
 
-	var _liquid = __webpack_require__(743);
+	var _liquid1Soap = __webpack_require__(745);
+
+	var _liquid1Soap2 = _interopRequireDefault(_liquid1Soap);
+
+	var _liquid = __webpack_require__(746);
 
 	var _liquid2 = _interopRequireDefault(_liquid);
 
-	var _liquid3 = __webpack_require__(744);
+	var _liquid3 = __webpack_require__(747);
 
 	var _liquid4 = _interopRequireDefault(_liquid3);
 
-	var _liquid5 = __webpack_require__(745);
+	var _liquid5 = __webpack_require__(748);
 
 	var _liquid6 = _interopRequireDefault(_liquid5);
 
-	var _liquid7 = __webpack_require__(746);
-
-	var _liquid8 = _interopRequireDefault(_liquid7);
-
-	var _gas = __webpack_require__(747);
+	var _gas = __webpack_require__(749);
 
 	var _gas2 = _interopRequireDefault(_gas);
 
-	var _gas3 = __webpack_require__(748);
+	var _gas3 = __webpack_require__(750);
 
 	var _gas4 = _interopRequireDefault(_gas3);
 
-	var _gas5 = __webpack_require__(749);
+	var _gas5 = __webpack_require__(751);
 
 	var _gas6 = _interopRequireDefault(_gas5);
 
-	var _uniform = __webpack_require__(750);
+	var _uniform = __webpack_require__(752);
 
 	var _uniform2 = _interopRequireDefault(_uniform);
 
@@ -47639,42 +47657,48 @@
 
 	exports.default = {
 	  solid: [{
-	    name: 'Solid 4',
-	    json: _solid8.default,
+	    name: 'Wood',
+	    json: _solid1Wood2.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }, {
-	    name: 'Solid 1',
+	    name: 'Stone',
+	    json: _solid1Stone2.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 800 + 10;
+	    }
+	  }, {
+	    name: 'Solid - 2 Particle Type Mix',
 	    json: _solid2.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }, {
-	    name: 'Solid 2',
+	    name: 'Solid - Particle Layers',
 	    json: _solid4.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }, {
-	    name: 'Solid 3',
+	    name: 'Solid - 16 particle',
 	    json: _solid6.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 800 + 10;
 	    }
 	  }],
 	  liquid: [{
-	    name: 'Liquid 4',
-	    json: _liquid8.default,
+	    name: 'Oil',
+	    json: _liquid1Oil2.default,
 	    tempScale: function tempScale(temp) {
-	      return normalizeTemp(temp) * 900 + 700;
+	      return normalizeTemp(temp) * 1500 + 500;
 	    },
 	    timeStepScale: function timeStepScale(temp) {
-	      return normalizeTemp(temp) * 0.45 + 0.2;
+	      return normalizeTemp(temp) * 0.55 + 0.25;
 	    }
 	  }, {
-	    name: 'Liquid 1',
-	    json: _liquid2.default,
+	    name: 'Soap',
+	    json: _liquid1Soap2.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 1500 + 500;
 	    },
@@ -47683,7 +47707,7 @@
 	    }
 	  }, {
 	    name: 'Liquid 2',
-	    json: _liquid4.default,
+	    json: _liquid2.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 2000 + 2000;
 	    },
@@ -47692,17 +47716,26 @@
 	    }
 	  }, {
 	    name: 'Liquid 3',
-	    json: _liquid6.default,
+	    json: _liquid4.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 2000 + 3000;
 	    },
 	    timeStepScale: function timeStepScale(temp) {
 	      return normalizeTemp(temp) * 0.85 + 0.15;
 	    }
+	  }, {
+	    name: 'Liquid 4',
+	    json: _liquid6.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 900 + 700;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 0.45 + 0.2;
+	    }
 	  }],
 	  gas: [{
-	    name: 'Gas 4',
-	    json: _gas6.default,
+	    name: 'Air',
+	    json: _gas2.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 5000 + 1500;
 	    },
@@ -47710,8 +47743,17 @@
 	      return normalizeTemp(temp) * 1.0 + 0.2;
 	    }
 	  }, {
-	    name: 'Gas 1',
+	    name: 'Air',
 	    json: _gas2.default,
+	    tempScale: function tempScale(temp) {
+	      return normalizeTemp(temp) * 5000 + 1500;
+	    },
+	    timeStepScale: function timeStepScale(temp) {
+	      return normalizeTemp(temp) * 1.0 + 0.2;
+	    }
+	  }, {
+	    name: 'Air2',
+	    json: _gas6.default,
 	    tempScale: function tempScale(temp) {
 	      return normalizeTemp(temp) * 5000 + 1500;
 	    },
@@ -48350,7 +48392,7 @@
 				600
 			],
 			"sigma": [
-				0.3,
+				0.29,
 				0.18,
 				0.25,
 				0.28,
@@ -48364,7 +48406,7 @@
 				-0.1
 			],
 			"color": [
-				-13057,
+				-3232919,
 				-3381505,
 				-16711936,
 				-2539040,
@@ -48376,6 +48418,630 @@
 
 /***/ }),
 /* 740 */
+/***/ (function(module, exports) {
+
+	module.exports = {
+		"type": "md2d",
+		"imagePath": "",
+		"width": 2.8,
+		"height": 2.5,
+		"unitsScheme": "md2d",
+		"lennardJonesForces": true,
+		"coulombForces": true,
+		"temperatureControl": true,
+		"gravitationalField": false,
+		"timeStep": 1,
+		"dielectricConstant": 1,
+		"realisticDielectricEffect": true,
+		"solventForceFactor": 1.25,
+		"solventForceType": 0,
+		"additionalSolventForceMult": 4,
+		"additionalSolventForceThreshold": 10,
+		"polarAAEpsilon": -2,
+		"viscosity": 1,
+		"timeStepsPerTick": 50,
+		"DNAState": "dna",
+		"DNA": "",
+		"DNAMutations": true,
+		"useQuantumDynamics": false,
+		"useChemicalReactions": false,
+		"useDuration": "codap",
+		"requestedDuration": null,
+		"skipPECheckOnAddAtom": false,
+		"viewOptions": {
+			"viewPortWidth": 2.5,
+			"viewPortHeight": 2.5,
+			"viewPortZoom": 1,
+			"viewPortX": 0.1,
+			"viewPortY": 0,
+			"viewPortDrag": false,
+			"backgroundColor": "#eee",
+			"showClock": false,
+			"markColor": "#f8b500",
+			"atomRadiusScale": 1,
+			"keShading": false,
+			"keShadingMinEnergy": 0,
+			"keShadingMaxEnergy": 0.2,
+			"chargeShading": false,
+			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": true,
+			"useThreeLetterCode": true,
+			"showChargeSymbols": false,
+			"showVDWLines": false,
+			"VDWLinesCutoff": "medium",
+			"showVelocityVectors": false,
+			"showForceVectors": false,
+			"showElectricField": false,
+			"electricFieldDensity": 18,
+			"electricFieldColor": "auto",
+			"showAtomTrace": false,
+			"images": [],
+			"imageMapping": {},
+			"textBoxes": [],
+			"xlabel": false,
+			"ylabel": false,
+			"xunits": false,
+			"yunits": false,
+			"controlButtons": "play_reset",
+			"gridLines": false,
+			"atomNumbers": false,
+			"enableAtomTooltips": false,
+			"enableKeyboardHandlers": true,
+			"atomTraceColor": "#6913c5",
+			"velocityVectors": {
+				"color": "#000",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectors": {
+				"color": "#169C30",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectorsDirectionOnly": false,
+			"onAtomDrag": "translate"
+		},
+		"atoms": {
+			"x": [
+				2.2593157230694683,
+				1.959442753470773,
+				1.972728375625846,
+				1.3861438306706004,
+				0.7921535139683007,
+				1.087334968194759,
+				1.6675780843574954,
+				1.6671159902615829,
+				1.958511313663236,
+				2.2558155818755004,
+				2.557583113299741,
+				2.2668000354574405,
+				2.551319780769505,
+				1.677025447906193,
+				0.48840459353004473,
+				0.5049060469239146,
+				0.7908401466209649,
+				1.3732450886468683,
+				1.0782805516372334,
+				1.3641975769722232,
+				2.2577365748153486,
+				2.5648981679649503,
+				2.2734744036068006,
+				1.6804832266552574,
+				1.9870914150959487,
+				0.7920080158509597,
+				1.0733863466351647,
+				1.6684934474764952,
+				1.3803648727564086,
+				2.2827733132174584,
+				1.9633139896708354,
+				2.2500311967906086,
+				1.9637747628317483,
+				1.3718871343298247,
+				1.650312510701168,
+				1.6682219236901945,
+				0.7809936418886816,
+				0.49815319456492557,
+				1.964313659673179,
+				0.5039022988754345,
+				1.0846990469714215,
+				0.8016208333191714,
+				1.3879113374837675,
+				2.573059509819279,
+				1.0914855365972966,
+				0.7706047965289065,
+				0.18758527257652233,
+				0.21417929722139437,
+				1.0665396521482635,
+				2.552146122165523,
+				0.4669414230060067,
+				2.554807941153877,
+				1.0482495153739035,
+				0.20768862106388994,
+				0.4839233833375334,
+				1.3606348658318717,
+				0.758707991523798,
+				0.4486644718834474,
+				0.19452499265412823,
+				0.16777881741842368,
+				0.19318153403986202
+			],
+			"y": [
+				1.0306888607632274,
+				1.1760212869822024,
+				0.5163808061511307,
+				0.5076389813640515,
+				1.1547935020869695,
+				0.6813720867370401,
+				1.3501500445042822,
+				2.007437694525442,
+				1.8337985698984736,
+				1.3558154958775321,
+				0.5279092465054629,
+				0.7011425053211653,
+				1.1778977700784037,
+				0.6974289917026283,
+				1.3387176880981266,
+				0.6788190901802174,
+				0.4961669580769805,
+				1.1723934166132344,
+				1.3435273054085388,
+				1.8246436893206626,
+				2.006356511628929,
+				0.8550276655764654,
+				0.373045707720151,
+				0.36908692861982845,
+				0.18744141187549984,
+				0.8268269845244799,
+				1.6696703148156604,
+				1.6765249738721217,
+				0.8396431262756235,
+				2.3308200318635737,
+				2.1606119640077246,
+				1.6828357818077508,
+				1.5038556637221776,
+				1.4957998807549087,
+				2.335724625383672,
+				1.0250060002763735,
+				1.487993917656424,
+				1.0103969118230187,
+				0.8461331075740433,
+				0.343314727198111,
+				1.0111332863029971,
+				0.17177550071204933,
+				0.17982145051975124,
+				2.1508561121818524,
+				0.3552563779309764,
+				1.8176733906713485,
+				1.805071010397386,
+				0.5036792707831327,
+				1.9982964211981404,
+				1.831253703916032,
+				1.9931722571253812,
+				1.502460539881153,
+				2.330584810407891,
+				0.8299195850437826,
+				1.6620516313775189,
+				2.1489596816489795,
+				2.1418491941562747,
+				2.321035300788749,
+				1.4803696198031553,
+				2.131444247671352,
+				1.1547583124390186
+			],
+			"element": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"vx": [
+				-0.000028007452222460638,
+				-0.00003206913008245524,
+				0.00012084156887449255,
+				-0.00004853592382567735,
+				-0.00017412497616838308,
+				-0.0000827304791703167,
+				0.000011510951268325878,
+				0.00004247967231539358,
+				0.000004969725295511981,
+				-0.000037951380570436286,
+				-0.000007937539891841839,
+				0.000022677587704472138,
+				-0.000101507030306633,
+				0.000028180705931474163,
+				-0.00007648673267803971,
+				0.00010109135369761456,
+				0.000012767077326473758,
+				-0.00008352685471913607,
+				0.0000252531315628611,
+				0.0000293373033418745,
+				0.000017048452539080848,
+				-0.00000742380244821206,
+				-0.000030390876953925264,
+				-0.000023288598960864855,
+				-0.0000015480380884153277,
+				-0.000006728714704395285,
+				0.000016461862176093107,
+				-0.00009532743819861073,
+				-0.00007801676989071682,
+				0.000007739908923427654,
+				-0.000018274780222746197,
+				0.000005111774575502011,
+				0.00010976581203692649,
+				-0.00014962311459108184,
+				0.0001355492941955095,
+				-0.000045301156309303126,
+				-0.00009618549072676367,
+				0.0001080373583170587,
+				-0.00001746125846716357,
+				0.00012183426997859039,
+				0.0001444000369683278,
+				0.00014304040058747095,
+				0.00003697543996077801,
+				0.000025570453606534154,
+				-0.00009837310619249774,
+				-0.000026640405567670216,
+				-0.00001278119481433525,
+				0.00014718734912945317,
+				-0.00010531288381141591,
+				-0.00004197094780195177,
+				0.000036661484606356264,
+				-0.00006363104330212285,
+				0.00009057459409344319,
+				0.00016271224838986203,
+				-0.00008276433953268719,
+				-0.000030396204258015675,
+				0.00013553983817500066,
+				-0.00008284389703343686,
+				-0.0000026045862258220962,
+				-0.00007547883594918376,
+				0.00012343574473343725
+			],
+			"vy": [
+				-0.0000752356182071923,
+				0.00004314283156650063,
+				0.0000729223259884432,
+				-0.0001551934149040607,
+				0.0000044793289942052145,
+				0.00009504890837528209,
+				0.000009558677305693073,
+				-0.00009355924915798906,
+				-0.000013147343685372792,
+				0.00013297934962788527,
+				0.00009996426961428869,
+				-0.00005155610676825053,
+				-0.000027041520233537605,
+				0.00007274138118654512,
+				-0.000079968675862214,
+				0.00004120177990796731,
+				0.0001104334021351443,
+				0.000013636216273066057,
+				-0.00007337558793821545,
+				-0.00018747589604612943,
+				0.000021513005725330155,
+				-0.00007109688473775657,
+				0.00006420834533940831,
+				-0.00007786615247161001,
+				0.00005429217124978322,
+				-0.00010398234663528174,
+				0.0000821663169064222,
+				0.00023405038246284465,
+				0.000046779092093418226,
+				-0.0000067691161876593775,
+				-0.00005583252580300058,
+				0.00005382629137797028,
+				0.00002091469582157531,
+				-0.00003536705657981025,
+				-0.00007250278399736718,
+				0.000027332391886985616,
+				-0.00007820467519970063,
+				0.000037699582642930904,
+				0.000007613715552273089,
+				-0.000006990673485441996,
+				0.00007003403118030968,
+				-0.0000438014958685538,
+				-1.6155675651810402e-7,
+				-0.00005862862786024413,
+				0.00006915047195084291,
+				-0.00011126228682257286,
+				-0.00008875777985089495,
+				-0.00009613138400172092,
+				-0.00009223356717522547,
+				0.000031725027751461684,
+				-0.00003507192419898774,
+				0.00004832080515834101,
+				-0.000034188409941446205,
+				-0.00002244910585353404,
+				-0.00009645322755329319,
+				-0.00000531355378982973,
+				-0.000054269241273297977,
+				0.000032511168054167256,
+				0.000030903715242806095,
+				-0.000015981576852440908,
+				-0.0000517691865628003
+			],
+			"charge": [
+				-1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				-1,
+				1
+			],
+			"friction": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"pinned": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			]
+		},
+		"elements": {
+			"mass": [
+				120,
+				240,
+				360,
+				480,
+				600
+			],
+			"sigma": [
+				0.32,
+				0.18,
+				0.25,
+				0.28,
+				0.3
+			],
+			"epsilon": [
+				-0.6000000238418579,
+				-0.1,
+				-0.1,
+				-0.1,
+				-0.1
+			],
+			"color": [
+				-3026479,
+				-3381505,
+				-16711936,
+				-2539040,
+				-855310
+			]
+		},
+		"pairwiseLJProperties": []
+	};
+
+/***/ }),
+/* 741 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -49024,7 +49690,7 @@
 	};
 
 /***/ }),
-/* 741 */
+/* 742 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -51369,7 +52035,7 @@
 	};
 
 /***/ }),
-/* 742 */
+/* 743 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -51801,7 +52467,823 @@
 	};
 
 /***/ }),
-/* 743 */
+/* 744 */
+/***/ (function(module, exports) {
+
+	module.exports = {
+		"type": "md2d",
+		"imagePath": "",
+		"width": 4,
+		"height": 2.5,
+		"unitsScheme": "md2d",
+		"lennardJonesForces": true,
+		"coulombForces": true,
+		"temperatureControl": true,
+		"gravitationalField": false,
+		"timeStep": 0.5,
+		"dielectricConstant": 1,
+		"realisticDielectricEffect": true,
+		"solventForceFactor": 1.25,
+		"solventForceType": 0,
+		"additionalSolventForceMult": 4,
+		"additionalSolventForceThreshold": 10,
+		"polarAAEpsilon": -2,
+		"viscosity": 1,
+		"timeStepsPerTick": 50,
+		"DNAState": "dna",
+		"DNA": "",
+		"DNAMutations": true,
+		"useQuantumDynamics": false,
+		"useChemicalReactions": false,
+		"useDuration": "codap",
+		"requestedDuration": null,
+		"skipPECheckOnAddAtom": false,
+		"viewOptions": {
+			"viewPortWidth": 2.5,
+			"viewPortHeight": 2.5,
+			"viewPortZoom": 1,
+			"viewPortX": 0.75,
+			"viewPortY": 0,
+			"viewPortDrag": false,
+			"backgroundColor": "#eee",
+			"showClock": true,
+			"markColor": "#ff0",
+			"atomRadiusScale": 1,
+			"keShading": false,
+			"keShadingMinEnergy": 0,
+			"keShadingMaxEnergy": 0.2,
+			"chargeShading": false,
+			"aminoAcidColorScheme": "hydrophobicity",
+			"aminoAcidLabels": true,
+			"useThreeLetterCode": true,
+			"showChargeSymbols": true,
+			"showVDWLines": false,
+			"VDWLinesCutoff": "medium",
+			"showVelocityVectors": false,
+			"showForceVectors": false,
+			"showElectricField": false,
+			"electricFieldDensity": 18,
+			"electricFieldColor": "auto",
+			"showAtomTrace": false,
+			"images": [],
+			"imageMapping": {},
+			"textBoxes": [],
+			"xlabel": false,
+			"ylabel": false,
+			"xunits": false,
+			"yunits": false,
+			"controlButtons": "play_reset",
+			"gridLines": false,
+			"atomNumbers": false,
+			"enableAtomTooltips": false,
+			"enableKeyboardHandlers": true,
+			"atomTraceColor": "#ff0",
+			"velocityVectors": {
+				"color": "#000",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectors": {
+				"color": "#169C30",
+				"width": 0.01,
+				"length": 2
+			},
+			"forceVectorsDirectionOnly": false,
+			"onAtomDrag": "translate"
+		},
+		"atoms": {
+			"x": [
+				2.5209773372724946,
+				1.9783717434852255,
+				2.7430318706782497,
+				1.0896363093005206,
+				2.8690472952062662,
+				3.519853007072548,
+				3.234141926228647,
+				3.224077872288447,
+				3.3956788344535282,
+				1.7688109873618427,
+				0.7588332319425128,
+				3.823757683784257,
+				0.8580484132246166,
+				2.599995132650904,
+				0.5427605141917081,
+				1.9713616105189105,
+				0.5049870016487487,
+				1.9549216903673312,
+				1.2799710965294515,
+				0.15889302775303046,
+				3.3955370653808785,
+				2.411970897999325,
+				3.6173895655500066,
+				2.8559124725201714,
+				3.0027688966368964,
+				2.1980591772560696,
+				3.8406444862235443,
+				1.545397037572938,
+				2.4902549291380036,
+				1.4143448200626383,
+				1.9649751730525526,
+				2.867517966250986,
+				2.3035555281927045,
+				1.1042735585743229,
+				0.1914133624524301,
+				1.007951979238854,
+				1.7259930424385674,
+				0.5104031229691429,
+				0.43542083514238433,
+				1.9062920077717143,
+				0.16943272378737187,
+				1.316353052187058,
+				1.0555935767756646,
+				0.2239871726666686,
+				3.803478526461126,
+				1.2360355140858765,
+				3.1454603878805187,
+				0.8726344759352123,
+				0.2193172685657651,
+				0.38705634676045797,
+				0.755848374979933,
+				0.44766229155502485,
+				2.2853896764822625,
+				3.8429205910625,
+				3.0659350149798006,
+				2.3145934934847108,
+				1.490864741813276,
+				3.5019943086048415,
+				3.699902349630892,
+				3.314480654731347,
+				2.530794469076666,
+				0.7748391203075633,
+				3.1382887745939008,
+				1.6322066833748976,
+				1.1895189470584613,
+				2.1670342988383076,
+				2.7371264230417034,
+				1.8440082637914517,
+				1.6268496591561759,
+				2.586454547101964,
+				3.8144922369593464,
+				1.6029941228847298,
+				0.5350460895343545,
+				1.009516293970157,
+				1.3932367355683135,
+				2.6161874255675595,
+				3.1789029482365363,
+				2.873922554182567,
+				1.3515264855753204,
+				2.165840525902652,
+				0.21553715710486487,
+				3.4801406580023047,
+				3.596289704092202,
+				2.1751467909966697,
+				0.5916822062604503
+			],
+			"y": [
+				0.18652332375086417,
+				1.1465672042103234,
+				0.5490121542252305,
+				0.16680162283378222,
+				1.7930240686937122,
+				0.4332166389866691,
+				0.16954936879343394,
+				1.0446982931852942,
+				2.1750854232086856,
+				0.945423618780716,
+				1.640565156310111,
+				0.5504154727610612,
+				1.1480331029755686,
+				1.1859125658440284,
+				0.5635035511071453,
+				1.481053854967193,
+				1.4200193056260424,
+				0.5890363678306284,
+				1.7261837961993303,
+				1.8785397093652096,
+				0.7150957753719226,
+				1.4441819296095633,
+				2.003203436504649,
+				2.227076833381953,
+				1.3308405713560871,
+				1.6595679417337976,
+				1.8096571867972167,
+				1.5817120651580137,
+				2.338959168379172,
+				0.8903372636849468,
+				2.1092626886467896,
+				0.24391185584742317,
+				1.114149903717973,
+				1.4594791054905176,
+				2.303676013963903,
+				2.2310428485560068,
+				2.3471921957839768,
+				1.7840338751274032,
+				1.1302899063498497,
+				1.7983334478021964,
+				0.23130171817601308,
+				2.0276561919801583,
+				0.9069176098823022,
+				0.5655097176770403,
+				1.4820310413913185,
+				1.1428239559589843,
+				1.641138314978918,
+				0.6100465855156705,
+				1.363004470266805,
+				2.106022379380484,
+				2.058804188440156,
+				0.20648969870508438,
+				0.47294397557524975,
+				1.135737664571227,
+				0.6351726570846387,
+				1.922514500959412,
+				0.1541730652334121,
+				1.0604406619889732,
+				0.845632549008389,
+				1.363888480267562,
+				0.8056950101833246,
+				0.26083622920651406,
+				2.3329960398906637,
+				1.9803060342222119,
+				0.6250686552794025,
+				0.18211023392907605,
+				1.4544689306249887,
+				0.27781676792747306,
+				0.616234275276602,
+				1.7233246122207566,
+				2.333761727122818,
+				1.289807727292486,
+				2.3470483437668728,
+				1.8527338575489234,
+				0.4184934545254464,
+				2.0370178777075307,
+				1.9288174106955125,
+				0.8666618874316732,
+				2.311896638022109,
+				2.3278218615089945,
+				0.9089583407406175,
+				1.6898191566552134,
+				0.1638102952214419,
+				0.8333806636107107,
+				0.8690564223906512
+			],
+			"element": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"vx": [
+				0.0004130494070254688,
+				0.00011776351368894916,
+				-0.0002090839883748339,
+				-0.0002653218381197367,
+				-0.0005263877116421397,
+				-0.0006543884783894852,
+				-0.00020913610602975075,
+				0.0008317065447116474,
+				-0.0005324622912918357,
+				-0.0002610821964884297,
+				-0.0010721629877837662,
+				0.000010409151095277342,
+				-0.00003090559636372495,
+				0.0003316464383559914,
+				0.0012571424714915508,
+				-0.00016383286135820475,
+				-0.0008302685958379214,
+				0.00006766101108038973,
+				-0.001958433347193559,
+				0.00030376039574221724,
+				0.0004799179973421566,
+				0.0012176640018406815,
+				-0.00048690883807809345,
+				-0.000499752480380571,
+				-0.00005586380463994287,
+				0.000026203989507368363,
+				-0.00012340691442962962,
+				-0.00117026582365138,
+				0.00003762608938080071,
+				-0.00006180105870569893,
+				-0.00031530515987852816,
+				-0.0004197790644746717,
+				-0.0003395689625938978,
+				0.001023597833550715,
+				-0.0014517237893713739,
+				-0.0002209400079942867,
+				0.0003612744847807048,
+				-0.0002574318304562796,
+				-0.0011112844612151407,
+				0.00016972368036005965,
+				0.0004374345577609042,
+				-0.0004625438708730279,
+				0.0008861920204312569,
+				0.0005505048207774863,
+				0.0011508680938254932,
+				-0.0005864413236120642,
+				-0.000049441765155553836,
+				-0.0005262055907647506,
+				0.0002408651776199138,
+				0.0006750192594487435,
+				-0.0011348248750009144,
+				-0.00029587530640284366,
+				0.0004113505694043181,
+				0.0006079478771543637,
+				-0.0009034610321566174,
+				0.000060924032865804724,
+				0.00004346511231578562,
+				-0.0008334231653346966,
+				0.0007898976893840967,
+				0.0008801551292046266,
+				-0.0004154041840748517,
+				0.00026310392726968773,
+				0.0005635187830121626,
+				-0.0011108305554589186,
+				-0.000431371292330384,
+				-0.0003842762311369893,
+				-0.0002790457842085451,
+				-0.00025300382666154474,
+				0.0007571904015560044,
+				0.0009194830984243315,
+				0.000389411586458509,
+				-0.00008954835660909715,
+				-0.0012531672308632486,
+				0.000016374750051682238,
+				0.00019701256617709475,
+				-0.0005476013129629563,
+				0.00044560868890881477,
+				-0.0007265025074766399,
+				0.000017356657039500936,
+				-0.0002408356509370436,
+				-0.0009998554288797664,
+				-0.00022398431231756058,
+				0.00030334474336573105,
+				0.000005022228843249866,
+				0.0008521343777374124
+			],
+			"vy": [
+				-0.0000199088517908269,
+				0.0010347901410523736,
+				-0.0009026162920589373,
+				-0.0001461760299410712,
+				0.0002558833190405782,
+				0.00030868763528971323,
+				-0.0003502761480274452,
+				-0.00064159191482169,
+				-0.0013184552022669947,
+				0.001546831607211189,
+				0.0009337561641306642,
+				0.0002846828925233498,
+				0.0006198170062793852,
+				-0.00012160919713158889,
+				-0.00036765220012301397,
+				0.0003583724681781249,
+				0.00033233555742680205,
+				0.00025181095172626186,
+				0.0013146322820016267,
+				0.0005940546609345238,
+				-0.0007552289266258799,
+				-0.001104481264415386,
+				-0.00037361713785982194,
+				0.0015271181037030174,
+				-0.00012722668019619026,
+				-0.0005956516587993346,
+				0.0005232646338119279,
+				-0.00038219957076272057,
+				0.0008193911501823471,
+				0.00041338308963730883,
+				-0.0005641827292374871,
+				0.0018509983012627148,
+				-0.00026689782056377084,
+				-0.0006881187806739804,
+				-0.0005943566569854848,
+				-0.0003582386112771383,
+				0.00024347840395611928,
+				-0.00018443425731216865,
+				-0.00042028194727000424,
+				0.0015148374163233282,
+				-0.0013132870717085907,
+				-0.0001623171109931357,
+				-0.0006340910053115828,
+				0.0009718259906375759,
+				-0.0005319921672744992,
+				-0.0009581769470062937,
+				0.0004859721759993614,
+				-0.000008122816265713822,
+				0.0008359346181539016,
+				0.00123460549238069,
+				-0.0010722029994543318,
+				0.00038688966323461,
+				0.0007167719202899572,
+				0.00100944738021743,
+				0.00034583754392536275,
+				-0.00012962211272847185,
+				-0.0003058206136734336,
+				-0.00028608247569100276,
+				-0.0006726326923353728,
+				0.0009839901486417447,
+				-0.0006736225116014057,
+				0.000587243120107538,
+				0.0015005911317405403,
+				-0.0024034312820492595,
+				-0.0012102230509630884,
+				0.0008135472142943292,
+				-0.0005934505392069814,
+				-0.0003534184015193089,
+				0.000044040970113701195,
+				0.0008737004415245843,
+				0.0011046878677708376,
+				0.0001863083368991012,
+				0.0007705287297530601,
+				-0.0003548041557331055,
+				-0.0008828378225456074,
+				0.0003139925301261712,
+				-0.0005632613854939337,
+				0.0005397747180377804,
+				0.00031198931545801516,
+				-0.00021448367260226253,
+				-0.0002653857270951185,
+				0.000041935275254898184,
+				-0.0005624037073931185,
+				0.0004878528312357868,
+				0.0005736040776314676
+			],
+			"charge": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"friction": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"pinned": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			]
+		},
+		"elements": {
+			"mass": [
+				20,
+				40,
+				60,
+				80,
+				600
+			],
+			"sigma": [
+				0.295,
+				0.14,
+				0.21,
+				0.28,
+				0.3
+			],
+			"epsilon": [
+				-0.05,
+				-0.1,
+				-0.1,
+				-0.1,
+				-0.1
+			],
+			"color": [
+				-1185088,
+				-9066941,
+				-9092186,
+				-2539040,
+				-855310
+			]
+		},
+		"pairwiseLJProperties": []
+	};
+
+/***/ }),
+/* 745 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -52606,7 +54088,7 @@
 				-0.1
 			],
 			"color": [
-				-13057,
+				-5649202,
 				-9066941,
 				-9092186,
 				-2539040,
@@ -52617,7 +54099,7 @@
 	};
 
 /***/ }),
-/* 744 */
+/* 746 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -54376,7 +55858,7 @@
 	};
 
 /***/ }),
-/* 745 */
+/* 747 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -56721,7 +58203,7 @@
 	};
 
 /***/ }),
-/* 746 */
+/* 748 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -57153,7 +58635,7 @@
 	};
 
 /***/ }),
-/* 747 */
+/* 749 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -57441,7 +58923,7 @@
 	};
 
 /***/ }),
-/* 748 */
+/* 750 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -58148,7 +59630,7 @@
 	};
 
 /***/ }),
-/* 749 */
+/* 751 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -58598,7 +60080,7 @@
 	};
 
 /***/ }),
-/* 750 */
+/* 752 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -59222,7 +60704,7 @@
 	};
 
 /***/ }),
-/* 751 */
+/* 753 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -59336,13 +60818,13 @@
 	};
 
 /***/ }),
-/* 752 */
+/* 754 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(753);
+	var content = __webpack_require__(755);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(736)(content, {});
@@ -59362,7 +60844,7 @@
 	}
 
 /***/ }),
-/* 753 */
+/* 755 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(735)();
@@ -59376,16 +60858,16 @@
 
 
 /***/ }),
-/* 754 */,
-/* 755 */,
 /* 756 */,
 /* 757 */,
 /* 758 */,
-/* 759 */
+/* 759 */,
+/* 760 */,
+/* 761 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {var invariant = __webpack_require__(304);
-	var defaultClickRejectionStrategy = __webpack_require__(760);
+	var defaultClickRejectionStrategy = __webpack_require__(762);
 
 	var alreadyInjected = false;
 
@@ -59407,14 +60889,14 @@
 	  alreadyInjected = true;
 
 	  __webpack_require__(338).injection.injectEventPluginsByName({
-	    'TapEventPlugin':       __webpack_require__(761)(shouldRejectClick)
+	    'TapEventPlugin':       __webpack_require__(763)(shouldRejectClick)
 	  });
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
 
 /***/ }),
-/* 760 */
+/* 762 */
 /***/ (function(module, exports) {
 
 	module.exports = function(lastTouchEvent, clickTimestamp) {
@@ -59425,7 +60907,7 @@
 
 
 /***/ }),
-/* 761 */
+/* 763 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -59453,10 +60935,10 @@
 	var EventPluginUtils = __webpack_require__(340);
 	var EventPropagators = __webpack_require__(337);
 	var SyntheticUIEvent = __webpack_require__(371);
-	var TouchEventUtils = __webpack_require__(762);
+	var TouchEventUtils = __webpack_require__(764);
 	var ViewportMetrics = __webpack_require__(372);
 
-	var keyOf = __webpack_require__(763);
+	var keyOf = __webpack_require__(765);
 	var topLevelTypes = EventConstants.topLevelTypes;
 
 	var isStartish = EventPluginUtils.isStartish;
@@ -59602,7 +61084,7 @@
 
 
 /***/ }),
-/* 762 */
+/* 764 */
 /***/ (function(module, exports) {
 
 	/**
@@ -59650,7 +61132,7 @@
 
 
 /***/ }),
-/* 763 */
+/* 765 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -59689,14 +61171,14 @@
 	module.exports = keyOf;
 
 /***/ }),
-/* 764 */,
-/* 765 */,
 /* 766 */,
 /* 767 */,
 /* 768 */,
 /* 769 */,
 /* 770 */,
-/* 771 */
+/* 771 */,
+/* 772 */,
+/* 773 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*global XDomainRequest */
@@ -59716,9 +61198,9 @@
 	//     requestedValuesTimeStamp
 	//     receivedValuesTimeStamp
 
-	var RSVP = __webpack_require__(772);
+	var RSVP = __webpack_require__(774);
 
-	var EventEmitter2 = __webpack_require__(776).EventEmitter2;
+	var EventEmitter2 = __webpack_require__(778).EventEmitter2;
 	var events = new EventEmitter2({
 	    wildcard: true
 	});
@@ -60051,7 +61533,7 @@
 
 
 /***/ }),
-/* 772 */
+/* 774 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var require;/* WEBPACK VAR INJECTION */(function(process, setImmediate, global) {/*!
@@ -62479,7 +63961,7 @@
 	function attemptVertex() {
 	  try {
 	    var r = require;
-	    var vertx = __webpack_require__(775);
+	    var vertx = __webpack_require__(777);
 	    vertxNext = vertx.runOnLoop || vertx.runOnContext;
 	    return useVertxTimer();
 	  } catch (e) {
@@ -62599,10 +64081,10 @@
 
 	//# sourceMappingURL=rsvp.map
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299), __webpack_require__(773).setImmediate, (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299), __webpack_require__(775).setImmediate, (function() { return this; }())))
 
 /***/ }),
-/* 773 */
+/* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var apply = Function.prototype.apply;
@@ -62655,13 +64137,13 @@
 	};
 
 	// setimmediate attaches itself to the global object
-	__webpack_require__(774);
+	__webpack_require__(776);
 	exports.setImmediate = setImmediate;
 	exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 774 */
+/* 776 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -62854,13 +64336,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(299)))
 
 /***/ }),
-/* 775 */
+/* 777 */
 /***/ (function(module, exports) {
 
 	/* (ignored) */
 
 /***/ }),
-/* 776 */
+/* 778 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process) {/*!
@@ -63643,14 +65125,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
 
 /***/ }),
-/* 777 */,
-/* 778 */
+/* 779 */,
+/* 780 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(779);
+	var content = __webpack_require__(781);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(736)(content, {});
@@ -63670,7 +65152,7 @@
 	}
 
 /***/ }),
-/* 779 */
+/* 781 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(735)();
@@ -63684,13 +65166,13 @@
 
 
 /***/ }),
-/* 780 */
+/* 782 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(781);
+	var content = __webpack_require__(783);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(736)(content, {});
@@ -63710,7 +65192,7 @@
 	}
 
 /***/ }),
-/* 781 */
+/* 783 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(735)();

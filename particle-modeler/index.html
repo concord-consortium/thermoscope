@@ -16,10 +16,13 @@
     }
   </style>
   <script>
+    var isLocal = window.location.hostname === "localhost";
+
     var _rollbarConfig = {
         accessToken: "93d5ec30dd9b474bb3dbe30e5ba9c1e9",
         captureUncaught: true,
         captureUnhandledRejections: true,
+        enabled: !isLocal,
         payload: {
             environment: "production"
         }
