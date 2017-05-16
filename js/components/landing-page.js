@@ -23,9 +23,10 @@ const LandingPage = () => (
         <List>
           <ListItem primaryText="Thermoscope with BLE Sensor Demos" leftIcon={<i className="material-icons">group_work</i>} initiallyOpen={true}
             primaryTogglesNestedList={true} nestedItems={[
-              <ListItem primaryText="Thermoscope (solid)" href="./thermoscope/" key="1" />,
-              <ListItem primaryText="Thermoscope (liquid)" href="./thermoscope/?A=liquid&B=liquid" key="2" />,
-              <ListItem primaryText="Thermoscope (gas)" href="./thermoscope/?A=gas&B=gas" key="3" />
+              <ListItem primaryText="Thermoscope (solid) Wood and Stone" href="./thermoscope/" key="1" />,
+              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" href="./thermoscope/?A=liquid&B=liquid" key="2" />,
+              <ListItem primaryText="Thermoscope (gas) Air" href="./thermoscope/?A=gas&B=gas" key="3" />,
+              <ListItem primaryText="Thermoscope (custom)" href="./thermoscope/?controls=true" key="4" />
             ]} />
           <ListItem primaryText="Particle Modeler" leftIcon={<i className="material-icons">all_out</i>} initiallyOpen={true} primaryTogglesNestedList={true} nestedItems={[
             <ListItem primaryText="Particle Modeler" href="./particle-modeler/" key="4" />,

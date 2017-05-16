@@ -1,8 +1,10 @@
-import solid1 from '../models/solid-1.json';
+import solid1 from '../models/solid-1-wood.json';
+import solid1a from '../models/solid-1-stone.json';
 import solid2 from '../models/solid-2.json';
 import solid3 from '../models/solid-3.json';
 import solid4 from '../models/solid-4.json';
-import liquid1 from '../models/liquid-1.json';
+import liquid1 from '../models/liquid-1-oil.json';
+import liquid1a from '../models/liquid-1-soap.json';
 import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
 import liquid4 from '../models/liquid-4.json';
@@ -21,29 +23,36 @@ function normalizeTemp(temp) {
 export default {
   solid: [
     {
-      name: 'Solid 4',
-      json: solid4,
-      tempScale: function (temp) {
-        return normalizeTemp(temp) * 800 + 10;
-      }
-    },
-    {
-      name: 'Solid 1',
+      name: 'Wood',
       json: solid1,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 800 + 10;
       }
     },
     {
-      name: 'Solid 2',
+      name: 'Stone',
+      json: solid1a,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 800 + 10;
+      }
+    },
+    {
+      name: 'Solid - 2 Particle Type Mix',
       json: solid2,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 800 + 10;
       }
     },
     {
-      name: 'Solid 3',
+      name: 'Solid - Particle Layers',
       json: solid3,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 800 + 10;
+      }
+    },
+    {
+      name: 'Solid - 16 particle',
+      json: solid4,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 800 + 10;
       }
@@ -51,18 +60,18 @@ export default {
   ],
   liquid: [
     {
-      name: 'Liquid 4',
-      json: liquid4,
+      name: 'Oil',
+      json: liquid1,
       tempScale: function (temp) {
-        return normalizeTemp(temp) * 900 + 700;
+        return normalizeTemp(temp) * 1500 + 500;
       },
       timeStepScale: function (temp) {
-        return normalizeTemp(temp) * 0.45 + 0.2;
+        return normalizeTemp(temp) * 0.55 + 0.25;
       }
     },
     {
-      name: 'Liquid 1',
-      json: liquid1,
+      name: 'Soap',
+      json: liquid1a,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 1500 + 500;
       },
@@ -89,12 +98,22 @@ export default {
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.85 + 0.15;
       }
+    },
+    {
+      name: 'Liquid 4',
+      json: liquid4,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 900 + 700;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.45 + 0.2;
+      }
     }
   ],
   gas: [
     {
-      name: 'Gas 4',
-      json: gas4,
+      name: 'Air',
+      json: gas1,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 5000 + 1500;
       },
@@ -103,8 +122,18 @@ export default {
       }
     },
     {
-      name: 'Gas 1',
+      name: 'Air',
       json: gas1,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 5000 + 1500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 1.0 + 0.2;
+      }
+    },
+    {
+      name: 'Air2',
+      json: gas4,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 5000 + 1500;
       },
