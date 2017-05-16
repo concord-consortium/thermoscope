@@ -397,7 +397,7 @@ export default class Interactive extends PureComponent {
         let link = JSON.stringify(d);
         let encodedLink = btoa(link);
         let hlink = window.location.host + window.location.pathname + "?model=" + encodedLink;
-        return <div key="modelUri"><a href={hlink} target="_blank">Link for Current Model</a></div>;
+        return <RaisedButton key="modelUri" className="model-link-button" href={hlink} target="_blank" rel="noopener">Link for Current Model</RaisedButton>
       }
     }
     return null;
