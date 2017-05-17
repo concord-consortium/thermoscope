@@ -23,7 +23,7 @@ export default class Thermoscope extends PureComponent {
       temperature: this.props.temperature ? this.props.temperature : 20,
       liveData: false,
       materialType: this.props.material ? this.props.material : 'solid',
-      materialIdx: 0,
+      materialIdx: this.props.probeIndex ? this.props.probeIndex : 0,
       paused: false
     };
     this.handleTempSliderChange = this.handleTempSliderChange.bind(this);
@@ -71,7 +71,7 @@ export default class Thermoscope extends PureComponent {
 
     let showControlsParam = SHOW_MATERIAL_CONTROLS != null ? SHOW_MATERIAL_CONTROLS.toLowerCase() === "true" : false;
     // props can turn on or off the controls from a parent container
-    let showControls = showMaterialControls != null ? showMaterialControls : true;
+    let showControls = showMaterialControls != null ? showMaterialControls : false;
 
     // simulation pause
     const zeroTempScale = function (temp) { return 0; };
@@ -134,6 +134,7 @@ export default class Thermoscope extends PureComponent {
             </div>
           </div>
           }
+          {!showControls && <div className="controls-row"> <div>{model.name}</div></div>}
         </div>
       </div>
     );
