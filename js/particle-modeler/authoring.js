@@ -56,7 +56,7 @@ const Authoring = (props) => {
 
   function elementInputMap(element) {
     return function (key) {
-      if (props[key].hasOwnProperty("element") && props[key].element == element) {
+      if (key != "atoms" && key != "modelDiff" && props[key].hasOwnProperty("element") && props[key].element == element) {
         return createSliderInput(key, props[key], true);
       }
     }

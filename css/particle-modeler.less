@@ -55,7 +55,12 @@
       background-color: white;
     }
     .logo-menu{
-      display:none;
+      z-index: 4;
+      .menu{
+        right:115px;
+        width:105px;
+        background: white;
+      }
     }
   }
   .restart-button{
@@ -90,6 +95,19 @@
     padding: 4px;
     color: black;
     background-color: #fff;
+    i{
+      padding-top:8px;
+    }
+    a{
+      color: teal;
+    }
+  }
+  .model-link{
+    position: fixed;
+    top: 400px;
+    left: 320px;
+    padding: 4px;
+    color: black;
     a{
       color: teal;
     }

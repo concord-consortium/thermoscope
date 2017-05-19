@@ -12,7 +12,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
@@ -34,13 +33,12 @@ let atomBox = {
   };
 
 let particleMaxVelocity = 0.0005;
-let saveInterval = 2000;
+let saveStateInterval = 2000;
 
 export default class Interactive extends PureComponent {
 
   constructor(props) {
     super(props);
-
     let hashParams = window.location.hash.substring(1),
       model = models.emptyModel,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
@@ -76,6 +74,7 @@ export default class Interactive extends PureComponent {
     this.addPinnedParticleText = this.addPinnedParticleText.bind(this);
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
+    this.updateDiff = this.updateDiff.bind(this);
   }
 
   componentWillMount() {
@@ -143,9 +142,11 @@ export default class Interactive extends PureComponent {
     let hash = getDiffedHashParams(this.state, authorableProps);
     window.location.hash = hash;
     this.setModelProps(prevState);
+    this.saveModel();
   }
 
   getAtomsWithoutPlaceholders() {
+    if (!api) return null;
     //clean out placeholder atoms - they get added separately
     let ax = [], ay = [], vx = [], vy = [], charge = [], friction = [], element = [], pinned = [], draggable = [];
     for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
@@ -157,7 +158,7 @@ export default class Interactive extends PureComponent {
         vx.push(a.vx);
         vy.push(a.vy);
         charge.push(a.charge);
-        friction.push(a.friction);
+        friction.push(0); // using a.friction can cause issues - dragging temporarily sets friction to 10, but this value can stick around when creating a link to the model
         element.push(a.element);
         pinned.push(a.pinned);
         draggable.push(a.draggable);
@@ -170,6 +171,7 @@ export default class Interactive extends PureComponent {
   }
 
   saveModel(d) {
+    //console.log("save!");
     // To save entire model:
     // let newModel = lab.interactiveController.getModel().serialize();
     // Alternatively, store the current model snapshot diff timestamped for replay
@@ -211,12 +213,11 @@ export default class Interactive extends PureComponent {
       }
       if (this.state.nextUpdate < Date.now()) {
         // this triggers component update & save
-        this.setState({ nextUpdate: Date.now() + saveInterval, atoms: this.getAtomsWithoutPlaceholders()});
+        this.updateDiff(Date.now() + saveStateInterval);
       }
     });
 
     api.onClick('atom', (x, y, d, i) => {
-      //console.log(d);
       if (d.pinned === 0) {
         api.setAtomProperties(i, { pinned: 1 });
         let newState = this.state.pinnedAtoms;
@@ -227,7 +228,7 @@ export default class Interactive extends PureComponent {
         api.setAtomProperties(i, { pinned: 0 });
         this.removePinnedParticleText(i);
       }
-      this.setState({ nextUpdate: Date.now(), atoms: this.getAtomsWithoutPlaceholders()});
+      this.updateDiff(Date.now());
     });
 
     api.onPropertyChange('time', function (t) {
@@ -363,6 +364,7 @@ export default class Interactive extends PureComponent {
     }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
+    newState.modelDiff = getModelDiff(newState, authorableProps);
     this.setState(newState);
   }
 
@@ -388,20 +390,29 @@ export default class Interactive extends PureComponent {
       }
     }
   }
+
+  updateDiff(nextUpdate) {
+    let currentState = this.state;
+    currentState.atoms = this.getAtomsWithoutPlaceholders();
+    let modelDiff = getModelDiff(currentState, authorableProps);
+
+    this.setState({ nextUpdate, atoms: currentState.atoms, modelDiff});
+  }
+
   getCurrentModelLink() {
     if (this.state.authoring) {
-      let d = getModelDiff(this.state, authorableProps);
+      let d = this.state.modelDiff;
       if (d) {
-        // this is called each render, save model each render
-        this.saveModel(d);
+        // this is called each render
         let link = JSON.stringify(d);
         let encodedLink = btoa(link);
-        let hlink = window.location.host + window.location.pathname + "?model=" + encodedLink;
-        return <RaisedButton key="modelUri" className="model-link-button" href={hlink} target="_blank" rel="noopener">Link for Current Model</RaisedButton>
+        return window.location.host + window.location.pathname + "?model=" + encodedLink;
       }
     }
     return null;
   }
+
+
 
   render() {
     const { authoring, showFreezeButton, showRestart, speedSlow} = this.state;
@@ -415,6 +426,7 @@ export default class Interactive extends PureComponent {
       atomsToShow: [this.state.showAtom0, this.state.showAtom1, this.state.showAtom2],
       count: this.state.elements.value
     };
+
     return (
       <MuiThemeProvider>
         <div className={appClass}>
@@ -422,9 +434,9 @@ export default class Interactive extends PureComponent {
           <div className="app-container">
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
-                  playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html'/>
+                playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
               <div className="lab-ui">
-                <NewAtomBin atomVisibility={newAtomVisibility} />
+                <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
                 {showFreezeButton.value === true &&
                   <div>
                     <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div></button>
@@ -438,9 +450,12 @@ export default class Interactive extends PureComponent {
               </div>
             </div>
             {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
-            {authoring && <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>}
-            {authoring && <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />}
-            {this.getCurrentModelLink()}
+            {authoring && <div>
+              <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>
+              <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
+              <RaisedButton key="modelSnapshot" className="model-link-button" onClick={this.updateDiff}><i className="material-icons">photo_camera</i></RaisedButton>
+              <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
+            </div>}
           </div>
         </div>
       </MuiThemeProvider>

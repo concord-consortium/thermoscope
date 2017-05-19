@@ -32,10 +32,6 @@ module.exports = {
     label: "Show Freeze Button",
     value: false
   },
-  startWithAtoms: {
-    label: "Start With Existing Atoms",
-    value: false
-  },
   elements: {
     label: "Number of unique elements",
     value: 3,
