@@ -12,9 +12,18 @@ import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import getUsername from '../components/user-name-generator.js';
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
+import Rebase from 're-base';
+var base = Rebase.createClass({
+    apiKey: "AIzaSyChElp_DuPn3Q0jwV1VXq2M4urgKgANrKw",
+    authDomain: "particlemodeler.firebaseapp.com",
+    databaseURL: "https://particlemodeler.firebaseio.com",
+    storageBucket: "particlemodeler.appspot.com",
+    messagingSenderId: "708009502450"
+});
 // Required by Material-UI library.
 injectTapEventPlugin();
 
@@ -47,6 +56,9 @@ export default class Interactive extends PureComponent {
       authoredState = loadModelDiff(JSON.parse(atob(urlModel)), authorableProps);
       if (authoredState.atoms) model.atoms = authoredState.atoms;
     }
+    let d = new Date();
+    let sessionDate = d.getUTCFullYear() + "-" + d.getUTCMonth() + "-" + d.getUTCDay() + "-" + d.getUTCHours();
+    let sessionName = getUsername();
 
     this.state = {
       interactive: models.interactive,
@@ -59,6 +71,9 @@ export default class Interactive extends PureComponent {
       speedSlow: false,
       pinnedAtoms: {},
       nextUpdate: Date.now(),
+      sessionDate,
+      sessionName,
+      modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
     };
 
@@ -170,12 +185,18 @@ export default class Interactive extends PureComponent {
     return atoms;
   }
 
-  saveModel(d) {
-    //console.log("save!");
+  saveModel() {
+    const { modelDiff, sessionDate, sessionName } = this.state;
     // To save entire model:
     // let newModel = lab.interactiveController.getModel().serialize();
-    // Alternatively, store the current model snapshot diff timestamped for replay
-    // console.log("save model", d, Date.now());
+
+    base.post(`${sessionDate}/${sessionName}/${Date.now()}`, {
+      data: modelDiff
+    }).then(() => {
+      // update completed console.log("then");
+      }).catch(err => {
+        console.log("Error storing diff data on Firebase", err);
+    });
   }
 
 
