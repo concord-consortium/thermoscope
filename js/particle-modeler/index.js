@@ -51,13 +51,16 @@ export default class Interactive extends PureComponent {
     let hashParams = window.location.hash.substring(1),
       model = models.emptyModel,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
-      urlModel = getURLParam("model");
+      urlModel = getURLParam("model"),
+      // Disable recording of student interaction by default
+      recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : false;
     if (urlModel) {
       authoredState = loadModelDiff(JSON.parse(atob(urlModel)), authorableProps);
       if (authoredState.atoms) model.atoms = authoredState.atoms;
     }
+    // Group session identifiers by current hour to collate student activity in Firebase
     let d = new Date();
-    let sessionDate = d.getUTCFullYear() + "-" + d.getUTCMonth() + "-" + d.getUTCDay() + "-" + d.getUTCHours();
+    let sessionDate = Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDay(),d.getUTCHours());
     let sessionName = getUsername();
 
     this.state = {
@@ -73,6 +76,7 @@ export default class Interactive extends PureComponent {
       nextUpdate: Date.now(),
       sessionDate,
       sessionName,
+      recordInteractions,
       modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
     };
@@ -186,17 +190,18 @@ export default class Interactive extends PureComponent {
   }
 
   saveModel() {
-    const { modelDiff, sessionDate, sessionName } = this.state;
+    const { recordInteractions, modelDiff, sessionDate, sessionName } = this.state;
     // To save entire model:
-    // let newModel = lab.interactiveController.getModel().serialize();
-
-    base.post(`${sessionDate}/${sessionName}/${Date.now()}`, {
-      data: modelDiff
-    }).then(() => {
-      // update completed console.log("then");
-      }).catch(err => {
-        console.log("Error storing diff data on Firebase", err);
-    });
+    // lab.interactiveController.getModel().serialize();
+    if (recordInteractions){
+      base.post(`${sessionDate}/${sessionName}/${Date.now()}`, {
+        data: modelDiff
+      }).then(() => {
+        // update completed console.log("then");
+        }).catch(err => {
+          console.log("Error storing diff data on Firebase", err);
+      });
+    }
   }
 
 
