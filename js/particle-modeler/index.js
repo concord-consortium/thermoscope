@@ -463,7 +463,11 @@ export default class Interactive extends PureComponent {
                 playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
               <div className="lab-ui">
                 <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-                {showFreezeButton.value === true &&
+
+                <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+              </div>
+            </div>
+            {showFreezeButton.value === true &&
                   <div>
                     <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div></button>
                     <button className="speed-button" onClick={this.speed}><div title="Speed">
@@ -472,9 +476,6 @@ export default class Interactive extends PureComponent {
                     </div></button>
                   </div>
                 }
-                <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
-              </div>
-            </div>
             {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
             {authoring && <div>
               <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>
