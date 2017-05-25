@@ -403,7 +403,7 @@
 	          newState[i] = { x: x, y: y };
 	          _this3.setState({ pinnedAtoms: newState });
 	          _this3.addPinnedParticleText(i);
-	        } else {
+	        } else if (d.element < _this3.state.elements.value) {
 	          api.setAtomProperties(i, { pinned: 0 });
 	          _this3.removePinnedParticleText(i);
 	        }
