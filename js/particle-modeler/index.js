@@ -10,6 +10,7 @@ import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive, ge
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import CircularProgress from 'material-ui/CircularProgress';
 import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getUsername from '../components/user-name-generator.js';
@@ -44,6 +45,8 @@ let atomBox = {
 let particleMaxVelocity = 0.0005;
 let saveStateInterval = 2000;
 
+let slowSpeedTimeStep = 0.05;
+
 export default class Interactive extends PureComponent {
 
   constructor(props) {
@@ -71,12 +74,14 @@ export default class Interactive extends PureComponent {
       showAtom2: true,
       deleteHover: false,
       showRestart: false,
-      speedSlow: false,
       pinnedAtoms: {},
       nextUpdate: Date.now(),
       sessionDate,
       sessionName,
       recordInteractions,
+      completed: 0,
+      isFrozen: false,
+      isSlowed: false,
       modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
     };
@@ -86,7 +91,7 @@ export default class Interactive extends PureComponent {
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
     this.changeElementCount = this.changeElementCount.bind(this);
     this.freeze = this.freeze.bind(this);
-    this.speed = this.speed.bind(this);
+    this.slow = this.slow.bind(this);
     this.restart = this.restart.bind(this);
     this.studentView = this.studentView.bind(this);
     this.generatePinnedParticleText = this.generatePinnedParticleText.bind(this);
@@ -98,6 +103,9 @@ export default class Interactive extends PureComponent {
 
   componentWillMount() {
     this.captureErrors();
+  }
+  componentWillUnmount() {
+    clearTimeout(this.timer);
   }
 
   captureErrors() {
@@ -203,7 +211,6 @@ export default class Interactive extends PureComponent {
       });
     }
   }
-
 
   handleModelLoad() {
     api = lab.scriptingAPI;
@@ -362,22 +369,36 @@ export default class Interactive extends PureComponent {
         oldControl = this.state.temperatureControl.value;
     api.set({temperatureControl: true});
     api.set({targetTemperature: 0});
-    setTimeout(function() {
+    this.setState({isFrozen: true});
+    this.progress(5, 500, function() {
       api.set({temperatureControl: oldControl});
       api.set({targetTemperature: oldTemp});
-    }, 500)
+    });
   }
 
-  speed() {
-    let speed = !this.state.speedSlow;
-    let timeStep = this.state.timeStep;
-    if (speed) {
-      timeStep.value /= 10;
+  slow() {
+    let oldTimeStep = this.state.timeStep.value;
+    api.set({timeStep: slowSpeedTimeStep});
+    this.setState({isSlowed: true});
+    this.progress(5, 1500, function(){
+      api.set({timeStep: oldTimeStep});
+    });
+  }
+
+  progress(completed, totalTime, onComplete) {
+    if (completed > 100) {
+      this.setState({completed: 100});
+      this.timer = setTimeout(() => {
+        this.setState({completed: 0, isSlowed: false, isFrozen: false});
+        onComplete();
+      }, 100);
     } else {
-      timeStep.value *= 10;
+      if (this.state.completed != completed){
+        this.setState({completed});
+      }
+      const nextCompleted = completed + 25;
+      this.timer = setTimeout(() => this.progress(nextCompleted, totalTime, onComplete), totalTime / 4);
     }
-    api.set({timeStep: timeStep.value});
-    this.setState({ speedSlow: speed , timeStep: timeStep });
   }
 
   handleAuthoringPropChange(prop, value) {
@@ -438,10 +459,8 @@ export default class Interactive extends PureComponent {
     return null;
   }
 
-
-
   render() {
-    const { authoring, showFreezeButton, showRestart, speedSlow} = this.state;
+    const { authoring, showFreezeButton, showRestart} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -469,11 +488,18 @@ export default class Interactive extends PureComponent {
             </div>
             {showFreezeButton.value === true &&
                   <div>
-                    <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div></button>
-                    <button className="speed-button" onClick={this.speed}><div title="Speed">
-                    {speedSlow && <i className="material-icons">directions_walk</i>}
-                    {!speedSlow && <i className="material-icons">directions_run</i>}
-                    </div></button>
+                    <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div>
+                    {this.state.isFrozen && <CircularProgress
+                        mode="determinate"
+                        value={this.state.completed}
+                        className="progress"
+                      />}</button>
+                    <button className="speed-button" onClick={this.slow}><div title="Speed"><i className="material-icons">directions_run</i></div>
+                    {this.state.isSlowed && <CircularProgress
+                        mode="determinate"
+                        value={this.state.completed}
+                        className="progress"
+                      />}</button>
                   </div>
                 }
             {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
