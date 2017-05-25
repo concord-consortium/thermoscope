@@ -257,7 +257,7 @@ export default class Interactive extends PureComponent {
         newState[i] = { x, y };
         this.setState({ pinnedAtoms: newState });
         this.addPinnedParticleText(i);
-      } else {
+      } else if (d.element < this.state.elements.value){
         api.setAtomProperties(i, { pinned: 0 });
         this.removePinnedParticleText(i);
       }
