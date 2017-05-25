@@ -60763,14 +60763,56 @@
 	}
 
 	/**
+	 * The authorable props all come in via the defaults
+	 * Compare these to the newProps to get the diff of the changes
+	 * Then we can export those diffs vs defaults as lightweight objects
+	 */
+	function getModelDiff(newProps, defaults) {
+	  // defaults are all authorable props
+	  // the newProps need to be compared
+	  var result = {};
+	  for (var k in newProps) {
+	    if (defaults.hasOwnProperty(k)) {
+	      // this property is authorable
+	      if (newProps[k].hasOwnProperty("value") && defaults[k].value != newProps[k].value) {
+	        result[k] = newProps[k];
+	      }
+	    }
+	  }
+	  // atom positions and velocities are handled separately
+	  if (newProps.atoms) {
+	    result.atoms = newProps.atoms;
+	  }
+	  return result;
+	}
+
+	/**
+	 * Loading a diff is more straight-forward than conversion from hash params
+	 * since the diff will be in json format already. Merge in the atoms separately
+	 * as they are rendered in the lab window directly, and not in the authoring panel
+	 */
+	function loadModelDiff(diffProps, defaults) {
+	  var ret = JSON.parse(JSON.stringify(defaults)); // deep clone
+	  for (var k in ret) {
+	    if (diffProps.hasOwnProperty(k)) {
+	      ret[k] = diffProps[k];
+	    }
+	  }
+	  if (diffProps.atoms) {
+	    ret.atoms = diffProps.atoms;
+	  }
+	  return ret;
+	}
+
+	/**
 	 * Given the defaults {a: false, b: false}
 	 * and the hash       "a=true&z=true",
 	 * this will check only those properties that are in the defaults ("a" and "b"), and
 	 * update any that are defined in the hash, producing {a:true, b: false} for the above.
 	 */
 	function getStateFromHashWithDefaults(hash, defaults) {
-	  var hashObj = getObjectFromHashParams(hash),
-	      ret = JSON.parse(JSON.stringify(defaults)); // deep clone
+	  var hashObj = getObjectFromHashParams(hash);
+	  var ret = JSON.parse(JSON.stringify(defaults)); // deep clone
 	  for (var k in ret) {
 	    if (hashObj.hasOwnProperty(k)) {
 	      if (ret[k].hasOwnProperty("value")) {
@@ -60811,7 +60853,9 @@
 	  getDiffedHashParams: getDiffedHashParams,
 	  getStateFromHashWithDefaults: getStateFromHashWithDefaults,
 	  parseToPrimitive: parseToPrimitive,
-	  getURLParam: getURLParam
+	  getURLParam: getURLParam,
+	  getModelDiff: getModelDiff,
+	  loadModelDiff: loadModelDiff
 	};
 
 /***/ }),
