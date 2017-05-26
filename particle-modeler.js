@@ -541,7 +541,7 @@
 	      var oldTimeStep = this.state.timeStep.value;
 	      api.set({ timeStep: slowSpeedTimeStep });
 	      this.setState({ isSlowed: true });
-	      this.progress(5, 1500, function () {
+	      this.progress(5, 2500, function () {
 	        api.set({ timeStep: oldTimeStep });
 	      });
 	    }
@@ -670,46 +670,6 @@
 	                _react2.default.createElement(_deleteForever2.default, { className: 'delete-icon', style: { width: 45, height: 50, opacity: deleteOpacity } })
 	              )
 	            ),
-	            showFreezeButton.value === true && _react2.default.createElement(
-	              'div',
-	              null,
-	              _react2.default.createElement(
-	                'button',
-	                { className: 'freeze-button', onClick: this.freeze },
-	                _react2.default.createElement(
-	                  'div',
-	                  { title: 'Freeze' },
-	                  _react2.default.createElement(
-	                    'i',
-	                    { className: 'material-icons' },
-	                    'ac_unit'
-	                  )
-	                ),
-	                this.state.isFrozen && _react2.default.createElement(_CircularProgress2.default, {
-	                  mode: 'determinate',
-	                  value: this.state.completed,
-	                  className: 'progress'
-	                })
-	              ),
-	              _react2.default.createElement(
-	                'button',
-	                { className: 'speed-button', onClick: this.slow },
-	                _react2.default.createElement(
-	                  'div',
-	                  { title: 'Speed' },
-	                  _react2.default.createElement(
-	                    'i',
-	                    { className: 'material-icons' },
-	                    'directions_run'
-	                  )
-	                ),
-	                this.state.isSlowed && _react2.default.createElement(_CircularProgress2.default, {
-	                  mode: 'determinate',
-	                  value: this.state.completed,
-	                  className: 'progress'
-	                })
-	              )
-	            ),
 	            showRestart && _react2.default.createElement(
 	              _RaisedButton2.default,
 	              { id: 'restart', className: 'restart-button', onClick: this.restart },
@@ -742,6 +702,46 @@
 	                  'Link for Current Model'
 	                )
 	              )
+	            )
+	          ),
+	          showFreezeButton.value === true && _react2.default.createElement(
+	            'div',
+	            { className: 'speed-controls' },
+	            _react2.default.createElement(
+	              'button',
+	              { className: 'freeze-button', onClick: this.freeze },
+	              _react2.default.createElement(
+	                'div',
+	                { title: 'Freeze' },
+	                _react2.default.createElement(
+	                  'i',
+	                  { className: 'material-icons' },
+	                  'ac_unit'
+	                )
+	              ),
+	              this.state.isFrozen && _react2.default.createElement(_CircularProgress2.default, {
+	                mode: 'determinate',
+	                value: this.state.completed,
+	                className: 'progress'
+	              })
+	            ),
+	            _react2.default.createElement(
+	              'button',
+	              { className: 'speed-button', onClick: this.slow },
+	              _react2.default.createElement(
+	                'div',
+	                { title: 'Speed' },
+	                _react2.default.createElement(
+	                  'i',
+	                  { className: 'material-icons' },
+	                  'directions_run'
+	                )
+	              ),
+	              this.state.isSlowed && _react2.default.createElement(_CircularProgress2.default, {
+	                mode: 'determinate',
+	                value: this.state.completed,
+	                className: 'progress'
+	              })
 	            )
 	          )
 	        )
@@ -40407,11 +40407,45 @@
 	  return Math.floor(Math.random() * (max - min + 1)) + min;
 	};
 
-	module.exports = function () {
+	function setCookie(cname, cvalue, exdays) {
+	  var d = new Date();
+	  d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+	  var expires = "expires=" + d.toUTCString();
+	  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	function getCookie(cname) {
+	  var name = cname + "=";
+	  var decodedCookie = decodeURIComponent(document.cookie);
+	  var ca = decodedCookie.split(';');
+	  for (var i = 0; i < ca.length; i++) {
+	    var c = ca[i];
+	    while (c.charAt(0) == ' ') {
+	      c = c.substring(1);
+	    }
+	    if (c.indexOf(name) == 0) {
+	      return c.substring(name.length, c.length);
+	    }
+	  }
+	  return "";
+	}
+
+	function generateUsername() {
 	  var color = colors[getRandomInt(0, colors.length - 1)];
 	  var animal = animals[getRandomInt(0, animals.length - 1)];
 	  var num = getRandomInt(100, 999);
 	  return color + animal + num;
+	}
+
+	module.exports = function () {
+	  var username = getCookie("username");
+	  if (username == "") {
+	    username = generateUsername();
+	    if (username != "" && username != null) {
+	      setCookie("username", username, 1);
+	    }
+	  }
+	  return username;
 	};
 
 /***/ }),
@@ -40449,7 +40483,7 @@
 
 
 	// module
-	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 0px;\n  color: #444;\n  width: 450px;\n  max-height: 650px;\n  border: 2px solid silver;\n  border-radius: 8px;\n  overflow-y: scroll;\n  padding: 10px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.authoring-form h3 {\n  padding: 4px 0 4px 0;\n  margin: 10px 0 5px 0;\n  width: 100%;\n  background-color: #f8f8f8;\n}\n.authoring-form h3 input {\n  height: 15px;\n  width: 15px;\n}\n.authoring-form h3 span {\n  padding-left: 5px;\n}\n.app.authoring {\n  background: white;\n  overflow: hidden;\n}\n.app.authoring .app-container {\n  position: absolute;\n  display: block;\n  top: 20px;\n  left: 20px;\n  max-height: 650px;\n}\n.app.authoring .value-block {\n  margin-left: 15px;\n}\n.app.authoring .authoring-header {\n  position: fixed;\n  width: 100px;\n  text-align: center;\n  border-radius: 20px;\n  top: -5px;\n  color: #444;\n  border: 2px solid silver;\n  border-top: none;\n  border-left: none;\n  border-right: none;\n  background-color: white;\n}\n.app.authoring .logo-menu {\n  z-index: 4;\n}\n.app.authoring .logo-menu .menu {\n  right: 115px;\n  width: 105px;\n  background: white;\n}\n.app .restart-button {\n  position: fixed;\n  top: 10px;\n  left: 10px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .student-button {\n  position: fixed;\n  top: 450px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .model-link-button {\n  position: fixed;\n  top: 450px;\n  left: 160px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .model-link-button i {\n  padding-top: 8px;\n}\n.app .model-link-button a {\n  color: teal;\n}\n.app .model-link {\n  position: fixed;\n  top: 450px;\n  left: 320px;\n  padding: 4px;\n  color: black;\n}\n.app .model-link a {\n  color: teal;\n}\n.app button {\n  position: absolute;\n  padding: 8px;\n  border-radius: 24px;\n  outline: none;\n}\n.app button:hover {\n  background-color: #eee;\n}\n.app button i {\n  font-size: 30px;\n}\n.app .freeze-button {\n  top: 370px;\n  left: 10px;\n}\n.app .freeze-button .progress {\n  position: absolute !important;\n  top: 3px;\n  left: 3px;\n}\n.app .speed-button {\n  top: 370px;\n  left: 70px;\n}\n.app .speed-button .progress {\n  position: absolute !important;\n  top: 3px;\n  left: 3px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  transition: opacity 0s;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
+	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 0px;\n  color: #444;\n  width: 450px;\n  max-height: 650px;\n  border: 2px solid silver;\n  border-radius: 8px;\n  overflow-y: scroll;\n  padding: 10px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.authoring-form h3 {\n  padding: 4px 0 4px 0;\n  margin: 10px 0 5px 0;\n  width: 100%;\n  background-color: #f8f8f8;\n}\n.authoring-form h3 input {\n  height: 15px;\n  width: 15px;\n}\n.authoring-form h3 span {\n  padding-left: 5px;\n}\n.app.authoring {\n  background: white;\n  overflow: hidden;\n}\n.app.authoring .app-container {\n  position: absolute;\n  display: block;\n  top: 20px;\n  left: 20px;\n  max-height: 650px;\n}\n.app.authoring .value-block {\n  margin-left: 15px;\n}\n.app.authoring .authoring-header {\n  position: fixed;\n  width: 100px;\n  text-align: center;\n  border-radius: 20px;\n  top: -5px;\n  color: #444;\n  border: 2px solid silver;\n  border-top: none;\n  border-left: none;\n  border-right: none;\n  background-color: white;\n}\n.app.authoring .logo-menu {\n  z-index: 4;\n}\n.app.authoring .logo-menu .menu {\n  right: 115px;\n  width: 105px;\n  background: white;\n}\n.app.authoring .speed-controls {\n  top: 380px;\n  position: fixed;\n  left: -300px;\n}\n.app .restart-button {\n  position: fixed;\n  top: 10px;\n  left: 10px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .student-button {\n  position: fixed;\n  top: 450px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .model-link-button {\n  position: fixed;\n  top: 450px;\n  left: 160px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .model-link-button i {\n  padding-top: 8px;\n}\n.app .model-link-button a {\n  color: teal;\n}\n.app .model-link {\n  position: fixed;\n  top: 450px;\n  left: 320px;\n  padding: 4px;\n  color: black;\n}\n.app .model-link a {\n  color: teal;\n}\n.app button {\n  position: absolute;\n  padding: 8px;\n  border-radius: 24px;\n  outline: none;\n}\n.app button:hover {\n  background-color: #eee;\n}\n.app button i {\n  font-size: 30px;\n}\n.app .speed-controls {\n  top: 75%;\n  height: 140px;\n  text-align: center;\n  width: 100%;\n  position: absolute;\n}\n.app .freeze-button {\n  margin-left: -70px;\n}\n.app .freeze-button .progress {\n  position: absolute !important;\n  top: 3px;\n  left: 3px;\n}\n.app .speed-button .progress {\n  position: absolute !important;\n  top: 3px;\n  left: 3px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  transition: opacity 0s;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
 
 	// exports
 
