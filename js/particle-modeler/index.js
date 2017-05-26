@@ -486,22 +486,7 @@ export default class Interactive extends PureComponent {
                 <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
               </div>
             </div>
-            {showFreezeButton.value === true &&
-                  <div>
-                    <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div>
-                    {this.state.isFrozen && <CircularProgress
-                        mode="determinate"
-                        value={this.state.completed}
-                        className="progress"
-                      />}</button>
-                    <button className="speed-button" onClick={this.slow}><div title="Speed"><i className="material-icons">directions_run</i></div>
-                    {this.state.isSlowed && <CircularProgress
-                        mode="determinate"
-                        value={this.state.completed}
-                        className="progress"
-                      />}</button>
-                  </div>
-                }
+
             {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
             {authoring && <div>
               <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>
@@ -510,6 +495,22 @@ export default class Interactive extends PureComponent {
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
+          {showFreezeButton.value === true &&
+            <div className="speed-controls">
+              <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div>
+              {this.state.isFrozen && <CircularProgress
+                  mode="determinate"
+                  value={this.state.completed}
+                  className="progress"
+                />}</button>
+              <button className="speed-button" onClick={this.slow}><div title="Speed"><i className="material-icons">directions_run</i></div>
+              {this.state.isSlowed && <CircularProgress
+                  mode="determinate"
+                  value={this.state.completed}
+                  className="progress"
+                />}</button>
+            </div>
+          }
         </div>
       </MuiThemeProvider>
     );
