@@ -380,7 +380,7 @@ export default class Interactive extends PureComponent {
     let oldTimeStep = this.state.timeStep.value;
     api.set({timeStep: slowSpeedTimeStep});
     this.setState({isSlowed: true});
-    this.progress(5, 1500, function(){
+    this.progress(5, 2500, function(){
       api.set({timeStep: oldTimeStep});
     });
   }
