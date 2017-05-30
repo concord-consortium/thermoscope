@@ -9,6 +9,7 @@ import authorableProps from './models/authorable-props';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive, getURLParam, getModelDiff, loadModelDiff } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import CircularProgress from 'material-ui/CircularProgress';
 import LogoMenu from '../components/logo-menu';
@@ -486,31 +487,36 @@ export default class Interactive extends PureComponent {
                 <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
               </div>
             </div>
-
-            {showRestart && <RaisedButton id="restart" className="restart-button" onClick={this.restart}>Restart</RaisedButton>}
             {authoring && <div>
-              <RaisedButton id="studentView" className="student-button" onClick={this.studentView}>Switch to Student View</RaisedButton>
+              <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>
               <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
-              <RaisedButton key="modelSnapshot" className="model-link-button" onClick={this.updateDiff}><i className="material-icons">photo_camera</i></RaisedButton>
+              <IconButton key="modelSnapshot" iconClassName="material-icons" className="model-link-button" onClick={this.updateDiff} tooltip="update link">share</IconButton>
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
-          {showFreezeButton.value === true &&
-            <div className="speed-controls">
-              <button className="freeze-button" onClick={this.freeze}><div title="Freeze"><i className="material-icons">ac_unit</i></div>
-              {this.state.isFrozen && <CircularProgress
-                  mode="determinate"
-                  value={this.state.completed}
-                  className="progress"
-                />}</button>
-              <button className="speed-button" onClick={this.slow}><div title="Speed"><i className="material-icons">directions_run</i></div>
-              {this.state.isSlowed && <CircularProgress
-                  mode="determinate"
-                  value={this.state.completed}
-                  className="progress"
-                />}</button>
+          <div className="speed-controls">
+            <div className="button-layout">
+              <IconButton id="restart" iconClassName="material-icons" tooltip="reload" onClick={this.restart}>refresh</IconButton>
             </div>
-          }
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <IconButton  iconClassName="material-icons" className="speed-button" onClick={this.freeze} tooltip="freeze">ac_unit </IconButton>
+                 {this.state.isFrozen && <CircularProgress
+                      mode="determinate"
+                      value={this.state.completed}
+                      className="progress"
+                    />}
+                </div> }
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <IconButton iconClassName="material-icons" className="speed-button" onClick={this.slow} tooltip="slow">directions_run</IconButton>
+                {this.state.isSlowed && <CircularProgress
+                    mode="determinate"
+                    value={this.state.completed}
+                    className="progress"
+                  />}
+              </div>}
+          </div>
         </div>
       </MuiThemeProvider>
     );

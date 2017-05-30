@@ -34,7 +34,7 @@
     .app-container{
       position: absolute;
       display: block;
-      top: 20px;
+      top: 50px;
       left: 20px;
       max-height: 650px;
     }
@@ -63,56 +63,20 @@
       }
     }
     .speed-controls{
-      top: 380px;
+      top: 0px;
       position: fixed;
-      left: -300px;
-      }
-  }
-  .restart-button{
-    position: fixed;
-    top: 10px;
-    left:10px;
-    border: 1px solid silver;
-    border-radius: 10px;
-    text-align: center;
-    padding: 4px;
-    color: black;
-    background-color: #fff;
-  }
+      text-align: left;
 
-  .student-button{
-    position: fixed;
-    top: 450px;
-    border: 1px solid silver;
-    border-radius: 10px;
-    text-align: center;
-    padding: 4px;
-    color: black;
-    background-color: #fff;
+      .speed-button{ color:#333;}
+      }
+    .material-icons{
+      color:#333 !important;
+    }
+  }
+  .material-icons{
+    color: #ddd !important;
   }
   .model-link-button{
-    position: fixed;
-    top: 450px;
-    left: 160px;
-    border: 1px solid silver;
-    border-radius: 10px;
-    text-align: center;
-    padding: 4px;
-    color: black;
-    background-color: #fff;
-    i{
-      padding-top:8px;
-    }
-    a{
-      color: teal;
-    }
-  }
-  .model-link{
-    position: fixed;
-    top: 450px;
-    left: 320px;
-    padding: 4px;
-    color: black;
     a{
       color: teal;
     }
@@ -128,34 +92,25 @@
     i{
       font-size:30px;
     }
-
   }
   .speed-controls{
     top: 75%;
-    height: 140px;
+    height: 50px;
     text-align: center;
     width: 100%;
     position: absolute;
-  }
-  .freeze-button{
-    // top: 370px;
-    // left: 10px;
-    margin-left:-70px;
-    .progress{
-      position: absolute !important;
-      top:3px;
-      left:3px;
-    }
-  }
-  .speed-button{
-    // top: 370px;
-    .progress{
-      position: absolute !important;
-      top:3px;
-      left:3px;
+    .button-layout{
+      display:inline-block;
+      margin:0px 10px;
     }
   }
 
+ .progress{
+      position: absolute !important;
+      width: 40px;
+      height: 40px;
+      margin: 4px -44px;
+    }
 }
 
 .lab-ui {
