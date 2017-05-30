@@ -92,6 +92,10 @@
 
 	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
 
+	var _IconButton = __webpack_require__(711);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
 	var _deleteForever = __webpack_require__(791);
 
 	var _deleteForever2 = _interopRequireDefault(_deleteForever);
@@ -670,28 +674,19 @@
 	                _react2.default.createElement(_deleteForever2.default, { className: 'delete-icon', style: { width: 45, height: 50, opacity: deleteOpacity } })
 	              )
 	            ),
-	            showRestart && _react2.default.createElement(
-	              _RaisedButton2.default,
-	              { id: 'restart', className: 'restart-button', onClick: this.restart },
-	              'Restart'
-	            ),
 	            authoring && _react2.default.createElement(
 	              'div',
 	              null,
 	              _react2.default.createElement(
-	                _RaisedButton2.default,
-	                { id: 'studentView', className: 'student-button', onClick: this.studentView },
-	                'Switch to Student View'
+	                _IconButton2.default,
+	                { id: 'studentView', iconClassName: 'material-icons', className: 'student-button', onClick: this.studentView, tooltip: 'student view' },
+	                'school'
 	              ),
 	              _react2.default.createElement(_authoring2.default, _extends({}, this.state, { onChange: this.handleAuthoringPropChange })),
 	              _react2.default.createElement(
-	                _RaisedButton2.default,
-	                { key: 'modelSnapshot', className: 'model-link-button', onClick: this.updateDiff },
-	                _react2.default.createElement(
-	                  'i',
-	                  { className: 'material-icons' },
-	                  'photo_camera'
-	                )
+	                _IconButton2.default,
+	                { key: 'modelSnapshot', iconClassName: 'material-icons', className: 'model-link-button', onClick: this.updateDiff, tooltip: 'update link' },
+	                'share'
 	              ),
 	              _react2.default.createElement(
 	                'div',
@@ -704,20 +699,25 @@
 	              )
 	            )
 	          ),
-	          showFreezeButton.value === true && _react2.default.createElement(
+	          _react2.default.createElement(
 	            'div',
 	            { className: 'speed-controls' },
 	            _react2.default.createElement(
-	              'button',
-	              { className: 'freeze-button', onClick: this.freeze },
+	              'div',
+	              { className: 'button-layout' },
 	              _react2.default.createElement(
-	                'div',
-	                { title: 'Freeze' },
-	                _react2.default.createElement(
-	                  'i',
-	                  { className: 'material-icons' },
-	                  'ac_unit'
-	                )
+	                _IconButton2.default,
+	                { id: 'restart', iconClassName: 'material-icons', tooltip: 'reload', onClick: this.restart },
+	                'refresh'
+	              )
+	            ),
+	            showFreezeButton.value === true && _react2.default.createElement(
+	              'div',
+	              { className: 'button-layout' },
+	              _react2.default.createElement(
+	                _IconButton2.default,
+	                { iconClassName: 'material-icons', className: 'speed-button', onClick: this.freeze, tooltip: 'freeze' },
+	                'ac_unit '
 	              ),
 	              this.state.isFrozen && _react2.default.createElement(_CircularProgress2.default, {
 	                mode: 'determinate',
@@ -725,17 +725,13 @@
 	                className: 'progress'
 	              })
 	            ),
-	            _react2.default.createElement(
-	              'button',
-	              { className: 'speed-button', onClick: this.slow },
+	            showFreezeButton.value === true && _react2.default.createElement(
+	              'div',
+	              { className: 'button-layout' },
 	              _react2.default.createElement(
-	                'div',
-	                { title: 'Speed' },
-	                _react2.default.createElement(
-	                  'i',
-	                  { className: 'material-icons' },
-	                  'directions_run'
-	                )
+	                _IconButton2.default,
+	                { iconClassName: 'material-icons', className: 'speed-button', onClick: this.slow, tooltip: 'slow' },
+	                'directions_run'
 	              ),
 	              this.state.isSlowed && _react2.default.createElement(_CircularProgress2.default, {
 	                mode: 'determinate',
@@ -28886,10 +28882,31 @@
 	      result.linux = t
 	    }
 
+	    function getWindowsVersion (s) {
+	      switch (s) {
+	        case 'NT': return 'NT'
+	        case 'XP': return 'XP'
+	        case 'NT 5.0': return '2000'
+	        case 'NT 5.1': return 'XP'
+	        case 'NT 5.2': return '2003'
+	        case 'NT 6.0': return 'Vista'
+	        case 'NT 6.1': return '7'
+	        case 'NT 6.2': return '8'
+	        case 'NT 6.3': return '8.1'
+	        case 'NT 10.0': return '10'
+	        default: return undefined
+	      }
+	    }
+	    
 	    // OS version extraction
 	    var osVersion = '';
-	    if (result.windowsphone) {
+	    if (result.windows) {
+	      osVersion = getWindowsVersion(getFirstMatch(/Windows ((NT|XP)( \d\d?.\d)?)/i))
+	    } else if (result.windowsphone) {
 	      osVersion = getFirstMatch(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i);
+	    } else if (result.mac) {
+	      osVersion = getFirstMatch(/Mac OS X (\d+([_\.\s]\d+)*)/i);
+	      osVersion = osVersion.replace(/[_\s]/g, '.');
 	    } else if (iosdevice) {
 	      osVersion = getFirstMatch(/os (\d+([_\s]\d+)*) like mac os x/i);
 	      osVersion = osVersion.replace(/[_\s]/g, '.');
@@ -28909,7 +28926,7 @@
 	    }
 
 	    // device type extraction
-	    var osMajorVersion = osVersion.split('.')[0];
+	    var osMajorVersion = !result.windows && osVersion.split('.')[0];
 	    if (
 	         tablet
 	      || nexusTablet
@@ -34697,8 +34714,405 @@
 /* 708 */,
 /* 709 */,
 /* 710 */,
-/* 711 */,
-/* 712 */,
+/* 711 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _IconButton = __webpack_require__(712);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _IconButton2.default;
+
+/***/ }),
+/* 712 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(297);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	var _propTypes = __webpack_require__(670);
+
+	var _propTypes2 = _interopRequireDefault(_propTypes);
+
+	var _EnhancedButton = __webpack_require__(713);
+
+	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
+
+	var _FontIcon = __webpack_require__(716);
+
+	var _FontIcon2 = _interopRequireDefault(_FontIcon);
+
+	var _Tooltip = __webpack_require__(718);
+
+	var _Tooltip2 = _interopRequireDefault(_Tooltip);
+
+	var _childUtils = __webpack_require__(714);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context) {
+	  var baseTheme = context.muiTheme.baseTheme;
+
+
+	  return {
+	    root: {
+	      boxSizing: 'border-box',
+	      overflow: 'visible',
+	      transition: _transitions2.default.easeOut(),
+	      padding: baseTheme.spacing.iconSize / 2,
+	      width: baseTheme.spacing.iconSize * 2,
+	      height: baseTheme.spacing.iconSize * 2,
+	      fontSize: 0
+	    },
+	    tooltip: {
+	      boxSizing: 'border-box'
+	    },
+	    disabled: {
+	      color: baseTheme.palette.disabledColor,
+	      fill: baseTheme.palette.disabledColor,
+	      cursor: 'not-allowed'
+	    }
+	  };
+	}
+
+	var IconButton = function (_Component) {
+	  (0, _inherits3.default)(IconButton, _Component);
+
+	  function IconButton() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, IconButton);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = IconButton.__proto__ || (0, _getPrototypeOf2.default)(IconButton)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false,
+	      isKeyboardFocused: false,
+	      // Not to be confonded with the touch property.
+	      // This state is to determined if it's a mobile device.
+	      touch: false,
+	      tooltipShown: false
+	    }, _this.handleBlur = function (event) {
+	      _this.hideTooltip();
+	      if (_this.props.onBlur) {
+	        _this.props.onBlur(event);
+	      }
+	    }, _this.handleFocus = function (event) {
+	      _this.showTooltip();
+	      if (_this.props.onFocus) {
+	        _this.props.onFocus(event);
+	      }
+	    }, _this.handleMouseLeave = function (event) {
+	      if (!_this.button.isKeyboardFocused()) {
+	        _this.hideTooltip();
+	      }
+	      _this.setState({ hovered: false });
+	      if (_this.props.onMouseLeave) {
+	        _this.props.onMouseLeave(event);
+	      }
+	    }, _this.handleMouseOut = function (event) {
+	      if (_this.props.disabled) _this.hideTooltip();
+	      if (_this.props.onMouseOut) _this.props.onMouseOut(event);
+	    }, _this.handleMouseEnter = function (event) {
+	      _this.showTooltip();
+
+	      // Cancel hover styles for touch devices
+	      if (!_this.state.touch) {
+	        _this.setState({ hovered: true });
+	      }
+	      if (_this.props.onMouseEnter) {
+	        _this.props.onMouseEnter(event);
+	      }
+	    }, _this.handleTouchStart = function (event) {
+	      _this.setState({ touch: true });
+
+	      if (_this.props.onTouchStart) {
+	        _this.props.onTouchStart(event);
+	      }
+	    }, _this.handleKeyboardFocus = function (event, isKeyboardFocused) {
+	      var _this$props = _this.props,
+	          disabled = _this$props.disabled,
+	          onFocus = _this$props.onFocus,
+	          onBlur = _this$props.onBlur,
+	          onKeyboardFocus = _this$props.onKeyboardFocus;
+
+	      if (isKeyboardFocused && !disabled) {
+	        _this.showTooltip();
+	        if (onFocus) {
+	          onFocus(event);
+	        }
+	      } else {
+	        _this.hideTooltip();
+	        if (onBlur) {
+	          onBlur(event);
+	        }
+	      }
+
+	      _this.setState({ isKeyboardFocused: isKeyboardFocused });
+	      if (onKeyboardFocus) {
+	        onKeyboardFocus(event, isKeyboardFocused);
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(IconButton, [{
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (nextProps.disabled) {
+	        this.setState({ hovered: false });
+	      }
+	    }
+	  }, {
+	    key: 'setKeyboardFocus',
+	    value: function setKeyboardFocus() {
+	      this.button.setKeyboardFocus();
+	    }
+	  }, {
+	    key: 'showTooltip',
+	    value: function showTooltip() {
+	      if (this.props.tooltip) {
+	        this.setState({ tooltipShown: true });
+	      }
+	    }
+	  }, {
+	    key: 'hideTooltip',
+	    value: function hideTooltip() {
+	      if (this.props.tooltip) this.setState({ tooltipShown: false });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this2 = this;
+
+	      var _props = this.props,
+	          disabled = _props.disabled,
+	          hoveredStyle = _props.hoveredStyle,
+	          disableTouchRipple = _props.disableTouchRipple,
+	          children = _props.children,
+	          iconClassName = _props.iconClassName,
+	          style = _props.style,
+	          tooltip = _props.tooltip,
+	          tooltipPositionProp = _props.tooltipPosition,
+	          tooltipStyles = _props.tooltipStyles,
+	          touch = _props.touch,
+	          iconStyle = _props.iconStyle,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['disabled', 'hoveredStyle', 'disableTouchRipple', 'children', 'iconClassName', 'style', 'tooltip', 'tooltipPosition', 'tooltipStyles', 'touch', 'iconStyle']);
+
+	      var fonticon = void 0;
+
+	      var styles = getStyles(this.props, this.context);
+	      var tooltipPosition = tooltipPositionProp.split('-');
+
+	      var hovered = (this.state.hovered || this.state.isKeyboardFocused) && !disabled;
+
+	      var mergedRootStyles = (0, _simpleAssign2.default)(styles.root, style, hovered ? hoveredStyle : {});
+
+	      var tooltipElement = tooltip ? _react2.default.createElement(_Tooltip2.default, {
+	        label: tooltip,
+	        show: this.state.tooltipShown,
+	        touch: touch,
+	        style: (0, _simpleAssign2.default)(styles.tooltip, tooltipStyles),
+	        verticalPosition: tooltipPosition[0],
+	        horizontalPosition: tooltipPosition[1]
+	      }) : null;
+
+	      if (iconClassName) {
+	        var iconHoverColor = iconStyle.iconHoverColor,
+	            iconStyleFontIcon = (0, _objectWithoutProperties3.default)(iconStyle, ['iconHoverColor']);
+
+
+	        fonticon = _react2.default.createElement(
+	          _FontIcon2.default,
+	          {
+	            className: iconClassName,
+	            hoverColor: disabled ? null : iconHoverColor,
+	            style: (0, _simpleAssign2.default)({}, disabled && styles.disabled, iconStyleFontIcon),
+	            color: this.context.muiTheme.baseTheme.palette.textColor
+	          },
+	          children
+	        );
+	      }
+
+	      var childrenStyle = disabled ? (0, _simpleAssign2.default)({}, iconStyle, styles.disabled) : iconStyle;
+
+	      return _react2.default.createElement(
+	        _EnhancedButton2.default,
+	        (0, _extends3.default)({
+	          ref: function ref(_ref2) {
+	            return _this2.button = _ref2;
+	          }
+	        }, other, {
+	          centerRipple: true,
+	          disabled: disabled,
+	          onTouchStart: this.handleTouchStart,
+	          style: mergedRootStyles,
+	          disableTouchRipple: disableTouchRipple,
+	          onBlur: this.handleBlur,
+	          onFocus: this.handleFocus,
+	          onMouseLeave: this.handleMouseLeave,
+	          onMouseEnter: this.handleMouseEnter,
+	          onMouseOut: this.handleMouseOut,
+	          onKeyboardFocus: this.handleKeyboardFocus
+	        }),
+	        tooltipElement,
+	        fonticon,
+	        (0, _childUtils.extendChildren)(children, {
+	          style: childrenStyle
+	        })
+	      );
+	    }
+	  }]);
+	  return IconButton;
+	}(_react.Component);
+
+	IconButton.muiName = 'IconButton';
+	IconButton.defaultProps = {
+	  disabled: false,
+	  disableTouchRipple: false,
+	  iconStyle: {},
+	  tooltipPosition: 'bottom-center',
+	  touch: false
+	};
+	IconButton.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? IconButton.propTypes = {
+	  /**
+	   * Can be used to pass a `FontIcon` element as the icon for the button.
+	   */
+	  children: _react.PropTypes.node,
+	  /**
+	   * The CSS class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  /**
+	   * If true, the element's ripple effect will be disabled.
+	   */
+	  disableTouchRipple: _react.PropTypes.bool,
+	  /**
+	   * If true, the element will be disabled.
+	   */
+	  disabled: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element when the component is hovered.
+	   */
+	  hoveredStyle: _react.PropTypes.object,
+	  /**
+	   * The URL to link to when the button is clicked.
+	   */
+	  href: _react.PropTypes.string,
+	  /**
+	   * The CSS class name of the icon. Used for setting the icon with a stylesheet.
+	   */
+	  iconClassName: _react.PropTypes.string,
+	  /**
+	   * Override the inline-styles of the icon element.
+	   * Note: you can specify iconHoverColor as a String inside this object.
+	   */
+	  iconStyle: _react.PropTypes.object,
+	  /** @ignore */
+	  onBlur: _react.PropTypes.func,
+	  /** @ignore */
+	  onFocus: _react.PropTypes.func,
+	  /**
+	   * Callback function fired when the element is focused or blurred by the keyboard.
+	   *
+	   * @param {object} event `focus` or `blur` event targeting the element.
+	   * @param {boolean} keyboardFocused Indicates whether the element is focused.
+	   */
+	  onKeyboardFocus: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseOut: _react.PropTypes.func,
+	  /** @ignore */
+	  onTouchStart: _react.PropTypes.func,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  /**
+	   * The text to supply to the element's tooltip.
+	   */
+	  tooltip: _react.PropTypes.node,
+	  /**
+	   * The vertical and horizontal positions, respectively, of the element's tooltip.
+	   * Possible values are: "bottom-center", "top-center", "bottom-right", "top-right",
+	   * "bottom-left", and "top-left".
+	   */
+	  tooltipPosition: _propTypes2.default.cornersAndCenter,
+	  /**
+	   * Override the inline-styles of the tooltip element.
+	   */
+	  tooltipStyles: _react.PropTypes.object,
+	  /**
+	   * If true, increase the tooltip element's size. Useful for increasing tooltip
+	   * readability on mobile devices.
+	   */
+	  touch: _react.PropTypes.bool
+	} : void 0;
+	exports.default = IconButton;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
+
+/***/ }),
 /* 713 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -35515,9 +35929,414 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
 
 /***/ }),
-/* 716 */,
-/* 717 */,
-/* 718 */,
+/* 716 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = undefined;
+
+	var _FontIcon = __webpack_require__(717);
+
+	var _FontIcon2 = _interopRequireDefault(_FontIcon);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _FontIcon2.default;
+
+/***/ }),
+/* 717 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(297);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context, state) {
+	  var color = props.color,
+	      hoverColor = props.hoverColor;
+	  var baseTheme = context.muiTheme.baseTheme;
+
+	  var offColor = color || baseTheme.palette.textColor;
+	  var onColor = hoverColor || offColor;
+
+	  return {
+	    root: {
+	      color: state.hovered ? onColor : offColor,
+	      position: 'relative',
+	      fontSize: baseTheme.spacing.iconSize,
+	      display: 'inline-block',
+	      userSelect: 'none',
+	      transition: _transitions2.default.easeOut()
+	    }
+	  };
+	}
+
+	var FontIcon = function (_Component) {
+	  (0, _inherits3.default)(FontIcon, _Component);
+
+	  function FontIcon() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, FontIcon);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = FontIcon.__proto__ || (0, _getPrototypeOf2.default)(FontIcon)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      hovered: false
+	    }, _this.handleMouseLeave = function (event) {
+	      // hover is needed only when a hoverColor is defined
+	      if (_this.props.hoverColor !== undefined) {
+	        _this.setState({ hovered: false });
+	      }
+	      if (_this.props.onMouseLeave) {
+	        _this.props.onMouseLeave(event);
+	      }
+	    }, _this.handleMouseEnter = function (event) {
+	      // hover is needed only when a hoverColor is defined
+	      if (_this.props.hoverColor !== undefined) {
+	        _this.setState({ hovered: true });
+	      }
+	      if (_this.props.onMouseEnter) {
+	        _this.props.onMouseEnter(event);
+	      }
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(FontIcon, [{
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          hoverColor = _props.hoverColor,
+	          onMouseLeave = _props.onMouseLeave,
+	          onMouseEnter = _props.onMouseEnter,
+	          style = _props.style,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['hoverColor', 'onMouseLeave', 'onMouseEnter', 'style']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+
+	      return _react2.default.createElement('span', (0, _extends3.default)({}, other, {
+	        onMouseLeave: this.handleMouseLeave,
+	        onMouseEnter: this.handleMouseEnter,
+	        style: prepareStyles((0, _simpleAssign2.default)(styles.root, style))
+	      }));
+	    }
+	  }]);
+	  return FontIcon;
+	}(_react.Component);
+
+	FontIcon.muiName = 'FontIcon';
+	FontIcon.defaultProps = {
+	  onMouseEnter: function onMouseEnter() {},
+	  onMouseLeave: function onMouseLeave() {}
+	};
+	FontIcon.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? FontIcon.propTypes = {
+	  /**
+	   * This is the font color of the font icon. If not specified,
+	   * this component will default to muiTheme.palette.textColor.
+	   */
+	  color: _react.PropTypes.string,
+	  /**
+	   * This is the icon color when the mouse hovers over the icon.
+	   */
+	  hoverColor: _react.PropTypes.string,
+	  /** @ignore */
+	  onMouseEnter: _react.PropTypes.func,
+	  /** @ignore */
+	  onMouseLeave: _react.PropTypes.func,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object
+	} : void 0;
+	exports.default = FontIcon;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
+
+/***/ }),
+/* 718 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _extends2 = __webpack_require__(628);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
+	var _objectWithoutProperties2 = __webpack_require__(633);
+
+	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
+
+	var _getPrototypeOf = __webpack_require__(476);
+
+	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+	var _classCallCheck2 = __webpack_require__(502);
+
+	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+	var _createClass2 = __webpack_require__(503);
+
+	var _createClass3 = _interopRequireDefault(_createClass2);
+
+	var _possibleConstructorReturn2 = __webpack_require__(507);
+
+	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+	var _inherits2 = __webpack_require__(554);
+
+	var _inherits3 = _interopRequireDefault(_inherits2);
+
+	var _simpleAssign = __webpack_require__(635);
+
+	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
+
+	var _react = __webpack_require__(297);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _transitions = __webpack_require__(637);
+
+	var _transitions2 = _interopRequireDefault(_transitions);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function getStyles(props, context, state) {
+	  var verticalPosition = props.verticalPosition;
+	  var horizontalPosition = props.horizontalPosition;
+	  var touchMarginOffset = props.touch ? 10 : 0;
+	  var touchOffsetTop = props.touch ? -20 : -10;
+	  var offset = verticalPosition === 'bottom' ? 14 + touchMarginOffset : -14 - touchMarginOffset;
+
+	  var _context$muiTheme = context.muiTheme,
+	      baseTheme = _context$muiTheme.baseTheme,
+	      zIndex = _context$muiTheme.zIndex,
+	      tooltip = _context$muiTheme.tooltip;
+
+
+	  var styles = {
+	    root: {
+	      position: 'absolute',
+	      fontFamily: baseTheme.fontFamily,
+	      fontSize: '10px',
+	      lineHeight: '22px',
+	      padding: '0 8px',
+	      zIndex: zIndex.tooltip,
+	      color: tooltip.color,
+	      overflow: 'hidden',
+	      top: -10000,
+	      borderRadius: 2,
+	      userSelect: 'none',
+	      opacity: 0,
+	      right: horizontalPosition === 'left' ? 12 : null,
+	      left: horizontalPosition === 'center' ? (state.offsetWidth - 48) / 2 * -1 : null,
+	      transition: _transitions2.default.easeOut('0ms', 'top', '450ms') + ', ' + _transitions2.default.easeOut('450ms', 'transform', '0ms') + ', ' + _transitions2.default.easeOut('450ms', 'opacity', '0ms')
+	    },
+	    label: {
+	      position: 'relative',
+	      whiteSpace: 'nowrap'
+	    },
+	    ripple: {
+	      position: 'absolute',
+	      left: horizontalPosition === 'center' ? '50%' : horizontalPosition === 'left' ? '100%' : '0%',
+	      top: verticalPosition === 'bottom' ? 0 : '100%',
+	      transform: 'translate(-50%, -50%)',
+	      borderRadius: '50%',
+	      backgroundColor: 'transparent',
+	      transition: _transitions2.default.easeOut('0ms', 'width', '450ms') + ', ' + _transitions2.default.easeOut('0ms', 'height', '450ms') + ', ' + _transitions2.default.easeOut('450ms', 'backgroundColor', '0ms')
+	    },
+	    rootWhenShown: {
+	      top: verticalPosition === 'top' ? touchOffsetTop : 36,
+	      opacity: 0.9,
+	      transform: 'translate(0px, ' + offset + 'px)',
+	      transition: _transitions2.default.easeOut('0ms', 'top', '0ms') + ', ' + _transitions2.default.easeOut('450ms', 'transform', '0ms') + ', ' + _transitions2.default.easeOut('450ms', 'opacity', '0ms')
+	    },
+	    rootWhenTouched: {
+	      fontSize: '14px',
+	      lineHeight: '32px',
+	      padding: '0 16px'
+	    },
+	    rippleWhenShown: {
+	      backgroundColor: tooltip.rippleBackgroundColor,
+	      transition: _transitions2.default.easeOut('450ms', 'width', '0ms') + ', ' + _transitions2.default.easeOut('450ms', 'height', '0ms') + ', ' + _transitions2.default.easeOut('450ms', 'backgroundColor', '0ms')
+	    }
+	  };
+
+	  return styles;
+	}
+
+	var Tooltip = function (_Component) {
+	  (0, _inherits3.default)(Tooltip, _Component);
+
+	  function Tooltip() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
+	    (0, _classCallCheck3.default)(this, Tooltip);
+
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Tooltip.__proto__ || (0, _getPrototypeOf2.default)(Tooltip)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+	      offsetWidth: null
+	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+	  }
+
+	  (0, _createClass3.default)(Tooltip, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.setRippleSize();
+	      this.setTooltipPosition();
+	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps() {
+	      this.setTooltipPosition();
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      this.setRippleSize();
+	    }
+	  }, {
+	    key: 'setRippleSize',
+	    value: function setRippleSize() {
+	      var ripple = this.refs.ripple;
+	      var tooltip = this.refs.tooltip;
+	      var tooltipWidth = parseInt(tooltip.offsetWidth, 10) / (this.props.horizontalPosition === 'center' ? 2 : 1);
+	      var tooltipHeight = parseInt(tooltip.offsetHeight, 10);
+
+	      var rippleDiameter = Math.ceil(Math.sqrt(Math.pow(tooltipHeight, 2) + Math.pow(tooltipWidth, 2)) * 2);
+	      if (this.props.show) {
+	        ripple.style.height = rippleDiameter + 'px';
+	        ripple.style.width = rippleDiameter + 'px';
+	      } else {
+	        ripple.style.width = '0px';
+	        ripple.style.height = '0px';
+	      }
+	    }
+	  }, {
+	    key: 'setTooltipPosition',
+	    value: function setTooltipPosition() {
+	      this.setState({ offsetWidth: this.refs.tooltip.offsetWidth });
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _props = this.props,
+	          horizontalPosition = _props.horizontalPosition,
+	          label = _props.label,
+	          show = _props.show,
+	          touch = _props.touch,
+	          verticalPosition = _props.verticalPosition,
+	          other = (0, _objectWithoutProperties3.default)(_props, ['horizontalPosition', 'label', 'show', 'touch', 'verticalPosition']);
+	      var prepareStyles = this.context.muiTheme.prepareStyles;
+
+	      var styles = getStyles(this.props, this.context, this.state);
+
+	      return _react2.default.createElement(
+	        'div',
+	        (0, _extends3.default)({}, other, {
+	          ref: 'tooltip',
+	          style: prepareStyles((0, _simpleAssign2.default)(styles.root, this.props.show && styles.rootWhenShown, this.props.touch && styles.rootWhenTouched, this.props.style))
+	        }),
+	        _react2.default.createElement('div', {
+	          ref: 'ripple',
+	          style: prepareStyles((0, _simpleAssign2.default)(styles.ripple, this.props.show && styles.rippleWhenShown))
+	        }),
+	        _react2.default.createElement(
+	          'span',
+	          { style: prepareStyles(styles.label) },
+	          label
+	        )
+	      );
+	    }
+	  }]);
+	  return Tooltip;
+	}(_react.Component);
+
+	Tooltip.contextTypes = {
+	  muiTheme: _react.PropTypes.object.isRequired
+	};
+	process.env.NODE_ENV !== "production" ? Tooltip.propTypes = {
+	  /**
+	   * The css class name of the root element.
+	   */
+	  className: _react.PropTypes.string,
+	  horizontalPosition: _react.PropTypes.oneOf(['left', 'right', 'center']),
+	  label: _react.PropTypes.node.isRequired,
+	  show: _react.PropTypes.bool,
+	  /**
+	   * Override the inline-styles of the root element.
+	   */
+	  style: _react.PropTypes.object,
+	  touch: _react.PropTypes.bool,
+	  verticalPosition: _react.PropTypes.oneOf(['top', 'bottom'])
+	} : void 0;
+	exports.default = Tooltip;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
+
+/***/ }),
 /* 719 */,
 /* 720 */,
 /* 721 */,
@@ -40483,7 +41302,7 @@
 
 
 	// module
-	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 0px;\n  color: #444;\n  width: 450px;\n  max-height: 650px;\n  border: 2px solid silver;\n  border-radius: 8px;\n  overflow-y: scroll;\n  padding: 10px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.authoring-form h3 {\n  padding: 4px 0 4px 0;\n  margin: 10px 0 5px 0;\n  width: 100%;\n  background-color: #f8f8f8;\n}\n.authoring-form h3 input {\n  height: 15px;\n  width: 15px;\n}\n.authoring-form h3 span {\n  padding-left: 5px;\n}\n.app.authoring {\n  background: white;\n  overflow: hidden;\n}\n.app.authoring .app-container {\n  position: absolute;\n  display: block;\n  top: 20px;\n  left: 20px;\n  max-height: 650px;\n}\n.app.authoring .value-block {\n  margin-left: 15px;\n}\n.app.authoring .authoring-header {\n  position: fixed;\n  width: 100px;\n  text-align: center;\n  border-radius: 20px;\n  top: -5px;\n  color: #444;\n  border: 2px solid silver;\n  border-top: none;\n  border-left: none;\n  border-right: none;\n  background-color: white;\n}\n.app.authoring .logo-menu {\n  z-index: 4;\n}\n.app.authoring .logo-menu .menu {\n  right: 115px;\n  width: 105px;\n  background: white;\n}\n.app.authoring .speed-controls {\n  top: 380px;\n  position: fixed;\n  left: -300px;\n}\n.app .restart-button {\n  position: fixed;\n  top: 10px;\n  left: 10px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .student-button {\n  position: fixed;\n  top: 450px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .model-link-button {\n  position: fixed;\n  top: 450px;\n  left: 160px;\n  border: 1px solid silver;\n  border-radius: 10px;\n  text-align: center;\n  padding: 4px;\n  color: black;\n  background-color: #fff;\n}\n.app .model-link-button i {\n  padding-top: 8px;\n}\n.app .model-link-button a {\n  color: teal;\n}\n.app .model-link {\n  position: fixed;\n  top: 450px;\n  left: 320px;\n  padding: 4px;\n  color: black;\n}\n.app .model-link a {\n  color: teal;\n}\n.app button {\n  position: absolute;\n  padding: 8px;\n  border-radius: 24px;\n  outline: none;\n}\n.app button:hover {\n  background-color: #eee;\n}\n.app button i {\n  font-size: 30px;\n}\n.app .speed-controls {\n  top: 75%;\n  height: 140px;\n  text-align: center;\n  width: 100%;\n  position: absolute;\n}\n.app .freeze-button {\n  margin-left: -70px;\n}\n.app .freeze-button .progress {\n  position: absolute !important;\n  top: 3px;\n  left: 3px;\n}\n.app .speed-button .progress {\n  position: absolute !important;\n  top: 3px;\n  left: 3px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  transition: opacity 0s;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
+	exports.push([module.id, ".authoring-form {\n  position: absolute;\n  left: calc(50% + 300px);\n  top: 0px;\n  color: #444;\n  width: 450px;\n  max-height: 650px;\n  border: 2px solid silver;\n  border-radius: 8px;\n  overflow-y: scroll;\n  padding: 10px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.authoring-form h3 {\n  padding: 4px 0 4px 0;\n  margin: 10px 0 5px 0;\n  width: 100%;\n  background-color: #f8f8f8;\n}\n.authoring-form h3 input {\n  height: 15px;\n  width: 15px;\n}\n.authoring-form h3 span {\n  padding-left: 5px;\n}\n.app.authoring {\n  background: white;\n  overflow: hidden;\n}\n.app.authoring .app-container {\n  position: absolute;\n  display: block;\n  top: 50px;\n  left: 20px;\n  max-height: 650px;\n}\n.app.authoring .value-block {\n  margin-left: 15px;\n}\n.app.authoring .authoring-header {\n  position: fixed;\n  width: 100px;\n  text-align: center;\n  border-radius: 20px;\n  top: -5px;\n  color: #444;\n  border: 2px solid silver;\n  border-top: none;\n  border-left: none;\n  border-right: none;\n  background-color: white;\n}\n.app.authoring .logo-menu {\n  z-index: 4;\n}\n.app.authoring .logo-menu .menu {\n  right: 115px;\n  width: 105px;\n  background: white;\n}\n.app.authoring .speed-controls {\n  top: 0px;\n  position: fixed;\n  text-align: left;\n}\n.app.authoring .speed-controls .speed-button {\n  color: #333;\n}\n.app.authoring .material-icons {\n  color: #333 !important;\n}\n.app .material-icons {\n  color: #ddd !important;\n}\n.app .model-link-button a {\n  color: teal;\n}\n.app button {\n  position: absolute;\n  padding: 8px;\n  border-radius: 24px;\n  outline: none;\n}\n.app button:hover {\n  background-color: #eee;\n}\n.app button i {\n  font-size: 30px;\n}\n.app .speed-controls {\n  top: 75%;\n  height: 50px;\n  text-align: center;\n  width: 100%;\n  position: absolute;\n}\n.app .speed-controls .button-layout {\n  display: inline-block;\n  margin: 0px 10px;\n}\n.app .progress {\n  position: absolute !important;\n  width: 40px;\n  height: 40px;\n  margin: 4px -44px;\n}\n.lab-ui {\n  position: relative;\n  width: 100%;\n}\n.lab-ui .new-atom-bin {\n  position: absolute;\n  top: -340px;\n  left: 18px;\n  border: 1px solid #555;\n  color: #777;\n  padding: 10px;\n  pointer-events: none;\n  z-index: 2;\n}\n.lab-ui .new-atom-bin p {\n  width: 100%;\n  text-align: center;\n  padding-bottom: 10px;\n}\n.lab-ui .new-atom-bin .new-atom {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: rgba(255, 255, 255, 0.7);\n  transition: background 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom div {\n  display: block;\n  background: black;\n  border-radius: 50%;\n  height: 22px;\n  width: 22px;\n  margin: 3px;\n  background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);\n  opacity: 1;\n  transition: opacity 1.5s;\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-0 div {\n  background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);\n}\n.lab-ui .new-atom-bin .new-atom.new-atom-1 div {\n  background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);\n}\n.lab-ui .new-atom-bin .hiding {\n  display: block;\n  border: 1px solid #555;\n  height: 28px;\n  width: 28px;\n  border-radius: 50%;\n  background: #ffffff;\n  transition: background 0s;\n}\n.lab-ui .new-atom-bin .hiding div {\n  opacity: 0;\n  transition: opacity 0s;\n}\n.lab-ui h4 {\n  padding-top: 3px;\n  padding-bottom: 3px;\n}\n.lab-ui .authoring-slider {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column;\n}\n.lab-ui .authoring-slider.mini {\n  -webkit-box-orient: horizontal;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: row;\n  flex-direction: row;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 300px;\n  margin-bottom: -8px;\n}\n.lab-ui .delete-icon {\n  position: absolute;\n  top: -73px;\n  left: 489px;\n  pointer-events: none;\n}\ntbody tr:nth-child(odd) {\n  background-color: #cccccc;\n}\ntbody tr:nth-child(even) {\n  background-color: #efefef;\n}\ntable {\n  background-color: white;\n  border: 1px solid #777;\n}\ntd {\n  text-align: center;\n}\n", ""]);
 
 	// exports
 

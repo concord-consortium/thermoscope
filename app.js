@@ -35988,10 +35988,31 @@
 	      result.linux = t
 	    }
 
+	    function getWindowsVersion (s) {
+	      switch (s) {
+	        case 'NT': return 'NT'
+	        case 'XP': return 'XP'
+	        case 'NT 5.0': return '2000'
+	        case 'NT 5.1': return 'XP'
+	        case 'NT 5.2': return '2003'
+	        case 'NT 6.0': return 'Vista'
+	        case 'NT 6.1': return '7'
+	        case 'NT 6.2': return '8'
+	        case 'NT 6.3': return '8.1'
+	        case 'NT 10.0': return '10'
+	        default: return undefined
+	      }
+	    }
+	    
 	    // OS version extraction
 	    var osVersion = '';
-	    if (result.windowsphone) {
+	    if (result.windows) {
+	      osVersion = getWindowsVersion(getFirstMatch(/Windows ((NT|XP)( \d\d?.\d)?)/i))
+	    } else if (result.windowsphone) {
 	      osVersion = getFirstMatch(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i);
+	    } else if (result.mac) {
+	      osVersion = getFirstMatch(/Mac OS X (\d+([_\.\s]\d+)*)/i);
+	      osVersion = osVersion.replace(/[_\s]/g, '.');
 	    } else if (iosdevice) {
 	      osVersion = getFirstMatch(/os (\d+([_\s]\d+)*) like mac os x/i);
 	      osVersion = osVersion.replace(/[_\s]/g, '.');
@@ -36011,7 +36032,7 @@
 	    }
 
 	    // device type extraction
-	    var osMajorVersion = osVersion.split('.')[0];
+	    var osMajorVersion = !result.windows && osVersion.split('.')[0];
 	    if (
 	         tablet
 	      || nexusTablet
@@ -42168,6 +42189,20 @@
 	      return emptyFunction.thatReturnsNull;
 	    }
 
+	    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+	      var checker = arrayOfTypeCheckers[i];
+	      if (typeof checker !== 'function') {
+	        warning(
+	          false,
+	          'Invalid argument supplid to oneOfType. Expected an array of check functions, but ' +
+	          'received %s at index %s.',
+	          getPostfixForTypeWarning(checker),
+	          i
+	        );
+	        return emptyFunction.thatReturnsNull;
+	      }
+	    }
+
 	    function validate(props, propName, componentName, location, propFullName) {
 	      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
 	        var checker = arrayOfTypeCheckers[i];
@@ -42300,6 +42335,9 @@
 	  // This handles more types than `getPropType`. Only used for error messages.
 	  // See `createPrimitiveTypeChecker`.
 	  function getPreciseType(propValue) {
+	    if (typeof propValue === 'undefined' || propValue === null) {
+	      return '' + propValue;
+	    }
 	    var propType = getPropType(propValue);
 	    if (propType === 'object') {
 	      if (propValue instanceof Date) {
@@ -42309,6 +42347,23 @@
 	      }
 	    }
 	    return propType;
+	  }
+
+	  // Returns a string that is postfixed to a warning about an invalid type.
+	  // For example, "undefined" or "of type array"
+	  function getPostfixForTypeWarning(value) {
+	    var type = getPreciseType(value);
+	    switch (type) {
+	      case 'array':
+	      case 'object':
+	        return 'an ' + type;
+	      case 'boolean':
+	      case 'date':
+	      case 'regexp':
+	        return 'a ' + type;
+	      default:
+	        return type;
+	    }
 	  }
 
 	  // Returns class name of the object, if any.
@@ -42432,11 +42487,14 @@
 
 	var emptyFunction = __webpack_require__(308);
 	var invariant = __webpack_require__(304);
+	var ReactPropTypesSecret = __webpack_require__(659);
 
 	module.exports = function() {
-	  // Important!
-	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
-	  function shim() {
+	  function shim(props, propName, componentName, location, propFullName, secret) {
+	    if (secret === ReactPropTypesSecret) {
+	      // It is still safe when called from React.
+	      return;
+	    }
 	    invariant(
 	      false,
 	      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
@@ -42448,6 +42506,8 @@
 	  function getShim() {
 	    return shim;
 	  };
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
 	  var ReactPropTypes = {
 	    array: shim,
 	    bool: shim,
