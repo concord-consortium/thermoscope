@@ -627,7 +627,6 @@
 	          var link = JSON.stringify(d);
 	          var encodedLink = btoa(link);
 	          var finalLink = window.location.origin + window.location.pathname + "?model=" + encodedLink;
-	          console.log(finalLink);
 	          return finalLink;
 	        }
 	      }
