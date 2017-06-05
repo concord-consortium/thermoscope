@@ -455,7 +455,6 @@ export default class Interactive extends PureComponent {
         let link = JSON.stringify(d);
         let encodedLink = btoa(link);
         let finalLink = window.location.origin + window.location.pathname + "?model=" + encodedLink;
-        console.log(finalLink);
         return finalLink;
       }
     }
