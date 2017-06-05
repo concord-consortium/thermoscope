@@ -626,7 +626,9 @@
 	          // this is called each render
 	          var link = JSON.stringify(d);
 	          var encodedLink = btoa(link);
-	          return window.location.host + window.location.pathname + "?model=" + encodedLink;
+	          var finalLink = window.location.origin + window.location.pathname + "?model=" + encodedLink;
+	          console.log(finalLink);
+	          return finalLink;
 	        }
 	      }
 	      return null;
