@@ -3,15 +3,14 @@ import ReactDOM from 'react-dom';
 import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
 import Authoring from './authoring';
+import SimulationControls from './simulation-controls';
 import models from './models/';
 // Set of authorable properties which can be overwritten by the url hash.
 import authorableProps from './models/authorable-props';
 import { getStateFromHashWithDefaults, getDiffedHashParams, parseToPrimitive, getURLParam, getModelDiff, loadModelDiff } from '../utils';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
-import CircularProgress from 'material-ui/CircularProgress';
 import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getUsername from '../components/user-name-generator.js';
@@ -80,9 +79,6 @@ export default class Interactive extends PureComponent {
       sessionDate,
       sessionName,
       recordInteractions,
-      completed: 0,
-      isFrozen: false,
-      isSlowed: false,
       modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
     };
@@ -91,9 +87,7 @@ export default class Interactive extends PureComponent {
     this.addNewDraggableAtom = this.addNewDraggableAtom.bind(this);
     this.handleAuthoringPropChange = this.handleAuthoringPropChange.bind(this);
     this.changeElementCount = this.changeElementCount.bind(this);
-    this.freeze = this.freeze.bind(this);
-    this.slow = this.slow.bind(this);
-    this.restart = this.restart.bind(this);
+    this.handleSimulationChange = this.handleSimulationChange.bind(this);
     this.studentView = this.studentView.bind(this);
     this.generatePinnedParticleText = this.generatePinnedParticleText.bind(this);
     this.addPinnedParticleText = this.addPinnedParticleText.bind(this);
@@ -359,50 +353,12 @@ export default class Interactive extends PureComponent {
     }
   }
 
-  restart() {
-    console.log("restart");
-    window.location.reload();
-  }
-
   studentView() {
     this.setState({ authoring: false });
   }
 
-  freeze() {
-    let oldTemp = this.state.targetTemperature.value,
-        oldControl = this.state.temperatureControl.value;
-    api.set({temperatureControl: true});
-    api.set({targetTemperature: 0});
-    this.setState({isFrozen: true});
-    this.progress(5, 500, function() {
-      api.set({temperatureControl: oldControl});
-      api.set({targetTemperature: oldTemp});
-    });
-  }
-
-  slow() {
-    let oldTimeStep = this.state.timeStep.value;
-    api.set({timeStep: slowSpeedTimeStep});
-    this.setState({isSlowed: true});
-    this.progress(5, 2500, function(){
-      api.set({timeStep: oldTimeStep});
-    });
-  }
-
-  progress(completed, totalTime, onComplete) {
-    if (completed > 100) {
-      this.setState({completed: 100});
-      this.timer = setTimeout(() => {
-        this.setState({completed: 0, isSlowed: false, isFrozen: false});
-        onComplete();
-      }, 100);
-    } else {
-      if (this.state.completed != completed){
-        this.setState({completed});
-      }
-      const nextCompleted = completed + 25;
-      this.timer = setTimeout(() => this.progress(nextCompleted, totalTime, onComplete), totalTime / 4);
-    }
+  handleSimulationChange(changedProps){
+      api.set(changedProps);
   }
 
   handleAuthoringPropChange(prop, value) {
@@ -569,29 +525,7 @@ export default class Interactive extends PureComponent {
               <div className="student-activity">{sessionDetails}</div>
             </div>}
           </div>
-          <div className="speed-controls">
-            <div className="button-layout">
-              <IconButton id="restart" iconClassName="material-icons" tooltip="reload" onClick={this.restart}>refresh</IconButton>
-            </div>
-            {showFreezeButton.value === true &&
-              <div className="button-layout">
-                <IconButton  iconClassName="material-icons" className="speed-button" onClick={this.freeze} tooltip="freeze">ac_unit </IconButton>
-                 {this.state.isFrozen && <CircularProgress
-                      mode="determinate"
-                      value={this.state.completed}
-                      className="progress"
-                    />}
-                </div> }
-            {showFreezeButton.value === true &&
-              <div className="button-layout">
-                <IconButton iconClassName="material-icons" className="speed-button" onClick={this.slow} tooltip="slow">directions_run</IconButton>
-                {this.state.isSlowed && <CircularProgress
-                    mode="determinate"
-                    value={this.state.completed}
-                    className="progress"
-                  />}
-              </div>}
-          </div>
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} />
         </div>
       </MuiThemeProvider>
     );
