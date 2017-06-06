@@ -1,6 +1,8 @@
 import React from 'react';
 import Slider from 'material-ui/Slider';
 
+let ignoreList = ["atoms","modelDiff","recordedSession","stepNumber"];
+
 const Authoring = (props) => {
   let handleCheckboxChange = function (evt) {
     props.onChange(evt.target.dataset.prop, evt.target.checked);
@@ -45,6 +47,8 @@ const Authoring = (props) => {
   }
 
   function modelInputMap(key) {
+    if (ignoreList.indexOf(key) > -1) return;
+
     if (!props[key].hasOwnProperty("label") || props[key].hasOwnProperty("element")) {
       return null;
     } else if (typeof props[key].value === "number") {
@@ -56,7 +60,7 @@ const Authoring = (props) => {
 
   function elementInputMap(element) {
     return function (key) {
-      if (key != "atoms" && key != "modelDiff" && props[key].hasOwnProperty("element") && props[key].element == element) {
+      if (props[key].hasOwnProperty("element") && props[key].element == element) {
         return createSliderInput(key, props[key], true);
       }
     }

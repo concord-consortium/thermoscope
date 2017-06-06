@@ -57,7 +57,7 @@ export default class Interactive extends PureComponent {
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
       urlModel = getURLParam("model"),
       // Disable recording of student interaction by default
-      recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : false;
+      recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : true;
     if (urlModel) {
       authoredState = loadModelDiff(JSON.parse(atob(urlModel)), authorableProps);
       if (authoredState.atoms) model.atoms = authoredState.atoms;
@@ -100,6 +100,9 @@ export default class Interactive extends PureComponent {
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
+    this.getStoredData = this.getStoredData.bind(this);
+    this.replaySession = this.replaySession.bind(this);
+    this.replayStep = this.replayStep.bind(this);
   }
 
   componentWillMount() {
@@ -199,11 +202,11 @@ export default class Interactive extends PureComponent {
   }
 
   saveModel() {
-    const { recordInteractions, modelDiff, sessionDate, sessionName } = this.state;
+    const { recordInteractions, modelDiff, sessionDate, sessionName, stepNumber } = this.state;
     // To save entire model:
     // lab.interactiveController.getModel().serialize();
-    if (recordInteractions){
-      base.post(`${sessionDate}/${sessionName}/${Date.now()}`, {
+    if (recordInteractions && !stepNumber){
+      base.post(`${sessionName}/${Date.now()}`, {
         data: modelDiff
       }).then(() => {
         // update completed console.log("then");
@@ -461,8 +464,75 @@ export default class Interactive extends PureComponent {
     return null;
   }
 
+  getStoredData(){
+    const { sessionDate, sessionName } = this.state;
+    base.fetch(`${sessionName}`, {
+      context: this,
+      asArray: false,
+      queries: {
+        limitToLast: 10
+      }
+    }).then(data => {
+      // update completed console.log("then");
+      console.log(data);
+      let sessionTimestamps = Object.keys(data);
+      localStorage.setItem(sessionName, JSON.stringify(data));
+      this.setState({recordedSession: sessionTimestamps});
+      }).catch(err => {
+        console.log("Error fetching diff data from Firebase", err);
+    });
+  }
+
+  replaySession(){
+    const {sessionName, recordedSession} = this.state;
+    let sessionData = JSON.parse(localStorage.getItem(sessionName));
+
+    // restart the replay
+    let nextInterval = recordedSession[0] - recordedSession[1];
+    for (let i=(api.getNumberOfAtoms()-1); i>-1; i--) {
+          api.removeAtom(i);
+        }
+    this.replayStep(0, nextInterval);
+
+    let intervals = [];
+    for (let i = 0; i < recordedSession.length; i++){
+      intervals.push(recordedSession[i] - recordedSession[0]);
+    }
+
+  }
+  replayStep(stepNumber, currentInterval){
+    const {sessionName, recordedSession, model} = this.state;
+    let sessionData = JSON.parse(localStorage.getItem(sessionName));
+
+    this.timer = setTimeout(() => {
+      let sessionTimestamp = recordedSession[stepNumber];
+      let nextDiff = loadModelDiff(sessionData[sessionTimestamp], authorableProps);
+      nextDiff.authoring = true;
+      nextDiff.stepNumber = stepNumber;
+      let atoms = sessionData[sessionTimestamp].atoms;
+      if (atoms){
+        for (let i=(api.getNumberOfAtoms()-1); i>-1; i--) {
+          api.removeAtom(i);
+        }
+        for (let j=0; j < atoms.x.length; j++){
+          api.addAtom({x: atoms.x[j], y: atoms.y[j], element: atoms.element[j], draggable: atoms.draggable[j], pinned: atoms.pinned[j], vx: atoms.vx[j], vy: atoms.vy[j]});
+        }
+      }
+
+      this.setState(nextDiff);
+
+      if(stepNumber < recordedSession.length-1){
+        let nextStep = stepNumber + 1;
+        let nextInterval = recordedSession[nextStep] - recordedSession[stepNumber];
+        this.replayStep(nextStep, nextInterval);
+      } else {
+        this.setState({stepNumber: -1});
+      }
+    }, currentInterval);
+  }
+
   render() {
-    const { authoring, showFreezeButton, showRestart} = this.state;
+    const { authoring, showFreezeButton, showRestart, sessionName, recordedSession} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -473,6 +543,8 @@ export default class Interactive extends PureComponent {
       atomsToShow: [this.state.showAtom0, this.state.showAtom1, this.state.showAtom2],
       count: this.state.elements.value
     };
+
+    let sessionDetails = recordedSession ? <div onClick={this.replaySession} className="replay-session">{recordedSession.length}</div> : null;
 
     return (
       <MuiThemeProvider>
@@ -493,6 +565,8 @@ export default class Interactive extends PureComponent {
               <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
               <IconButton key="modelSnapshot" iconClassName="material-icons" className="model-link-button" onClick={this.updateDiff} tooltip="update link">share</IconButton>
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
+              <div className="student-name" onClick={this.getStoredData}>{sessionName}</div>
+              <div className="student-activity">{sessionDetails}</div>
             </div>}
           </div>
           <div className="speed-controls">
