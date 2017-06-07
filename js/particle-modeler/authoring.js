@@ -60,6 +60,7 @@ const Authoring = (props) => {
 
   function elementInputMap(element) {
     return function (key) {
+      if (ignoreList.indexOf(key) > -1) return;
       if (props[key].hasOwnProperty("element") && props[key].element == element) {
         return createSliderInput(key, props[key], true);
       }

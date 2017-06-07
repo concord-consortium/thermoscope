@@ -36,7 +36,7 @@ let atomBox = {
   };
 
 let particleMaxVelocity = 0.0005;
-let saveStateInterval = 2000;
+let saveStateInterval = 10000;
 
 let slowSpeedTimeStep = 0.05;
 
@@ -397,9 +397,14 @@ export default class Interactive extends PureComponent {
   }
 
   replayDiff(d){
+    const { authoring } = this.state;
     // load from saved state
-    let atoms = d.atoms;
+    let nextDiff = loadModelDiff(d, authorableProps);
+    nextDiff.authoring = authoring;
+
+    let atoms = nextDiff.atoms;
       if (atoms){
+        api.set({ 'textboxes': {} });
         for (let i=(api.getNumberOfAtoms()-1); i>-1; i--) {
           api.removeAtom(i);
         }
@@ -407,12 +412,11 @@ export default class Interactive extends PureComponent {
           api.addAtom({x: atoms.x[j], y: atoms.y[j], element: atoms.element[j], draggable: atoms.draggable[j], pinned: atoms.pinned[j], vx: atoms.vx[j], vy: atoms.vy[j]});
         }
       }
-
-      this.setState(d);
+      this.setState(nextDiff);
   }
 
   render() {
-    const { authoring, showFreezeButton, showRestart, sessionName} = this.state;
+    const { authoring, showFreezeButton, showRestart, sessionName, recordInteractions, modelDiff} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -444,7 +448,7 @@ export default class Interactive extends PureComponent {
               <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
               <IconButton key="modelSnapshot" iconClassName="material-icons" className="model-link-button" onClick={this.updateDiff} tooltip="update link">share</IconButton>
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
-              <FirebaseStorage {...this.state} onLoadDiff={this.replayDiff} />
+              <FirebaseStorage sessionName={sessionName} recordInteractions={recordInteractions} modelDiff={modelDiff} onLoadDiff={this.replayDiff} />
             </div>}
           </div>
           <SimulationControls {...this.state} onChange={this.handleSimulationChange} />

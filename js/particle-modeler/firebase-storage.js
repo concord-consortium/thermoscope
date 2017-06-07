@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import LinearProgress from 'material-ui/LinearProgress';
+import IconButton from 'material-ui/IconButton';
 import Rebase from 're-base';
-import { loadModelDiff } from '../utils';
-import authorableProps from './models/authorable-props';
 
 var base = Rebase.createClass({
     apiKey: "AIzaSyChElp_DuPn3Q0jwV1VXq2M4urgKgANrKw",
@@ -24,14 +23,18 @@ export default class FirebaseStorage extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.saveModel();
+    const { stepNumber } = this.state;
+    // only save state if we're not re-watching a replay.
+    if (stepNumber === 0){
+        this.saveModel();
+    }
   }
 
   saveModel() {
     const { stepNumber } = this.state;
     const { recordInteractions, modelDiff, sessionName } = this.props;
 
-    if (recordInteractions && !stepNumber){
+    if (recordInteractions){
       base.post(`${sessionName}/${Date.now()}`, {
         data: modelDiff
       }).then(() => {
@@ -48,11 +51,9 @@ export default class FirebaseStorage extends PureComponent {
       context: this,
       asArray: false,
       queries: {
-        limitToLast: 10
+        limitToLast: 50
       }
     }).then(data => {
-      // update completed console.log("then");
-      console.log(data);
       localStorage.setItem(sessionName, JSON.stringify(data));
       this.setState({sessionData: data});
       }).catch(err => {
@@ -61,7 +62,7 @@ export default class FirebaseStorage extends PureComponent {
   }
 
   replaySession(){
-    const {sessionName} = this.props;
+    const { sessionName } = this.props;
 
     let newSessionData = JSON.parse(localStorage.getItem(sessionName));
     let sessionTimestamps = Object.keys(newSessionData);
@@ -74,26 +75,24 @@ export default class FirebaseStorage extends PureComponent {
   }
 
   replayStep(currentInterval){
-    const {sessionName, sessionData, model, stepNumber, completed} = this.state;
-    const {authoring, onLoadDiff} = this.props;
+    const { sessionName, sessionData, model, stepNumber, completed } = this.state;
+    const { onLoadDiff } = this.props;
 
     let sessionTimestamps = Object.keys(sessionData);
 
     this.timer = setTimeout(() => {
       let sessionTimestamp = sessionTimestamps[stepNumber];
-      let nextDiff = loadModelDiff(sessionData[sessionTimestamp], authorableProps);
-      nextDiff.authoring = authoring;
-      nextDiff.stepNumber = stepNumber;
 
       // call back to the authoring container to replay the diffed actions
-      onLoadDiff(nextDiff);
+      onLoadDiff(sessionData[sessionTimestamp]);
 
       if(stepNumber < sessionTimestamps.length-1){
         let nextStep = stepNumber + 1;
         let completed = nextStep / sessionTimestamps.length * 100;
         this.setState({stepNumber: nextStep, completed});
-        let nextInterval = sessionTimestamps[nextStep] - sessionTimestamps[stepNumber];
-        this.replayStep(nextStep, nextInterval);
+        let nextInterval = sessionTimestamps[nextStep]-sessionTimestamps[stepNumber];
+        console.log(nextInterval);
+        this.replayStep(nextInterval);
       } else {
         this.setState({stepNumber: 0, completed: 100});
       }
@@ -103,10 +102,13 @@ export default class FirebaseStorage extends PureComponent {
   recordedSessionDetails(){
     const { sessionData, stepNumber, completed } = this.state;
     let sessionTimestamps = Object.keys(sessionData);
+    let replayText = "Replay " + sessionTimestamps.length + " action";
+    replayText = sessionTimestamps.length > 1 ? replayText + "s" : replayText;
+    replayText += " over " + ((sessionTimestamps[sessionTimestamps.length - 1] - sessionTimestamps[0]) / 1000) + " seconds";
 
     return(
       <div className="recordedSessionDetails">
-        <div onClick={this.replaySession} className="replay-session">{sessionTimestamps.length}</div>
+        <IconButton onClick={this.replaySession}  iconClassName="material-icons" className="replay-session" tooltip="Replay actions">refresh</IconButton><span>{replayText}</span>
         <LinearProgress mode="determinate" value={completed} />
       </div>
     )
@@ -121,7 +123,6 @@ export default class FirebaseStorage extends PureComponent {
       <div className="stored-activity">
         <div className="student-name" onClick={this.getStoredData}>{sessionName}</div>
         <div className="student-activity">{sessionDetails}</div>
-
       </div>
     )
   }
