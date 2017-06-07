@@ -4,6 +4,7 @@ import Lab from 'react-lab';
 import NewAtomBin from './new-atom-bin';
 import Authoring from './authoring';
 import SimulationControls from './simulation-controls';
+import FirebaseStorage from './firebase-storage';
 import models from './models/';
 // Set of authorable properties which can be overwritten by the url hash.
 import authorableProps from './models/authorable-props';
@@ -17,14 +18,6 @@ import getUsername from '../components/user-name-generator.js';
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
-import Rebase from 're-base';
-var base = Rebase.createClass({
-    apiKey: "AIzaSyChElp_DuPn3Q0jwV1VXq2M4urgKgANrKw",
-    authDomain: "particlemodeler.firebaseapp.com",
-    databaseURL: "https://particlemodeler.firebaseio.com",
-    storageBucket: "particlemodeler.appspot.com",
-    messagingSenderId: "708009502450"
-});
 // Required by Material-UI library.
 injectTapEventPlugin();
 
@@ -94,9 +87,8 @@ export default class Interactive extends PureComponent {
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
-    this.getStoredData = this.getStoredData.bind(this);
-    this.replaySession = this.replaySession.bind(this);
-    this.replayStep = this.replayStep.bind(this);
+    this.replayDiff = this.replayDiff.bind(this);
+
   }
 
   componentWillMount() {
@@ -167,7 +159,6 @@ export default class Interactive extends PureComponent {
     let hash = getDiffedHashParams(this.state, authorableProps);
     window.location.hash = hash;
     this.setModelProps(prevState);
-    this.saveModel();
   }
 
   getAtomsWithoutPlaceholders() {
@@ -193,21 +184,6 @@ export default class Interactive extends PureComponent {
       x: ax, y: ay, vx, vy, charge, friction, element, pinned, draggable
     };
     return atoms;
-  }
-
-  saveModel() {
-    const { recordInteractions, modelDiff, sessionDate, sessionName, stepNumber } = this.state;
-    // To save entire model:
-    // lab.interactiveController.getModel().serialize();
-    if (recordInteractions && !stepNumber){
-      base.post(`${sessionName}/${Date.now()}`, {
-        data: modelDiff
-      }).then(() => {
-        // update completed console.log("then");
-        }).catch(err => {
-          console.log("Error storing diff data on Firebase", err);
-      });
-    }
   }
 
   handleModelLoad() {
@@ -420,52 +396,9 @@ export default class Interactive extends PureComponent {
     return null;
   }
 
-  getStoredData(){
-    const { sessionDate, sessionName } = this.state;
-    base.fetch(`${sessionName}`, {
-      context: this,
-      asArray: false,
-      queries: {
-        limitToLast: 10
-      }
-    }).then(data => {
-      // update completed console.log("then");
-      console.log(data);
-      let sessionTimestamps = Object.keys(data);
-      localStorage.setItem(sessionName, JSON.stringify(data));
-      this.setState({recordedSession: sessionTimestamps});
-      }).catch(err => {
-        console.log("Error fetching diff data from Firebase", err);
-    });
-  }
-
-  replaySession(){
-    const {sessionName, recordedSession} = this.state;
-    let sessionData = JSON.parse(localStorage.getItem(sessionName));
-
-    // restart the replay
-    let nextInterval = recordedSession[0] - recordedSession[1];
-    for (let i=(api.getNumberOfAtoms()-1); i>-1; i--) {
-          api.removeAtom(i);
-        }
-    this.replayStep(0, nextInterval);
-
-    let intervals = [];
-    for (let i = 0; i < recordedSession.length; i++){
-      intervals.push(recordedSession[i] - recordedSession[0]);
-    }
-
-  }
-  replayStep(stepNumber, currentInterval){
-    const {sessionName, recordedSession, model} = this.state;
-    let sessionData = JSON.parse(localStorage.getItem(sessionName));
-
-    this.timer = setTimeout(() => {
-      let sessionTimestamp = recordedSession[stepNumber];
-      let nextDiff = loadModelDiff(sessionData[sessionTimestamp], authorableProps);
-      nextDiff.authoring = true;
-      nextDiff.stepNumber = stepNumber;
-      let atoms = sessionData[sessionTimestamp].atoms;
+  replayDiff(d){
+    // load from saved state
+    let atoms = d.atoms;
       if (atoms){
         for (let i=(api.getNumberOfAtoms()-1); i>-1; i--) {
           api.removeAtom(i);
@@ -475,20 +408,11 @@ export default class Interactive extends PureComponent {
         }
       }
 
-      this.setState(nextDiff);
-
-      if(stepNumber < recordedSession.length-1){
-        let nextStep = stepNumber + 1;
-        let nextInterval = recordedSession[nextStep] - recordedSession[stepNumber];
-        this.replayStep(nextStep, nextInterval);
-      } else {
-        this.setState({stepNumber: -1});
-      }
-    }, currentInterval);
+      this.setState(d);
   }
 
   render() {
-    const { authoring, showFreezeButton, showRestart, sessionName, recordedSession} = this.state;
+    const { authoring, showFreezeButton, showRestart, sessionName} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -500,7 +424,6 @@ export default class Interactive extends PureComponent {
       count: this.state.elements.value
     };
 
-    let sessionDetails = recordedSession ? <div onClick={this.replaySession} className="replay-session">{recordedSession.length}</div> : null;
 
     return (
       <MuiThemeProvider>
@@ -521,8 +444,7 @@ export default class Interactive extends PureComponent {
               <Authoring {...this.state} onChange={this.handleAuthoringPropChange} />
               <IconButton key="modelSnapshot" iconClassName="material-icons" className="model-link-button" onClick={this.updateDiff} tooltip="update link">share</IconButton>
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
-              <div className="student-name" onClick={this.getStoredData}>{sessionName}</div>
-              <div className="student-activity">{sessionDetails}</div>
+              <FirebaseStorage {...this.state} onLoadDiff={this.replayDiff} />
             </div>}
           </div>
           <SimulationControls {...this.state} onChange={this.handleSimulationChange} />
