@@ -13,6 +13,7 @@ export default class SimulationControls extends PureComponent {
     this.freeze = this.freeze.bind(this);
     this.slow = this.slow.bind(this);
     this.restart = this.restart.bind(this);
+    this.toggleRecording = this.toggleRecording.bind(this);
   }
 
   restart() {
@@ -57,10 +58,16 @@ export default class SimulationControls extends PureComponent {
       this.timer = setTimeout(() => this.progress(nextCompleted, totalTime, onComplete), totalTime / 4);
     }
   }
+  toggleRecording(){
+    const { recordInteractions, onToggleRecording } = this.props;
+    onToggleRecording(!recordInteractions);
+  }
 
   render() {
     const {isSlowed, isFrozen, completed} = this.state;
-    const {showFreezeButton} = this.props;
+    const {showFreezeButton, recordInteractions, authoring} = this.props;
+
+    let recordButtonIcon = recordInteractions === true ? "videocam" : "videocam_off";
 
     return(
       <div className="speed-controls">
@@ -85,6 +92,11 @@ export default class SimulationControls extends PureComponent {
                 className="progress"
               />}
           </div>}
+          {authoring &&
+          <div className="button-layout">
+            <IconButton id="record" iconClassName="material-icons" tooltip="toggle recording" onClick={this.toggleRecording}>{recordButtonIcon}</IconButton>
+          </div>
+          }
       </div>
     )
   }

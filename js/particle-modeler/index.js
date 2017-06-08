@@ -36,7 +36,7 @@ let atomBox = {
   };
 
 let particleMaxVelocity = 0.0005;
-let saveStateInterval = 10000;
+let saveStateInterval = 1000;
 
 let slowSpeedTimeStep = 0.05;
 
@@ -49,7 +49,7 @@ export default class Interactive extends PureComponent {
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
       urlModel = getURLParam("model"),
       // Disable recording of student interaction by default
-      recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : true;
+      recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : false;
     if (urlModel) {
       authoredState = loadModelDiff(JSON.parse(atob(urlModel)), authorableProps);
       if (authoredState.atoms) model.atoms = authoredState.atoms;
@@ -88,6 +88,7 @@ export default class Interactive extends PureComponent {
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.replayDiff = this.replayDiff.bind(this);
+    this.toggleRecording = this.toggleRecording.bind(this);
 
   }
 
@@ -328,6 +329,9 @@ export default class Interactive extends PureComponent {
       }
     }
   }
+  toggleRecording(record){
+    this.setState({recordInteractions: record});
+  }
 
   studentView() {
     this.setState({ authoring: false });
@@ -411,6 +415,7 @@ export default class Interactive extends PureComponent {
         for (let j=0; j < atoms.x.length; j++){
           api.addAtom({x: atoms.x[j], y: atoms.y[j], element: atoms.element[j], draggable: atoms.draggable[j], pinned: atoms.pinned[j], vx: atoms.vx[j], vy: atoms.vy[j]});
         }
+        this.addPinnedParticleText();
       }
       this.setState(nextDiff);
   }
@@ -451,7 +456,7 @@ export default class Interactive extends PureComponent {
               <FirebaseStorage sessionName={sessionName} recordInteractions={recordInteractions} modelDiff={modelDiff} onLoadDiff={this.replayDiff} />
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} />
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleRecording={this.toggleRecording}/>
         </div>
       </MuiThemeProvider>
     );
