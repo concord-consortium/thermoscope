@@ -23,4 +23,4 @@ else
   mv dist _site/$DEPLOY_DIR
   export DEPLOY_DIR
 fi
-s3_website push --site _site
+s3_website push --site _site --config-dir deploy
