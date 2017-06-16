@@ -76,7 +76,7 @@ export default class FirebaseStorage extends PureComponent {
       });
   }
   getStoredData(){
-    const { sessionDate, sessionName } = this.props;
+    const { sessionName } = this.props;
     base.fetch(`${sessionName}`, {
       context: this,
       asArray: false,

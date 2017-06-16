@@ -54,9 +54,7 @@ export default class Interactive extends PureComponent {
       authoredState = loadModelDiff(JSON.parse(atob(urlModel)), authorableProps);
       if (authoredState.atoms) model.atoms = authoredState.atoms;
     }
-    // Group session identifiers by current hour to collate student activity in Firebase
-    let d = new Date();
-    let sessionDate = Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDay(),d.getUTCHours());
+
     let sessionName = getUsername();
 
     this.state = {
@@ -69,7 +67,6 @@ export default class Interactive extends PureComponent {
       showRestart: false,
       pinnedAtoms: {},
       nextUpdate: Date.now(),
-      sessionDate,
       sessionName,
       recordInteractions,
       modelDiff: getModelDiff(authoredState, authorableProps),
