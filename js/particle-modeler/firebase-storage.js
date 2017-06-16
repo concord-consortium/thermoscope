@@ -15,7 +15,13 @@ var base = Rebase.createClass({
 export default class FirebaseStorage extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { stepNumber: 0, completed: 0, recordedSession: null, sessionData: null };
+    this.state = {
+      stepNumber: 0,
+      completed: 0,
+      recordedSession: null,
+      sessionData: null,
+      sessionReplayDetails: null
+    };
     this.saveModel = this.saveModel.bind(this);
     this.getStoredData = this.getStoredData.bind(this);
     this.replaySession = this.replaySession.bind(this);
@@ -36,6 +42,7 @@ export default class FirebaseStorage extends PureComponent {
     const { stepNumber } = this.state;
     const { recordInteractions, modelDiff, sessionName } = this.props;
 
+    // Format of saved data may need to be adjusted for easier querying later
     if (recordInteractions){
       base.post(`${sessionName}/${Date.now()}`, {
         data: modelDiff
@@ -116,12 +123,12 @@ export default class FirebaseStorage extends PureComponent {
       // call back to the authoring container to replay the diffed actions
       onLoadDiff(sessionData[sessionTimestamp]);
 
+      // Continue to replay until we've reached the final timestamp, calculating time to next replay interval
       if(stepNumber < sessionTimestamps.length-1){
         let nextStep = stepNumber + 1;
         let completed = nextStep / sessionTimestamps.length * 100;
         this.setState({stepNumber: nextStep, completed});
         let nextInterval = sessionTimestamps[nextStep]-sessionTimestamps[stepNumber];
-        console.log(nextInterval);
         this.replayStep(nextInterval);
       } else {
         this.setState({stepNumber: 0, completed: 100});
@@ -136,7 +143,7 @@ export default class FirebaseStorage extends PureComponent {
     replayText = sessionTimestamps.length > 1 ? replayText + "s" : replayText;
     replayText += " over " + ((sessionTimestamps[sessionTimestamps.length - 1] - sessionTimestamps[0]) / 1000) + " seconds";
 
-    return(
+    return (
       <div className="recorded-session-details">
         <div className="replay-session-text">{replayText}</div>
         <LinearProgress mode="determinate" value={completed} />
