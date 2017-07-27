@@ -74,11 +74,15 @@
 
 	var _authoring2 = _interopRequireDefault(_authoring);
 
-	var _models = __webpack_require__(786);
+	var _simulationControls = __webpack_require__(786);
+
+	var _simulationControls2 = _interopRequireDefault(_simulationControls);
+
+	var _models = __webpack_require__(787);
 
 	var _models2 = _interopRequireDefault(_models);
 
-	var _authorableProps = __webpack_require__(790);
+	var _authorableProps = __webpack_require__(791);
 
 	var _authorableProps2 = _interopRequireDefault(_authorableProps);
 
@@ -88,21 +92,13 @@
 
 	var _MuiThemeProvider2 = _interopRequireDefault(_MuiThemeProvider);
 
-	var _RaisedButton = __webpack_require__(726);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
 	var _IconButton = __webpack_require__(711);
 
 	var _IconButton2 = _interopRequireDefault(_IconButton);
 
-	var _deleteForever = __webpack_require__(791);
+	var _deleteForever = __webpack_require__(792);
 
 	var _deleteForever2 = _interopRequireDefault(_deleteForever);
-
-	var _CircularProgress = __webpack_require__(730);
-
-	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
 
 	var _logoMenu = __webpack_require__(756);
 
@@ -112,15 +108,15 @@
 
 	var _reactTapEventPlugin2 = _interopRequireDefault(_reactTapEventPlugin);
 
-	var _userNameGenerator = __webpack_require__(792);
+	var _userNameGenerator = __webpack_require__(793);
 
 	var _userNameGenerator2 = _interopRequireDefault(_userNameGenerator);
 
 	__webpack_require__(757);
 
-	__webpack_require__(793);
+	__webpack_require__(794);
 
-	var _reBase = __webpack_require__(795);
+	var _reBase = __webpack_require__(796);
 
 	var _reBase2 = _interopRequireDefault(_reBase);
 
@@ -201,9 +197,6 @@
 	      sessionDate: sessionDate,
 	      sessionName: sessionName,
 	      recordInteractions: recordInteractions,
-	      completed: 0,
-	      isFrozen: false,
-	      isSlowed: false,
 	      modelDiff: (0, _utils.getModelDiff)(authoredState, _authorableProps2.default)
 	    }, authoredState);
 
@@ -211,9 +204,7 @@
 	    _this.addNewDraggableAtom = _this.addNewDraggableAtom.bind(_this);
 	    _this.handleAuthoringPropChange = _this.handleAuthoringPropChange.bind(_this);
 	    _this.changeElementCount = _this.changeElementCount.bind(_this);
-	    _this.freeze = _this.freeze.bind(_this);
-	    _this.slow = _this.slow.bind(_this);
-	    _this.restart = _this.restart.bind(_this);
+	    _this.handleSimulationChange = _this.handleSimulationChange.bind(_this);
 	    _this.studentView = _this.studentView.bind(_this);
 	    _this.generatePinnedParticleText = _this.generatePinnedParticleText.bind(_this);
 	    _this.addPinnedParticleText = _this.addPinnedParticleText.bind(_this);
@@ -516,59 +507,14 @@
 	      }
 	    }
 	  }, {
-	    key: 'restart',
-	    value: function restart() {
-	      console.log("restart");
-	      window.location.reload();
-	    }
-	  }, {
 	    key: 'studentView',
 	    value: function studentView() {
 	      this.setState({ authoring: false });
 	    }
 	  }, {
-	    key: 'freeze',
-	    value: function freeze() {
-	      var oldTemp = this.state.targetTemperature.value,
-	          oldControl = this.state.temperatureControl.value;
-	      api.set({ temperatureControl: true });
-	      api.set({ targetTemperature: 0 });
-	      this.setState({ isFrozen: true });
-	      this.progress(5, 500, function () {
-	        api.set({ temperatureControl: oldControl });
-	        api.set({ targetTemperature: oldTemp });
-	      });
-	    }
-	  }, {
-	    key: 'slow',
-	    value: function slow() {
-	      var oldTimeStep = this.state.timeStep.value;
-	      api.set({ timeStep: slowSpeedTimeStep });
-	      this.setState({ isSlowed: true });
-	      this.progress(5, 2500, function () {
-	        api.set({ timeStep: oldTimeStep });
-	      });
-	    }
-	  }, {
-	    key: 'progress',
-	    value: function progress(completed, totalTime, onComplete) {
-	      var _this5 = this;
-
-	      if (completed > 100) {
-	        this.setState({ completed: 100 });
-	        this.timer = setTimeout(function () {
-	          _this5.setState({ completed: 0, isSlowed: false, isFrozen: false });
-	          onComplete();
-	        }, 100);
-	      } else {
-	        if (this.state.completed != completed) {
-	          this.setState({ completed: completed });
-	        }
-	        var nextCompleted = completed + 25;
-	        this.timer = setTimeout(function () {
-	          return _this5.progress(nextCompleted, totalTime, onComplete);
-	        }, totalTime / 4);
-	      }
+	    key: 'handleSimulationChange',
+	    value: function handleSimulationChange(changedProps) {
+	      api.set(changedProps);
 	    }
 	  }, {
 	    key: 'handleAuthoringPropChange',
@@ -700,47 +646,7 @@
 	              )
 	            )
 	          ),
-	          _react2.default.createElement(
-	            'div',
-	            { className: 'speed-controls' },
-	            _react2.default.createElement(
-	              'div',
-	              { className: 'button-layout' },
-	              _react2.default.createElement(
-	                _IconButton2.default,
-	                { id: 'restart', iconClassName: 'material-icons', tooltip: 'reload', onClick: this.restart },
-	                'refresh'
-	              )
-	            ),
-	            showFreezeButton.value === true && _react2.default.createElement(
-	              'div',
-	              { className: 'button-layout' },
-	              _react2.default.createElement(
-	                _IconButton2.default,
-	                { iconClassName: 'material-icons', className: 'speed-button', onClick: this.freeze, tooltip: 'freeze' },
-	                'ac_unit '
-	              ),
-	              this.state.isFrozen && _react2.default.createElement(_CircularProgress2.default, {
-	                mode: 'determinate',
-	                value: this.state.completed,
-	                className: 'progress'
-	              })
-	            ),
-	            showFreezeButton.value === true && _react2.default.createElement(
-	              'div',
-	              { className: 'button-layout' },
-	              _react2.default.createElement(
-	                _IconButton2.default,
-	                { iconClassName: 'material-icons', className: 'speed-button', onClick: this.slow, tooltip: 'slow' },
-	                'directions_run'
-	              ),
-	              this.state.isSlowed && _react2.default.createElement(_CircularProgress2.default, {
-	                mode: 'determinate',
-	                value: this.state.completed,
-	                className: 'progress'
-	              })
-	            )
-	          )
+	          _react2.default.createElement(_simulationControls2.default, _extends({}, this.state, { onChange: this.handleSimulationChange }))
 	        )
 	      );
 	    }
@@ -33956,177 +33862,8 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
 
 /***/ }),
-/* 668 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _Paper = __webpack_require__(669);
-
-	var _Paper2 = _interopRequireDefault(_Paper);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _Paper2.default;
-
-/***/ }),
-/* 669 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(628);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _objectWithoutProperties2 = __webpack_require__(633);
-
-	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-	var _getPrototypeOf = __webpack_require__(476);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(502);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(503);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(507);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(554);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _simpleAssign = __webpack_require__(635);
-
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-
-	var _react = __webpack_require__(297);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _propTypes = __webpack_require__(670);
-
-	var _propTypes2 = _interopRequireDefault(_propTypes);
-
-	var _transitions = __webpack_require__(637);
-
-	var _transitions2 = _interopRequireDefault(_transitions);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function getStyles(props, context) {
-	  var rounded = props.rounded,
-	      circle = props.circle,
-	      transitionEnabled = props.transitionEnabled,
-	      zDepth = props.zDepth;
-	  var _context$muiTheme = context.muiTheme,
-	      baseTheme = _context$muiTheme.baseTheme,
-	      paper = _context$muiTheme.paper;
-
-
-	  return {
-	    root: {
-	      color: paper.color,
-	      backgroundColor: paper.backgroundColor,
-	      transition: transitionEnabled && _transitions2.default.easeOut(),
-	      boxSizing: 'border-box',
-	      fontFamily: baseTheme.fontFamily,
-	      WebkitTapHighlightColor: 'rgba(0,0,0,0)', // Remove mobile color flashing (deprecated)
-	      boxShadow: paper.zDepthShadows[zDepth - 1], // No shadow for 0 depth papers
-	      borderRadius: circle ? '50%' : rounded ? '2px' : '0px'
-	    }
-	  };
-	}
-
-	var Paper = function (_Component) {
-	  (0, _inherits3.default)(Paper, _Component);
-
-	  function Paper() {
-	    (0, _classCallCheck3.default)(this, Paper);
-	    return (0, _possibleConstructorReturn3.default)(this, (Paper.__proto__ || (0, _getPrototypeOf2.default)(Paper)).apply(this, arguments));
-	  }
-
-	  (0, _createClass3.default)(Paper, [{
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props,
-	          children = _props.children,
-	          circle = _props.circle,
-	          rounded = _props.rounded,
-	          style = _props.style,
-	          transitionEnabled = _props.transitionEnabled,
-	          zDepth = _props.zDepth,
-	          other = (0, _objectWithoutProperties3.default)(_props, ['children', 'circle', 'rounded', 'style', 'transitionEnabled', 'zDepth']);
-	      var prepareStyles = this.context.muiTheme.prepareStyles;
-
-	      var styles = getStyles(this.props, this.context);
-
-	      return _react2.default.createElement(
-	        'div',
-	        (0, _extends3.default)({}, other, { style: prepareStyles((0, _simpleAssign2.default)(styles.root, style)) }),
-	        children
-	      );
-	    }
-	  }]);
-	  return Paper;
-	}(_react.Component);
-
-	Paper.defaultProps = {
-	  circle: false,
-	  rounded: true,
-	  transitionEnabled: true,
-	  zDepth: 1
-	};
-	Paper.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	process.env.NODE_ENV !== "production" ? Paper.propTypes = {
-	  /**
-	   * Children passed into the paper element.
-	   */
-	  children: _react.PropTypes.node,
-	  /**
-	   * Set to true to generate a circlular paper container.
-	   */
-	  circle: _react.PropTypes.bool,
-	  /**
-	   * By default, the paper container will have a border radius.
-	   * Set this to false to generate a container with sharp corners.
-	   */
-	  rounded: _react.PropTypes.bool,
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object,
-	  /**
-	   * Set to false to disable CSS transitions for the paper element.
-	   */
-	  transitionEnabled: _react.PropTypes.bool,
-	  /**
-	   * This number represents the zDepth of the paper shadow.
-	   */
-	  zDepth: _propTypes2.default.zDepth
-	} : void 0;
-	exports.default = Paper;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
-
-/***/ }),
+/* 668 */,
+/* 669 */,
 /* 670 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -36324,505 +36061,8 @@
 /* 723 */,
 /* 724 */,
 /* 725 */,
-/* 726 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = undefined;
-
-	var _RaisedButton = __webpack_require__(727);
-
-	var _RaisedButton2 = _interopRequireDefault(_RaisedButton);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = _RaisedButton2.default;
-
-/***/ }),
-/* 727 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _extends2 = __webpack_require__(628);
-
-	var _extends3 = _interopRequireDefault(_extends2);
-
-	var _objectWithoutProperties2 = __webpack_require__(633);
-
-	var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
-
-	var _getPrototypeOf = __webpack_require__(476);
-
-	var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
-
-	var _classCallCheck2 = __webpack_require__(502);
-
-	var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-	var _createClass2 = __webpack_require__(503);
-
-	var _createClass3 = _interopRequireDefault(_createClass2);
-
-	var _possibleConstructorReturn2 = __webpack_require__(507);
-
-	var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
-
-	var _inherits2 = __webpack_require__(554);
-
-	var _inherits3 = _interopRequireDefault(_inherits2);
-
-	var _simpleAssign = __webpack_require__(635);
-
-	var _simpleAssign2 = _interopRequireDefault(_simpleAssign);
-
-	var _react = __webpack_require__(297);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _transitions = __webpack_require__(637);
-
-	var _transitions2 = _interopRequireDefault(_transitions);
-
-	var _colorManipulator = __webpack_require__(575);
-
-	var _childUtils = __webpack_require__(714);
-
-	var _EnhancedButton = __webpack_require__(713);
-
-	var _EnhancedButton2 = _interopRequireDefault(_EnhancedButton);
-
-	var _Paper = __webpack_require__(668);
-
-	var _Paper2 = _interopRequireDefault(_Paper);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function validateLabel(props, propName, componentName) {
-	  if (process.env.NODE_ENV !== 'production') {
-	    if (!props.children && props.label !== 0 && !props.label && !props.icon) {
-	      return new Error('Required prop label or children or icon was not specified in ' + componentName + '.');
-	    }
-	  }
-	}
-
-	function getStyles(props, context, state) {
-	  var _context$muiTheme = context.muiTheme,
-	      baseTheme = _context$muiTheme.baseTheme,
-	      button = _context$muiTheme.button,
-	      raisedButton = _context$muiTheme.raisedButton;
-	  var disabled = props.disabled,
-	      disabledBackgroundColor = props.disabledBackgroundColor,
-	      disabledLabelColor = props.disabledLabelColor,
-	      fullWidth = props.fullWidth,
-	      icon = props.icon,
-	      label = props.label,
-	      labelPosition = props.labelPosition,
-	      primary = props.primary,
-	      secondary = props.secondary,
-	      style = props.style;
-
-
-	  var amount = primary || secondary ? 0.4 : 0.08;
-
-	  var backgroundColor = raisedButton.color;
-	  var labelColor = raisedButton.textColor;
-
-	  if (disabled) {
-	    backgroundColor = disabledBackgroundColor || raisedButton.disabledColor;
-	    labelColor = disabledLabelColor || raisedButton.disabledTextColor;
-	  } else if (primary) {
-	    backgroundColor = raisedButton.primaryColor;
-	    labelColor = raisedButton.primaryTextColor;
-	  } else if (secondary) {
-	    backgroundColor = raisedButton.secondaryColor;
-	    labelColor = raisedButton.secondaryTextColor;
-	  } else {
-	    if (props.backgroundColor) {
-	      backgroundColor = props.backgroundColor;
-	    }
-	    if (props.labelColor) {
-	      labelColor = props.labelColor;
-	    }
-	  }
-
-	  var buttonHeight = style && style.height || button.height;
-	  var borderRadius = 2;
-
-	  return {
-	    root: {
-	      display: 'inline-block',
-	      transition: _transitions2.default.easeOut(),
-	      minWidth: fullWidth ? '100%' : button.minWidth
-	    },
-	    button: {
-	      height: buttonHeight,
-	      lineHeight: buttonHeight + 'px',
-	      width: '100%',
-	      padding: 0,
-	      borderRadius: borderRadius,
-	      transition: _transitions2.default.easeOut(),
-	      backgroundColor: backgroundColor,
-	      // That's the default value for a button but not a link
-	      textAlign: 'center'
-	    },
-	    label: {
-	      position: 'relative',
-	      opacity: 1,
-	      fontSize: raisedButton.fontSize,
-	      letterSpacing: 0,
-	      textTransform: raisedButton.textTransform || button.textTransform || 'uppercase',
-	      fontWeight: raisedButton.fontWeight,
-	      margin: 0,
-	      userSelect: 'none',
-	      paddingLeft: icon && labelPosition !== 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
-	      paddingRight: icon && labelPosition === 'before' ? 8 : baseTheme.spacing.desktopGutterLess,
-	      color: labelColor
-	    },
-	    icon: {
-	      verticalAlign: 'middle',
-	      marginLeft: label && labelPosition !== 'before' ? 12 : 0,
-	      marginRight: label && labelPosition === 'before' ? 12 : 0
-	    },
-	    overlay: {
-	      height: buttonHeight,
-	      borderRadius: borderRadius,
-	      backgroundColor: (state.keyboardFocused || state.hovered) && !disabled && (0, _colorManipulator.fade)(labelColor, amount),
-	      transition: _transitions2.default.easeOut(),
-	      top: 0
-	    },
-	    ripple: {
-	      color: labelColor,
-	      opacity: !(primary || secondary) ? 0.1 : 0.16
-	    }
-	  };
-	}
-
-	var RaisedButton = function (_Component) {
-	  (0, _inherits3.default)(RaisedButton, _Component);
-
-	  function RaisedButton() {
-	    var _ref;
-
-	    var _temp, _this, _ret;
-
-	    (0, _classCallCheck3.default)(this, RaisedButton);
-
-	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	      args[_key] = arguments[_key];
-	    }
-
-	    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = RaisedButton.__proto__ || (0, _getPrototypeOf2.default)(RaisedButton)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-	      hovered: false,
-	      keyboardFocused: false,
-	      touched: false,
-	      initialZDepth: 0,
-	      zDepth: 0
-	    }, _this.handleMouseDown = function (event) {
-	      // only listen to left clicks
-	      if (event.button === 0) {
-	        _this.setState({
-	          zDepth: _this.state.initialZDepth + 1
-	        });
-	      }
-	      if (_this.props.onMouseDown) {
-	        _this.props.onMouseDown(event);
-	      }
-	    }, _this.handleMouseUp = function (event) {
-	      _this.setState({
-	        zDepth: _this.state.initialZDepth
-	      });
-	      if (_this.props.onMouseUp) {
-	        _this.props.onMouseUp(event);
-	      }
-	    }, _this.handleMouseLeave = function (event) {
-	      if (!_this.state.keyboardFocused) {
-	        _this.setState({
-	          zDepth: _this.state.initialZDepth,
-	          hovered: false
-	        });
-	      }
-	      if (_this.props.onMouseLeave) {
-	        _this.props.onMouseLeave(event);
-	      }
-	    }, _this.handleMouseEnter = function (event) {
-	      if (!_this.state.keyboardFocused && !_this.state.touched) {
-	        _this.setState({
-	          hovered: true
-	        });
-	      }
-	      if (_this.props.onMouseEnter) {
-	        _this.props.onMouseEnter(event);
-	      }
-	    }, _this.handleTouchStart = function (event) {
-	      _this.setState({
-	        touched: true,
-	        zDepth: _this.state.initialZDepth + 1
-	      });
-
-	      if (_this.props.onTouchStart) {
-	        _this.props.onTouchStart(event);
-	      }
-	    }, _this.handleTouchEnd = function (event) {
-	      _this.setState({
-	        touched: true,
-	        zDepth: _this.state.initialZDepth
-	      });
-
-	      if (_this.props.onTouchEnd) {
-	        _this.props.onTouchEnd(event);
-	      }
-	    }, _this.handleKeyboardFocus = function (event, keyboardFocused) {
-	      var zDepth = keyboardFocused && !_this.props.disabled ? _this.state.initialZDepth + 1 : _this.state.initialZDepth;
-
-	      _this.setState({
-	        zDepth: zDepth,
-	        keyboardFocused: keyboardFocused
-	      });
-	    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
-	  }
-
-	  (0, _createClass3.default)(RaisedButton, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var zDepth = this.props.disabled ? 0 : 1;
-	      this.setState({
-	        zDepth: zDepth,
-	        initialZDepth: zDepth
-	      });
-	    }
-	  }, {
-	    key: 'componentWillReceiveProps',
-	    value: function componentWillReceiveProps(nextProps) {
-	      var zDepth = nextProps.disabled ? 0 : 1;
-	      var nextState = {
-	        zDepth: zDepth,
-	        initialZDepth: zDepth
-	      };
-
-	      if (nextProps.disabled) {
-	        nextState.hovered = false;
-	      }
-
-	      this.setState(nextState);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var _props = this.props,
-	          backgroundColor = _props.backgroundColor,
-	          buttonStyle = _props.buttonStyle,
-	          children = _props.children,
-	          className = _props.className,
-	          disabled = _props.disabled,
-	          disabledBackgroundColor = _props.disabledBackgroundColor,
-	          disabledLabelColor = _props.disabledLabelColor,
-	          fullWidth = _props.fullWidth,
-	          icon = _props.icon,
-	          label = _props.label,
-	          labelColor = _props.labelColor,
-	          labelPosition = _props.labelPosition,
-	          labelStyle = _props.labelStyle,
-	          overlayStyle = _props.overlayStyle,
-	          primary = _props.primary,
-	          rippleStyle = _props.rippleStyle,
-	          secondary = _props.secondary,
-	          style = _props.style,
-	          other = (0, _objectWithoutProperties3.default)(_props, ['backgroundColor', 'buttonStyle', 'children', 'className', 'disabled', 'disabledBackgroundColor', 'disabledLabelColor', 'fullWidth', 'icon', 'label', 'labelColor', 'labelPosition', 'labelStyle', 'overlayStyle', 'primary', 'rippleStyle', 'secondary', 'style']);
-	      var prepareStyles = this.context.muiTheme.prepareStyles;
-
-	      var styles = getStyles(this.props, this.context, this.state);
-	      var mergedRippleStyles = (0, _simpleAssign2.default)({}, styles.ripple, rippleStyle);
-
-	      var buttonEventHandlers = disabled ? {} : {
-	        onMouseDown: this.handleMouseDown,
-	        onMouseUp: this.handleMouseUp,
-	        onMouseLeave: this.handleMouseLeave,
-	        onMouseEnter: this.handleMouseEnter,
-	        onTouchStart: this.handleTouchStart,
-	        onTouchEnd: this.handleTouchEnd,
-	        onKeyboardFocus: this.handleKeyboardFocus
-	      };
-
-	      var labelElement = label && _react2.default.createElement(
-	        'span',
-	        { style: prepareStyles((0, _simpleAssign2.default)(styles.label, labelStyle)) },
-	        label
-	      );
-
-	      var iconCloned = icon && (0, _react.cloneElement)(icon, {
-	        color: icon.props.color || styles.label.color,
-	        style: (0, _simpleAssign2.default)(styles.icon, icon.props.style)
-	      });
-
-	      // Place label before or after children.
-	      var childrenFragment = labelPosition === 'before' ? {
-	        labelElement: labelElement,
-	        iconCloned: iconCloned,
-	        children: children
-	      } : {
-	        children: children,
-	        iconCloned: iconCloned,
-	        labelElement: labelElement
-	      };
-
-	      var enhancedButtonChildren = (0, _childUtils.createChildFragment)(childrenFragment);
-
-	      return _react2.default.createElement(
-	        _Paper2.default,
-	        {
-	          className: className,
-	          style: (0, _simpleAssign2.default)(styles.root, style),
-	          zDepth: this.state.zDepth
-	        },
-	        _react2.default.createElement(
-	          _EnhancedButton2.default,
-	          (0, _extends3.default)({}, other, buttonEventHandlers, {
-	            ref: 'container',
-	            disabled: disabled,
-	            style: (0, _simpleAssign2.default)(styles.button, buttonStyle),
-	            focusRippleColor: mergedRippleStyles.color,
-	            touchRippleColor: mergedRippleStyles.color,
-	            focusRippleOpacity: mergedRippleStyles.opacity,
-	            touchRippleOpacity: mergedRippleStyles.opacity
-	          }),
-	          _react2.default.createElement(
-	            'div',
-	            {
-	              ref: 'overlay',
-	              style: prepareStyles((0, _simpleAssign2.default)(styles.overlay, overlayStyle))
-	            },
-	            enhancedButtonChildren
-	          )
-	        )
-	      );
-	    }
-	  }]);
-	  return RaisedButton;
-	}(_react.Component);
-
-	RaisedButton.muiName = 'RaisedButton';
-	RaisedButton.defaultProps = {
-	  disabled: false,
-	  labelPosition: 'after',
-	  fullWidth: false,
-	  primary: false,
-	  secondary: false
-	};
-	RaisedButton.contextTypes = {
-	  muiTheme: _react.PropTypes.object.isRequired
-	};
-	process.env.NODE_ENV !== "production" ? RaisedButton.propTypes = {
-	  /**
-	   * Override the default background color for the button,
-	   * but not the default disabled background color
-	   * (use `disabledBackgroundColor` for this).
-	   */
-	  backgroundColor: _react.PropTypes.string,
-	  /**
-	   * Override the inline-styles of the button element.
-	   */
-	  buttonStyle: _react.PropTypes.object,
-	  /**
-	   * The content of the button.
-	   * If a label is provided via the `label` prop, the text within the label
-	   * will be displayed in addition to the content provided here.
-	   */
-	  children: _react.PropTypes.node,
-	  /**
-	   * The CSS class name of the root element.
-	   */
-	  className: _react.PropTypes.string,
-	  /**
-	   * If true, the button will be disabled.
-	   */
-	  disabled: _react.PropTypes.bool,
-	  /**
-	   * Override the default background color for the button
-	   * when it is disabled.
-	   */
-	  disabledBackgroundColor: _react.PropTypes.string,
-	  /**
-	   * The color of the button's label when the button is disabled.
-	   */
-	  disabledLabelColor: _react.PropTypes.string,
-	  /**
-	   * If true, the button will take up the full width of its container.
-	   */
-	  fullWidth: _react.PropTypes.bool,
-	  /**
-	   * The URL to link to when the button is clicked.
-	   */
-	  href: _react.PropTypes.string,
-	  /**
-	   * An icon to be displayed within the button.
-	   */
-	  icon: _react.PropTypes.node,
-	  /**
-	   * The label to be displayed within the button.
-	   * If content is provided via the `children` prop, that content will be
-	   * displayed in addition to the label provided here.
-	   */
-	  label: validateLabel,
-	  /**
-	   * The color of the button's label.
-	   */
-	  labelColor: _react.PropTypes.string,
-	  /**
-	   * The position of the button's label relative to the button's `children`.
-	   */
-	  labelPosition: _react.PropTypes.oneOf(['before', 'after']),
-	  /**
-	   * Override the inline-styles of the button's label element.
-	   */
-	  labelStyle: _react.PropTypes.object,
-	  /** @ignore */
-	  onMouseDown: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseEnter: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseLeave: _react.PropTypes.func,
-	  /** @ignore */
-	  onMouseUp: _react.PropTypes.func,
-	  /** @ignore */
-	  onTouchEnd: _react.PropTypes.func,
-	  /** @ignore */
-	  onTouchStart: _react.PropTypes.func,
-	  /**
-	   * Override the inline style of the button overlay.
-	   */
-	  overlayStyle: _react.PropTypes.object,
-	  /**
-	   * If true, the button will use the theme's primary color.
-	   */
-	  primary: _react.PropTypes.bool,
-	  /**
-	   * Override the inline style of the ripple element.
-	   */
-	  rippleStyle: _react.PropTypes.object,
-	  /**
-	   * If true, the button will use the theme's secondary color.
-	   * If both `secondary` and `primary` are true, the button will use
-	   * the theme's primary color.
-	   */
-	  secondary: _react.PropTypes.bool,
-	  /**
-	   * Override the inline-styles of the root element.
-	   */
-	  style: _react.PropTypes.object
-	} : void 0;
-	exports.default = RaisedButton;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(299)))
-
-/***/ }),
+/* 726 */,
+/* 727 */,
 /* 728 */,
 /* 729 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -40420,15 +39660,181 @@
 	  value: true
 	});
 
-	var _interactive = __webpack_require__(787);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(297);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(328);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _IconButton = __webpack_require__(711);
+
+	var _IconButton2 = _interopRequireDefault(_IconButton);
+
+	var _CircularProgress = __webpack_require__(730);
+
+	var _CircularProgress2 = _interopRequireDefault(_CircularProgress);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var slowSpeedTimeStep = 0.05;
+	var frozenTemps = { temperatureControl: true, targetTemperature: 0 };
+
+	var SimulationControls = function (_PureComponent) {
+	  _inherits(SimulationControls, _PureComponent);
+
+	  function SimulationControls(props) {
+	    _classCallCheck(this, SimulationControls);
+
+	    var _this = _possibleConstructorReturn(this, (SimulationControls.__proto__ || Object.getPrototypeOf(SimulationControls)).call(this, props));
+
+	    _this.state = { completed: 0, isFrozen: false, isSlowed: false };
+	    _this.freeze = _this.freeze.bind(_this);
+	    _this.slow = _this.slow.bind(_this);
+	    _this.restart = _this.restart.bind(_this);
+	    return _this;
+	  }
+
+	  _createClass(SimulationControls, [{
+	    key: 'restart',
+	    value: function restart() {
+	      console.log("restart");
+	      window.location.reload();
+	    }
+	  }, {
+	    key: 'freeze',
+	    value: function freeze() {
+	      var onChange = this.props.onChange;
+
+	      var normalTemps = { temperatureControl: this.props.temperatureControl.value, targetTemperature: this.props.targetTemperature.value };
+
+	      onChange(frozenTemps);
+
+	      this.setState({ isFrozen: true });
+	      this.progress(5, 500, function () {
+	        onChange(normalTemps);
+	      });
+	    }
+	  }, {
+	    key: 'slow',
+	    value: function slow() {
+	      var onChange = this.props.onChange;
+
+	      var oldTimeStep = this.props.timeStep.value;
+	      onChange({ timeStep: slowSpeedTimeStep });
+	      this.setState({ isSlowed: true });
+	      this.progress(5, 2500, function () {
+	        onChange({ timeStep: oldTimeStep });
+	      });
+	    }
+	  }, {
+	    key: 'progress',
+	    value: function progress(completed, totalTime, onComplete) {
+	      var _this2 = this;
+
+	      if (completed > 100) {
+	        this.setState({ completed: 100 });
+	        this.timer = setTimeout(function () {
+	          _this2.setState({ completed: 0, isSlowed: false, isFrozen: false });
+	          onComplete();
+	        }, 100);
+	      } else {
+	        if (this.state.completed != completed) {
+	          this.setState({ completed: completed });
+	        }
+	        var nextCompleted = completed + 25;
+	        this.timer = setTimeout(function () {
+	          return _this2.progress(nextCompleted, totalTime, onComplete);
+	        }, totalTime / 4);
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _state = this.state,
+	          isSlowed = _state.isSlowed,
+	          isFrozen = _state.isFrozen,
+	          completed = _state.completed;
+	      var showFreezeButton = this.props.showFreezeButton;
+
+
+	      return _react2.default.createElement(
+	        'div',
+	        { className: 'speed-controls' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'button-layout' },
+	          _react2.default.createElement(
+	            _IconButton2.default,
+	            { id: 'restart', iconClassName: 'material-icons', tooltip: 'reload', onClick: this.restart },
+	            'refresh'
+	          )
+	        ),
+	        showFreezeButton.value === true && _react2.default.createElement(
+	          'div',
+	          { className: 'button-layout' },
+	          _react2.default.createElement(
+	            _IconButton2.default,
+	            { iconClassName: 'material-icons', className: 'speed-button', onClick: this.freeze, tooltip: 'freeze' },
+	            'ac_unit'
+	          ),
+	          isFrozen && _react2.default.createElement(_CircularProgress2.default, {
+	            mode: 'determinate',
+	            value: completed,
+	            className: 'progress'
+	          })
+	        ),
+	        showFreezeButton.value === true && _react2.default.createElement(
+	          'div',
+	          { className: 'button-layout' },
+	          _react2.default.createElement(
+	            _IconButton2.default,
+	            { iconClassName: 'material-icons', className: 'speed-button', onClick: this.slow, tooltip: 'slow' },
+	            'directions_run'
+	          ),
+	          isSlowed && _react2.default.createElement(_CircularProgress2.default, {
+	            mode: 'determinate',
+	            value: completed,
+	            className: 'progress'
+	          })
+	        )
+	      );
+	    }
+	  }]);
+
+	  return SimulationControls;
+	}(_react.PureComponent);
+
+	exports.default = SimulationControls;
+
+/***/ }),
+/* 787 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _interactive = __webpack_require__(788);
 
 	var _interactive2 = _interopRequireDefault(_interactive);
 
-	var _model = __webpack_require__(788);
+	var _model = __webpack_require__(789);
 
 	var _model2 = _interopRequireDefault(_model);
 
-	var _emptyModel = __webpack_require__(789);
+	var _emptyModel = __webpack_require__(790);
 
 	var _emptyModel2 = _interopRequireDefault(_emptyModel);
 
@@ -40441,7 +39847,7 @@
 	};
 
 /***/ }),
-/* 787 */
+/* 788 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -40459,7 +39865,7 @@
 	};
 
 /***/ }),
-/* 788 */
+/* 789 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -40713,7 +40119,7 @@
 	};
 
 /***/ }),
-/* 789 */
+/* 790 */
 /***/ (function(module, exports) {
 
 	module.exports = {
@@ -40895,7 +40301,7 @@
 	};
 
 /***/ }),
-/* 790 */
+/* 791 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -41156,7 +40562,7 @@
 	};
 
 /***/ }),
-/* 791 */
+/* 792 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -41193,7 +40599,7 @@
 	exports.default = ActionDeleteForever;
 
 /***/ }),
-/* 792 */
+/* 793 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -41248,13 +40654,13 @@
 	};
 
 /***/ }),
-/* 793 */
+/* 794 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(794);
+	var content = __webpack_require__(795);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(736)(content, {});
@@ -41274,7 +40680,7 @@
 	}
 
 /***/ }),
-/* 794 */
+/* 795 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(735)();
@@ -41288,20 +40694,20 @@
 
 
 /***/ }),
-/* 795 */
+/* 796 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(796);
+	module.exports = __webpack_require__(797);
 
 
 
 /***/ }),
-/* 796 */
+/* 797 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
 		if(true)
-			module.exports = factory(__webpack_require__(797));
+			module.exports = factory(__webpack_require__(798));
 		else if(typeof define === 'function' && define.amd)
 			define(["firebase"], factory);
 		else {
@@ -42593,7 +41999,7 @@
 	;
 
 /***/ }),
-/* 797 */
+/* 798 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/*! @license Firebase v3.9.0
@@ -42605,22 +42011,22 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var firebase = __webpack_require__(798);
-	__webpack_require__(799);
+	var firebase = __webpack_require__(799);
+	__webpack_require__(800);
 	var Storage, XMLHttpRequest;
 
-	__webpack_require__(800);
 	__webpack_require__(801);
+	__webpack_require__(802);
 	var AsyncStorage;
 
-	__webpack_require__(802);
+	__webpack_require__(803);
 	exports.default = firebase;
 	module.exports = exports['default'];
 	//# sourceMappingURL=firebase.js.map
 
 
 /***/ }),
-/* 798 */
+/* 799 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {/*! @license Firebase v3.9.0
@@ -42633,14 +42039,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(775).setImmediate, __webpack_require__(775).clearImmediate))
 
 /***/ }),
-/* 799 */
+/* 800 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v3.9.0
 	Build: rev-cc77c9e
 	Terms: https://firebase.google.com/terms/ */
 
-	var firebase = __webpack_require__(798);
+	var firebase = __webpack_require__(799);
 	(function(){
 	(function(){var h,aa=aa||{},l=this,ba=function(){},ca=function(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&
 	!a.propertyIsEnumerable("call"))return"function"}else return"null";else if("function"==b&&"undefined"==typeof a.call)return"object";return b},da=function(a){return null===a},ea=function(a){return"array"==ca(a)},fa=function(a){var b=ca(a);return"array"==b||"object"==b&&"number"==typeof a.length},m=function(a){return"string"==typeof a},ga=function(a){return"number"==typeof a},p=function(a){return"function"==ca(a)},ha=function(a){var b=typeof a;return"object"==b&&null!=a||"function"==b},ia=function(a,
@@ -42895,7 +42301,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 800 */
+/* 801 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v3.9.0
@@ -42925,7 +42331,7 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE. */
 
-	var firebase = __webpack_require__(798);
+	var firebase = __webpack_require__(799);
 	(function(){
 	(function() {var g,aa=this;function n(a){return void 0!==a}function ba(){}function ca(a){a.Vb=function(){return a.Ye?a.Ye:a.Ye=new a}}
 	function da(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";
@@ -43165,14 +42571,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 801 */
+/* 802 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v3.9.0
 	Build: rev-cc77c9e
 	Terms: https://firebase.google.com/terms/ */
 
-	var firebase = __webpack_require__(798);
+	var firebase = __webpack_require__(799);
 	(function(){
 	(function(){for(var h,aa="function"==typeof Object.defineProperties?Object.defineProperty:function(a,b,c){a!=Array.prototype&&a!=Object.prototype&&(a[b]=c.value)},l="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this,n=["Number","MIN_SAFE_INTEGER"],ba=0;ba<n.length-1;ba++){var ca=n[ba];ca in l||(l[ca]={});l=l[ca]}var da=n[n.length-1];-9007199254740991!=l[da]&&aa(l,da,{configurable:!0,writable:!0,value:-9007199254740991});
 	var p=this,q=function(a){return void 0!==a},ea=function(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&
@@ -43229,14 +42635,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
-/* 802 */
+/* 803 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/*! @license Firebase v3.9.0
 	Build: rev-cc77c9e
 	Terms: https://firebase.google.com/terms/ */
 
-	var firebase = __webpack_require__(798);
+	var firebase = __webpack_require__(799);
 	(function(){
 	(function(){var f=function(a,b){function c(){}c.prototype=b.prototype;a.u=b.prototype;a.prototype=new c;for(var d in b)if(Object.defineProperties){var e=Object.getOwnPropertyDescriptor(b,d);e&&Object.defineProperty(a,d,e)}else a[d]=b[d]},g=this,h=function(a){var b=typeof a;if("object"==b)if(a){if(a instanceof Array)return"array";if(a instanceof Object)return b;var c=Object.prototype.toString.call(a);if("[object Window]"==c)return"object";if("[object Array]"==c||"number"==typeof a.length&&"undefined"!=typeof a.splice&&
 	"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("splice"))return"array";if("[object Function]"==c||"undefined"!=typeof a.call&&"undefined"!=typeof a.propertyIsEnumerable&&!a.propertyIsEnumerable("call"))return"function"}else return"null";else if("function"==b&&"undefined"==typeof a.call)return"object";return b},k=function(a,b){function c(){}c.prototype=b.prototype;a.u=b.prototype;a.prototype=new c;a.v=function(a,c,n){for(var d=Array(arguments.length-2),e=2;e<arguments.length;e++)d[e-
