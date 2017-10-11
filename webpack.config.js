@@ -8,7 +8,8 @@ module.exports = {
     'particle-modeler': './js/particle-modeler/index.js',
     'one-thermoscope': './js/one-thermoscope/index.js',
     'three-thermoscope': './js/three-thermoscope/index.js',
-    'meter':'./js/meter/index.js'
+    'meter': './js/meter/index.js',
+    'aperture': './js/aperture/index.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),

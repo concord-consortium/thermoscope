@@ -8,8 +8,10 @@ import LabModel from '../components/lab-model';
 import Meter from '../components/meter';
 import models, { MIN_TEMP, MAX_TEMP } from '../models';
 import { getURLParam } from '../utils';
+import Aperture from '../components/aperture';
 
 import '../../css/thermoscope.less';
+import '../../css/aperture.less';
 
 const SHOW_MATERIAL_CONTROLS = getURLParam('controls');
 const MODEL_WIDTH = 400;
@@ -91,7 +93,8 @@ export default class Thermoscope extends PureComponent {
                   coulombForcesSettings={model.coulombForcesSettings}
                   width={MODEL_WIDTH} height={MODEL_HEIGHT}
                   embeddableSrc={embeddableSrc}
-          />
+        />
+        <Aperture open={true} bladeColor="#333" outerColor="white" />
         {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />}
         <div>
           {!paused &&
