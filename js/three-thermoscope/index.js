@@ -11,7 +11,7 @@ import '../../css/meter.less';
 import '../../css/three-thermoscope.less';
 
 // Required by Material-UI library.
-injectTapEventPlugin();
+//injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
 
@@ -60,4 +60,3 @@ export default class ThreeThermoscope extends PureComponent {
   }
 }
 
-ReactDOM.render(<ThreeThermoscope/>, document.getElementById('app'));
