@@ -60,9 +60,13 @@ export default class ThermoscopeControl extends PureComponent {
     //href="./thermoscope/?A=liquid&B=liquid"
     //href="./thermoscope/?A=gas&B=gas"
     //href="./thermoscope/?controls=true"
+    var pageUrl = '?' + "A=gas&B=liquid";
+    window.history.pushState('', '', pageUrl);
     this.setState({ mode: ThermoscopeMode.TwoThermoscope })
   }
   showThreeThermoscope() {
+    var pageUrl = '?' + "A=gas&B=liquid&C=solid";
+    window.history.pushState('', '', pageUrl);
     this.setState({ mode: ThermoscopeMode.ThreeThermoscope })
   }
   renderThermoscope(material, probeIndex, label, showMeter, meterMinClamp, meterMaxClamp) {
@@ -94,11 +98,12 @@ export default class ThermoscopeControl extends PureComponent {
           { mode === ThermoscopeMode.Menu &&
             <div className="demo-links">
               <List>
-              <ListItem primaryText="Thermoscope (solid) Wood and Stone" onClick={this.showTwoThermoscope} key="1" />,
-              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" onClick={this.showTwoThermoscope} key="2" />,
-              <ListItem primaryText="Thermoscope (gas) Air" onClick={this.showTwoThermoscope} key="3" />,
-              <ListItem primaryText="Thermoscope (custom)" onClick={this.showTwoThermoscope} key="4" />,
-              <ListItem primaryText="Thermoscope (one)" onClick={this.showOneThermoscope} key="5" />
+              <ListItem primaryText="Thermoscope (solid) Wood and Stone" onClick={this.showTwoThermoscope} key="1" />
+              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" onClick={this.showTwoThermoscope} key="2" />
+              <ListItem primaryText="Thermoscope (gas) Air" onClick={this.showTwoThermoscope} key="3" />
+
+              <ListItem primaryText="Thermoscope (one)" onClick={this.showOneThermoscope} key="4" />
+              <ListItem primaryText="Thermoscope (two)" onClick={this.showTwoThermoscope} key="5" />
               <ListItem primaryText="Thermoscope (three)" onClick={this.showThreeThermoscope} key="6" />
               </List>
             </div>
@@ -116,9 +121,9 @@ export default class ThermoscopeControl extends PureComponent {
           }
           { mode === ThermoscopeMode.ThreeThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A')}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', true)}
               {this.renderThermoscope(getURLParam('B'), 1, 'B', true)}
-              {this.renderThermoscope(getURLParam('C'), 1, 'C')}
+              {this.renderThermoscope(getURLParam('C'), 1, 'C', true)}
             </div>
           }
           <Sensor sensor={sensor} showAddressBox={false} />
