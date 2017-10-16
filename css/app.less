@@ -4,6 +4,28 @@
   color: #ccc;
   touch-action: none;
 
+  .main-menu-button{
+    position:fixed;
+    right: 140px;
+    top: 4px;
+    >div{
+      float:right;
+      padding-right:10px;
+    }
+    a{
+      color:#aaa;
+      &:hover{
+        color:#888;
+      }
+      &:active{
+        color:#888;
+      }
+    }
+    i{
+      font-size:32px;
+    }
+  }
+
   .logo-menu{
     width:250px;
     height:125px;
@@ -24,26 +46,8 @@
       right: 120px;
       width: 110px;
       top: 5px;
-
-      >div{
-        float:right;
-        padding-right:10px;
-      }
-      a{
-        color:#aaa;
-
-        &:hover{
-          color:#888;
-        }
-
-        &:active{
-          color:#888;
-        }
-      }
-      i{
-        font-size:32px;
-      }
     }
+
     .cc-logo{
       position:relative;
       float:right;
@@ -86,6 +90,7 @@
   }
   .demo-links {
     height:100%;
+    padding-top:150px;
     display: flex;
     align-items: left;
     li{
@@ -93,6 +98,10 @@
       color:#aaa;
 
     }
+  }
+  #sensor-tag-icon{
+    font-size:3em;
+    padding-left:10px;
   }
 }
 

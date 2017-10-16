@@ -51,6 +51,10 @@ export default class ThermoscopeControl extends PureComponent {
     this.showTwoThermoscope = this.showTwoThermoscope.bind(this);
     this.showThreeThermoscope = this.showThreeThermoscope.bind(this);
     this.renderThermoscope = this.renderThermoscope.bind(this);
+    this.showMenu = this.showMenu.bind(this);
+  }
+  showMenu() {
+    this.setState({ mode: ThermoscopeMode.Menu });
   }
 
   showOneThermoscope() {
@@ -90,11 +94,11 @@ export default class ThermoscopeControl extends PureComponent {
 
   render() {
     const { mode } = this.state;
-    console.log(mode);
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="app">
-          <LogoMenu scale="logo-menu small" showNav="true" />
+          <LogoMenu scale="logo-menu small" />
+          <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div>
           { mode === ThermoscopeMode.Menu &&
             <div className="demo-links">
               <List>
