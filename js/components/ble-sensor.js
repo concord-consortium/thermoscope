@@ -11,10 +11,8 @@ const tempAValueAddr    = 'f000aa01-0451-4000-b000-000000000000';
 const tempBServiceAddr  = 'f000bb00-0451-4000-b000-000000000000';
 const tempBValueAddr    = 'f000bb01-0451-4000-b000-000000000000';
 
-var   service;
-
-var chartDataA = [];
-var chartDataB = [];
+var service;
+var bluetoothDevice;
 
 var valueA = 0;
 var valueB = 0;
@@ -55,6 +53,12 @@ const logMessage = function (message, error) {
   }
 }
 
+function onDisconnected(event) {
+  let device = event.target;
+  console.log('> Device ' + device.name + ' is disconnected.');
+  events.emit('connectionLost');
+}
+
 
 module.exports = {
   connect: function (address) {
@@ -67,14 +71,15 @@ module.exports = {
 
     // Step 2: Connect to it
     request.then(function (device) {
+      bluetoothDevice = device;
+      bluetoothDevice.addEventListener('gattserverdisconnected', onDisconnected);
       events.emit('connected');
       events.emit('nameUpdate', device.name);
       return device.gatt.connect();
     })
       .catch(function (error) {
-        events.emit('connectionLost');
         logMessage('Connection failed!', error);
-        isConnected = false;
+        return disconnect();
       })
       // Step 3: Get the Service
       .then(function (server) {
@@ -83,12 +88,15 @@ module.exports = {
         return server.getPrimaryService(tempAServiceAddr);
       })
       .catch(function (error) {
-        events.emit('connectionLost');
         logMessage('Failed to get Primary Service at address A', error);
-        isConnected = false;
+        return disconnect();
       })
       .then(function (service) {
         return service.getCharacteristic(0x0001);
+      })
+      .catch(function (error) {
+        logMessage('Connection failed!', error);
+        return disconnect();
       })
       .then(function (_characteristicA) {
         characteristicA = _characteristicA;
@@ -98,24 +106,36 @@ module.exports = {
       .catch(function (error) {
         events.emit('connectionLost');
         logMessage('Failed to get Primary Service at address B', error);
-        isConnected = false;
+        return disconnect();
       })
       .then(function (service) {
         return service.getCharacteristic(0x0001);
       })
+      .catch(function (error) {
+        logMessage('Connection failed!', error);
+        return disconnect();
+      })
       .then(function (characteristicB) {
         startTime = Date.now();
         const takeReading = function () {
-          let arrayA;
-          characteristicA.readValue()
-            .then(function (_arrayA) {
-              arrayA = _arrayA;
-              return characteristicB.readValue();
-            })
-            .then(function (arrayB) {
-              readTemp(arrayA, arrayB);
-              events.emit('statusReceived');
-            });
+          if (isConnected) {
+            let arrayA;
+            characteristicA.readValue()
+              .then(function (_arrayA) {
+                arrayA = _arrayA;
+                return characteristicB.readValue();
+              })
+              .catch(function (error) {
+                //logMessage('Failed to read characteristic ',characteristicA,characteristicB, error);
+              })
+              .then(function (arrayB) {
+                readTemp(arrayA, arrayB);
+                events.emit('statusReceived');
+              })
+              .catch(function (error) {
+                //logMessage('Failed to read characteristic ',characteristicA,characteristicB, error);
+              });
+          }
         };
         if (isConnected) {
           window.takeReadingIntervalID = setInterval(takeReading, 600);
@@ -124,9 +144,8 @@ module.exports = {
         }
       })
       .catch(function (error) {
-        events.emit('connectionLost');
         logMessage('Connection failed!', error);
-        isConnected = false;
+        return disconnect();
       });
   },
   on: function() {
@@ -135,6 +154,31 @@ module.exports = {
 
   off: function() {
       events.off.apply(events, arguments);
+  },
+
+  removeAllListeners: function () {
+    events.removeAllListeners.apply(events, arguments);
+  },
+
+  disconnect: function () {
+    if (!bluetoothDevice) {
+      return;
+    }
+    console.log('Disconnecting from Bluetooth Device...');
+    if (bluetoothDevice.gatt.connected) {
+      console.log(bluetoothDevice);
+      bluetoothDevice.gatt.disconnect();
+    } else {
+      console.log('> Bluetooth Device is already disconnected');
+    }
+    events.removeAllListeners.apply();
+    isConnected = false;
+    bluetoothDevice = null;
+    liveSensors = {};
+    valueA = 0;
+    valueB = 0;
+    window.takeReadingIntervalID = null;
+    window.server = null;
   },
 
   get liveSensors() {
