@@ -32,6 +32,17 @@ module.exports = {
     label: "Show Freeze Button",
     value: false
   },
+  Container: {
+    label: "Show Container",
+    value: false,
+  },
+  ContainerHeight: {
+    label: "Container Wall Height",
+    value: 2.5,
+    min: 0.25,
+    max: 2.75,
+    step: 0.25
+  },
   elements: {
     label: "Number of unique elements",
     value: 3,
