@@ -18,9 +18,11 @@ darkBaseTheme.palette.textColor = '#ccc';
 
 const icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '⚽', '🍒', '🐟', '🐢', '🚀'];
 
+const nameServiceAddr = 0x1234;
+const nameCharacteristicAddr = 0x2345;
 
 export class IconSetter extends PureComponent {
-  
+
   constructor(props) {
     super(props);
 
@@ -30,7 +32,7 @@ export class IconSetter extends PureComponent {
     };
 
     this.iconCharacteristic = null;
-    
+
     this.decoder = new TextDecoder('utf-8');
     this.encoder = new TextEncoder('utf-8');
 
@@ -43,7 +45,8 @@ export class IconSetter extends PureComponent {
   connect() {
     console.log("connect");
     let request = navigator.bluetooth.requestDevice({
-      filters: [{ namePrefix:  "Thermoscope"}]
+      filters: [{ namePrefix: "Thermoscope" }],
+      optionalServices: [nameServiceAddr]
     });
 
 
@@ -57,11 +60,11 @@ export class IconSetter extends PureComponent {
     .then(function(server) {
       console.log("getting service");
       window.server = server;
-      return server.getPrimaryService('0x1234');
+      return server.getPrimaryService(nameServiceAddr);
     })
     .then(function(service){
       console.log("getting characteristic");
-      return service.getCharacteristic(0x2345);
+      return service.getCharacteristic(nameCharacteristicAddr);
     })
     .then(function(characteristic){
       component.iconCharacteristic = characteristic;
@@ -88,14 +91,14 @@ export class IconSetter extends PureComponent {
       connected: false
     });
   }
-  
+
   selectIcon(event) {
     var icon = event.target.value;
     this.newIcon = icon;
     this.setState({icon: icon});
     console.log("new icon: " + icon);
   }
-  
+
   setIcon() {
     var encoded = this.encoder.encode(this.newIcon);
     console.log("encoded: " + encoded);
