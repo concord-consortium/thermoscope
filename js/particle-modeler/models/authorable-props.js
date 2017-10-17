@@ -39,7 +39,7 @@ module.exports = {
   ContainerHeight: {
     label: "Container Wall Height",
     value: 2.5,
-    min: 0.25,
+    min: 0.75,
     max: 2.75,
     step: 0.25
   },

@@ -94,6 +94,7 @@ export default class Interactive extends PureComponent {
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
+    this.toggleContainerVisibility = this.toggleContainerVisibility.bind(this);
   }
 
   componentWillMount() {
@@ -366,10 +367,41 @@ export default class Interactive extends PureComponent {
     if (prop === "elements") {
       this.changeElementCount(value);
     }
+    if (prop === "Container") {
+      this.toggleContainerVisibility(value);
+    }
+    if (prop === "ContainerHeight") {
+      for (let i = 0; i < 6; i++) {
+        let l = api.getLineProperties(i);
+        if (i === 0) l.y1 = value;
+        if (i === 4) l.y2 = value;
+        if (i === 5) {
+          l.y1 = value;
+          l.y2 = value;
+        }
+
+        api.setLineProperties(i, l);
+      }
+    }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
     newState.modelDiff = getModelDiff(newState, authorableProps);
     this.setState(newState);
+  }
+
+  toggleContainerVisibility(visible) {
+    // get lines and modify y
+    // initial setup in model is visible = true
+    // hence all initial y coords will be positive
+    let currentlyVisible = api.getLineProperties(0).y1 > 0;
+    if (visible && !currentlyVisible || !visible && currentlyVisible) {
+      for (let i = 0; i < 6; i++) {
+        let l = api.getLineProperties(i);
+        l.y1 *= -1;
+        l.y2 *= -1;
+        api.setLineProperties(i, l);
+      }
+    }
   }
 
   changeElementCount(newElementCount) {
