@@ -58,7 +58,27 @@ function onDisconnected(event) {
   console.log('> Device ' + device.name + ' is disconnected.');
   events.emit('connectionLost');
 }
-
+function disconnectSensor() {
+  if (!bluetoothDevice) {
+    return;
+  }
+  console.log('Disconnecting from Bluetooth Device...');
+  if (bluetoothDevice.gatt.connected) {
+    console.log(bluetoothDevice);
+    bluetoothDevice.gatt.disconnect();
+  } else {
+    console.log('> Bluetooth Device is already disconnected');
+    events.emit('connectionLost');
+  }
+  events.removeAllListeners.apply();
+  isConnected = false;
+  bluetoothDevice = null;
+  liveSensors = {};
+  valueA = 0;
+  valueB = 0;
+  window.takeReadingIntervalID = null;
+  window.server = null;
+}
 
 module.exports = {
   connect: function (address) {
@@ -79,7 +99,7 @@ module.exports = {
     })
       .catch(function (error) {
         logMessage('Connection failed!', error);
-        return disconnect();
+        return disconnectSensor();
       })
       // Step 3: Get the Service
       .then(function (server) {
@@ -89,14 +109,14 @@ module.exports = {
       })
       .catch(function (error) {
         logMessage('Failed to get Primary Service at address A', error);
-        return disconnect();
+        return disconnectSensor();
       })
       .then(function (service) {
         return service.getCharacteristic(0x0001);
       })
       .catch(function (error) {
         logMessage('Connection failed!', error);
-        return disconnect();
+        return disconnectSensor();
       })
       .then(function (_characteristicA) {
         characteristicA = _characteristicA;
@@ -106,14 +126,14 @@ module.exports = {
       .catch(function (error) {
         events.emit('connectionLost');
         logMessage('Failed to get Primary Service at address B', error);
-        return disconnect();
+        return disconnectSensor();
       })
       .then(function (service) {
         return service.getCharacteristic(0x0001);
       })
       .catch(function (error) {
         logMessage('Connection failed!', error);
-        return disconnect();
+        return disconnectSensor();
       })
       .then(function (characteristicB) {
         startTime = Date.now();
@@ -145,7 +165,7 @@ module.exports = {
       })
       .catch(function (error) {
         logMessage('Connection failed!', error);
-        return disconnect();
+        return disconnectSensor();
       });
   },
   on: function() {
@@ -161,24 +181,7 @@ module.exports = {
   },
 
   disconnect: function () {
-    if (!bluetoothDevice) {
-      return;
-    }
-    console.log('Disconnecting from Bluetooth Device...');
-    if (bluetoothDevice.gatt.connected) {
-      console.log(bluetoothDevice);
-      bluetoothDevice.gatt.disconnect();
-    } else {
-      console.log('> Bluetooth Device is already disconnected');
-    }
-    events.removeAllListeners.apply();
-    isConnected = false;
-    bluetoothDevice = null;
-    liveSensors = {};
-    valueA = 0;
-    valueB = 0;
-    window.takeReadingIntervalID = null;
-    window.server = null;
+    disconnectSensor();
   },
 
   get liveSensors() {
