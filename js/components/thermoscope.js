@@ -8,8 +8,10 @@ import LabModel from '../components/lab-model';
 import Meter from '../components/meter';
 import models, { MIN_TEMP, MAX_TEMP } from '../models';
 import { getURLParam } from '../utils';
+import Aperture from '../components/aperture';
 
 import '../../css/thermoscope.less';
+import '../../css/aperture.less';
 
 const SHOW_MATERIAL_CONTROLS = getURLParam('controls');
 const MODEL_WIDTH = 400;
@@ -24,7 +26,8 @@ export default class Thermoscope extends PureComponent {
       liveData: false,
       materialType: this.props.material ? this.props.material : 'solid',
       materialIdx: this.props.probeIndex ? this.props.probeIndex : 0,
-      paused: false
+      paused: false,
+      hidden: false
     };
     this.handleTempSliderChange = this.handleTempSliderChange.bind(this);
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
@@ -32,6 +35,7 @@ export default class Thermoscope extends PureComponent {
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
     this.onMeterChange = this.onMeterChange.bind(this);
     this.togglePause = this.togglePause.bind(this);
+    this.toggleAperture = this.toggleAperture.bind(this);
   }
 
   handleTempSliderChange(event, value) {
@@ -61,9 +65,13 @@ export default class Thermoscope extends PureComponent {
     const { paused } = this.state;
     this.setState({ paused: !paused });
   }
+  toggleAperture() {
+    const { hidden } = this.state;
+    this.setState({ hidden: !hidden });
+  }
 
   render() {
-    const { temperature, materialType, materialIdx, liveData, paused } = this.state;
+    const { temperature, materialType, materialIdx, liveData, paused, hidden } = this.state;
     const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls } = this.props;
 
     const model = models[materialType][materialIdx];
@@ -76,6 +84,7 @@ export default class Thermoscope extends PureComponent {
     // simulation pause
     const zeroTempScale = function (temp) { return 0; };
     let pauseButtonText = paused ? "Resume" : "Pause";
+    let toggleApertureText = hidden ? "Activate" : "Hide";
     let tempScale = paused ? zeroTempScale : model.tempScale;
 
     // a url parameter will override the props setting
@@ -91,10 +100,11 @@ export default class Thermoscope extends PureComponent {
                   coulombForcesSettings={model.coulombForcesSettings}
                   width={MODEL_WIDTH} height={MODEL_HEIGHT}
                   embeddableSrc={embeddableSrc}
-          />
+        />
+        <Aperture open={!hidden} bladeColor="#333" outerColor="white" />
         {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />}
         <div>
-          {!paused &&
+          {!paused && !hidden &&
             <div className="controls-row">
               Temperature {temperature}°C
               <div className="slider">
@@ -105,35 +115,44 @@ export default class Thermoscope extends PureComponent {
               </div>
             </div>
           }
-          {paused &&
+          {paused || hidden &&
             <div className="controls-row">
               <div className="slider">
                 &nbsp;
               </div>
             </div>
           }
-          {showControls && <div>
-            <div className="pause">
-              <RaisedButton id="pause" onClick={this.togglePause}>{pauseButtonText}</RaisedButton>
-            </div>
+          <div>
             <div className="controls-row">
-              <div className="material-type-select">
-                <RadioButtonGroup name="material-type" valueSelected={material} onChange={this.handleMaterialTypeChange}>
-                  <RadioButton value="solid" label="Solid"/>
-                  <RadioButton value="liquid" label="Liquid"/>
-                  <RadioButton value="gas" label="Gas"/>
-                </RadioButtonGroup>
+              <div className="aperture">
+                <RaisedButton id="hidden" onClick={this.toggleAperture}>{toggleApertureText}</RaisedButton>
               </div>
-              <div className="material-select">
-                <SelectField floatingLabelText="Material" value={materialIdx} onChange={this.handleMaterialIdxChange}>
-                  {models[material].map((model, idx) =>
-                    <MenuItem key={idx} value={idx} primaryText={model.name}/>
-                  )}
-                </SelectField>
-              </div>
+              {showControls &&
+                <div className="pause">
+                  <RaisedButton id="pause" onClick={this.togglePause}>{pauseButtonText}</RaisedButton>
+                </div>
+              }
             </div>
+
+            {showControls &&
+              <div className="controls-row">
+                <div className="material-type-select">
+                  <RadioButtonGroup name="material-type" valueSelected={material} onChange={this.handleMaterialTypeChange}>
+                    <RadioButton value="solid" label="Solid" />
+                    <RadioButton value="liquid" label="Liquid" />
+                    <RadioButton value="gas" label="Gas" />
+                  </RadioButtonGroup>
+                </div>
+                <div className="material-select">
+                  <SelectField floatingLabelText="Material" value={materialIdx} onChange={this.handleMaterialIdxChange}>
+                    {models[material].map((model, idx) =>
+                      <MenuItem key={idx} value={idx} primaryText={model.name} />
+                    )}
+                  </SelectField>
+                </div>
+              </div>
+            }
           </div>
-          }
           {!showControls && <div className="controls-row"> <div>{model.name}</div></div>}
         </div>
       </div>
