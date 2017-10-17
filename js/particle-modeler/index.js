@@ -211,6 +211,7 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     this.addPinnedParticleText();
+    if (!this.state.Container || this.state.Container.value === false) this.toggleContainerVisibility(false);
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element,
