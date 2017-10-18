@@ -10,7 +10,7 @@ module.exports = {
     'one-thermoscope': './js/one-thermoscope/index.js',
     'three-thermoscope': './js/three-thermoscope/index.js',
     'meter': './js/meter/index.js',
-    'aperture': './js/aperture/index.js'
+    'icon-setter': './js/icon-setter/index.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),
