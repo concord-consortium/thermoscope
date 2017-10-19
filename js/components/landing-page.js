@@ -41,7 +41,8 @@ export default class LandingPage extends PureComponent {
           <div className="main-menu">
             <div className="menu-button"> <a href="./thermoscope/"><div className="thermoscope-link" /></a></div>
             <div className="menu-button"><a><div className="particle-modeler-link" onClick={this.showParticleMenu}/></a></div>
-          </div>
+            </div>
+          <div className="settings-button"><a href="./icon-setter/"><div className="settings-link"><i className="material-icons">settings</i></div></a></div>
         </div>
         }
         {particleMenuMode &&
