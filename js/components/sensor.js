@@ -34,7 +34,7 @@ export default class Sensor extends PureComponent {
     if (!this.state.connected) {
       this.connectSensor();
     } else {
-      window.location.reload();
+      this.connectedSensor.disconnect();
     }
   }
 
@@ -73,9 +73,18 @@ export default class Sensor extends PureComponent {
     const { connected, connecting, connectedSensorName, showDetails, debugMessages } = this.state;
     const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
+    let sensorName = null;
+    let prefix = "Thermoscope";
+    if (connected && connectedSensorName) {
+      sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+    }
+    let nameTag;
 
-    let connectStatus = connected ? "Connected" : "";
-    connectStatus = connectedSensorName ? connectStatus + " to " + connectedSensorName : connectStatus;
+    if (sensorName != null) {
+      console.log("connected to " + sensorName, connectedSensorName);
+      nameTag = <div>Connected to <span id="sensor-tag-icon">{sensorName}</span></div>;
+    }
+
     let connectButtonText = connected ? "Disconnect" : "Connect";
 
     return (
@@ -88,7 +97,7 @@ export default class Sensor extends PureComponent {
             {connecting &&
               <LinearProgress />
             }
-            {!connecting && <div id="sensorConnectionStatus">{connectStatus}</div>}
+            {!connecting && <div id="sensorConnectionStatus">{nameTag}</div>}
             {showDebug &&
               <div id="screenConsole">{debugMessages}</div>
             }

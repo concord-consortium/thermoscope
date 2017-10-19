@@ -11,7 +11,7 @@ import LabQuest2 from 'sensor-labquest-2-interface';
 import '../../css/app.less';
 import '../../css/three-thermoscope.less';
 // Required by Material-UI library.
-injectTapEventPlugin();
+// injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
 
@@ -57,4 +57,4 @@ export default class OneThermoscope extends PureComponent {
   }
 }
 
-ReactDOM.render(<OneThermoscope/>, document.getElementById('app'));
+// ReactDOM.render(<OneThermoscope/>, document.getElementById('app'));

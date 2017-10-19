@@ -16,7 +16,7 @@ const sensor = bleSensor;
 import '../../css/app.less';
 
 // Required by Material-UI library.
-injectTapEventPlugin();
+// injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
 
@@ -48,4 +48,4 @@ export default class TwoThermoscope extends PureComponent {
   }
 }
 
-ReactDOM.render(<TwoThermoscope/>, document.getElementById('app'));
+// ReactDOM.render(<TwoThermoscope/>, document.getElementById('app'));
