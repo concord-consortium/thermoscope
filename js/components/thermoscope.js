@@ -38,6 +38,10 @@ export default class Thermoscope extends PureComponent {
     this.toggleAperture = this.toggleAperture.bind(this);
   }
 
+  componentWillUnmount() {
+    this.props.sensor.removeAllListeners('statusReceived');
+  }
+
   handleTempSliderChange(event, value) {
     this.setState({temperature: value});
   }

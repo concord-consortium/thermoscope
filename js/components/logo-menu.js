@@ -10,12 +10,7 @@ export default class LogoMenu extends PureComponent {
 
     return (
       <div className={scale}>
-        <div className="cc-logo" />
-        {showNav &&
-          <div className="menu">
-            <div title="Home"><a href="../"><i className="material-icons">home</i></a></div>
-          </div>}
-
+        <a href="../"><div className="cc-logo"></div></a>
       </div>
     )
   };

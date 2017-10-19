@@ -2,10 +2,10 @@ import React, {PureComponent} from 'react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import Thermoscope from './thermoscope';
 import LogoMenu from './logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { List, ListItem } from 'material-ui/List';
+import { getURLParam } from '../utils';
 
 import '../../css/app.less';
 
@@ -14,29 +14,53 @@ injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
 
-const LandingPage = () => (
-  <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-    <div className="app">
-      <h1>Thermoscope and Particle Modeler Examples</h1>
-      <LogoMenu scale="logo-menu"/>
-      <div className="demo-links">
-        <List>
-          <ListItem primaryText="Thermoscope with BLE Sensor Demos" leftIcon={<i className="material-icons">group_work</i>} initiallyOpen={true}
-            primaryTogglesNestedList={true} nestedItems={[
-              <ListItem primaryText="Thermoscope (solid) Wood and Stone" href="./thermoscope/" key="1" />,
-              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" href="./thermoscope/?A=liquid&B=liquid" key="2" />,
-              <ListItem primaryText="Thermoscope (gas) Air" href="./thermoscope/?A=gas&B=gas" key="3" />,
-              <ListItem primaryText="Thermoscope (custom)" href="./thermoscope/?controls=true" key="4" />
-            ]} />
-          <ListItem primaryText="Particle Modeler" leftIcon={<i className="material-icons">all_out</i>} initiallyOpen={true} primaryTogglesNestedList={true} nestedItems={[
-            <ListItem primaryText="Particle Modeler" href="./particle-modeler/" key="5" />,
-            <ListItem primaryText="One Particle Modeler" href= "./particle-modeler/#targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="6" />,
-            <ListItem primaryText="One Particle Modeler (Authoring)" href= "./particle-modeler/#authoring=true&targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="7" />
-          ]} />
-        </List>
-      </div>
-    </div>
-  </MuiThemeProvider>
-);
 
-export default LandingPage;
+export default class LandingPage extends PureComponent {
+  constructor(props) {
+    super(props);
+    let particleMenuMode = getURLParam("particleMenu") ? true : false;
+    this.state = {
+      particleMenuMode
+    }
+    this.showParticleMenu = this.showParticleMenu.bind(this);
+  }
+  showParticleMenu() {
+    var pageUrl = '?' + "particleMenu=true";
+    window.history.pushState('', '', pageUrl);
+    this.setState({ particleMenuMode: true });
+  }
+  render() {
+    const { particleMenuMode } = this.state;
+    return (
+      <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
+      <div className="app">
+        {!particleMenuMode &&
+        <div>
+          <h1>Thermoscope and Particle Modeler Examples</h1>
+          <LogoMenu scale="logo-menu" />
+          <div className="main-menu">
+            <div className="menu-button"> <a href="./thermoscope/"><div className="thermoscope-link" /></a></div>
+            <div className="menu-button"><a><div className="particle-modeler-link" onClick={this.showParticleMenu}/></a></div>
+          </div>
+        </div>
+        }
+        {particleMenuMode &&
+          <div>
+          <h1>Particle Modeler Examples</h1>
+          <LogoMenu scale="logo-menu small" />
+          <div className="demo-links">
+            <List>
+              <ListItem primaryText="Particle Modeler" href="./particle-modeler/" />
+              <ListItem primaryText="Particle Modeler (Authoring)" href="./particle-modeler/#authoring=true" />
+              <ListItem primaryText="One Particle Example" href= "./particle-modeler/#targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="6" />
+              <ListItem primaryText="One Particle Example (Authoring)" href= "./particle-modeler/#authoring=true&targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="7" />
+            </List>
+          </div>
+        </div>
+        }
+      </div>
+    </MuiThemeProvider>
+    );
+  }
+}
+

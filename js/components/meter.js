@@ -178,7 +178,7 @@ export default class Meter extends PureComponent {
 }
 
 Meter.propTypes = {
-  cx: PropTypes.object.number,
+  cx: PropTypes.number,
   cy: PropTypes.number,
   r: PropTypes.number,
   arcWidth: PropTypes.number,
