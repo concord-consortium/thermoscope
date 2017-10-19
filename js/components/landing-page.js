@@ -39,7 +39,7 @@ export default class LandingPage extends PureComponent {
           <h1>Thermoscope and Particle Modeler Examples</h1>
           <LogoMenu scale="logo-menu" />
           <div className="main-menu">
-            <div className="menu-button"> <a href="/thermoscope-control/"><div className="thermoscope-link" /></a></div>
+            <div className="menu-button"> <a href="./thermoscope/"><div className="thermoscope-link" /></a></div>
             <div className="menu-button"><a><div className="particle-modeler-link" onClick={this.showParticleMenu}/></a></div>
           </div>
         </div>
@@ -48,11 +48,10 @@ export default class LandingPage extends PureComponent {
           <div>
           <h1>Particle Modeler Examples</h1>
           <LogoMenu scale="logo-menu small" />
-          <div title="Home" className="main-menu-button" onClick={this.showParticleMenu} ><i className="material-icons">home</i></div>
           <div className="demo-links">
             <List>
-              <ListItem primaryText="Particle Modeler" href="./particle-modeler/" />,
-              <ListItem primaryText="Particle Modeler (Authoring)" href="./particle-modeler/#authoring=true" />,
+              <ListItem primaryText="Particle Modeler" href="./particle-modeler/" />
+              <ListItem primaryText="Particle Modeler (Authoring)" href="./particle-modeler/#authoring=true" />
               <ListItem primaryText="One Particle Example" href= "./particle-modeler/#targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="6" />
               <ListItem primaryText="One Particle Example (Authoring)" href= "./particle-modeler/#authoring=true&targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="7" />
             </List>

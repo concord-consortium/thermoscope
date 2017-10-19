@@ -125,9 +125,9 @@ export default class ThermoscopeControl extends PureComponent {
           }
           { mode === ThermoscopeMode.ThreeThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', true)}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B', true)}
-              {this.renderThermoscope(getURLParam('C'), 1, 'C', true)}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', true, 0, 0.25)}
+              {this.renderThermoscope(getURLParam('B'), 1, 'B', true, 0.25, 0.8)}
+              {this.renderThermoscope(getURLParam('C'), 1, 'C', true, 0.8, 1)}
             </div>
           }
           <Sensor sensor={sensor} showAddressBox={false} />
