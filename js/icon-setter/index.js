@@ -16,7 +16,8 @@ injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
 
-const icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '⚽', '🍒', '🐟', '🐢', '🚀'];
+const icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '⚽', '🍒', '🐟', '🐢', '🚀',
+               '🐿', '🐌', '🌼', '🐙', '🌵', '🦀', '🚁', '⛄', '🐝', '🔑', '💡', '🐍' ];
 
 const nameServiceAddr = 0x1234;
 const nameCharacteristicAddr = 0x2345;
