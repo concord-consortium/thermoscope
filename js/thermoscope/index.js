@@ -87,7 +87,7 @@ export default class ThermoscopeControl extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="app">
-          <LogoMenu scale="logo-menu small" />
+          <LogoMenu scale="logo-menu small" navPath="../index.html" />
           <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div>
           { mode === ThermoscopeMode.Menu &&
             <div className="demo-links">
