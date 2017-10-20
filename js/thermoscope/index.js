@@ -91,15 +91,19 @@ export default class ThermoscopeControl extends PureComponent {
           <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div>
           { mode === ThermoscopeMode.Menu &&
             <div className="demo-links">
-              <List>
+            <List>
+            <div className="list-section">
+                <h1>Thermoscope Examples</h1>
               <ListItem primaryText="Thermoscope (solid) Wood and Stone" onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1" />
               <ListItem primaryText="Thermoscope (liquid) Oil and Soap" onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" />
               <ListItem primaryText="Thermoscope (gas) Air" onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" />
-
+              </div>
+              <div className="list-section">
+                <h1>Configurable Thermoscopes</h1>
               <ListItem primaryText="Thermoscope (one)" onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="4" />
               <ListItem primaryText="Thermoscope (two)" onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="5" />
-              <ListItem primaryText="Thermoscope (three)" onClick={() => this.setThermoscopeRendering("A=gas&B=liquid&C=solid&controls=true", 3)} key="6" />
-              </List>
+               </div>
+               </List>
             </div>
           }
           {mode === ThermoscopeMode.OneThermoscope &&
