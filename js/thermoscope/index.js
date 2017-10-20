@@ -44,8 +44,16 @@ export default class ThermoscopeControl extends PureComponent {
 
   constructor(props) {
     super(props);
+    let initialMode = ThermoscopeMode.Menu;
+    if (getURLParam('A')) {
+      if (getURLParam('B')) {
+        initialMode = ThermoscopeMode.TwoThermoscope;
+      } else {
+        initialMode = ThermoscopeMode.OneThermoscope;
+      }
+    }
     this.state = {
-      mode: ThermoscopeMode.Menu
+      mode: initialMode
     };
     this.setThermoscopeRendering = this.setThermoscopeRendering.bind(this);
     this.renderThermoscope = this.renderThermoscope.bind(this);
