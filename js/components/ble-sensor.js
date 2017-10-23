@@ -60,6 +60,7 @@ function onDisconnected(event) {
 }
 function disconnectSensor() {
   if (!bluetoothDevice) {
+    events.emit('connectionLost');
     return;
   }
   console.log('Disconnecting from Bluetooth Device...');
@@ -68,8 +69,8 @@ function disconnectSensor() {
     bluetoothDevice.gatt.disconnect();
   } else {
     console.log('> Bluetooth Device is already disconnected');
-    events.emit('connectionLost');
   }
+  events.emit('connectionLost');
   events.removeAllListeners.apply();
   isConnected = false;
   bluetoothDevice = null;
@@ -103,9 +104,14 @@ module.exports = {
       })
       // Step 3: Get the Service
       .then(function (server) {
-        isConnected = true;
-        window.server = server;
-        return server.getPrimaryService(tempAServiceAddr);
+        if (server) {
+          isConnected = true;
+          window.server = server;
+          return server.getPrimaryService(tempAServiceAddr);
+        }
+        else {
+          return disconnectSensor();
+        }
       })
       .catch(function (error) {
         logMessage('Failed to get Primary Service at address A', error);

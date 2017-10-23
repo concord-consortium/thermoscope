@@ -5,6 +5,8 @@ This repository contains the initial code to visualize matter at different tempe
 Latest builds for the Thermoscope application can be found here: https://thermoscope.concord.org/branch/master/
 Main production url is https://thermoscope.concord.org/ though there is heavy caching on this site.
 
+Thermoscope apps on iPad devices are currently using MASTER branch.
+
 The main Thermoscope demo page is here: https://thermoscope.concord.org/branch/master/thermoscope/ and accepts url parameters as follows:
 https://concord-consortium.github.io/thermoscope/thermoscope/?A=liquid&B=liquid&controls=false
 
