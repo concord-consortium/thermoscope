@@ -75,14 +75,18 @@ export default class Sensor extends PureComponent {
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
     let sensorName = null;
     let prefix = "Thermoscope";
+    let sensorIconStyle = "sensor-tag-icon";
+
     if (connected && connectedSensorName) {
+      console.log(connectedSensorName.length);
       sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+      sensorIconStyle = connectedSensorName.length > prefix.length ? sensorIconStyle : sensorIconStyle + " small";
     }
     let nameTag;
 
     if (sensorName != null) {
       console.log("connected to " + sensorName, connectedSensorName);
-      nameTag = <div>Connected to <span id="sensor-tag-icon">{sensorName}</span></div>;
+      nameTag = <div>Connected to <span className={sensorIconStyle}>{sensorName}</span></div>;
     }
 
     let connectButtonText = connected ? "Disconnect" : "Connect";
