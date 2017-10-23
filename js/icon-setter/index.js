@@ -22,6 +22,11 @@ const icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '�
 const nameServiceAddr = 0x1234;
 const nameCharacteristicAddr = 0x2345;
 
+const instr_start = 'Click "Connect" and select a Thermoscope to set its icon';
+const instr_connected = 'Select a new icon for the Thermoscope and click "Set Icon"';
+const instr_changed = 'Click "Disconnect" and turn the Thermoscope off and on again';
+
+
 export class IconSetter extends PureComponent {
 
   constructor(props) {
@@ -29,6 +34,8 @@ export class IconSetter extends PureComponent {
 
     this.state = {
       connected: false,
+      iconChanged: false,
+      status: "not connected",
       icon: ''
     };
 
@@ -54,34 +61,46 @@ export class IconSetter extends PureComponent {
     var component = this;
     // Step 2: Connect to it
     request.then(function(device) {
-      console.log("connecting");
+      component.setState({ 
+        status: "connecting",
+        iconChanged: false
+      });
       return device.gatt.connect();
     })
     // Step 3: Get the icon service
     .then(function(server) {
-      console.log("getting service");
+      component.setState({ 
+        status: "getting icon service" 
+      });
       window.server = server;
       return server.getPrimaryService(nameServiceAddr);
     })
     .then(function(service){
-      console.log("getting characteristic");
+      component.setState({ 
+        status: "getting characteristic" 
+      });
       return service.getCharacteristic(nameCharacteristicAddr);
     })
     .then(function(characteristic){
       component.iconCharacteristic = characteristic;
-      console.log("reading value");
+      component.setState({ 
+        status: "reading characteristic" 
+      });
       return characteristic.readValue();
     })
     .then(function(value){
-      console.log('current value: ' + component.decoder.decode(value));
-
-      component.setState({
+      var iconVal = component.decoder.decode(value);
+      component.setState({ 
         connected: true,
-        icon: component.decoder.decode(value)
+        status: "current icon value: " + iconVal,
+        icon: iconVal
       });
     })
     .catch(function(error) {
       console.error('Connection failed!', error);
+      component.setState({ 
+        status: "connection failed"
+      });
     });
   }
 
@@ -89,21 +108,40 @@ export class IconSetter extends PureComponent {
     window.server.disconnect();
 
     this.setState({
-      connected: false
+      connected: false,
+      status: "disconnected"
     });
   }
 
   selectIcon(event) {
     var icon = event.target.value;
     this.newIcon = icon;
-    this.setState({icon: icon});
-    console.log("new icon: " + icon);
+    this.setState({
+      icon: icon
+    });
   }
 
   setIcon() {
     var encoded = this.encoder.encode(this.newIcon);
-    console.log("encoded: " + encoded);
+
     this.iconCharacteristic.writeValue(encoded);
+    this.setState({
+      iconChanged: true,
+      status: "icon changed"
+    });
+  }
+
+  getInstructions() {
+    var newInstr = '';
+    if(!this.state.connected) {
+      newInstr = instr_start;
+    } else if(!this.state.iconChanged) {
+      newInstr = instr_connected;
+    } else {
+      newInstr = instr_changed;
+    }
+
+    return newInstr;
   }
 
   render() {
@@ -112,6 +150,9 @@ export class IconSetter extends PureComponent {
         <div className="app icon-setter">
           <h1>Thermoscope Icon Setter</h1>
           <LogoMenu scale="logo-menu"/>
+          <h3 id="instructions" className="message">
+            {this.getInstructions()}
+          </h3>
           <div className="app-container">
             <div>
               {!this.state.connected && <RaisedButton id="connect" onClick={this.connect}>Connect</RaisedButton>}
@@ -127,7 +168,9 @@ export class IconSetter extends PureComponent {
               </select>
               <RaisedButton id="set-icon" onClick={this.setIcon} className="button2">Set Icon</RaisedButton>
             </div>}
+            
           </div>
+          <div id="status" className="message">{this.state.status}</div>
         </div>
       </MuiThemeProvider>
     );
