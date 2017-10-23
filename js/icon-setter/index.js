@@ -36,7 +36,8 @@ export class IconSetter extends PureComponent {
       connected: false,
       iconChanged: false,
       status: "not connected",
-      icon: ''
+      currentIcon: '',
+      selectedIcon: ''
     };
 
     this.iconCharacteristic = null;
@@ -93,7 +94,8 @@ export class IconSetter extends PureComponent {
       component.setState({ 
         connected: true,
         status: "current icon value: " + iconVal,
-        icon: iconVal
+        currentIcon: iconVal,
+        selectedIcon: iconVal
       });
     })
     .catch(function(error) {
@@ -115,19 +117,19 @@ export class IconSetter extends PureComponent {
 
   selectIcon(event) {
     var icon = event.target.value;
-    this.newIcon = icon;
     this.setState({
-      icon: icon
+      selectedIcon: icon
     });
   }
 
   setIcon() {
-    var encoded = this.encoder.encode(this.newIcon);
+    var encoded = this.encoder.encode(this.state.selectedIcon);
 
     this.iconCharacteristic.writeValue(encoded);
     this.setState({
       iconChanged: true,
-      status: "icon changed"
+      status: "current icon value: " + this.state.selectedIcon,
+      currentIcon: this.state.selectedIcon
     });
   }
 
@@ -143,7 +145,7 @@ export class IconSetter extends PureComponent {
 
     return newInstr;
   }
-
+  
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
@@ -159,14 +161,16 @@ export class IconSetter extends PureComponent {
               {this.state.connected && <RaisedButton id="disconnect" onClick={this.disconnect}>Disconnect</RaisedButton>}
             </div>
             {this.state.connected && <div>
-              <select id="icon-select" value={this.state.icon} onChange={this.selectIcon} className="icons">
+              <select id="icon-select" value={this.state.selectedIcon} onChange={this.selectIcon} className="icons">
               {icons.map((icon) => (
                 <option key={icon} value={icon}>
                   {icon}
                 </option>
               ))}
               </select>
-              <RaisedButton id="set-icon" onClick={this.setIcon} className="button2">Set Icon</RaisedButton>
+              <RaisedButton id="set-icon" onClick={this.setIcon} className="button2" 
+                disabled={this.state.selectedIcon == this.state.currentIcon}>
+                Set Icon</RaisedButton>
             </div>}
             
           </div>
