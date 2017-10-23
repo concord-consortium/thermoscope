@@ -466,7 +466,7 @@ export default class Interactive extends PureComponent {
     return (
       <MuiThemeProvider>
         <div className={appClass}>
-          <LogoMenu scale="logo-menu small" showNav="true" />
+          <LogoMenu scale="logo-menu small" navPath="../index.html" />
           <div className="app-container">
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'

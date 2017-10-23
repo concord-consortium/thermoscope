@@ -2,9 +2,10 @@
 This repository contains the initial code to visualize matter at different temperatures, controlled either directly from the application, or by input from an external temperature sensor.
 
 ## Testing
-Latest published builds for the Thermoscope demo are deployed to https://concord-consortium.github.io/thermoscope/
+Latest builds for the Thermoscope application can be found here: https://thermoscope.concord.org/branch/master/
+Main production url is https://thermoscope.concord.org/ though there is heavy caching on this site.
 
-The main Thermoscope demo page is here: https://concord-consortium.github.io/thermoscope/thermoscope/ and accepts url parameters as follows:
+The main Thermoscope demo page is here: https://thermoscope.concord.org/branch/master/thermoscope/ and accepts url parameters as follows:
 https://concord-consortium.github.io/thermoscope/thermoscope/?A=liquid&B=liquid&controls=false
 
 where `A` and `B` (case sensitive) represent Thermoscopes A and B's default particle visualization, which can be one of the following states (default is `solid`):
@@ -20,17 +21,8 @@ Additionally, the `controls` parameter can be used to show or hide the controls 
    ```
 
 
-The Particle Modeler demo can be found here: https://concord-consortium.github.io/thermoscope/particle-modeler
-To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://concord-consortium.github.io/thermoscope/particle-modeler/#authoring=true
-
-The Speedometer demo is available here: https://concord-consortium.github.io/thermoscope/meter
-
-The one thermoscope page showing state transitions is available here: https://concord-consortium.github.io/thermoscope/one-thermoscope
-
-The three thermoscope page is available here: https://concord-consortium.github.io/thermoscope/three-thermoscope
-
-To connect to the LabQuest2 device, you need an http connection. Since Github pages force https, there is a copy of the site available on S3 that can be accessed via http. The best url for demonstrating sensor connection is hosted here:
-http://models-resources.concord.org/thermoscope/index.html
+The Particle Modeler demo can be found here: https://thermoscope.concord.org/branch/master/particle-modeler
+To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://thermoscope.concord.org/branch/master/particle-modeler/#authoring=true
 
 ## Development
 
