@@ -140,8 +140,16 @@
 
 	    var _this = _possibleConstructorReturn(this, (ThermoscopeControl.__proto__ || Object.getPrototypeOf(ThermoscopeControl)).call(this, props));
 
+	    var initialMode = ThermoscopeMode.Menu;
+	    if ((0, _utils.getURLParam)('A')) {
+	      if ((0, _utils.getURLParam)('B')) {
+	        initialMode = ThermoscopeMode.TwoThermoscope;
+	      } else {
+	        initialMode = ThermoscopeMode.OneThermoscope;
+	      }
+	    }
 	    _this.state = {
-	      mode: ThermoscopeMode.Menu
+	      mode: initialMode
 	    };
 	    _this.setThermoscopeRendering = _this.setThermoscopeRendering.bind(_this);
 	    _this.renderThermoscope = _this.renderThermoscope.bind(_this);
@@ -201,7 +209,7 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: 'app' },
-	          _react2.default.createElement(_logoMenu2.default, { scale: 'logo-menu small' }),
+	          _react2.default.createElement(_logoMenu2.default, { scale: 'logo-menu small', navPath: '../index.html' }),
 	          _react2.default.createElement(
 	            'div',
 	            { title: 'Home', className: 'main-menu-button', onClick: this.showMenu },
@@ -217,24 +225,39 @@
 	            _react2.default.createElement(
 	              _List.List,
 	              null,
-	              _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (solid) Wood and Stone', onClick: function onClick() {
-	                  return _this2.setThermoscopeRendering("A=solid&B=solid", 2);
-	                }, key: '1' }),
-	              _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (liquid) Oil and Soap', onClick: function onClick() {
-	                  return _this2.setThermoscopeRendering("A=liquid&B=liquid", 2);
-	                }, key: '2' }),
-	              _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (gas) Air', onClick: function onClick() {
-	                  return _this2.setThermoscopeRendering("A=gas&B=gas", 2);
-	                }, key: '3' }),
-	              _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (one)', onClick: function onClick() {
-	                  return _this2.setThermoscopeRendering("controls=true", 1);
-	                }, key: '4' }),
-	              _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (two)', onClick: function onClick() {
-	                  return _this2.setThermoscopeRendering("controls=true", 2);
-	                }, key: '5' }),
-	              _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (three)', onClick: function onClick() {
-	                  return _this2.setThermoscopeRendering("A=gas&B=liquid&C=solid&controls=true", 3);
-	                }, key: '6' })
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'list-section' },
+	                _react2.default.createElement(
+	                  'h1',
+	                  null,
+	                  'Thermoscope Examples'
+	                ),
+	                _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (solid) Wood and Stone', onClick: function onClick() {
+	                    return _this2.setThermoscopeRendering("A=solid&B=solid", 2);
+	                  }, key: '1' }),
+	                _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (liquid) Oil and Soap', onClick: function onClick() {
+	                    return _this2.setThermoscopeRendering("A=liquid&B=liquid", 2);
+	                  }, key: '2' }),
+	                _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (gas) Air', onClick: function onClick() {
+	                    return _this2.setThermoscopeRendering("A=gas&B=gas", 2);
+	                  }, key: '3' })
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'list-section' },
+	                _react2.default.createElement(
+	                  'h1',
+	                  null,
+	                  'Configurable Thermoscopes'
+	                ),
+	                _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (one)', onClick: function onClick() {
+	                    return _this2.setThermoscopeRendering("controls=true", 1);
+	                  }, key: '4' }),
+	                _react2.default.createElement(_List.ListItem, { primaryText: 'Thermoscope (two)', onClick: function onClick() {
+	                    return _this2.setThermoscopeRendering("controls=true", 2);
+	                  }, key: '5' })
+	              )
 	            )
 	          ),
 	          mode === ThermoscopeMode.OneThermoscope && _react2.default.createElement(
@@ -29558,15 +29581,17 @@
 	    value: function render() {
 	      var _props = this.props,
 	          scale = _props.scale,
-	          showNav = _props.showNav;
+	          showNav = _props.showNav,
+	          navPath = _props.navPath;
 
+	      var path = navPath ? navPath : '../index.html';
 
 	      return _react2.default.createElement(
 	        'div',
 	        { className: scale },
 	        _react2.default.createElement(
 	          'a',
-	          { href: '../' },
+	          { href: path },
 	          _react2.default.createElement('div', { className: 'cc-logo' })
 	        )
 	      );
@@ -29613,7 +29638,7 @@
 
 
 	// module
-	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.app .main-menu-button {\n  position: fixed;\n  right: 140px;\n  top: 4px;\n}\n.app .main-menu-button:hover {\n  cursor: pointer;\n}\n.app .main-menu-button > div {\n  float: right;\n  padding-right: 10px;\n}\n.app .main-menu-button a {\n  color: #aaa;\n}\n.app .main-menu-button a:hover {\n  color: #888;\n}\n.app .main-menu-button a:active {\n  color: #888;\n}\n.app .main-menu-button i {\n  font-size: 32px;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 125px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(" + __webpack_require__(629) + ");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 120px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n  height: 100%;\n  background-image: url(" + __webpack_require__(630) + ");\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n.app .logo-menu.small {\n  height: 67px;\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  padding-top: 150px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.app #sensor-tag-icon {\n  font-size: 3em;\n  padding-left: 10px;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.main-menu {\n  width: 800px;\n  height: 300px;\n  margin-top: 100px;\n  margin-left: auto;\n  margin-right: auto;\n}\n.main-menu a div {\n  width: 200px;\n  height: 200px;\n  margin: 50px;\n  float: left;\n  background: #666;\n  border-radius: 10px;\n}\n.main-menu .thermoscope-link {\n  background-image: url(" + __webpack_require__(631) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.main-menu .particle-modeler-link {\n  background-image: url(" + __webpack_require__(632) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.settings-link {\n  color: white;\n  position: fixed;\n  bottom: 10px;\n  left: 10px;\n}\n.settings-link:hover {\n  cursor: pointer;\n  color: orange;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.app .main-menu-button {\n  position: fixed;\n  right: 140px;\n  top: 4px;\n}\n.app .main-menu-button:hover {\n  cursor: pointer;\n}\n.app .main-menu-button > div {\n  float: right;\n  padding-right: 10px;\n}\n.app .main-menu-button a {\n  color: #aaa;\n}\n.app .main-menu-button a:hover {\n  color: #888;\n}\n.app .main-menu-button a:active {\n  color: #888;\n}\n.app .main-menu-button i {\n  font-size: 32px;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 125px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(" + __webpack_require__(629) + ");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 120px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n  height: 100%;\n  background-image: url(" + __webpack_require__(630) + ");\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n.app .logo-menu.small {\n  height: 67px;\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  padding-top: 150px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.app #sensor-tag-icon {\n  font-size: 3em;\n  padding-left: 10px;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.main-menu {\n  width: 800px;\n  height: 300px;\n  margin-top: 100px;\n  margin-left: auto;\n  margin-right: auto;\n}\n.main-menu a div {\n  width: 200px;\n  height: 200px;\n  margin: 50px;\n  float: left;\n  background: #666;\n  border-radius: 10px;\n}\n.main-menu .thermoscope-link {\n  background-image: url(" + __webpack_require__(631) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.main-menu .particle-modeler-link {\n  background-image: url(" + __webpack_require__(632) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.settings-link {\n  color: white;\n  position: fixed;\n  bottom: 16px;\n  left: 10px;\n}\n.settings-link:hover {\n  cursor: pointer;\n  color: orange;\n}\n.list-section {\n  left: 5px;\n  margin-top: 10px;\n  font-size: 1.3em;\n  border: 2px solid #292929;\n}\n.list-section h1 {\n  font-size: 1em;\n  background: #292929;\n}\n", ""]);
 
 	// exports
 

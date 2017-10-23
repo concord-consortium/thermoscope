@@ -104,10 +104,14 @@
 
 	_darkBaseTheme2.default.palette.textColor = '#ccc';
 
-	var icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '⚽', '🍒', '🐟', '🐢', '🚀'];
+	var icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '⚽', '🍒', '🐟', '🐢', '🚀', '🐿', '🐌', '🌼', '🐙', '🌵', '🦀', '🚁', '⛄', '🐝', '🔑', '💡', '🐍'];
 
 	var nameServiceAddr = 0x1234;
 	var nameCharacteristicAddr = 0x2345;
+
+	var instr_start = 'Click "Connect" and select a Thermoscope to set its icon';
+	var instr_connected = 'Select a new icon for the Thermoscope and click "Set Icon"';
+	var instr_changed = 'Click "Disconnect" and turn the Thermoscope off and on again';
 
 	var IconSetter = exports.IconSetter = function (_PureComponent) {
 	  _inherits(IconSetter, _PureComponent);
@@ -119,7 +123,10 @@
 
 	    _this.state = {
 	      connected: false,
-	      icon: ''
+	      iconChanged: false,
+	      status: "not connected",
+	      currentIcon: '',
+	      selectedIcon: ''
 	    };
 
 	    _this.iconCharacteristic = null;
@@ -146,30 +153,43 @@
 	      var component = this;
 	      // Step 2: Connect to it
 	      request.then(function (device) {
-	        console.log("connecting");
+	        component.setState({
+	          status: "connecting",
+	          iconChanged: false
+	        });
 	        return device.gatt.connect();
 	      })
 	      // Step 3: Get the icon service
 	      .then(function (server) {
-	        console.log("getting service");
+	        component.setState({
+	          status: "getting icon service"
+	        });
 	        window.server = server;
 	        return server.getPrimaryService(nameServiceAddr);
 	      }).then(function (service) {
-	        console.log("getting characteristic");
+	        component.setState({
+	          status: "getting characteristic"
+	        });
 	        return service.getCharacteristic(nameCharacteristicAddr);
 	      }).then(function (characteristic) {
 	        component.iconCharacteristic = characteristic;
-	        console.log("reading value");
+	        component.setState({
+	          status: "reading characteristic"
+	        });
 	        return characteristic.readValue();
 	      }).then(function (value) {
-	        console.log('current value: ' + component.decoder.decode(value));
-
+	        var iconVal = component.decoder.decode(value);
 	        component.setState({
 	          connected: true,
-	          icon: component.decoder.decode(value)
+	          status: "current icon value: " + iconVal,
+	          currentIcon: iconVal,
+	          selectedIcon: iconVal
 	        });
 	      }).catch(function (error) {
 	        console.error('Connection failed!', error);
+	        component.setState({
+	          status: "connection failed"
+	        });
 	      });
 	    }
 	  }, {
@@ -178,23 +198,43 @@
 	      window.server.disconnect();
 
 	      this.setState({
-	        connected: false
+	        connected: false,
+	        status: "disconnected"
 	      });
 	    }
 	  }, {
 	    key: 'selectIcon',
 	    value: function selectIcon(event) {
 	      var icon = event.target.value;
-	      this.newIcon = icon;
-	      this.setState({ icon: icon });
-	      console.log("new icon: " + icon);
+	      this.setState({
+	        selectedIcon: icon
+	      });
 	    }
 	  }, {
 	    key: 'setIcon',
 	    value: function setIcon() {
-	      var encoded = this.encoder.encode(this.newIcon);
-	      console.log("encoded: " + encoded);
+	      var encoded = this.encoder.encode(this.state.selectedIcon);
+
 	      this.iconCharacteristic.writeValue(encoded);
+	      this.setState({
+	        iconChanged: true,
+	        status: "current icon value: " + this.state.selectedIcon,
+	        currentIcon: this.state.selectedIcon
+	      });
+	    }
+	  }, {
+	    key: 'getInstructions',
+	    value: function getInstructions() {
+	      var newInstr = '';
+	      if (!this.state.connected) {
+	        newInstr = instr_start;
+	      } else if (!this.state.iconChanged) {
+	        newInstr = instr_connected;
+	      } else {
+	        newInstr = instr_changed;
+	      }
+
+	      return newInstr;
 	    }
 	  }, {
 	    key: 'render',
@@ -211,6 +251,11 @@
 	            'Thermoscope Icon Setter'
 	          ),
 	          _react2.default.createElement(_logoMenu2.default, { scale: 'logo-menu' }),
+	          _react2.default.createElement(
+	            'h3',
+	            { id: 'instructions', className: 'message' },
+	            this.getInstructions()
+	          ),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'app-container' },
@@ -233,7 +278,7 @@
 	              null,
 	              _react2.default.createElement(
 	                'select',
-	                { id: 'icon-select', value: this.state.icon, onChange: this.selectIcon, className: 'icons' },
+	                { id: 'icon-select', value: this.state.selectedIcon, onChange: this.selectIcon, className: 'icons' },
 	                icons.map(function (icon) {
 	                  return _react2.default.createElement(
 	                    'option',
@@ -244,9 +289,24 @@
 	              ),
 	              _react2.default.createElement(
 	                _RaisedButton2.default,
-	                { id: 'set-icon', onClick: this.setIcon, className: 'button2' },
+	                { id: 'set-icon', onClick: this.setIcon, className: 'button2',
+	                  disabled: this.state.selectedIcon == this.state.currentIcon },
 	                'Set Icon'
 	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { id: 'status', className: 'message' },
+	            this.state.status
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'instructions' },
+	            _react2.default.createElement(
+	              'div',
+	              null,
+	              'After the icon has been set, and the thermoscope power cycled, the device will still show up with the wrong name on any computer or tablet that saw it with the wrong name. The device is saying "Hi, I\'m device 12345, my name is Thermoscope X". The operating system sees "12345" and ignores the rest, so it continues to show the device with the name "Thermoscope". However, after a connection has been made to the device then the operating system updates its name for "12345" to be "Thermoscope X"'
 	            )
 	          )
 	        )
@@ -29548,15 +29608,17 @@
 	    value: function render() {
 	      var _props = this.props,
 	          scale = _props.scale,
-	          showNav = _props.showNav;
+	          showNav = _props.showNav,
+	          navPath = _props.navPath;
 
+	      var path = navPath ? navPath : '../index.html';
 
 	      return _react2.default.createElement(
 	        'div',
 	        { className: scale },
 	        _react2.default.createElement(
 	          'a',
-	          { href: '../' },
+	          { href: path },
 	          _react2.default.createElement('div', { className: 'cc-logo' })
 	        )
 	      );
@@ -29603,7 +29665,7 @@
 
 
 	// module
-	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.app .main-menu-button {\n  position: fixed;\n  right: 140px;\n  top: 4px;\n}\n.app .main-menu-button:hover {\n  cursor: pointer;\n}\n.app .main-menu-button > div {\n  float: right;\n  padding-right: 10px;\n}\n.app .main-menu-button a {\n  color: #aaa;\n}\n.app .main-menu-button a:hover {\n  color: #888;\n}\n.app .main-menu-button a:active {\n  color: #888;\n}\n.app .main-menu-button i {\n  font-size: 32px;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 125px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(" + __webpack_require__(629) + ");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 120px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n  height: 100%;\n  background-image: url(" + __webpack_require__(630) + ");\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n.app .logo-menu.small {\n  height: 67px;\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  padding-top: 150px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.app #sensor-tag-icon {\n  font-size: 3em;\n  padding-left: 10px;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.main-menu {\n  width: 800px;\n  height: 300px;\n  margin-top: 100px;\n  margin-left: auto;\n  margin-right: auto;\n}\n.main-menu a div {\n  width: 200px;\n  height: 200px;\n  margin: 50px;\n  float: left;\n  background: #666;\n  border-radius: 10px;\n}\n.main-menu .thermoscope-link {\n  background-image: url(" + __webpack_require__(631) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.main-menu .particle-modeler-link {\n  background-image: url(" + __webpack_require__(632) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.settings-link {\n  color: white;\n  position: fixed;\n  bottom: 10px;\n  left: 10px;\n}\n.settings-link:hover {\n  cursor: pointer;\n  color: orange;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.app .main-menu-button {\n  position: fixed;\n  right: 140px;\n  top: 4px;\n}\n.app .main-menu-button:hover {\n  cursor: pointer;\n}\n.app .main-menu-button > div {\n  float: right;\n  padding-right: 10px;\n}\n.app .main-menu-button a {\n  color: #aaa;\n}\n.app .main-menu-button a:hover {\n  color: #888;\n}\n.app .main-menu-button a:active {\n  color: #888;\n}\n.app .main-menu-button i {\n  font-size: 32px;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 125px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(" + __webpack_require__(629) + ");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 120px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n  height: 100%;\n  background-image: url(" + __webpack_require__(630) + ");\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n.app .logo-menu.small {\n  height: 67px;\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  padding-top: 150px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.app #sensor-tag-icon {\n  font-size: 3em;\n  padding-left: 10px;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.main-menu {\n  width: 800px;\n  height: 300px;\n  margin-top: 100px;\n  margin-left: auto;\n  margin-right: auto;\n}\n.main-menu a div {\n  width: 200px;\n  height: 200px;\n  margin: 50px;\n  float: left;\n  background: #666;\n  border-radius: 10px;\n}\n.main-menu .thermoscope-link {\n  background-image: url(" + __webpack_require__(631) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.main-menu .particle-modeler-link {\n  background-image: url(" + __webpack_require__(632) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.settings-link {\n  color: white;\n  position: fixed;\n  bottom: 16px;\n  left: 10px;\n}\n.settings-link:hover {\n  cursor: pointer;\n  color: orange;\n}\n.list-section {\n  left: 5px;\n  margin-top: 10px;\n  font-size: 1.3em;\n  border: 2px solid #292929;\n}\n.list-section h1 {\n  font-size: 1em;\n  background: #292929;\n}\n", ""]);
 
 	// exports
 
@@ -35416,7 +35478,7 @@
 
 
 	// module
-	exports.push([module.id, ".icon-setter .app-container {\n  background-color: #ccc;\n}\n.icon-setter .app-container button {\n  color: #ccc;\n}\n.icon-setter .icons,\n.icon-setter .icons option {\n  font-size: 30px;\n  padding: 4px;\n  vertical-align: middle;\n}\n", ""]);
+	exports.push([module.id, ".icon-setter .app-container {\n  background-color: #ccc;\n  max-height: 200px;\n  -webkit-box-pack: center;\n  -ms-flex-pack: center;\n  justify-content: center;\n}\n.icon-setter .app-container button {\n  color: #ccc;\n}\n.icon-setter .app-container > * {\n  margin: 40px;\n}\n.icon-setter .icons,\n.icon-setter .icons option {\n  font-size: 30px;\n  padding: 4px;\n  vertical-align: middle;\n}\n.icon-setter .message {\n  color: #ccc;\n  width: 100%;\n  margin: 10px;\n  display: block;\n  text-align: center;\n}\n.icon-setter h3.message {\n  margin-top: 40px;\n}\n.icon-setter .instructions {\n  padding: 20px;\n}\n", ""]);
 
 	// exports
 
