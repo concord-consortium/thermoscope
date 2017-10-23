@@ -62,7 +62,7 @@ export class IconSetter extends PureComponent {
     var component = this;
     // Step 2: Connect to it
     request.then(function(device) {
-      component.setState({ 
+      component.setState({
         status: "connecting",
         iconChanged: false
       });
@@ -70,28 +70,28 @@ export class IconSetter extends PureComponent {
     })
     // Step 3: Get the icon service
     .then(function(server) {
-      component.setState({ 
-        status: "getting icon service" 
+      component.setState({
+        status: "getting icon service"
       });
       window.server = server;
       return server.getPrimaryService(nameServiceAddr);
     })
     .then(function(service){
-      component.setState({ 
-        status: "getting characteristic" 
+      component.setState({
+        status: "getting characteristic"
       });
       return service.getCharacteristic(nameCharacteristicAddr);
     })
     .then(function(characteristic){
       component.iconCharacteristic = characteristic;
-      component.setState({ 
-        status: "reading characteristic" 
+      component.setState({
+        status: "reading characteristic"
       });
       return characteristic.readValue();
     })
     .then(function(value){
       var iconVal = component.decoder.decode(value);
-      component.setState({ 
+      component.setState({
         connected: true,
         status: "current icon value: " + iconVal,
         currentIcon: iconVal,
@@ -100,7 +100,7 @@ export class IconSetter extends PureComponent {
     })
     .catch(function(error) {
       console.error('Connection failed!', error);
-      component.setState({ 
+      component.setState({
         status: "connection failed"
       });
     });
@@ -145,7 +145,7 @@ export class IconSetter extends PureComponent {
 
     return newInstr;
   }
-  
+
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
@@ -168,13 +168,22 @@ export class IconSetter extends PureComponent {
                 </option>
               ))}
               </select>
-              <RaisedButton id="set-icon" onClick={this.setIcon} className="button2" 
+              <RaisedButton id="set-icon" onClick={this.setIcon} className="button2"
                 disabled={this.state.selectedIcon == this.state.currentIcon}>
                 Set Icon</RaisedButton>
             </div>}
-            
+
           </div>
           <div id="status" className="message">{this.state.status}</div>
+          <div className="instructions">
+            <div>After the icon has been set, and the thermoscope power cycled, the device will still show up with the
+              wrong name on any computer or tablet that saw it with the wrong name. The device is saying "Hi, I'm device 12345,
+              my name is Thermoscope X". The operating system sees "12345" and ignores the rest, so it continues to show
+              the device with the name "Thermoscope". However, after a connection has been made to the device then the
+              operating system updates its name for "12345" to be "Thermoscope X"
+              </div>
+          </div>
+
         </div>
       </MuiThemeProvider>
     );
