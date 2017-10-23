@@ -3,6 +3,32 @@
   background: #333;
   color: #ccc;
   touch-action: none;
+  user-select: none;
+
+  .main-menu-button{
+    position:fixed;
+    right: 140px;
+    top: 4px;
+    &:hover{
+      cursor:pointer;
+    }
+    >div{
+      float:right;
+      padding-right:10px;
+    }
+    a{
+      color:#aaa;
+      &:hover{
+        color:#888;
+      }
+      &:active{
+        color:#888;
+      }
+    }
+    i{
+      font-size:32px;
+    }
+  }
 
   .logo-menu{
     width:250px;
@@ -24,26 +50,8 @@
       right: 120px;
       width: 110px;
       top: 5px;
-
-      >div{
-        float:right;
-        padding-right:10px;
-      }
-      a{
-        color:#aaa;
-
-        &:hover{
-          color:#888;
-        }
-
-        &:active{
-          color:#888;
-        }
-      }
-      i{
-        font-size:32px;
-      }
     }
+
     .cc-logo{
       position:relative;
       float:right;
@@ -86,6 +94,7 @@
   }
   .demo-links {
     height:100%;
+    padding-top:150px;
     display: flex;
     align-items: left;
     li{
@@ -111,5 +120,57 @@
     top: -7px;
     left: -7px;
     touch-action:none;
+  }
+}
+.main-menu{
+  width: 800px;
+  height: 300px;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto;
+  a div{
+    width:200px;
+    height:200px;
+    margin:50px;
+    float:left;
+    background:#666;
+    border-radius: 10px;
+
+  }
+  .thermoscope-link{
+    background-image: url("thermoscope-button.png");
+    background-size: 90% 90%;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+  .particle-modeler-link{
+    background-image: url("particle-modeler-button.png");
+    background-size: 90% 90%;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+
+}
+.settings-link{
+  color: white;
+  position: fixed;
+  bottom: 16px;
+  left: 10px;
+
+  &:hover{
+    cursor:pointer;
+    color:orange;
+  }
+}
+
+.list-section{
+  left:5px;
+  margin-top:10px;
+  font-size:1.3em;
+  border: 2px solid #292929;
+
+  h1{
+    font-size: 1em;
+    background:#292929;
   }
 }
