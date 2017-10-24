@@ -48,7 +48,7 @@ export default class LandingPage extends PureComponent {
         {particleMenuMode &&
           <div>
           <h1>Particle Modeler Examples</h1>
-          <LogoMenu scale="logo-menu small" />
+          <LogoMenu scale="logo-menu small" navPath="./index.html" />
           <div className="demo-links">
               <List>
               <div className="list-section">
