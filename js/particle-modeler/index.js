@@ -42,6 +42,15 @@ let atomBox = {
       height: 0.146
   };
 
+  let wallThickness = 0.1;
+  let basePos = 0.15;
+  let baseThickness = 0.01;
+  let leftPos = 1.25;
+  let rightPos = 3.25;
+  let baseColor = "rgba(128,96,96,1)";
+
+  let containerWidth = rightPos - leftPos;
+
 let particleMaxVelocity = 0.0005;
 let saveStateInterval = 2000;
 
@@ -94,6 +103,7 @@ export default class Interactive extends PureComponent {
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
+    this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
   }
 
   componentWillMount() {
@@ -210,6 +220,7 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     this.addPinnedParticleText();
+    if (this.state.container) this.updateContainerVisibility(this.state.container.value);
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element,
@@ -366,10 +377,71 @@ export default class Interactive extends PureComponent {
     if (prop === "elements") {
       this.changeElementCount(value);
     }
+    if (prop === "container") {
+      this.updateContainerVisibility(value);
+    }
+    if (prop === "containerHeight") {
+      let h = value;
+
+      this.updateContainerVisibility(this.state.container.value, h)
+
+    }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
     newState.modelDiff = getModelDiff(newState, authorableProps);
     this.setState(newState);
+  }
+
+  updateContainerVisibility(visible, height) {
+    const { containerHeight } = this.state;
+    let h = height ? height : containerHeight ? containerHeight.value : 2.0;
+
+
+    let currentlyVisible = api.getNumberOfObstacles() > 0;
+    if (currentlyVisible) {
+      if (!visible) {
+        // remove old obstacles
+        for (let i = api.getNumberOfObstacles() - 1; i > -1; i--){
+          api.removeObstacle(i);
+        }
+        let atomsToDelete = [];
+        // iterate through all atoms, remove elements no longer needed
+        for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+          if (api.getAtomProperties(i).element == 2)
+            atomsToDelete.push(i);
+        }
+        for (let i = atomsToDelete.length - 1; i > -1; i--) {
+          api.removeAtom(atomsToDelete[i]);
+        }
+        // remove base overlay
+        api.removeShape(0);
+      } else {
+        // adjust height
+        api.removeObstacle(4);
+        api.removeObstacle(3);
+        api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h }); // left
+        api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h }); // right
+      }
+    }
+    if (!currentlyVisible && visible) {
+      api.addObstacle({ x: leftPos, y: basePos, width: containerWidth, height: baseThickness, color: baseColor }); // base
+      api.addObstacle({ x: leftPos, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge left
+      api.addObstacle({ x: rightPos - wallThickness, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge right
+
+      // add base overlay to hide atoms at bottom of container
+      api.addShape({
+        x: leftPos, y: 0, width: containerWidth, height: basePos, color: baseColor, type:"rectangle"
+      });
+
+      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h }); // left
+      api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h }); // right
+
+      // add base layer atoms
+      let spacing = 0.2;
+      for (let i = 1; i < 10; i++){
+        api.addAtom({ x: leftPos + (i*spacing), y: 0, element: 2, draggable: 0, pinned: 1 });
+      }
+    }
   }
 
   changeElementCount(newElementCount) {
