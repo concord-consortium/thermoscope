@@ -60,9 +60,9 @@ export default class LandingPage extends PureComponent {
                 <h1>Particle Modeler Examples</h1>
               <ListItem primaryText="One Particle Example" href= "./particle-modeler/#targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="6" />
               <ListItem primaryText="One Particle Example (Authoring)" href="./particle-modeler/#authoring=true&targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="7" />
-              <ListItem primaryText="Container Demo" href="./particle-modeler/#gravitationalField=0.000005&timeStep=0.25&viscosity=0.8&container=true" key="8" />
+              <ListItem primaryText="Container Demo" href="./particle-modeler/#gravitationalField=0.000005&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true" key="8" />
 
-              <ListItem primaryText="Container Demo (Authoring)" href="./particle-modeler/#authoring=true&gravitationalField=0.000005&timeStep=0.25&viscosity=0.8&container=true" key="9" />
+              <ListItem primaryText="Container Demo (Authoring)" href="./particle-modeler/#authoring=true&gravitationalField=0.000005&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true" key="9" />
             </div>
             </List>
           </div>
