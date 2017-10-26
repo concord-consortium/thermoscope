@@ -47,7 +47,9 @@ let atomBox = {
   let baseThickness = 0.01;
   let leftPos = 1.25;
   let rightPos = 3.25;
-  let baseColor = "rgba(128,96,96,1)";
+  let baseColor = "rgba(128,96,96,0)";
+  let wallColor = "rgba(0,128,0,0)";
+  let lidColor = "rgba(0,0,0,1)";
 
   let containerWidth = rightPos - leftPos;
 
@@ -394,7 +396,7 @@ export default class Interactive extends PureComponent {
 
   updateContainerVisibility(visible, height) {
     const { containerHeight } = this.state;
-    let h = height ? height : containerHeight ? containerHeight.value : 2.0;
+    let h = height ? height : containerHeight ? containerHeight.value : 2.25;
 
 
     let currentlyVisible = api.getNumberOfObstacles() > 0;
@@ -413,14 +415,32 @@ export default class Interactive extends PureComponent {
         for (let i = atomsToDelete.length - 1; i > -1; i--) {
           api.removeAtom(atomsToDelete[i]);
         }
-        // remove base overlay
-        api.removeShape(0);
+        // remove shapes
+        let shapesToDelete = [];
+        for (let i = 0, ii = api.getNumberOfShapes(); i < ii; i++) {
+          shapesToDelete.push(i);
+        }
+        for (let i = shapesToDelete.length - 1; i > -1; i--) {
+          api.removeShape(shapesToDelete[i]);
+        }
+
+        // remove lines
+        let linesToDelete = [];
+        for (let i = 0, ii = api.getNumberOfLines(); i < ii; i++) {
+          linesToDelete.push(i);
+        }
+        for (let i = linesToDelete.length - 1; i > -1; i--) {
+          api.removeLine(linesToDelete[i]);
+        }
+
+        api.setImageProperties(0, { visible: false });
       } else {
         // adjust height
-        api.removeObstacle(4);
-        api.removeObstacle(3);
-        api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h }); // left
-        api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h }); // right
+        // api.removeObstacle(4);
+        // api.removeObstacle(3);
+        // api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
+        // api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
+        //api.setObstacleProperties?
       }
     }
     if (!currentlyVisible && visible) {
@@ -428,19 +448,52 @@ export default class Interactive extends PureComponent {
       api.addObstacle({ x: leftPos, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge left
       api.addObstacle({ x: rightPos - wallThickness, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge right
 
-      // add base overlay to hide atoms at bottom of container
+      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor  }); // left
+      api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
+
+      // left lip - horrible way to do this, is there any way to use opacity for obstacle detection?
+      let wallTop = basePos + baseThickness + h;
+      let leftInsideEdge = leftPos + wallThickness;
+
+      let w = 3; // line weight
+
+      api.addLine({ x1: leftPos + wallThickness, y1: wallTop, x2: leftInsideEdge - 0.05, y2: wallTop + 0.05, fence: true, lineWeight: w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.05, y1: wallTop + 0.05, x2: leftInsideEdge - 0.1, y2: wallTop + 0.065, fence: true, lineWeight:w, lineColor: wallColor});
+      api.addLine({ x1: leftInsideEdge - 0.1, y1: wallTop + 0.065, x2: leftInsideEdge - 0.15, y2: wallTop + 0.063, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop + 0.063, x2: leftInsideEdge - 0.19, y2: wallTop + 0.04, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.19, y1: wallTop + 0.04, x2: leftInsideEdge - 0.23, y2: wallTop, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.23, y1: wallTop, x2: leftInsideEdge - 0.3, y2: wallTop - 0.1, fence: true, lineWeight:w, lineColor: wallColor});
+      api.addLine({ x1: leftInsideEdge - 0.3, y1: wallTop - 0.1, x2: leftInsideEdge - 0.3, y2: wallTop - 0.14, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.3, y1: wallTop - 0.14, x2: leftInsideEdge - 0.27, y2: wallTop - 0.17, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.3, y1: wallTop - 0.14, x2: leftInsideEdge - 0.27, y2: wallTop - 0.17, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.27, y1: wallTop - 0.17, x2: leftInsideEdge - 0.25, y2: wallTop - 0.17, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.25, y1: wallTop - 0.17, x2: leftInsideEdge - 0.22, y2: wallTop - 0.14, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.22, y1: wallTop - 0.14, x2: leftInsideEdge - 0.15, y2: wallTop - 0.1, fence: true, lineWeight:w, lineColor: wallColor });
+      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop - 0.1, x2: leftPos, y2: wallTop - 0.1, fence: true, lineWeight:w, lineColor: wallColor });
+
       api.addShape({
-        x: leftPos, y: 0, width: containerWidth, height: basePos, color: baseColor, type:"rectangle"
+        x: leftPos - 0.03, y: wallTop - 0.01, type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
+      });
+      api.addShape({
+        x: leftPos - 0.09, y: wallTop -0.05 , type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
+      });
+      api.addShape({
+        x: leftPos - 0.17, y: wallTop -0.12 , type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
       });
 
-      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h }); // left
-      api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h }); // right
+      // and right edge lip
+      api.addShape({
+        x: rightPos - (wallThickness / 2), y: wallTop, type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
+      });
 
       // add base layer atoms
       let spacing = 0.2;
       for (let i = 1; i < 10; i++){
-        api.addAtom({ x: leftPos + (i*spacing), y: 0, element: 2, draggable: 0, pinned: 1 });
+        api.addAtom({ x: leftPos + (i*spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
       }
+
+      // show image
+      api.setImageProperties(0, { visible: true });
     }
   }
 
@@ -505,7 +558,6 @@ export default class Interactive extends PureComponent {
     return (
       <MuiThemeProvider>
         <div className={appClass}>
-          <LogoMenu scale="logo-menu small" navPath="../index.html" />
           <div className="app-container">
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
@@ -524,6 +576,7 @@ export default class Interactive extends PureComponent {
             </div>}
           </div>
           <SimulationControls {...this.state} onChange={this.handleSimulationChange} />
+          <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>
     );

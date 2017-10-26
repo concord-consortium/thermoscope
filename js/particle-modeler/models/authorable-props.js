@@ -36,16 +36,9 @@ module.exports = {
     label: "Show Container",
     value: false,
   },
-  containerHeight: {
-    label: "Container Wall Height",
-    value: 2.0,
-    min: 0.75,
-    max: 2.75,
-    step: 0.25
-  },
   elements: {
     label: "Number of unique elements",
-    value: 2,
+    value: 1,
     min: 1,
     max: 3,
     step: 1
@@ -54,7 +47,7 @@ module.exports = {
     label: "Sigma",
     element: 0,
     property: "sigma",
-    value: 0.1915,
+    value: 0.3,
     min: 0.01,
     max: 0.5
   },
@@ -175,7 +168,7 @@ module.exports = {
     element1: 0,
     element2: 2,
     property: "use",
-    value: false
+    value: true
   },
   pair13Epsilon: {
     element1: 0,
@@ -189,7 +182,7 @@ module.exports = {
     element1: 0,
     element2: 2,
     property: "sigma",
-    value: 0.1915,
+    value: 0.186,
     min: 0.01,
     max: 0.5
   },
