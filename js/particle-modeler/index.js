@@ -435,12 +435,12 @@ export default class Interactive extends PureComponent {
 
         api.setImageProperties(0, { visible: false });
       } else {
-        // adjust height
+        // adjust height - not currently implemented
         // api.removeObstacle(4);
         // api.removeObstacle(3);
         // api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
         // api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
-        //api.setObstacleProperties?
+        // api.setObstacleProperties?
       }
     }
     if (!currentlyVisible && visible) {
@@ -451,35 +451,16 @@ export default class Interactive extends PureComponent {
       api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor  }); // left
       api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
 
-      // left lip - horrible way to do this, is there any way to use opacity for obstacle detection?
+      // left lip - a couple of angled lines and some simple obstacles
       let wallTop = basePos + baseThickness + h;
       let leftInsideEdge = leftPos + wallThickness;
 
-      let w = 3; // line weight
+      let w = 3; // line weight, hopefully adding to solidity
 
-      api.addLine({ x1: leftPos + wallThickness, y1: wallTop, x2: leftInsideEdge - 0.05, y2: wallTop + 0.05, fence: true, lineWeight: w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.05, y1: wallTop + 0.05, x2: leftInsideEdge - 0.1, y2: wallTop + 0.065, fence: true, lineWeight:w, lineColor: wallColor});
-      api.addLine({ x1: leftInsideEdge - 0.1, y1: wallTop + 0.065, x2: leftInsideEdge - 0.15, y2: wallTop + 0.063, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop + 0.063, x2: leftInsideEdge - 0.19, y2: wallTop + 0.04, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.19, y1: wallTop + 0.04, x2: leftInsideEdge - 0.23, y2: wallTop, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.23, y1: wallTop, x2: leftInsideEdge - 0.3, y2: wallTop - 0.1, fence: true, lineWeight:w, lineColor: wallColor});
-      api.addLine({ x1: leftInsideEdge - 0.3, y1: wallTop - 0.1, x2: leftInsideEdge - 0.3, y2: wallTop - 0.14, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.3, y1: wallTop - 0.14, x2: leftInsideEdge - 0.27, y2: wallTop - 0.17, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.3, y1: wallTop - 0.14, x2: leftInsideEdge - 0.27, y2: wallTop - 0.17, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.27, y1: wallTop - 0.17, x2: leftInsideEdge - 0.25, y2: wallTop - 0.17, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.25, y1: wallTop - 0.17, x2: leftInsideEdge - 0.22, y2: wallTop - 0.14, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.22, y1: wallTop - 0.14, x2: leftInsideEdge - 0.15, y2: wallTop - 0.1, fence: true, lineWeight:w, lineColor: wallColor });
-      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop - 0.1, x2: leftPos, y2: wallTop - 0.1, fence: true, lineWeight:w, lineColor: wallColor });
-
-      api.addShape({
-        x: leftPos - 0.03, y: wallTop - 0.01, type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
-      });
-      api.addShape({
-        x: leftPos - 0.09, y: wallTop -0.05 , type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
-      });
-      api.addShape({
-        x: leftPos - 0.17, y: wallTop -0.12 , type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
-      });
+      api.addLine({ x1: leftInsideEdge - 0.01, y1: wallTop, x2: leftInsideEdge - 0.05, y2: wallTop + 0.04, fence: true, lineWeight: w, lineColor: wallColor });
+      api.addObstacle({x: leftInsideEdge - 0.15, y: wallTop, width: 0.1, height: 0.05, color: wallColor})
+      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop + 0.04, x2: leftInsideEdge - 0.3, y2: wallTop - 0.1, fence: true, lineWeight: w, lineColor: wallColor });
+      api.addObstacle({ x: leftInsideEdge - 0.3, y: wallTop - 0.19, width: 0.19, height: 0.1, color: wallColor });
 
       // and right edge lip
       api.addShape({
