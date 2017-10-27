@@ -489,15 +489,15 @@ export default class Interactive extends PureComponent {
       api.setImageProperties(0, { visible: true });
     }
   }
-  toggleContainerLid(visible) {
+  toggleContainerLid(lidVisible) {
     const { container, containerHeight, containerLid } = this.state;
+    let containerVisible = container.value;
     let h = containerHeight ? containerHeight.value : 2.25;
     let lid = containerLid;
 
     let lidObstacle = containerLid.lidObstacle;
-    if (container.value) {
-      if (visible) {
-        console.log(leftPos, containerWidth, rightPos);
+    if (containerVisible) {
+      if (lidVisible) {
         lidObstacle = api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
       } else if (lidObstacle != {}) {
         api.removeObstacle(lidObstacle);
@@ -505,7 +505,7 @@ export default class Interactive extends PureComponent {
       }
     } else {
       // container is not visible, attempting to show a lid in this state is invalid
-      if (visible) {
+      if (lidVisible) {
         // nope
         lid.value = false;
       } else {
