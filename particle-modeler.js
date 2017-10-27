@@ -155,6 +155,17 @@
 	  height: 0.146
 	};
 
+	var wallThickness = 0.1;
+	var basePos = 0.15;
+	var baseThickness = 0.01;
+	var leftPos = 1.25;
+	var rightPos = 3.25;
+	var baseColor = "rgba(128,96,96,0)";
+	var wallColor = "rgba(0,128,0,0)";
+	var lidColor = "rgba(0,0,0,1)";
+
+	var containerWidth = rightPos - leftPos;
+
 	var particleMaxVelocity = 0.0005;
 	var saveStateInterval = 2000;
 
@@ -211,6 +222,7 @@
 	    _this.removePinnedParticleText = _this.removePinnedParticleText.bind(_this);
 	    _this.getCurrentModelLink = _this.getCurrentModelLink.bind(_this);
 	    _this.updateDiff = _this.updateDiff.bind(_this);
+	    _this.toggleContainerVisibility = _this.updateContainerVisibility.bind(_this);
 	    return _this;
 	  }
 
@@ -357,6 +369,7 @@
 
 	      api = lab.scriptingAPI;
 	      this.addPinnedParticleText();
+	      if (this.state.container) this.updateContainerVisibility(this.state.container.value);
 	      api.onDrag('atom', function (x, y, d, i) {
 	        if (d.pinned === 1) {
 	          var el = d.element,
@@ -526,10 +539,102 @@
 	      if (prop === "elements") {
 	        this.changeElementCount(value);
 	      }
+	      if (prop === "container") {
+	        this.updateContainerVisibility(value);
+	      }
+	      if (prop === "containerHeight") {
+	        var h = value;
+
+	        this.updateContainerVisibility(this.state.container.value, h);
+	      }
 	      newState.nextUpdate = Date.now();
 	      newState.atoms = this.getAtomsWithoutPlaceholders();
 	      newState.modelDiff = (0, _utils.getModelDiff)(newState, _authorableProps2.default);
 	      this.setState(newState);
+	    }
+	  }, {
+	    key: 'updateContainerVisibility',
+	    value: function updateContainerVisibility(visible, height) {
+	      var containerHeight = this.state.containerHeight;
+
+	      var h = height ? height : containerHeight ? containerHeight.value : 2.25;
+
+	      var currentlyVisible = api.getNumberOfObstacles() > 0;
+	      if (currentlyVisible) {
+	        if (!visible) {
+	          // remove old obstacles
+	          for (var i = api.getNumberOfObstacles() - 1; i > -1; i--) {
+	            api.removeObstacle(i);
+	          }
+	          var atomsToDelete = [];
+	          // iterate through all atoms, remove elements no longer needed
+	          for (var _i2 = 0, ii = api.getNumberOfAtoms(); _i2 < ii; _i2++) {
+	            if (api.getAtomProperties(_i2).element == 2) atomsToDelete.push(_i2);
+	          }
+	          for (var _i3 = atomsToDelete.length - 1; _i3 > -1; _i3--) {
+	            api.removeAtom(atomsToDelete[_i3]);
+	          }
+	          // remove shapes
+	          var shapesToDelete = [];
+	          for (var _i4 = 0, _ii = api.getNumberOfShapes(); _i4 < _ii; _i4++) {
+	            shapesToDelete.push(_i4);
+	          }
+	          for (var _i5 = shapesToDelete.length - 1; _i5 > -1; _i5--) {
+	            api.removeShape(shapesToDelete[_i5]);
+	          }
+
+	          // remove lines
+	          var linesToDelete = [];
+	          for (var _i6 = 0, _ii2 = api.getNumberOfLines(); _i6 < _ii2; _i6++) {
+	            linesToDelete.push(_i6);
+	          }
+	          for (var _i7 = linesToDelete.length - 1; _i7 > -1; _i7--) {
+	            api.removeLine(linesToDelete[_i7]);
+	          }
+
+	          api.setImageProperties(0, { visible: false });
+	        } else {
+	          // adjust height - not currently implemented
+	          // api.removeObstacle(4);
+	          // api.removeObstacle(3);
+	          // api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
+	          // api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
+	          // api.setObstacleProperties?
+	        }
+	      }
+	      if (!currentlyVisible && visible) {
+	        api.addObstacle({ x: leftPos, y: basePos, width: containerWidth, height: baseThickness, color: baseColor }); // base
+	        api.addObstacle({ x: leftPos, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge left
+	        api.addObstacle({ x: rightPos - wallThickness, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge right
+
+	        api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
+	        api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
+
+	        // left lip - a couple of angled lines and some simple obstacles
+	        var wallTop = basePos + baseThickness + h;
+	        var leftInsideEdge = leftPos + wallThickness;
+
+	        var w = 3; // line weight, hopefully adding to solidity
+
+	        api.addLine({ x1: leftInsideEdge - 0.01, y1: wallTop, x2: leftInsideEdge - 0.05, y2: wallTop + 0.04, fence: true, lineWeight: w, lineColor: wallColor });
+	        api.addObstacle({ x: leftInsideEdge - 0.15, y: wallTop, width: 0.1, height: 0.05, color: wallColor });
+	        api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop + 0.04, x2: leftInsideEdge - 0.3, y2: wallTop - 0.1, fence: true, lineWeight: w, lineColor: wallColor });
+	        api.addObstacle({ x: leftInsideEdge - 0.3, y: wallTop - 0.19, width: 0.19, height: 0.1, color: wallColor });
+
+	        // and right edge lip
+	        api.addShape({
+	          x: rightPos - wallThickness / 2, y: wallTop, type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
+	        });
+
+	        // add base layer atoms
+	        var spacing = 0.2;
+	        for (var _i8 = 1; _i8 < 10; _i8++) {
+	          api.addAtom({ x: leftPos + _i8 * spacing, y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
+	        }
+
+	        // show image
+	        api.setImageProperties(0, { visible: true });
+	      }
 	    }
 	  }, {
 	    key: 'changeElementCount',
@@ -542,15 +647,15 @@
 	      } else {
 	        var atomsToDelete = [];
 	        // iterate through all atoms, remove any for elements no longer needed
-	        for (var _i2 = 0, ii = api.getNumberOfAtoms(); _i2 < ii; _i2++) {
-	          if (api.getAtomProperties(_i2).element >= newElementCount) atomsToDelete.push(_i2);
+	        for (var _i9 = 0, ii = api.getNumberOfAtoms(); _i9 < ii; _i9++) {
+	          if (api.getAtomProperties(_i9).element >= newElementCount) atomsToDelete.push(_i9);
 	        }
-	        for (var _i3 = atomsToDelete.length - 1; _i3 > -1; _i3--) {
-	          api.removeAtom(atomsToDelete[_i3]);
+	        for (var _i10 = atomsToDelete.length - 1; _i10 > -1; _i10--) {
+	          api.removeAtom(atomsToDelete[_i10]);
 	        }
 	        // because initial draggable elements are a different type, recreate the hidden dragables after deleting
-	        for (var _i4 = 0; _i4 < newElementCount; _i4++) {
-	          this.addNewDraggableAtom(_i4, true);
+	        for (var _i11 = 0; _i11 < newElementCount; _i11++) {
+	          this.addNewDraggableAtom(_i11, true);
 	        }
 	      }
 	    }
@@ -603,7 +708,6 @@
 	        _react2.default.createElement(
 	          'div',
 	          { className: appClass },
-	          _react2.default.createElement(_logoMenu2.default, { scale: 'logo-menu small', navPath: '../index.html' }),
 	          _react2.default.createElement(
 	            'div',
 	            { className: 'app-container' },
@@ -646,7 +750,8 @@
 	              )
 	            )
 	          ),
-	          _react2.default.createElement(_simulationControls2.default, _extends({}, this.state, { onChange: this.handleSimulationChange }))
+	          _react2.default.createElement(_simulationControls2.default, _extends({}, this.state, { onChange: this.handleSimulationChange })),
+	          _react2.default.createElement(_logoMenu2.default, { scale: 'logo-menu small', navPath: '../index.html' })
 	        )
 	      );
 	    }
@@ -29966,7 +30071,7 @@
 
 
 	// module
-	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.app .main-menu-button {\n  position: fixed;\n  right: 140px;\n  top: 4px;\n}\n.app .main-menu-button:hover {\n  cursor: pointer;\n}\n.app .main-menu-button > div {\n  float: right;\n  padding-right: 10px;\n}\n.app .main-menu-button a {\n  color: #aaa;\n}\n.app .main-menu-button a:hover {\n  color: #888;\n}\n.app .main-menu-button a:active {\n  color: #888;\n}\n.app .main-menu-button i {\n  font-size: 32px;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 125px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(" + __webpack_require__(629) + ");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 120px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n  height: 100%;\n  background-image: url(" + __webpack_require__(630) + ");\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n.app .logo-menu.small {\n  height: 67px;\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  padding-top: 150px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.app #sensor-tag-icon {\n  font-size: 3em;\n  padding-left: 10px;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.main-menu {\n  width: 800px;\n  height: 300px;\n  margin-top: 100px;\n  margin-left: auto;\n  margin-right: auto;\n}\n.main-menu a div {\n  width: 200px;\n  height: 200px;\n  margin: 50px;\n  float: left;\n  background: #666;\n  border-radius: 10px;\n}\n.main-menu .thermoscope-link {\n  background-image: url(" + __webpack_require__(631) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.main-menu .particle-modeler-link {\n  background-image: url(" + __webpack_require__(632) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.settings-link {\n  color: white;\n  position: fixed;\n  bottom: 16px;\n  left: 10px;\n}\n.settings-link:hover {\n  cursor: pointer;\n  color: orange;\n}\n.list-section {\n  left: 5px;\n  margin-top: 10px;\n  font-size: 1.3em;\n  border: 2px solid #292929;\n}\n.list-section h1 {\n  font-size: 1em;\n  background: #292929;\n}\n", ""]);
+	exports.push([module.id, ".app {\n  height: 100%;\n  background: #333;\n  color: #ccc;\n  -ms-touch-action: none;\n  touch-action: none;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none;\n}\n.app .main-menu-button {\n  position: fixed;\n  right: 140px;\n  top: 4px;\n}\n.app .main-menu-button:hover {\n  cursor: pointer;\n}\n.app .main-menu-button > div {\n  float: right;\n  padding-right: 10px;\n}\n.app .main-menu-button a {\n  color: #aaa;\n}\n.app .main-menu-button a:hover {\n  color: #888;\n}\n.app .main-menu-button a:active {\n  color: #888;\n}\n.app .main-menu-button i {\n  font-size: 32px;\n}\n.app .logo-menu {\n  width: 250px;\n  height: 125px;\n  position: fixed;\n  right: 0px;\n  top: -80px;\n  padding-top: 60px;\n  background-image: url(" + __webpack_require__(629) + ");\n  background-position: right top;\n  background-size: 250px;\n  background-repeat: no-repeat;\n}\n.app .logo-menu .menu {\n  position: fixed;\n  right: 120px;\n  width: 110px;\n  top: 5px;\n}\n.app .logo-menu .cc-logo {\n  position: relative;\n  float: right;\n  right: 0px;\n  top: 0px;\n  width: 100%;\n  height: 100%;\n  background-image: url(" + __webpack_require__(630) + ");\n  background-size: contain;\n  background-repeat: no-repeat;\n}\n.app .logo-menu.small {\n  height: 67px;\n  width: 125px;\n  background-size: 125px;\n  top: -40px;\n  padding-top: 30px;\n}\n.app .app-container {\n  height: 100%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -ms-flex-pack: distribute;\n  justify-content: space-around;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n}\n.app .label {\n  font-size: 16px;\n  text-align: center;\n}\n.app.authoring {\n  background: white;\n}\n.app h1 {\n  padding: 10px;\n}\n.app .demo-links {\n  height: 100%;\n  padding-top: 150px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: left;\n  -ms-flex-align: left;\n  align-items: left;\n}\n.app .demo-links li {\n  padding: 20px;\n  color: #aaa;\n}\n.lab-wrapper {\n  border-radius: 40px;\n  width: 543px;\n  height: 361px;\n  overflow: hidden;\n  z-index: 1;\n  padding: 0px;\n}\n.lab-wrapper iframe {\n  margin: 0;\n  padding: 0;\n  position: relative;\n  top: -7px;\n  left: -7px;\n  -ms-touch-action: none;\n  touch-action: none;\n}\n.main-menu {\n  width: 800px;\n  height: 300px;\n  margin-top: 100px;\n  margin-left: auto;\n  margin-right: auto;\n}\n.main-menu a div {\n  width: 200px;\n  height: 200px;\n  margin: 50px;\n  float: left;\n  background: #666;\n  border-radius: 10px;\n}\n.main-menu .thermoscope-link {\n  background-image: url(" + __webpack_require__(631) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.main-menu .particle-modeler-link {\n  background-image: url(" + __webpack_require__(632) + ");\n  background-size: 90% 90%;\n  background-position: center center;\n  background-repeat: no-repeat;\n}\n.settings-link {\n  color: white;\n  position: fixed;\n  bottom: 16px;\n  left: 10px;\n}\n.settings-link:hover {\n  cursor: pointer;\n  color: orange;\n}\n.version-identifier {\n  font-size: 0.8em;\n  color: #111;\n  position: fixed;\n  bottom: 16px;\n  right: 30px;\n}\n.list-section {\n  left: 5px;\n  margin-top: 10px;\n  font-size: 1.3em;\n  border: 2px solid #292929;\n}\n.list-section h1 {\n  font-size: 1em;\n  background: #292929;\n}\n", ""]);
 
 	// exports
 
@@ -39776,7 +39881,7 @@
 
 	module.exports = {
 		"type": "md2d",
-		"imagePath": "",
+		"imagePath": "../",
 		"width": 4.5,
 		"height": 3,
 		"unitsScheme": "md2d",
@@ -39824,7 +39929,20 @@
 			"electricFieldDensity": 18,
 			"electricFieldColor": "auto",
 			"showAtomTrace": false,
-			"images": [],
+			"images": [
+				{
+					"imageUri": "beaker.svg",
+					"imageX": 0.9,
+					"imageY": 2.76,
+					"imageHostType": "",
+					"imageHostIndex": 0,
+					"imageLayer": 2,
+					"imageLayerPosition": 1,
+					"visible": false,
+					"opacity": 1,
+					"scale": 0.5
+				}
+			],
 			"imageMapping": {},
 			"textBoxes": [],
 			"xlabel": false,
@@ -39903,6 +40021,12 @@
 				"epsilon": 0,
 				"element1": 2,
 				"element2": 5
+			},
+			{
+				"sigma": 0.186,
+				"epsilon": -0.5,
+				"element1": 0,
+				"element2": 2
 			}
 		],
 		"elements": {
@@ -39915,12 +40039,12 @@
 				30
 			],
 			"sigma": [
+				0.3,
 				0.19149999618530272,
+				0.15,
+				0.2,
 				0.19149999618530272,
-				0.19149999618530272,
-				0.19149999618530272,
-				0.19149999618530272,
-				0.19149999618530272
+				0.15
 			],
 			"epsilon": [
 				-0.05,
@@ -39992,9 +40116,13 @@
 	    label: "Show Freeze Button",
 	    value: false
 	  },
+	  container: {
+	    label: "Show Container",
+	    value: false
+	  },
 	  elements: {
 	    label: "Number of unique elements",
-	    value: 3,
+	    value: 1,
 	    min: 1,
 	    max: 3,
 	    step: 1
@@ -40003,7 +40131,7 @@
 	    label: "Sigma",
 	    element: 0,
 	    property: "sigma",
-	    value: 0.1915,
+	    value: 0.3,
 	    min: 0.01,
 	    max: 0.5
 	  },
@@ -40053,7 +40181,7 @@
 	    label: "Sigma",
 	    element: 2,
 	    property: "sigma",
-	    value: 0.1915,
+	    value: 0.15,
 	    min: 0.01,
 	    max: 0.5
 	  },
@@ -40124,7 +40252,7 @@
 	    element1: 0,
 	    element2: 2,
 	    property: "use",
-	    value: false
+	    value: true
 	  },
 	  pair13Epsilon: {
 	    element1: 0,
@@ -40138,7 +40266,7 @@
 	    element1: 0,
 	    element2: 2,
 	    property: "sigma",
-	    value: 0.1915,
+	    value: 0.186,
 	    min: 0.01,
 	    max: 0.5
 	  },
