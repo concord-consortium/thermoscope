@@ -67,7 +67,7 @@ export default class LandingPage extends PureComponent {
           </div>
         </div>
           }
-        <div className="version-identifier">Master 20171024.1</div>
+        <div className="version-identifier">Master 20171026.1</div>
       </div>
     </MuiThemeProvider>
     );
