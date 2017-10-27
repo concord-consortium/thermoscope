@@ -106,6 +106,7 @@ export default class Interactive extends PureComponent {
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
+    this.toggleContainerLid = this.toggleContainerLid.bind(this);
   }
 
   componentWillMount() {
@@ -222,7 +223,10 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     this.addPinnedParticleText();
-    if (this.state.container) this.updateContainerVisibility(this.state.container.value);
+    if (this.state.container) {
+      this.updateContainerVisibility(this.state.container.value);
+      this.toggleContainerLid(this.state.containerLid.value);
+    }
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
         let el = d.element,
@@ -386,7 +390,9 @@ export default class Interactive extends PureComponent {
       let h = value;
 
       this.updateContainerVisibility(this.state.container.value, h)
-
+    }
+    if (prop === "containerLid") {
+      this.toggleContainerLid(value);
     }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
@@ -406,6 +412,12 @@ export default class Interactive extends PureComponent {
         for (let i = api.getNumberOfObstacles() - 1; i > -1; i--){
           api.removeObstacle(i);
         }
+        // since removing all obstacles will remove the lid also, remove reference to lid from state
+        let lid = this.state.containerLid;
+        lid.value = false;
+        lid.lidObstacle = {};
+        this.setState({ containerLid: lid });
+
         let atomsToDelete = [];
         // iterate through all atoms, remove elements no longer needed
         for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
@@ -477,7 +489,36 @@ export default class Interactive extends PureComponent {
       api.setImageProperties(0, { visible: true });
     }
   }
+  toggleContainerLid(visible) {
+    const { container, containerHeight, containerLid } = this.state;
+    let h = containerHeight ? containerHeight.value : 2.25;
+    let lid = containerLid;
 
+    let lidObstacle = containerLid.lidObstacle;
+    if (container.value) {
+      if (visible) {
+        console.log(leftPos, containerWidth, rightPos);
+        lidObstacle = api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
+      } else if (lidObstacle != {}) {
+        api.removeObstacle(lidObstacle);
+        lidObstacle = {};
+      }
+    } else {
+      // container is not visible, attempting to show a lid in this state is invalid
+      if (visible) {
+        // nope
+        lid.value = false;
+      } else {
+        if (lidObstacle != {}) {
+          api.removeObstacle(lidObstacle);
+          lidObstacle = {};
+        }
+      }
+    }
+    lid.lidObstacle = lidObstacle;
+    this.setState({ containerLid: lid });
+
+  }
   changeElementCount(newElementCount) {
     // has the number of elements been increased
     if (newElementCount > this.state.elements.value) {

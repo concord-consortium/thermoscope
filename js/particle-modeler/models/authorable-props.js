@@ -36,6 +36,11 @@ module.exports = {
     label: "Show Container",
     value: false,
   },
+  containerLid: {
+    label: "Seal Container",
+    value: false,
+    lid: {}
+  },
   elements: {
     label: "Number of unique elements",
     value: 1,
