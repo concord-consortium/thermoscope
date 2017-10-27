@@ -23,6 +23,8 @@ Additionally, the `controls` parameter can be used to show or hide the controls 
    controls=true/false
    ```
 
+The `hideA`, `hideB` and `hideC` parameters can start any of the thermoscope displays with the aperture closed
+
 
 The Particle Modeler can be found here: https://thermoscope.concord.org/particle-modeler
 To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://thermoscope.concord.org/particle-modeler/#authoring=true
