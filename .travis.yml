@@ -1,9 +1,7 @@
 language: node_js
 node_js: node
-before_install:
-- rvm install 2.2.0
 install:
-- travis_retry gem install s3_website -v 2.12.3
+- travis_retry gem install s3_website -v 3.4.0
 - travis_retry npm install
 before_script: WEBPACK_OPTIMIZE=true webpack
 script: deploy/s3_deploy.sh
