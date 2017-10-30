@@ -392,7 +392,7 @@ export default class Interactive extends PureComponent {
       this.updateContainerVisibility(this.state.container.value, h)
     }
     if (prop === "containerLid") {
-      this.toggleContainerLid(value);
+      newState[prop].value = this.toggleContainerLid(value); // container lid dependent on container visibility
     }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
@@ -412,10 +412,9 @@ export default class Interactive extends PureComponent {
         for (let i = api.getNumberOfObstacles() - 1; i > -1; i--){
           api.removeObstacle(i);
         }
-        // since removing all obstacles will remove the lid also, remove reference to lid from state
+        // since removing all obstacles will remove the lid also, update lid
         let lid = this.state.containerLid;
         lid.value = false;
-        lid.lidObstacle = {};
         this.setState({ containerLid: lid });
 
         let atomsToDelete = [];
@@ -495,29 +494,28 @@ export default class Interactive extends PureComponent {
     let h = containerHeight ? containerHeight.value : 2.25;
     let lid = containerLid;
 
-    let lidObstacle = containerLid.lidObstacle;
+    let lidObstacleIndex = lid.value ? api.getNumberOfObstacles() - 1 : -1;
     if (containerVisible) {
       if (lidVisible) {
-        lidObstacle = api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
-      } else if (lidObstacle != {}) {
-        api.removeObstacle(lidObstacle);
-        lidObstacle = {};
+        api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
+        lidObstacleIndex = api.getNumberOfObstacles() - 1;
+      } else if (lidObstacleIndex > -1) {
+        api.removeObstacle(lidObstacleIndex);
+        lidObstacleIndex = -1;
       }
     } else {
       // container is not visible, attempting to show a lid in this state is invalid
       if (lidVisible) {
         // nope
-        lid.value = false;
+        lidObstacleIndex = -1;
       } else {
-        if (lidObstacle != {}) {
-          api.removeObstacle(lidObstacle);
-          lidObstacle = {};
+        if (api.getNumberOfObstacles() > 0 && lidObstacleIndex > -1) {
+          api.removeObstacle(lidObstacleIndex);
+          lidObstacleIndex = -1;
         }
       }
     }
-    lid.lidObstacle = lidObstacle;
-    this.setState({ containerLid: lid });
-
+    return lidObstacleIndex > -1;
   }
   changeElementCount(newElementCount) {
     // has the number of elements been increased
