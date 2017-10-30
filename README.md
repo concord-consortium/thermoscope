@@ -46,6 +46,10 @@ webpack-dev-server
 ```
 and open http://localhost:8080/ or http://localhost:8080/webpack-dev-server/ (auto-reload after each code change).
 
+To connect to a thermoscope on Windows 10, install the Web Bluetooth Polyfill Chrome extension:
+https://github.com/urish/web-bluetooth-polyfill
+Follow the installation instructions in the repository's readme file. 
+
 ## Deployment
 
 #### Github Pages:
