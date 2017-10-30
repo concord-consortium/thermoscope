@@ -40,6 +40,13 @@ module.exports = {
     label: "Seal Container",
     value: false
   },
+  containerHeight: {
+    label: "Container Height",
+    value: 2.25,
+    min: 0.25,
+    max: 2.5,
+    step: 0.25
+  },
   elements: {
     label: "Number of unique elements",
     value: 1,

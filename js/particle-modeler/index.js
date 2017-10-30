@@ -48,7 +48,8 @@ let atomBox = {
   let leftPos = 1.25;
   let rightPos = 3.25;
   let baseColor = "rgba(128,96,96,0)";
-  let wallColor = "rgba(0,128,0,0)";
+  let hiddenWallColor = "rgba(0,128,0,0)";
+  let wallColor = "rgba(0,0,0,1)";
   let lidColor = "rgba(0,0,0,1)";
 
   let containerWidth = rightPos - leftPos;
@@ -446,11 +447,12 @@ export default class Interactive extends PureComponent {
 
         api.setImageProperties(0, { visible: false });
       } else {
-        // adjust height - not currently implemented
+        // adjust height - if the container is on screen, wall indices will be 3 and 4
+
         // api.removeObstacle(4);
         // api.removeObstacle(3);
-        // api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
-        // api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
+        api.setObstacleProperties(3, { x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
+        api.setObstacleProperties(4, { x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
         // api.setObstacleProperties?
       }
     }
@@ -461,22 +463,6 @@ export default class Interactive extends PureComponent {
 
       api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor  }); // left
       api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
-
-      // left lip - a couple of angled lines and some simple obstacles
-      let wallTop = basePos + baseThickness + h;
-      let leftInsideEdge = leftPos + wallThickness;
-
-      let w = 3; // line weight, hopefully adding to solidity
-
-      api.addLine({ x1: leftInsideEdge - 0.01, y1: wallTop, x2: leftInsideEdge - 0.05, y2: wallTop + 0.04, fence: true, lineWeight: w, lineColor: wallColor });
-      api.addObstacle({x: leftInsideEdge - 0.15, y: wallTop, width: 0.1, height: 0.05, color: wallColor})
-      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop + 0.04, x2: leftInsideEdge - 0.3, y2: wallTop - 0.1, fence: true, lineWeight: w, lineColor: wallColor });
-      api.addObstacle({ x: leftInsideEdge - 0.3, y: wallTop - 0.19, width: 0.19, height: 0.1, color: wallColor });
-
-      // and right edge lip
-      api.addShape({
-        x: rightPos - (wallThickness / 2), y: wallTop, type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
-      });
 
       // add base layer atoms
       let spacing = 0.2;

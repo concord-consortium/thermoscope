@@ -49,7 +49,7 @@
     "electricFieldColor": "auto",
     "showAtomTrace": false,
     "images": [{
-      "imageUri": "beaker.svg",
+      "imageUri": "beaker_base.svg",
       "imageX": 0.90,
       "imageY": 2.76,
       "imageHostType": "",
