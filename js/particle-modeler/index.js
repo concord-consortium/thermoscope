@@ -385,15 +385,29 @@ export default class Interactive extends PureComponent {
       this.changeElementCount(value);
     }
     if (prop === "container") {
-      this.updateContainerVisibility(value);
+      try {
+        this.updateContainerVisibility(value);
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     if (prop === "containerHeight") {
       let h = value;
-
-      this.updateContainerVisibility(this.state.container.value, h)
+      try {
+        this.updateContainerVisibility(this.state.container.value, h)
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     if (prop === "containerLid") {
-      newState[prop].value = this.toggleContainerLid(value); // container lid dependent on container visibility
+      try {
+        newState[prop].value = this.toggleContainerLid(value); // container lid dependent on container visibility
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
@@ -448,12 +462,8 @@ export default class Interactive extends PureComponent {
         api.setImageProperties(0, { visible: false });
       } else {
         // adjust height - if the container is on screen, wall indices will be 3 and 4
-
-        // api.removeObstacle(4);
-        // api.removeObstacle(3);
         api.setObstacleProperties(3, { x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
         api.setObstacleProperties(4, { x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
-        // api.setObstacleProperties?
       }
     }
     if (!currentlyVisible && visible) {
@@ -461,13 +471,13 @@ export default class Interactive extends PureComponent {
       api.addObstacle({ x: leftPos, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge left
       api.addObstacle({ x: rightPos - wallThickness, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge right
 
-      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor  }); // left
+      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
       api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
 
       // add base layer atoms
       let spacing = 0.2;
-      for (let i = 1; i < 10; i++){
-        api.addAtom({ x: leftPos + (i*spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
+      for (let i = 1; i < 10; i++) {
+        api.addAtom({ x: leftPos + (i * spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
       }
 
       // show image
