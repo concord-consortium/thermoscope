@@ -32,9 +32,18 @@ module.exports = {
     label: "Show Freeze Button",
     value: false
   },
+  container: {
+    label: "Show Container",
+    value: false,
+  },
+  containerLid: {
+    label: "Seal Container",
+    value: false,
+    lid: {}
+  },
   elements: {
     label: "Number of unique elements",
-    value: 3,
+    value: 1,
     min: 1,
     max: 3,
     step: 1
@@ -43,7 +52,7 @@ module.exports = {
     label: "Sigma",
     element: 0,
     property: "sigma",
-    value: 0.1915,
+    value: 0.3,
     min: 0.01,
     max: 0.5
   },
@@ -93,7 +102,7 @@ module.exports = {
     label: "Sigma",
     element: 2,
     property: "sigma",
-    value: 0.1915,
+    value: 0.15,
     min: 0.01,
     max: 0.5
   },
@@ -164,7 +173,7 @@ module.exports = {
     element1: 0,
     element2: 2,
     property: "use",
-    value: false
+    value: true
   },
   pair13Epsilon: {
     element1: 0,
@@ -178,7 +187,7 @@ module.exports = {
     element1: 0,
     element2: 2,
     property: "sigma",
-    value: 0.1915,
+    value: 0.186,
     min: 0.01,
     max: 0.5
   },

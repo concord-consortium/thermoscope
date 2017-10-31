@@ -5,10 +5,11 @@ This repository contains the initial code to visualize matter at different tempe
 Latest builds for the Thermoscope application can be found here: https://thermoscope.concord.org/branch/master/
 Main production url is https://thermoscope.concord.org/ though there is heavy caching on this site.
 
-Thermoscope apps on iPad devices are currently using MASTER branch.
+Thermoscope apps on iPad devices are currently using iOS branch:
+https://thermoscope.concord.org/branch/ios/
 
-The main Thermoscope demo page is here: https://thermoscope.concord.org/branch/master/thermoscope/ and accepts url parameters as follows:
-https://concord-consortium.github.io/thermoscope/thermoscope/?A=liquid&B=liquid&controls=false
+The main Thermoscope demo page is here: https://thermoscope.concord.org/thermoscope/ and accepts url parameters as follows:
+https://thermoscope.concord.org/thermoscope/?A=liquid&B=liquid&controls=false
 
 where `A` and `B` (case sensitive) represent Thermoscopes A and B's default particle visualization, which can be one of the following states (default is `solid`):
    ```
@@ -23,8 +24,8 @@ Additionally, the `controls` parameter can be used to show or hide the controls 
    ```
 
 
-The Particle Modeler demo can be found here: https://thermoscope.concord.org/branch/master/particle-modeler
-To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://thermoscope.concord.org/branch/master/particle-modeler/#authoring=true
+The Particle Modeler can be found here: https://thermoscope.concord.org/particle-modeler
+To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://thermoscope.concord.org/particle-modeler/#authoring=true
 
 ## Development
 

@@ -1,6 +1,6 @@
 {
   "type": "md2d",
-  "imagePath": "",
+  "imagePath": "../",
   "width": 4.5,
   "height": 3,
   "unitsScheme": "md2d",
@@ -48,7 +48,18 @@
     "electricFieldDensity": 18,
     "electricFieldColor": "auto",
     "showAtomTrace": false,
-    "images": [],
+    "images": [{
+      "imageUri": "beaker.svg",
+      "imageX": 0.90,
+      "imageY": 2.76,
+      "imageHostType": "",
+      "imageHostIndex": 0,
+      "imageLayer": 2,
+      "imageLayerPosition": 1,
+      "visible": false,
+      "opacity": 1,
+      "scale": 0.5
+    }],
     "imageMapping": {},
     "textBoxes": [],
     "xlabel": false,
@@ -127,6 +138,12 @@
       "epsilon": 0,
       "element1": 2,
       "element2": 5
+    },
+    {
+      "sigma": 0.186,
+      "epsilon": -0.5,
+      "element1": 0,
+      "element2": 2
     }
   ],
   "elements": {
@@ -139,12 +156,12 @@
       30
     ],
     "sigma": [
+      0.3,
       0.19149999618530272,
+      0.15,
+      0.2,
       0.19149999618530272,
-      0.19149999618530272,
-      0.19149999618530272,
-      0.19149999618530272,
-      0.19149999618530272
+      0.15
     ],
     "epsilon": [-0.05, -0.1, -0.000001, 0, 0, 0],
     "color": [-855310, -9066941, -13159, -855310, -9066941, -13159]
