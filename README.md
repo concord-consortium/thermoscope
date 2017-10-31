@@ -9,7 +9,7 @@ Thermoscope apps on iPad devices are currently using iOS branch:
 https://thermoscope.concord.org/branch/ios/
 
 The main Thermoscope demo page is here: https://thermoscope.concord.org/thermoscope/ and accepts url parameters as follows:
-https://thermoscope.concord.org/thermoscope/?A=liquid&B=liquid&controls=false
+https://thermoscope.concord.org/thermoscope/?A=liquid&B=liquid&controls=false&hideB
 
 where `A` and `B` (case sensitive) represent Thermoscopes A and B's default particle visualization, which can be one of the following states (default is `solid`):
    ```
@@ -22,6 +22,8 @@ Additionally, the `controls` parameter can be used to show or hide the controls 
    ```
    controls=true/false
    ```
+
+The `hideA`, `hideB` and `hideC` parameters can start any of the thermoscope displays with the aperture closed
 
 
 The Particle Modeler can be found here: https://thermoscope.concord.org/particle-modeler
