@@ -416,7 +416,7 @@ export default class Interactive extends PureComponent {
   }
 
   updateContainerVisibility(visible, height) {
-    const { containerHeight } = this.state;
+    const { containerHeight, containerLid } = this.state;
     let h = height ? height : containerHeight ? containerHeight.value : 2.25;
 
 
@@ -462,8 +462,13 @@ export default class Interactive extends PureComponent {
         api.setImageProperties(0, { visible: false });
       } else {
         // adjust height - if the container is on screen, wall indices will be 3 and 4
-        api.setObstacleProperties(3, { x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
-        api.setObstacleProperties(4, { x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
+        api.setObstacleProperties(3, { height: h }); // left
+        api.setObstacleProperties(4, { height: h }); // right
+        if (containerLid.value) {
+          // adjusting height should reposition lid
+          let lidObstacleIndex = api.getNumberOfObstacles() - 1;
+          api.setObstacleProperties(lidObstacleIndex, { y: h - wallThickness });
+        }
       }
     }
     if (!currentlyVisible && visible) {
@@ -580,7 +585,6 @@ export default class Interactive extends PureComponent {
                 playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
               <div className="lab-ui">
                 <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-
                 <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
               </div>
             </div>
