@@ -107,7 +107,7 @@ export default class Interactive extends PureComponent {
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
-    this.toggleContainerLid = this.toggleContainerLid.bind(this);
+    this.updateContainerLid = this.updateContainerLid.bind(this);
   }
 
   componentWillMount() {
@@ -226,7 +226,7 @@ export default class Interactive extends PureComponent {
     this.addPinnedParticleText();
     if (this.state.container) {
       this.updateContainerVisibility(this.state.container.value);
-      this.toggleContainerLid(this.state.containerLid.value);
+      this.updateContainerLid(this.state.containerLid.value);
     }
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
@@ -403,7 +403,7 @@ export default class Interactive extends PureComponent {
     }
     if (prop === "containerLid") {
       try {
-        newState[prop].value = this.toggleContainerLid(value); // container lid dependent on container visibility
+        newState[prop].value = this.updateContainerLid(value); // container lid dependent on container visibility
       } catch (ex) {
         console.log("ERROR: ", ex);
         newState[prop].value = this.state[prop].value;
@@ -489,7 +489,8 @@ export default class Interactive extends PureComponent {
       api.setImageProperties(0, { visible: true });
     }
   }
-  toggleContainerLid(lidVisible) {
+
+  updateContainerLid(lidVisible, updateState) {
     const { container, containerHeight, containerLid } = this.state;
     let containerVisible = container.value;
     let h = containerHeight ? containerHeight.value : 2.25;
@@ -515,6 +516,11 @@ export default class Interactive extends PureComponent {
           lidObstacleIndex = -1;
         }
       }
+    }
+    if (updateState) {
+      lid.value = lidVisible;
+      this.setState({ containerLid: lid });
+      this.forceUpdate();
     }
     return lidObstacleIndex > -1;
   }
@@ -564,7 +570,7 @@ export default class Interactive extends PureComponent {
   }
 
   render() {
-    const { authoring, showFreezeButton, showRestart} = this.state;
+    const { authoring, showFreezeButton, showRestart, containerLid} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -595,7 +601,7 @@ export default class Interactive extends PureComponent {
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} />
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>
