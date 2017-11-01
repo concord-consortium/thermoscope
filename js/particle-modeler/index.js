@@ -416,11 +416,10 @@ export default class Interactive extends PureComponent {
   }
 
   updateContainerVisibility(visible, height) {
-    const { containerHeight, containerLid } = this.state;
+    const { container, containerHeight, containerLid } = this.state;
     let h = height ? height : containerHeight ? containerHeight.value : 2.25;
-
-
     let currentlyVisible = api.getNumberOfObstacles() > 0;
+
     if (currentlyVisible) {
       if (!visible) {
         // remove old obstacles

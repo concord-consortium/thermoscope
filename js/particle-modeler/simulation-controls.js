@@ -60,14 +60,15 @@ export default class SimulationControls extends PureComponent {
     }
    }
 
-  toggleLid() {
+   toggleLid() {
     const { onContainerLid } = this.props;
     onContainerLid();
   }
 
   render() {
     const {isSlowed, isFrozen, completed} = this.state;
-    const {showFreezeButton, containerLid, authoring} = this.props;
+    const { showFreezeButton, container, containerLid, authoring } = this.props;
+    let containerVisible = container.value;
     let lidVisible = containerLid.value;
     let beakerIconStyle = "beaker";
     if (!authoring===true) beakerIconStyle += "light";
@@ -96,11 +97,13 @@ export default class SimulationControls extends PureComponent {
                 className="progress"
               />}
           </div>}
-        <div className="button-layout">
-          <IconButton className="container-button" onClick={this.toggleLid} tooltip="container">
-            <div className={beakerIconStyle} />
-          </IconButton>
-        </div>
+        {containerVisible &&
+          <div className="button-layout">
+            <IconButton className="container-button" onClick={this.toggleLid} tooltip="container">
+              <div className={beakerIconStyle} />
+            </IconButton>
+          </div>
+        }
       </div>
     )
   }
