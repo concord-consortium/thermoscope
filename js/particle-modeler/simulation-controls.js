@@ -15,6 +15,7 @@ export default class SimulationControls extends PureComponent {
     this.slow = this.slow.bind(this);
     this.restart = this.restart.bind(this);
     this.toggleLid = this.toggleLid.bind(this);
+    this.toggleRunState = this.toggleRunState.bind(this);
   }
 
   restart() {
@@ -64,24 +65,34 @@ export default class SimulationControls extends PureComponent {
     const { onContainerLid } = this.props;
     onContainerLid();
   }
+   toggleRunState() {
+     const { onToggleRunState } = this.props;
+     console.log("toggle");
+     onToggleRunState();
+   }
 
   render() {
     const {isSlowed, isFrozen, completed} = this.state;
-    const { showFreezeButton, container, containerLid, authoring } = this.props;
+    const { showFreezeButton, container, containerLid, authoring, simulationRunning } = this.props;
     let containerVisible = container.value;
     let lidVisible = containerLid.value;
     let beakerIconStyle = "beaker";
     if (!authoring===true) beakerIconStyle += "light";
     if (!lidVisible) beakerIconStyle += " closed";
+    let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
+    let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
 
     return(
       <div className="speed-controls">
         <div className="button-layout">
-          <IconButton id="restart" iconClassName="material-icons" tooltip="reload" onClick={this.restart}>refresh</IconButton>
+          <IconButton id="restart" iconClassName="material-icons" tooltip="Reload" onClick={this.restart}>refresh</IconButton>
+        </div>
+        <div className="button-layout">
+          <IconButton iconClassName="material-icons" className="simulation-state-button" onClick={this.toggleRunState} tooltip={simulationRunStateHint}>{simulationControlIcon}</IconButton>
         </div>
         {showFreezeButton.value === true &&
           <div className="button-layout">
-            <IconButton  iconClassName="material-icons" className="speed-button" onClick={this.freeze} tooltip="freeze">ac_unit</IconButton>
+            <IconButton  iconClassName="material-icons" className="speed-button" onClick={this.freeze} tooltip="Freeze">ac_unit</IconButton>
               {isFrozen && <CircularProgress
                   mode="determinate"
                   value={completed}
@@ -90,7 +101,7 @@ export default class SimulationControls extends PureComponent {
             </div> }
         {showFreezeButton.value === true &&
           <div className="button-layout">
-            <IconButton iconClassName="material-icons" className="speed-button" onClick={this.slow} tooltip="slow">directions_run</IconButton>
+            <IconButton iconClassName="material-icons" className="speed-button" onClick={this.slow} tooltip="Slow">directions_run</IconButton>
             {isSlowed && <CircularProgress
                 mode="determinate"
                 value={completed}
@@ -99,7 +110,7 @@ export default class SimulationControls extends PureComponent {
           </div>}
         {containerVisible &&
           <div className="button-layout">
-            <IconButton className="container-button" onClick={this.toggleLid} tooltip="container">
+            <IconButton className="container-button" onClick={this.toggleLid} tooltip="Container Lid">
               <div className={beakerIconStyle} />
             </IconButton>
           </div>

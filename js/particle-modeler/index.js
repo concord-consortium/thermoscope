@@ -91,6 +91,7 @@ export default class Interactive extends PureComponent {
       sessionDate,
       sessionName,
       recordInteractions,
+      simulationRunning: false,
       modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
     };
@@ -108,6 +109,7 @@ export default class Interactive extends PureComponent {
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
     this.updateContainerLid = this.updateContainerLid.bind(this);
+    this.toggleRunState = this.toggleRunState.bind(this);
   }
 
   componentWillMount() {
@@ -223,6 +225,7 @@ export default class Interactive extends PureComponent {
 
   handleModelLoad() {
     api = lab.scriptingAPI;
+    api.stop();
     this.addPinnedParticleText();
     if (this.state.container) {
       this.updateContainerVisibility(this.state.container.value);
@@ -546,6 +549,20 @@ export default class Interactive extends PureComponent {
     }
   }
 
+  toggleRunState() {
+    console.log("run state toggle");
+    if (api.isStopped()) {
+      console.log("currently stopped, attempting to start");
+      api.start();
+
+    } else {
+      console.log("is running, attempting to stop");
+      api.stop();
+    }
+    this.setState({ simulationRunning: !api.isStopped() });
+
+  }
+
   updateDiff(nextUpdate) {
     let currentState = this.state;
     currentState.atoms = this.getAtomsWithoutPlaceholders();
@@ -600,7 +617,7 @@ export default class Interactive extends PureComponent {
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} />
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} onToggleRunState={this.toggleRunState} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>
