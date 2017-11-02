@@ -75,7 +75,7 @@ export default class Interactive extends PureComponent {
     }
     // Group session identifiers by current hour to collate student activity in Firebase
     let d = new Date();
-    let sessionDate = Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDay(),d.getUTCHours());
+    let sessionDate = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDay(), d.getUTCHours());
     let sessionName = getUsername();
 
     this.state = {
@@ -110,6 +110,7 @@ export default class Interactive extends PureComponent {
     this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
     this.updateContainerLid = this.updateContainerLid.bind(this);
     this.toggleRunState = this.toggleRunState.bind(this);
+    this.toggleHeat = this.toggleHeat.bind(this);
   }
 
   componentWillMount() {
@@ -142,8 +143,8 @@ export default class Interactive extends PureComponent {
 
   setModelProps(prevState = {}) {
     let newModelProperties = {},
-        newElementProperties = [{}, {}, {}],
-        newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
+      newElementProperties = [{}, {}, {}],
+      newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
     for (let prop in authorableProps) {
       let value = this.state[prop];
       if (value !== "" && value !== prevState[prop]) {
@@ -166,8 +167,8 @@ export default class Interactive extends PureComponent {
       for (let elem2 = 0; elem2 < newPairwiseProperties[elem1].length; elem2++) {
         let pairValue = newPairwiseProperties[elem1][elem2];
         if (Object.keys(pairValue).length > 0) {
-          if (this.state[`pair${(elem1+1)}${(elem2+1)}Forces`].value) {
-            api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Epsilon`].value) });
+          if (this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Forces`].value) {
+            api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Epsilon`].value) });
           } else {
             api.removePairwiseLJProperties(elem1, elem2);
           }
@@ -212,13 +213,13 @@ export default class Interactive extends PureComponent {
     const { recordInteractions, modelDiff, sessionDate, sessionName } = this.state;
     // To save entire model:
     // lab.interactiveController.getModel().serialize();
-    if (recordInteractions){
+    if (recordInteractions) {
       base.post(`${sessionDate}/${sessionName}/${Date.now()}`, {
         data: modelDiff
       }).then(() => {
         // update completed console.log("then");
-        }).catch(err => {
-          console.log("Error storing diff data on Firebase", err);
+      }).catch(err => {
+        console.log("Error storing diff data on Firebase", err);
       });
     }
   }
@@ -238,26 +239,26 @@ export default class Interactive extends PureComponent {
         // initial spawned elements do not interact with the simulation
         if (el >= this.state.elements.value) {
           el -= 3;
-          newState["showAtom"+el] = false;
+          newState["showAtom" + el] = false;
         } else {
           // this was a pinned live particle
           this.removePinnedParticleText(i)
         }
-        api.setAtomProperties(i, {pinned: 0, element: el});
+        api.setAtomProperties(i, { pinned: 0, element: el });
 
         this.setState(newState);
         this.addNewDraggableAtom(el);
       } else {
-        if (d.x > delIcon.x && d.x < delIcon.x+delIcon.width && d.y > delIcon.y && d.y < delIcon.y+delIcon.height) {
+        if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
           // mark atoms for deletion
           if (!d.marked) {
-            this.setState({deleteHover: true});
+            this.setState({ deleteHover: true });
             api.setAtomProperties(i, { marked: 1 });
 
           }
         } else if (d.marked) {
-          this.setState({deleteHover: false});
-          api.setAtomProperties(i, {marked: 0});
+          this.setState({ deleteHover: false });
+          api.setAtomProperties(i, { marked: 0 });
         }
       }
       if (this.state.nextUpdate < Date.now()) {
@@ -273,7 +274,7 @@ export default class Interactive extends PureComponent {
         newState[i] = { x, y };
         this.setState({ pinnedAtoms: newState });
         this.addPinnedParticleText(i);
-      } else if (d.element < this.state.elements.value){
+      } else if (d.element < this.state.elements.value) {
         api.setAtomProperties(i, { pinned: 0 });
         this.removePinnedParticleText(i);
       }
@@ -294,21 +295,21 @@ export default class Interactive extends PureComponent {
     });
     let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
-      for (let i=0, ii=api.getNumberOfAtoms(); i<ii; i++) {
-        if (api.getAtomProperties(i).marked && ! api.getAtomProperties(i).pinned)
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        if (api.getAtomProperties(i).marked && !api.getAtomProperties(i).pinned)
           atomsToDelete.push(i);
       }
-      for (let i=atomsToDelete.length-1; i>-1; i--) {
+      for (let i = atomsToDelete.length - 1; i > -1; i--) {
         api.removeAtom(atomsToDelete[i]);
       }
 
-      this.setState({deleteHover: false});
+      this.setState({ deleteHover: false });
     }
 
     lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
     lab.iframe.contentDocument.body.style.touchAction = "none";
 
-    for (let i = 0; i < this.state.elements.value; i++){
+    for (let i = 0; i < this.state.elements.value; i++) {
       this.addNewDraggableAtom(i);
     }
 
@@ -316,15 +317,15 @@ export default class Interactive extends PureComponent {
   }
 
   generatePinnedParticleText(i) {
-      let textProps = {
-          "text": "P",
-          "hostType": "Atom",
-          "hostIndex": i,
-          "layer": 1,
-          "textAlign": "center",
-          "width": 0.3
-        };
-      return textProps;
+    let textProps = {
+      "text": "P",
+      "hostType": "Atom",
+      "hostIndex": i,
+      "layer": 1,
+      "textAlign": "center",
+      "width": 0.3
+    };
+    return textProps;
   }
 
   addPinnedParticleText(particle) {
@@ -332,7 +333,7 @@ export default class Interactive extends PureComponent {
       // add boxes for all pinned particles
       api.set({ 'textboxes': {} });
       let textToAdd = [];
-      for (let i = 0; i < api.getNumberOfAtoms(); i++){
+      for (let i = 0; i < api.getNumberOfAtoms(); i++) {
         let a = api.getAtomProperties(i);
         if (a.pinned && a.element < this.state.elements.value) {
           let textProps = this.generatePinnedParticleText(i);
@@ -348,7 +349,7 @@ export default class Interactive extends PureComponent {
   removePinnedParticleText(particle) {
     let textboxes = api.get('textBoxes');
     let textToRemove = -1;
-    for (let i = 0; i < textboxes.length; i++){
+    for (let i = 0; i < textboxes.length; i++) {
       if (textboxes[i].hostIndex == particle) {
         textToRemove = i;
         break;
@@ -375,13 +376,13 @@ export default class Interactive extends PureComponent {
     this.setState({ authoring: false });
   }
 
-  handleSimulationChange(changedProps){
-      api.set(changedProps);
+  handleSimulationChange(changedProps) {
+    api.set(changedProps);
   }
 
   handleAuthoringPropChange(prop, value) {
     let newState = {};
-    newState[prop] = {...this.state[prop]};
+    newState[prop] = { ...this.state[prop] };
     newState[prop].value = parseToPrimitive(value);
 
     if (prop === "elements") {
@@ -426,7 +427,7 @@ export default class Interactive extends PureComponent {
     if (currentlyVisible) {
       if (!visible) {
         // remove old obstacles
-        for (let i = api.getNumberOfObstacles() - 1; i > -1; i--){
+        for (let i = api.getNumberOfObstacles() - 1; i > -1; i--) {
           api.removeObstacle(i);
         }
         // since removing all obstacles will remove the lid also, update lid
@@ -529,7 +530,7 @@ export default class Interactive extends PureComponent {
   changeElementCount(newElementCount) {
     // has the number of elements been increased
     if (newElementCount > this.state.elements.value) {
-      for (let i = this.state.elements.value; i < newElementCount; i++){
+      for (let i = this.state.elements.value; i < newElementCount; i++) {
         this.addNewDraggableAtom(i, true);
       }
     } else {
@@ -543,7 +544,7 @@ export default class Interactive extends PureComponent {
         api.removeAtom(atomsToDelete[i]);
       }
       // because initial draggable elements are a different type, recreate the hidden dragables after deleting
-      for (let i = 0; i < newElementCount; i++){
+      for (let i = 0; i < newElementCount; i++) {
         this.addNewDraggableAtom(i, true);
       }
     }
@@ -560,7 +561,37 @@ export default class Interactive extends PureComponent {
       api.stop();
     }
     this.setState({ simulationRunning: !api.isStopped() });
+  }
 
+  toggleHeat(isHeating) {
+    const { container } = this.state;
+    let heatAtoms = [];
+
+    // iterate through all atoms, remove elements no longer needed
+    for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+      let a = api.getAtomProperties(i);
+      if (a.element !== 2 && !a.pinned) {
+        // heatable atoms are near the base of the simulation, and if the container is in place, only those inside the container
+        // unmark atoms
+        // api.setAtomProperties(i, { marked: false});
+        if (a.y <= basePos + 0.5) {
+          if (container.value) {
+            if (a.x > leftPos && a.y < rightPos) heatAtoms.push(i);
+          } else {
+            heatAtoms.push(i);
+          }
+        }
+      }
+    }
+
+    if (isHeating && heatAtoms.length > 0) {
+      // excite lowest particles
+      for (let i = heatAtoms.length - 1; i > -1; i--) {
+        let p = api.getAtomProperties(heatAtoms[i]);
+        // api.setAtomProperties(heatAtoms[i], { vx: p.vx * 2, vy: p.vy * 2, marked: true });
+        api.setAtomProperties(heatAtoms[i], { vx: p.vx * 2, vy: p.vy * 2 });
+      }
+    }
   }
 
   updateDiff(nextUpdate) {
@@ -617,7 +648,7 @@ export default class Interactive extends PureComponent {
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} onToggleRunState={this.toggleRunState} />
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleHeat={this.toggleHeat} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} onToggleRunState={this.toggleRunState} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>

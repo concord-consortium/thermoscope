@@ -5,13 +5,18 @@ import SvgIcon from 'material-ui/SvgIcon';
 import CircularProgress from 'material-ui/CircularProgress';
 
 let slowSpeedTimeStep = 0.05;
-let frozenTemps = {temperatureControl: true, targetTemperature: 0};
+let frozenTemps = { temperatureControl: true, targetTemperature: 0 };
 
 export default class SimulationControls extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = {
+      isHeating: false
+    }
     this.state = { completed: 0, isFrozen: false, isSlowed: false };
     this.freeze = this.freeze.bind(this);
+    this.setHeatStatus = this.setHeatStatus.bind(this);
+    this.applyHeat = this.applyHeat.bind(this);
     this.slow = this.slow.bind(this);
     this.restart = this.restart.bind(this);
     this.toggleLid = this.toggleLid.bind(this);
@@ -34,6 +39,24 @@ export default class SimulationControls extends PureComponent {
       onChange(normalTemps);
     });
   }
+  setHeatStatus(heat) {
+    const { isHeating } = this.state;
+    this.setState({ isHeating: heat });
+    this.applyHeat(heat);
+  }
+
+  applyHeat(heat) {
+    const { onToggleHeat } = this.props;
+    onToggleHeat(heat);
+
+    if (heat) {
+      this.timer = setTimeout(() => {
+        this.applyHeat(heat);
+      }, 2000);
+    } else {
+      window.clearInterval(this.timer);
+    }
+  }
 
   slow() {
     const {onChange} = this.props;
@@ -49,11 +72,11 @@ export default class SimulationControls extends PureComponent {
     if (completed > 100) {
       this.setState({completed: 100});
       this.timer = setTimeout(() => {
-        this.setState({completed: 0, isSlowed: false, isFrozen: false});
+        this.setState({completed: 0, isSlowed: false, isFrozen: false, isHeating: false});
         onComplete();
       }, 100);
     } else {
-      if (this.state.completed != completed){
+      if (this.state.completed != completed) {
         this.setState({completed});
       }
       const nextCompleted = completed + 25;
@@ -61,18 +84,17 @@ export default class SimulationControls extends PureComponent {
     }
    }
 
-   toggleLid() {
+  toggleLid() {
     const { onContainerLid } = this.props;
     onContainerLid();
   }
-   toggleRunState() {
-     const { onToggleRunState } = this.props;
-     console.log("toggle");
-     onToggleRunState();
-   }
+  toggleRunState() {
+    const { onToggleRunState } = this.props;
+    onToggleRunState();
+  }
 
   render() {
-    const {isSlowed, isFrozen, completed} = this.state;
+    const {isSlowed, isFrozen, isHeating, completed} = this.state;
     const { showFreezeButton, container, containerLid, authoring, simulationRunning } = this.props;
     let containerVisible = container.value;
     let lidVisible = containerLid.value;
@@ -81,6 +103,8 @@ export default class SimulationControls extends PureComponent {
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
+    let _isHeating = isHeating === true ? true : false;
+    let heatIconStyle = _isHeating ? "heat-button hot" : "heat-button";
 
     return(
       <div className="speed-controls">
@@ -97,8 +121,15 @@ export default class SimulationControls extends PureComponent {
                   mode="determinate"
                   value={completed}
                   className="progress"
-                />}
-            </div> }
+          />}
+          </div>
+          }
+        {showFreezeButton.value === true &&
+          <div className="button-layout">
+          <IconButton iconClassName="material-icons" className={heatIconStyle}
+            onClick={() => this.setHeatStatus(!_isHeating)} tooltip="Heat">whatshot</IconButton>
+          </div>
+        }
         {showFreezeButton.value === true &&
           <div className="button-layout">
             <IconButton iconClassName="material-icons" className="speed-button" onClick={this.slow} tooltip="Slow">directions_run</IconButton>
