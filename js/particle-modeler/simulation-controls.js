@@ -29,12 +29,15 @@ export default class SimulationControls extends PureComponent {
   }
 
   freeze() {
-    const {onChange} = this.props;
+    const { onChange } = this.props;
+    // turn off heater
+    this.setHeatStatus(false);
+
     let normalTemps = {temperatureControl: this.props.temperatureControl.value, targetTemperature: this.props.targetTemperature.value}
 
     onChange(frozenTemps);
 
-    this.setState({isFrozen: true});
+    this.setState({isFrozen: true, isHeating: false});
     this.progress(5, 500, function() {
       onChange(normalTemps);
     });
@@ -52,17 +55,18 @@ export default class SimulationControls extends PureComponent {
     if (heat) {
       this.timer = setTimeout(() => {
         this.applyHeat(heat);
-      }, 2000);
+      }, 200);
     } else {
       window.clearInterval(this.timer);
     }
   }
 
   slow() {
-    const {onChange} = this.props;
+    const { onChange } = this.props;
+
     let oldTimeStep = this.props.timeStep.value;
     onChange({timeStep: slowSpeedTimeStep});
-    this.setState({isSlowed: true});
+    this.setState({isSlowed: true, isHeating: false});
     this.progress(5, 2500, function(){
       onChange({timeStep: oldTimeStep});
     });

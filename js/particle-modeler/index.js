@@ -562,6 +562,9 @@ export default class Interactive extends PureComponent {
       if (!this.state.allowLiveDragging) {
         for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
           api.setAtomProperties(i, { draggable: false });
+          if (api.getAtomProperties(i).element > 2) {
+            api.setAtomProperties(i, { visible: false });
+          }
         }
       }
 
@@ -570,6 +573,9 @@ export default class Interactive extends PureComponent {
       api.stop();
       for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
         api.setAtomProperties(i, { draggable: true });
+        if (api.getAtomProperties(i).element > 2) {
+          api.setAtomProperties(i, { visible: true });
+        }
       }
 
     }
@@ -602,7 +608,7 @@ export default class Interactive extends PureComponent {
       for (let i = heatAtoms.length - 1; i > -1; i--) {
         let p = api.getAtomProperties(heatAtoms[i]);
         // api.setAtomProperties(heatAtoms[i], { vx: p.vx * 2, vy: p.vy * 2, marked: true });
-        api.setAtomProperties(heatAtoms[i], { vx: p.vx * 2, vy: p.vy * 2 });
+        api.setAtomProperties(heatAtoms[i], { vx: p.vx * 1.1, vy: p.vy * 1.1 });
       }
     }
   }
@@ -630,7 +636,7 @@ export default class Interactive extends PureComponent {
   }
 
   render() {
-    const { authoring, showFreezeButton, showRestart, containerLid} = this.state;
+    const { authoring, showFreezeButton, showRestart, containerLid, allowLiveDragging } = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -642,6 +648,8 @@ export default class Interactive extends PureComponent {
       count: this.state.elements.value
     };
 
+    let allowDragging = api ? (allowLiveDragging || api.isStopped()) : true;
+
     return (
       <MuiThemeProvider>
         <div className={appClass}>
@@ -649,10 +657,12 @@ export default class Interactive extends PureComponent {
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
                 playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
-              <div className="lab-ui">
-                <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-                <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
-              </div>
+              { allowDragging &&
+                <div className="lab-ui">
+                  <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
+                  <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+                </div>
+              }
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>
