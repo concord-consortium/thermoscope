@@ -67,6 +67,7 @@ export default class Interactive extends PureComponent {
       model = models.emptyModel,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
       urlModel = getURLParam("model"),
+      allowLiveDragging = getURLParam("allowLiveDragging") ? true : false,
       // Disable recording of student interaction by default
       recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : false;
     if (urlModel) {
@@ -91,6 +92,7 @@ export default class Interactive extends PureComponent {
       sessionDate,
       sessionName,
       recordInteractions,
+      allowLiveDragging,
       simulationRunning: false,
       modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
@@ -233,37 +235,39 @@ export default class Interactive extends PureComponent {
       this.updateContainerLid(this.state.containerLid.value);
     }
     api.onDrag('atom', (x, y, d, i) => {
-      if (d.pinned === 1) {
-        let el = d.element,
-          newState = {};
-        // initial spawned elements do not interact with the simulation
-        if (el >= this.state.elements.value) {
-          el -= 3;
-          newState["showAtom" + el] = false;
-        } else {
-          // this was a pinned live particle
-          this.removePinnedParticleText(i)
-        }
-        api.setAtomProperties(i, { pinned: 0, element: el });
-
-        this.setState(newState);
-        this.addNewDraggableAtom(el);
-      } else {
-        if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
-          // mark atoms for deletion
-          if (!d.marked) {
-            this.setState({ deleteHover: true });
-            api.setAtomProperties(i, { marked: 1 });
-
+      if (api.isStopped() || this.state.allowLiveDragging) {
+        if (d.pinned === 1) {
+          let el = d.element,
+            newState = {};
+          // initial spawned elements do not interact with the simulation
+          if (el >= this.state.elements.value) {
+            el -= 3;
+            newState["showAtom" + el] = false;
+          } else {
+            // this was a pinned live particle
+            this.removePinnedParticleText(i)
           }
-        } else if (d.marked) {
-          this.setState({ deleteHover: false });
-          api.setAtomProperties(i, { marked: 0 });
+          api.setAtomProperties(i, { pinned: 0, element: el });
+
+          this.setState(newState);
+          this.addNewDraggableAtom(el);
+        } else {
+          if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
+            // mark atoms for deletion
+            if (!d.marked) {
+              this.setState({ deleteHover: true });
+              api.setAtomProperties(i, { marked: 1 });
+
+            }
+          } else if (d.marked) {
+            this.setState({ deleteHover: false });
+            api.setAtomProperties(i, { marked: 0 });
+          }
         }
-      }
-      if (this.state.nextUpdate < Date.now()) {
-        // this triggers component update & save
-        this.updateDiff(Date.now() + saveStateInterval);
+        if (this.state.nextUpdate < Date.now()) {
+          // this triggers component update & save
+          this.updateDiff(Date.now() + saveStateInterval);
+        }
       }
     });
 
@@ -553,12 +557,21 @@ export default class Interactive extends PureComponent {
   toggleRunState() {
     console.log("run state toggle");
     if (api.isStopped()) {
-      console.log("currently stopped, attempting to start");
+      console.log("Simulation is currently stopped, attempting to start");
       api.start();
+      if (!this.state.allowLiveDragging) {
+        for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+          api.setAtomProperties(i, { draggable: false });
+        }
+      }
 
     } else {
-      console.log("is running, attempting to stop");
+      console.log("Simulation is running, attempting to stop");
       api.stop();
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        api.setAtomProperties(i, { draggable: true });
+      }
+
     }
     this.setState({ simulationRunning: !api.isStopped() });
   }
