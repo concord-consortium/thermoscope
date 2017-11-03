@@ -14,6 +14,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getUsername from '../components/user-name-generator.js';
+import { updateContainerLid, updateContainerVisibility, getContainerPosition } from './container';
+
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
@@ -41,18 +43,6 @@ let atomBox = {
       width: 0.141,
       height: 0.146
   };
-
-  let wallThickness = 0.1;
-  let basePos = 0.15;
-  let baseThickness = 0.01;
-  let leftPos = 1.25;
-  let rightPos = 3.25;
-  let baseColor = "rgba(128,96,96,0)";
-  let hiddenWallColor = "rgba(0,128,0,0)";
-  let wallColor = "rgba(0,0,0,1)";
-  let lidColor = "rgba(0,0,0,1)";
-
-  let containerWidth = rightPos - leftPos;
 
 let particleMaxVelocity = 0.0005;
 let saveStateInterval = 2000;
@@ -109,10 +99,9 @@ export default class Interactive extends PureComponent {
     this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
-    this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
-    this.updateContainerLid = this.updateContainerLid.bind(this);
     this.toggleRunState = this.toggleRunState.bind(this);
     this.toggleHeat = this.toggleHeat.bind(this);
+    this.toggleContainerLid = this.toggleContainerLid.bind(this);
   }
 
   componentWillMount() {
@@ -231,15 +220,15 @@ export default class Interactive extends PureComponent {
     api.stop();
     this.addPinnedParticleText();
     if (this.state.container) {
-      this.updateContainerVisibility(this.state.container.value);
-      this.updateContainerLid(this.state.containerLid.value);
+      updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api);
+      updateContainerLid(this.state.containerLid, this.state.containerLid.value, this.state.container.value, this.state.containerHeight, api);
     }
     api.onDrag('atom', (x, y, d, i) => {
       if (api.isStopped() || this.state.allowLiveDragging) {
         if (d.pinned === 1) {
           let el = d.element,
             newState = {};
-          // initial spawned elements do not interact with the simulation
+          // initial spawned elements do not interact with the simulationx
           if (el >= this.state.elements.value) {
             el -= 3;
             newState["showAtom" + el] = false;
@@ -394,7 +383,13 @@ export default class Interactive extends PureComponent {
     }
     if (prop === "container") {
       try {
-        this.updateContainerVisibility(value);
+        updateContainerVisibility(value, null, this.state.containerHeight, this.state.containerLid, api);
+        // if the container is set to invisible we need to also remove the lid
+        if (!value) {
+          let lid = this.state.containerLid;
+          lid.value = false;
+          this.setState({ containerLid: lid });
+        }
       } catch (ex) {
         console.log("ERROR: ", ex);
         newState[prop].value = this.state[prop].value;
@@ -403,7 +398,7 @@ export default class Interactive extends PureComponent {
     if (prop === "containerHeight") {
       let h = value;
       try {
-        this.updateContainerVisibility(this.state.container.value, h)
+        updateContainerVisibility(this.state.container.value, h, this.state.containerHeight, this.state.containerLid, api)
       } catch (ex) {
         console.log("ERROR: ", ex);
         newState[prop].value = this.state[prop].value;
@@ -411,7 +406,7 @@ export default class Interactive extends PureComponent {
     }
     if (prop === "containerLid") {
       try {
-        newState[prop].value = this.updateContainerLid(value); // container lid dependent on container visibility
+        newState[prop].value = updateContainerLid(this.state.containerLid, value, this.state.container.value, this.state.containerHeight, api); // container lid dependent on container visibility
       } catch (ex) {
         console.log("ERROR: ", ex);
         newState[prop].value = this.state[prop].value;
@@ -423,114 +418,6 @@ export default class Interactive extends PureComponent {
     this.setState(newState);
   }
 
-  updateContainerVisibility(visible, height) {
-    const { container, containerHeight, containerLid } = this.state;
-    let h = height ? height : containerHeight ? containerHeight.value : 2.25;
-    let currentlyVisible = api.getNumberOfObstacles() > 0;
-
-    if (currentlyVisible) {
-      if (!visible) {
-        // remove old obstacles
-        for (let i = api.getNumberOfObstacles() - 1; i > -1; i--) {
-          api.removeObstacle(i);
-        }
-        // since removing all obstacles will remove the lid also, update lid
-        let lid = this.state.containerLid;
-        lid.value = false;
-        this.setState({ containerLid: lid });
-
-        let atomsToDelete = [];
-        // iterate through all atoms, remove elements no longer needed
-        for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
-          if (api.getAtomProperties(i).element == 2)
-            atomsToDelete.push(i);
-        }
-        for (let i = atomsToDelete.length - 1; i > -1; i--) {
-          api.removeAtom(atomsToDelete[i]);
-        }
-        // remove shapes
-        let shapesToDelete = [];
-        for (let i = 0, ii = api.getNumberOfShapes(); i < ii; i++) {
-          shapesToDelete.push(i);
-        }
-        for (let i = shapesToDelete.length - 1; i > -1; i--) {
-          api.removeShape(shapesToDelete[i]);
-        }
-
-        // remove lines
-        let linesToDelete = [];
-        for (let i = 0, ii = api.getNumberOfLines(); i < ii; i++) {
-          linesToDelete.push(i);
-        }
-        for (let i = linesToDelete.length - 1; i > -1; i--) {
-          api.removeLine(linesToDelete[i]);
-        }
-
-        api.setImageProperties(0, { visible: false });
-      } else {
-        // adjust height - if the container is on screen, wall indices will be 3 and 4
-        api.setObstacleProperties(3, { height: h }); // left
-        api.setObstacleProperties(4, { height: h }); // right
-        if (containerLid.value) {
-          // adjusting height should reposition lid
-          let lidObstacleIndex = api.getNumberOfObstacles() - 1;
-          api.setObstacleProperties(lidObstacleIndex, { y: h - wallThickness });
-        }
-      }
-    }
-    if (!currentlyVisible && visible) {
-      api.addObstacle({ x: leftPos, y: basePos, width: containerWidth, height: baseThickness, color: baseColor }); // base
-      api.addObstacle({ x: leftPos, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge left
-      api.addObstacle({ x: rightPos - wallThickness, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge right
-
-      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
-      api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
-
-      // add base layer atoms
-      let spacing = 0.2;
-      for (let i = 1; i < 10; i++) {
-        api.addAtom({ x: leftPos + (i * spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
-      }
-
-      // show image
-      api.setImageProperties(0, { visible: true });
-    }
-  }
-
-  updateContainerLid(lidVisible, updateState) {
-    const { container, containerHeight, containerLid } = this.state;
-    let containerVisible = container.value;
-    let h = containerHeight ? containerHeight.value : 2.25;
-    let lid = containerLid;
-
-    let lidObstacleIndex = lid.value ? api.getNumberOfObstacles() - 1 : -1;
-    if (containerVisible) {
-      if (lidVisible) {
-        api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
-        lidObstacleIndex = api.getNumberOfObstacles() - 1;
-      } else if (lidObstacleIndex > -1) {
-        api.removeObstacle(lidObstacleIndex);
-        lidObstacleIndex = -1;
-      }
-    } else {
-      // container is not visible, attempting to show a lid in this state is invalid
-      if (lidVisible) {
-        // nope
-        lidObstacleIndex = -1;
-      } else {
-        if (api.getNumberOfObstacles() > 0 && lidObstacleIndex > -1) {
-          api.removeObstacle(lidObstacleIndex);
-          lidObstacleIndex = -1;
-        }
-      }
-    }
-    if (updateState) {
-      lid.value = lidVisible;
-      this.setState({ containerLid: lid });
-      this.forceUpdate();
-    }
-    return lidObstacleIndex > -1;
-  }
   changeElementCount(newElementCount) {
     // has the number of elements been increased
     if (newElementCount > this.state.elements.value) {
@@ -585,6 +472,7 @@ export default class Interactive extends PureComponent {
   toggleHeat(isHeating) {
     const { container } = this.state;
     let heatAtoms = [];
+    let containerPosition = getContainerPosition();
 
     // iterate through all atoms, remove elements no longer needed
     for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
@@ -593,12 +481,13 @@ export default class Interactive extends PureComponent {
         // heatable atoms are near the base of the simulation, and if the container is in place, only those inside the container
         // unmark atoms
         // api.setAtomProperties(i, { marked: false});
-        if (a.y <= basePos + 0.5) {
+        if (a.y <= containerPosition.basePos + 0.5) {
           if (container.value) {
-            if (a.x > leftPos && a.y < rightPos) heatAtoms.push(i);
-          } else {
-            heatAtoms.push(i);
+            if (a.x > containerPosition.leftPos && a.y < containerPosition.rightPos) heatAtoms.push(i);
           }
+          // } else {
+          //   heatAtoms.push(i);
+          // }
         }
       }
     }
@@ -635,8 +524,16 @@ export default class Interactive extends PureComponent {
     return null;
   }
 
+  toggleContainerLid() {
+    const { containerLid, containerHeight } = this.state;
+    updateContainerLid(containerLid, !containerLid.value, true, containerHeight, api);
+    let lid = containerLid;
+    lid.value = !containerLid.value;
+    this.setState({ containerLid: lid });
+  }
+
   render() {
-    const { authoring, showFreezeButton, showRestart, containerLid, allowLiveDragging } = this.state;
+    const { authoring, allowLiveDragging } = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -671,7 +568,7 @@ export default class Interactive extends PureComponent {
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleHeat={this.toggleHeat} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} onToggleRunState={this.toggleRunState} />
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleHeat={this.toggleHeat} onContainerLid={this.toggleContainerLid} onToggleRunState={this.toggleRunState} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>
