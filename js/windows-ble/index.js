@@ -51,7 +51,8 @@ export class WindowsBLE extends PureComponent {
                         You also need Visual C++ Redistributable for Visual Studio 2015 (x86), if not already installed
                     </li>
                     <li>
-                        Download the <a href="chrome-ble-extension.zip">Chrome BLE extension</a>
+                        Download the <a href="chrome-ble-extension.zip">Chrome BLE extension</a> and unpack it inside 
+                        C:\Program Files (x86)\Web Bluetooth Polyfill\extension
                     </li>
                     <li>
                         Open Chrome Extensions pane (chrome://extensions/) and enable "Developer Mode" 
@@ -61,7 +62,7 @@ export class WindowsBLE extends PureComponent {
                         Click the "Load unpacked extension..." button
                     </li>
                     <li>
-                        Choose the extension folder inside the cloned repo
+                        Choose the extension folder (C:\Program Files (x86)\Web Bluetooth Polyfill\extension)
                     </li>
                     <li>
                         Take a note of the extension ID for the newly added extension, you will need it in step 8. 

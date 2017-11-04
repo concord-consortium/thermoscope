@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import TextField from 'material-ui/TextField';
 import LinearProgress from 'material-ui/LinearProgress';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
 import { getURLParam } from '../utils';
 
 import '../../css/sensor-connect.less';
@@ -11,13 +12,14 @@ const DEBUG = getURLParam('debug') || 'false';
 export default class Sensor extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { connected: false, connecting: false, showDetails: false, debugMessages: "" };
+    this.state = { connected: false, connecting: false, showDetails: false, debugMessages: "", showWinLink: false};
     this.connectedSensor = this.props.sensor;
     this.handleIPAddressChange = this.handleIPAddressChange.bind(this);
     this.connect = this.connect.bind(this);
     this.enterkey = this.enterkey.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.screenConsole = this.screenConsole.bind(this);
+    this.closeWinLink = this.closeWinLink.bind(this);
   }
 
   handleIPAddressChange(event) {
@@ -40,6 +42,15 @@ export default class Sensor extends PureComponent {
 
   connectSensor() {
     if (!this.state.connected) {
+
+      if (navigator.appVersion.indexOf("Win")!=-1 && navigator.bluetooth == undefined) {
+        console.log("you need the polyfill!");
+
+        this.setState({ showWinLink: true });
+
+        return;
+      } 
+
       this.setState({ connecting: true });
       this.connectedSensor.connect(this.state.ipAddress);
       this.connectedSensor.on('connected', this.connected.bind(this));
@@ -62,6 +73,14 @@ export default class Sensor extends PureComponent {
     this.setState({ showDetails: this.state.showDetails ? false : true });
   }
 
+  closeWinLink(event) {
+    this.setState({ showWinLink: false });
+  }
+  
+  openWinBLE(event) {
+    window.location = "/windows-ble/";
+  }
+
   screenConsole(event) {
     const { debugMessages } = this.state;
 
@@ -70,7 +89,7 @@ export default class Sensor extends PureComponent {
   }
 
   render() {
-    const { connected, connecting, connectedSensorName, showDetails, debugMessages } = this.state;
+    const { connected, connecting, connectedSensorName, showDetails, debugMessages, showWinLink } = this.state;
     const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
     let sensorName = null;
@@ -93,6 +112,13 @@ export default class Sensor extends PureComponent {
 
     return (
       <div className="sensorConnect">
+        <Dialog open={showWinLink} ref="winLinkDlg" className="dialog">
+          <div className="dialog-msg">
+              It looks like you're using Windows - if you want to connect to a Thermoscope on Windows, 
+              you need to install some software.</div>
+          <RaisedButton onClick={this.closeWinLink}>Cancel</RaisedButton>
+          <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
+        </Dialog>
         <div id="toggleSensorDisplay" onClick={this.toggleDisplay}><i className="material-icons">settings_input_antenna</i></div>
         {showDetails &&
           <div className="sensorDetails">
