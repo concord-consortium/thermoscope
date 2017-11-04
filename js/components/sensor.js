@@ -44,10 +44,7 @@ export default class Sensor extends PureComponent {
     if (!this.state.connected) {
 
       if (navigator.appVersion.indexOf("Win")!=-1 && navigator.bluetooth == undefined) {
-        console.log("you need the polyfill!");
-
         this.setState({ showWinLink: true });
-
         return;
       } 
 
