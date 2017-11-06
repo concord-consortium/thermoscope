@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
 import ReactDOM from 'react-dom';
 import IconButton from 'material-ui/IconButton';
+import SvgIcon from 'material-ui/SvgIcon';
 import CircularProgress from 'material-ui/CircularProgress';
 
 let slowSpeedTimeStep = 0.05;
@@ -13,6 +14,7 @@ export default class SimulationControls extends PureComponent {
     this.freeze = this.freeze.bind(this);
     this.slow = this.slow.bind(this);
     this.restart = this.restart.bind(this);
+    this.toggleLid = this.toggleLid.bind(this);
   }
 
   restart() {
@@ -42,7 +44,7 @@ export default class SimulationControls extends PureComponent {
     });
   }
 
-   progress(completed, totalTime, onComplete) {
+  progress(completed, totalTime, onComplete) {
     if (completed > 100) {
       this.setState({completed: 100});
       this.timer = setTimeout(() => {
@@ -56,11 +58,21 @@ export default class SimulationControls extends PureComponent {
       const nextCompleted = completed + 25;
       this.timer = setTimeout(() => this.progress(nextCompleted, totalTime, onComplete), totalTime / 4);
     }
+   }
+
+   toggleLid() {
+    const { onContainerLid } = this.props;
+    onContainerLid();
   }
 
   render() {
     const {isSlowed, isFrozen, completed} = this.state;
-    const {showFreezeButton} = this.props;
+    const { showFreezeButton, container, containerLid, authoring } = this.props;
+    let containerVisible = container.value;
+    let lidVisible = containerLid.value;
+    let beakerIconStyle = "beaker";
+    if (!authoring===true) beakerIconStyle += "light";
+    if (!lidVisible) beakerIconStyle += " closed";
 
     return(
       <div className="speed-controls">
@@ -85,6 +97,13 @@ export default class SimulationControls extends PureComponent {
                 className="progress"
               />}
           </div>}
+        {containerVisible &&
+          <div className="button-layout">
+            <IconButton className="container-button" onClick={this.toggleLid} tooltip="container">
+              <div className={beakerIconStyle} />
+            </IconButton>
+          </div>
+        }
       </div>
     )
   }

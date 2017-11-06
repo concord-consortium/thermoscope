@@ -48,7 +48,8 @@ let atomBox = {
   let leftPos = 1.25;
   let rightPos = 3.25;
   let baseColor = "rgba(128,96,96,0)";
-  let wallColor = "rgba(0,128,0,0)";
+  let hiddenWallColor = "rgba(0,128,0,0)";
+  let wallColor = "rgba(0,0,0,1)";
   let lidColor = "rgba(0,0,0,1)";
 
   let containerWidth = rightPos - leftPos;
@@ -106,7 +107,7 @@ export default class Interactive extends PureComponent {
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleContainerVisibility = this.updateContainerVisibility.bind(this);
-    this.toggleContainerLid = this.toggleContainerLid.bind(this);
+    this.updateContainerLid = this.updateContainerLid.bind(this);
   }
 
   componentWillMount() {
@@ -225,7 +226,7 @@ export default class Interactive extends PureComponent {
     this.addPinnedParticleText();
     if (this.state.container) {
       this.updateContainerVisibility(this.state.container.value);
-      this.toggleContainerLid(this.state.containerLid.value);
+      this.updateContainerLid(this.state.containerLid.value);
     }
     api.onDrag('atom', (x, y, d, i) => {
       if (d.pinned === 1) {
@@ -384,15 +385,29 @@ export default class Interactive extends PureComponent {
       this.changeElementCount(value);
     }
     if (prop === "container") {
-      this.updateContainerVisibility(value);
+      try {
+        this.updateContainerVisibility(value);
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     if (prop === "containerHeight") {
       let h = value;
-
-      this.updateContainerVisibility(this.state.container.value, h)
+      try {
+        this.updateContainerVisibility(this.state.container.value, h)
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     if (prop === "containerLid") {
-      this.toggleContainerLid(value);
+      try {
+        newState[prop].value = this.updateContainerLid(value); // container lid dependent on container visibility
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
@@ -401,21 +416,19 @@ export default class Interactive extends PureComponent {
   }
 
   updateContainerVisibility(visible, height) {
-    const { containerHeight } = this.state;
+    const { container, containerHeight, containerLid } = this.state;
     let h = height ? height : containerHeight ? containerHeight.value : 2.25;
-
-
     let currentlyVisible = api.getNumberOfObstacles() > 0;
+
     if (currentlyVisible) {
       if (!visible) {
         // remove old obstacles
         for (let i = api.getNumberOfObstacles() - 1; i > -1; i--){
           api.removeObstacle(i);
         }
-        // since removing all obstacles will remove the lid also, remove reference to lid from state
+        // since removing all obstacles will remove the lid also, update lid
         let lid = this.state.containerLid;
         lid.value = false;
-        lid.lidObstacle = {};
         this.setState({ containerLid: lid });
 
         let atomsToDelete = [];
@@ -447,12 +460,14 @@ export default class Interactive extends PureComponent {
 
         api.setImageProperties(0, { visible: false });
       } else {
-        // adjust height - not currently implemented
-        // api.removeObstacle(4);
-        // api.removeObstacle(3);
-        // api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
-        // api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
-        // api.setObstacleProperties?
+        // adjust height - if the container is on screen, wall indices will be 3 and 4
+        api.setObstacleProperties(3, { height: h }); // left
+        api.setObstacleProperties(4, { height: h }); // right
+        if (containerLid.value) {
+          // adjusting height should reposition lid
+          let lidObstacleIndex = api.getNumberOfObstacles() - 1;
+          api.setObstacleProperties(lidObstacleIndex, { y: h - wallThickness });
+        }
       }
     }
     if (!currentlyVisible && visible) {
@@ -460,64 +475,53 @@ export default class Interactive extends PureComponent {
       api.addObstacle({ x: leftPos, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge left
       api.addObstacle({ x: rightPos - wallThickness, y: 0, width: wallThickness, height: basePos, color: baseColor }); // base edge right
 
-      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor  }); // left
+      api.addObstacle({ x: leftPos, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // left
       api.addObstacle({ x: rightPos - wallThickness, y: basePos + baseThickness, width: wallThickness, height: h, color: wallColor }); // right
-
-      // left lip - a couple of angled lines and some simple obstacles
-      let wallTop = basePos + baseThickness + h;
-      let leftInsideEdge = leftPos + wallThickness;
-
-      let w = 3; // line weight, hopefully adding to solidity
-
-      api.addLine({ x1: leftInsideEdge - 0.01, y1: wallTop, x2: leftInsideEdge - 0.05, y2: wallTop + 0.04, fence: true, lineWeight: w, lineColor: wallColor });
-      api.addObstacle({x: leftInsideEdge - 0.15, y: wallTop, width: 0.1, height: 0.05, color: wallColor})
-      api.addLine({ x1: leftInsideEdge - 0.15, y1: wallTop + 0.04, x2: leftInsideEdge - 0.3, y2: wallTop - 0.1, fence: true, lineWeight: w, lineColor: wallColor });
-      api.addObstacle({ x: leftInsideEdge - 0.3, y: wallTop - 0.19, width: 0.19, height: 0.1, color: wallColor });
-
-      // and right edge lip
-      api.addShape({
-        x: rightPos - (wallThickness / 2), y: wallTop, type: "ellipse", width: 0.05, height: 0.05, fence: true, lineWeight: 8, lineColor: wallColor
-      });
 
       // add base layer atoms
       let spacing = 0.2;
-      for (let i = 1; i < 10; i++){
-        api.addAtom({ x: leftPos + (i*spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
+      for (let i = 1; i < 10; i++) {
+        api.addAtom({ x: leftPos + (i * spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
       }
 
       // show image
       api.setImageProperties(0, { visible: true });
     }
   }
-  toggleContainerLid(lidVisible) {
+
+  updateContainerLid(lidVisible, updateState) {
     const { container, containerHeight, containerLid } = this.state;
     let containerVisible = container.value;
     let h = containerHeight ? containerHeight.value : 2.25;
     let lid = containerLid;
 
-    let lidObstacle = containerLid.lidObstacle;
+    let lidObstacleIndex = lid.value ? api.getNumberOfObstacles() - 1 : -1;
     if (containerVisible) {
       if (lidVisible) {
-        lidObstacle = api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
-      } else if (lidObstacle != {}) {
-        api.removeObstacle(lidObstacle);
-        lidObstacle = {};
+        api.addObstacle({ x: leftPos + (wallThickness), y: h - wallThickness, width: containerWidth - (wallThickness * 2.01), height: wallThickness, color: lidColor });
+        lidObstacleIndex = api.getNumberOfObstacles() - 1;
+      } else if (lidObstacleIndex > -1) {
+        api.removeObstacle(lidObstacleIndex);
+        lidObstacleIndex = -1;
       }
     } else {
       // container is not visible, attempting to show a lid in this state is invalid
       if (lidVisible) {
         // nope
-        lid.value = false;
+        lidObstacleIndex = -1;
       } else {
-        if (lidObstacle != {}) {
-          api.removeObstacle(lidObstacle);
-          lidObstacle = {};
+        if (api.getNumberOfObstacles() > 0 && lidObstacleIndex > -1) {
+          api.removeObstacle(lidObstacleIndex);
+          lidObstacleIndex = -1;
         }
       }
     }
-    lid.lidObstacle = lidObstacle;
-    this.setState({ containerLid: lid });
-
+    if (updateState) {
+      lid.value = lidVisible;
+      this.setState({ containerLid: lid });
+      this.forceUpdate();
+    }
+    return lidObstacleIndex > -1;
   }
   changeElementCount(newElementCount) {
     // has the number of elements been increased
@@ -565,7 +569,7 @@ export default class Interactive extends PureComponent {
   }
 
   render() {
-    const { authoring, showFreezeButton, showRestart} = this.state;
+    const { authoring, showFreezeButton, showRestart, containerLid} = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -586,7 +590,6 @@ export default class Interactive extends PureComponent {
                 playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
               <div className="lab-ui">
                 <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-
                 <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
               </div>
             </div>
@@ -597,7 +600,7 @@ export default class Interactive extends PureComponent {
               <div className="model-link"><a href={this.getCurrentModelLink()} target="_blank" rel="noopener">Link for Current Model</a></div>
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} />
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onContainerLid={() => this.updateContainerLid(!containerLid.value, true)} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>

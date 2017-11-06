@@ -13,7 +13,8 @@ const DEBUG = getURLParam('debug') || 'false';
 export default class Sensor extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { connected: false, connecting: false, showDetails: false, debugMessages: "", showWinLink: false};
+    
+    this.state = { connected: false, connecting: false, disconnecting: false, lostConnection: false, showDetails: false, debugMessages: "", showWinLink: false};
     this.connectedSensor = this.props.sensor;
     this.handleIPAddressChange = this.handleIPAddressChange.bind(this);
     this.connect = this.connect.bind(this);
@@ -21,6 +22,7 @@ export default class Sensor extends PureComponent {
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.screenConsole = this.screenConsole.bind(this);
     this.closeWinLink = this.closeWinLink.bind(this);
+    this.hideLostConDlg = this.hideLostConDlg.bind(this);
   }
 
   handleIPAddressChange(event) {
@@ -37,7 +39,11 @@ export default class Sensor extends PureComponent {
     if (!this.state.connected) {
       this.connectSensor();
     } else {
-      this.connectedSensor.disconnect();
+      // using callback so connectionLost isn't called before disconnecting state is set
+      this.setState(
+        { disconnecting: true },
+        this.connectedSensor.disconnect
+      );
     }
   }
 
@@ -48,8 +54,8 @@ export default class Sensor extends PureComponent {
         this.setState({ showWinLink: true });
         return;
       } 
-
-      this.setState({ connecting: true });
+      this.setState({ connecting: true, disconnecting: false, lostConnection: false });
+      
       this.connectedSensor.connect(this.state.ipAddress);
       this.connectedSensor.on('connected', this.connected.bind(this));
       this.connectedSensor.on('connectionLost', this.connectionLost.bind(this));
@@ -62,7 +68,7 @@ export default class Sensor extends PureComponent {
     this.setState({ connected: true, connecting: false });
   }
   connectionLost(event) {
-    this.setState({ connected: false, connecting: false });
+    this.setState({ connected: false, connecting: false, lostConnection: !this.state.disconnecting });
   }
   nameUpdate(event) {
     this.setState({ connectedSensorName: event });
@@ -79,6 +85,10 @@ export default class Sensor extends PureComponent {
     window.location = "../windows-ble/";
   }
 
+  hideLostConDlg(event) {
+    this.setState({ lostConnection: false });
+  }
+
   screenConsole(event) {
     const { debugMessages } = this.state;
 
@@ -87,7 +97,7 @@ export default class Sensor extends PureComponent {
   }
 
   render() {
-    const { connected, connecting, connectedSensorName, showDetails, debugMessages, showWinLink } = this.state;
+    const { connected, connecting, disconnecting, lostConnection, connectedSensorName, showDetails, debugMessages, showWinLink } = this.state;
     const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
     let sensorName = null;
@@ -116,6 +126,10 @@ export default class Sensor extends PureComponent {
               you need to install some software.</div>
           <RaisedButton onClick={this.closeWinLink}>Cancel</RaisedButton>
           <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
+        </Dialog>
+        <Dialog open={lostConnection} ref="lostConDialog" className="dialog">
+          <div className="dialog-msg">Lost sensor connection</div>
+          <RaisedButton onClick={this.hideLostConDlg}>OK</RaisedButton>
         </Dialog>
         <div id="toggleSensorDisplay" onClick={this.toggleDisplay}><i className="material-icons">settings_input_antenna</i></div>
         {showDetails &&
