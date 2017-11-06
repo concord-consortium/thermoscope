@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import { getURLParam } from '../utils';
 
+import '../../css/app.less';
 import '../../css/sensor-connect.less';
 
 const DEBUG = getURLParam('debug') || 'false';
