@@ -75,7 +75,7 @@ export default class Sensor extends PureComponent {
   }
   
   openWinBLE(event) {
-    window.location = "/windows-ble/";
+    window.location = "../windows-ble/";
   }
 
   screenConsole(event) {
