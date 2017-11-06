@@ -33,6 +33,7 @@ export default class Thermoscope extends PureComponent {
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
+    this.props.sensor.on('connectionLost', this.connectionLostHandler.bind(this));
     this.onMeterChange = this.onMeterChange.bind(this);
     this.togglePause = this.togglePause.bind(this);
     this.toggleAperture = this.toggleAperture.bind(this);
@@ -57,8 +58,12 @@ export default class Thermoscope extends PureComponent {
   liveDataHandler() {
     if (this.props.sensor && this.props.sensor.liveSensors) {
       let newData = this.props.sensor.liveSensors[this.props.probeIndex].liveValue;
-      if (!isNaN(newData) && isFinite(newData)) this.setState({ temperature: newData, liveData: true });
+      if (!isNaN(newData) && isFinite(newData)) this.setState({ temperature: newData, liveData: true })
     }
+  }
+
+  connectionLostHandler() {
+    this.setState({liveData: false});
   }
 
   onMeterChange(value) {
