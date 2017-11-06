@@ -7,6 +7,7 @@ import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { GridList, GridTile } from 'material-ui/GridList';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
 
 import '../../css/app.less';
 import '../../css/icon-setter.less';
@@ -42,6 +43,7 @@ export class IconSetter extends PureComponent {
       status: "not connected",
       currentIcon: '',
       selectedIcon: '',
+      showWinLink: false,
       sensorVersion: ''
     };
 
@@ -65,6 +67,11 @@ export class IconSetter extends PureComponent {
   }
 
   connect() {
+    if (navigator.appVersion.indexOf("Win")!=-1 && navigator.bluetooth == undefined) {
+      this.setState({ showWinLink: true });
+      return;
+    } 
+
     console.log("connect");
     let request = navigator.bluetooth.requestDevice({
       filters: [{ namePrefix: "Thermoscope" }],
@@ -194,6 +201,10 @@ export class IconSetter extends PureComponent {
 
     return newInstr;
   }
+  
+  openWinBLE(event) {
+    window.location = "/windows-ble/";
+  }
 
   render() {
     return (
@@ -205,6 +216,12 @@ export class IconSetter extends PureComponent {
             {this.getInstructions()}
           </h3>
           <div className="app-container">
+            <Dialog open={this.state.showWinLink} ref="winLinkDlg" className="dialog">
+              <div className="dialog-msg">
+                  It looks like you're using Windows - if you want to connect to a Thermoscope on Windows, 
+                  you need to install some software.</div>
+              <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
+            </Dialog>
             <div>
               {!this.state.connected && <RaisedButton id="connect" onClick={this.connect}>Connect</RaisedButton>}
               {this.state.connected && <RaisedButton id="disconnect" onClick={this.disconnect}>Disconnect</RaisedButton>}

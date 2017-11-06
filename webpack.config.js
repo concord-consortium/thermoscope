@@ -6,7 +6,8 @@ module.exports = {
     'app': './js/index.js',
     'thermoscope': './js/thermoscope/index.js',
     'particle-modeler': './js/particle-modeler/index.js',
-    'icon-setter': './js/icon-setter/index.js'
+    'icon-setter': './js/icon-setter/index.js',
+    'windows-ble': './js/windows-ble/index.js'
   },
   output: {
     path: path.join(__dirname, 'dist'),

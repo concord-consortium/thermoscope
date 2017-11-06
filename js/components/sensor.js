@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Dialog from 'material-ui/Dialog';
 import { getURLParam } from '../utils';
 
+import '../../css/app.less';
 import '../../css/sensor-connect.less';
 
 const DEBUG = getURLParam('debug') || 'false';
@@ -12,13 +13,15 @@ const DEBUG = getURLParam('debug') || 'false';
 export default class Sensor extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { connected: false, connecting: false, disconnecting: false, lostConnection: false, showDetails: false, debugMessages: "" };
+    
+    this.state = { connected: false, connecting: false, disconnecting: false, lostConnection: false, showDetails: false, debugMessages: "", showWinLink: false};
     this.connectedSensor = this.props.sensor;
     this.handleIPAddressChange = this.handleIPAddressChange.bind(this);
     this.connect = this.connect.bind(this);
     this.enterkey = this.enterkey.bind(this);
     this.toggleDisplay = this.toggleDisplay.bind(this);
     this.screenConsole = this.screenConsole.bind(this);
+    this.closeWinLink = this.closeWinLink.bind(this);
     this.hideLostConDlg = this.hideLostConDlg.bind(this);
   }
 
@@ -46,7 +49,13 @@ export default class Sensor extends PureComponent {
 
   connectSensor() {
     if (!this.state.connected) {
+
+      if (navigator.appVersion.indexOf("Win")!=-1 && navigator.bluetooth == undefined) {
+        this.setState({ showWinLink: true });
+        return;
+      } 
       this.setState({ connecting: true, disconnecting: false, lostConnection: false });
+      
       this.connectedSensor.connect(this.state.ipAddress);
       this.connectedSensor.on('connected', this.connected.bind(this));
       this.connectedSensor.on('connectionLost', this.connectionLost.bind(this));
@@ -68,6 +77,14 @@ export default class Sensor extends PureComponent {
     this.setState({ showDetails: this.state.showDetails ? false : true });
   }
 
+  closeWinLink(event) {
+    this.setState({ showWinLink: false });
+  }
+  
+  openWinBLE(event) {
+    window.location = "../windows-ble/";
+  }
+
   hideLostConDlg(event) {
     this.setState({ lostConnection: false });
   }
@@ -80,7 +97,7 @@ export default class Sensor extends PureComponent {
   }
 
   render() {
-    const { connected, connecting, disconnecting, lostConnection, connectedSensorName, showDetails, debugMessages } = this.state;
+    const { connected, connecting, disconnecting, lostConnection, connectedSensorName, showDetails, debugMessages, showWinLink } = this.state;
     const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
     let sensorName = null;
@@ -103,6 +120,13 @@ export default class Sensor extends PureComponent {
 
     return (
       <div className="sensorConnect">
+        <Dialog open={showWinLink} ref="winLinkDlg" className="dialog">
+          <div className="dialog-msg">
+              It looks like you're using Windows - if you want to connect to a Thermoscope on Windows, 
+              you need to install some software.</div>
+          <RaisedButton onClick={this.closeWinLink}>Cancel</RaisedButton>
+          <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
+        </Dialog>
         <Dialog open={lostConnection} ref="lostConDialog" className="dialog">
           <div className="dialog-msg">Lost sensor connection</div>
           <RaisedButton onClick={this.hideLostConDlg}>OK</RaisedButton>
