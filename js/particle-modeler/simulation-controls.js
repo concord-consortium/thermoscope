@@ -114,8 +114,8 @@ export default class SimulationControls extends PureComponent {
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
-    let heatIconStyle = heatValue > noHeat ? "heat-button hot" : "heat-button";
-    let coolIconStyle = heatValue < noHeat ? "cool-button cold" : "cool-button";
+    let heatIconStyle = heatValue == heatMultiplier ? "heat-button hot" : "heat-button";
+    let coolIconStyle = heatValue == coolMultiplier ? "heat-button cold" : "heat-button";
 
     return(
       <div className="speed-controls">
@@ -127,8 +127,8 @@ export default class SimulationControls extends PureComponent {
         </div>
         {showFreezeButton.value === true &&
           <div className="button-layout">
-            <IconButton  iconClassName="material-icons" className="speed-button" onClick={this.freeze} tooltip="Freeze">ac_unit</IconButton>
-              {isFrozen && <CircularProgress
+            <IconButton  iconClassName="material-icons" className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)} tooltip="Freeze">ac_unit</IconButton>
+              {heatValue == coolMultiplier && <CircularProgress
                   mode="determinate"
                   value={completed}
                   className="progress"
@@ -139,7 +139,7 @@ export default class SimulationControls extends PureComponent {
           <div className="button-layout">
           <IconButton iconClassName="material-icons" className={heatIconStyle}
             onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">whatshot</IconButton>
-            {heatValue > 0 && <CircularProgress
+            {heatValue == heatMultiplier && <CircularProgress
                     mode="determinate"
                     value={completed}
                     className="progress"

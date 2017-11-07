@@ -546,7 +546,7 @@ export default class Interactive extends PureComponent {
 
     let allowDragging = api ? (allowLiveDragging || api.isStopped()) : true;
     // we will only render the heatbath if it is set to a non-zero value
-    let heatBathStyle = heatLevel > 0 ? "heatbath hot" : "heatbath cool";
+    let heatBathStyle = heatLevel > 1 ? "heatbath hot" : "heatbath cold";
 
     return (
       <MuiThemeProvider>
