@@ -442,7 +442,6 @@ export default class Interactive extends PureComponent {
   }
 
   toggleRunState() {
-    console.log("run state toggle");
     if (api.isStopped()) {
       console.log("Simulation is currently stopped, attempting to start");
       api.start();
@@ -470,34 +469,30 @@ export default class Interactive extends PureComponent {
   }
 
   toggleHeat(isHeating) {
-    const { container } = this.state;
-    let heatAtoms = [];
-    let containerPosition = getContainerPosition();
+    if (isHeating != undefined) {
+      const { container } = this.state;
+      let heatAtoms = [];
+      let containerPosition = getContainerPosition();
 
-    // iterate through all atoms, remove elements no longer needed
-    for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
-      let a = api.getAtomProperties(i);
-      if (a.element !== 2 && !a.pinned) {
-        // heatable atoms are near the base of the simulation, and if the container is in place, only those inside the container
-        // unmark atoms
-        // api.setAtomProperties(i, { marked: false});
-        if (a.y <= containerPosition.basePos + 0.5) {
-          if (container.value) {
-            if (a.x > containerPosition.leftPos && a.y < containerPosition.rightPos) heatAtoms.push(i);
+      // iterate through all atoms, remove elements no longer needed
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        let a = api.getAtomProperties(i);
+        if (a.element !== 2 && !a.pinned) {
+          // heatable atoms are near the base of the simulation, and if the container is in place, only those inside the container
+          if (a.y <= containerPosition.basePos + 0.5) {
+            if (container.value) {
+              if (a.x > containerPosition.leftPos && a.y < containerPosition.rightPos) heatAtoms.push(i);
+            }
           }
-          // } else {
-          //   heatAtoms.push(i);
-          // }
         }
       }
-    }
 
-    if (isHeating && heatAtoms.length > 0) {
-      // excite lowest particles
-      for (let i = heatAtoms.length - 1; i > -1; i--) {
-        let p = api.getAtomProperties(heatAtoms[i]);
-        // api.setAtomProperties(heatAtoms[i], { vx: p.vx * 2, vy: p.vy * 2, marked: true });
-        api.setAtomProperties(heatAtoms[i], { vx: p.vx * 1.1, vy: p.vy * 1.1 });
+      if (isHeating && heatAtoms.length > 0) {
+        // excite lowest particles
+        for (let i = heatAtoms.length - 1; i > -1; i--) {
+          let p = api.getAtomProperties(heatAtoms[i]);
+          api.setAtomProperties(heatAtoms[i], { vx: p.vx * 1.1, vy: p.vy * 1.1 });
+        }
       }
     }
   }

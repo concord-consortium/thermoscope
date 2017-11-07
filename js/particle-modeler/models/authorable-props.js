@@ -29,7 +29,7 @@ module.exports = {
     max: 10
   },
   showFreezeButton: {
-    label: "Show Freeze Button",
+    label: "Show Temperature Controls",
     value: false
   },
   container: {

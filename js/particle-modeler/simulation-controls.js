@@ -51,13 +51,16 @@ export default class SimulationControls extends PureComponent {
   applyHeat(heat) {
     const { onToggleHeat } = this.props;
     onToggleHeat(heat);
+    this.progress(5, 2500, function() {
+      onToggleHeat(false);
+    });
+  }
 
-    if (heat) {
-      this.timer = setTimeout(() => {
-        this.applyHeat(heat);
-      }, 200);
-    } else {
-      window.clearInterval(this.timer);
+  componentDidUpdate(prevProps, prevState) {
+    const { isHeating } = this.state;
+    const { onToggleHeat } = this.props;
+    if (isHeating != undefined) {
+      onToggleHeat(isHeating);
     }
   }
 
@@ -132,6 +135,11 @@ export default class SimulationControls extends PureComponent {
           <div className="button-layout">
           <IconButton iconClassName="material-icons" className={heatIconStyle}
             onClick={() => this.setHeatStatus(!_isHeating)} tooltip="Heat">whatshot</IconButton>
+            {isHeating && <CircularProgress
+                    mode="determinate"
+                    value={completed}
+                    className="progress"
+            />}
           </div>
         }
         {showFreezeButton.value === true &&
