@@ -468,8 +468,8 @@ export default class Interactive extends PureComponent {
     this.setState({ simulationRunning: !api.isStopped() });
   }
 
-  toggleHeat(isHeating) {
-    if (isHeating != undefined) {
+  toggleHeat(heatLevel) {
+    if (heatLevel != undefined & api != undefined && heatLevel > 0) {
       const { container } = this.state;
       let heatAtoms = [];
       let containerPosition = getContainerPosition();
@@ -486,14 +486,18 @@ export default class Interactive extends PureComponent {
           }
         }
       }
+      let heatValue = heatLevel;
 
-      if (isHeating && heatAtoms.length > 0) {
+      if (heatLevel !== 1 && heatAtoms.length > 0) {
         // excite lowest particles
         for (let i = heatAtoms.length - 1; i > -1; i--) {
           let p = api.getAtomProperties(heatAtoms[i]);
-          api.setAtomProperties(heatAtoms[i], { vx: p.vx * 1.1, vy: p.vy * 1.1 });
+          api.setAtomProperties(heatAtoms[i], { vx: p.vx * heatLevel, vy: p.vy * heatLevel });
         }
+      } else {
+        heatValue = 0
       }
+      this.setState({ heatLevel: heatValue });
     }
   }
 
@@ -528,7 +532,7 @@ export default class Interactive extends PureComponent {
   }
 
   render() {
-    const { authoring, allowLiveDragging } = this.state;
+    const { authoring, allowLiveDragging, heatLevel } = this.state;
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -541,6 +545,8 @@ export default class Interactive extends PureComponent {
     };
 
     let allowDragging = api ? (allowLiveDragging || api.isStopped()) : true;
+    // we will only render the heatbath if it is set to a non-zero value
+    let heatBathStyle = heatLevel > 0 ? "heatbath hot" : "heatbath cool";
 
     return (
       <MuiThemeProvider>
@@ -555,6 +561,7 @@ export default class Interactive extends PureComponent {
                   <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
                 </div>
               }
+              { heatLevel && <div className={heatBathStyle}/>}
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>

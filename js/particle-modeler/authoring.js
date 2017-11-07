@@ -1,6 +1,8 @@
 import React from 'react';
 import Slider from 'material-ui/Slider';
 
+const ignoreProps = ["atoms", "modelDiff", "heatLevel"];
+
 const Authoring = (props) => {
   let handleCheckboxChange = function (evt) {
     props.onChange(evt.target.dataset.prop, evt.target.checked);
@@ -56,7 +58,7 @@ const Authoring = (props) => {
 
   function elementInputMap(element) {
     return function (key) {
-      if (key != "atoms" && key != "modelDiff" && props[key].hasOwnProperty("element") && props[key].element == element) {
+      if (ignoreProps.indexOf(key) == -1 && props[key].hasOwnProperty("element") && props[key].element == element) {
         return createSliderInput(key, props[key], true);
       }
     }

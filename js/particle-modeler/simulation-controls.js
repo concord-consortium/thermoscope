@@ -4,14 +4,18 @@ import IconButton from 'material-ui/IconButton';
 import SvgIcon from 'material-ui/SvgIcon';
 import CircularProgress from 'material-ui/CircularProgress';
 
-let slowSpeedTimeStep = 0.05;
-let frozenTemps = { temperatureControl: true, targetTemperature: 0 };
+const slowSpeedTimeStep = 0.05;
+const frozenTemps = { temperatureControl: true, targetTemperature: 0 };
+const heatMultiplier = 1.1;
+const coolMultiplier = 0.8;
+const noHeat = 1.0;
+
 
 export default class SimulationControls extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isHeating: false
+      heatValue: 0
     }
     this.state = { completed: 0, isFrozen: false, isSlowed: false };
     this.freeze = this.freeze.bind(this);
@@ -31,20 +35,20 @@ export default class SimulationControls extends PureComponent {
   freeze() {
     const { onChange } = this.props;
     // turn off heater
-    this.setHeatStatus(false);
+    this.setHeatStatus(noHeat);
 
     let normalTemps = {temperatureControl: this.props.temperatureControl.value, targetTemperature: this.props.targetTemperature.value}
 
     onChange(frozenTemps);
 
-    this.setState({isFrozen: true, isHeating: false});
+    this.setState({isFrozen: true, heatValue: 0});
     this.progress(5, 500, function() {
       onChange(normalTemps);
     });
   }
   setHeatStatus(heat) {
-    const { isHeating } = this.state;
-    this.setState({ isHeating: heat });
+    const { heatValue } = this.state;
+    this.setState({ heatValue: heat });
     this.applyHeat(heat);
   }
 
@@ -52,15 +56,15 @@ export default class SimulationControls extends PureComponent {
     const { onToggleHeat } = this.props;
     onToggleHeat(heat);
     this.progress(5, 2500, function() {
-      onToggleHeat(false);
+      onToggleHeat(noHeat);
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isHeating } = this.state;
+    const { heatValue } = this.state;
     const { onToggleHeat } = this.props;
-    if (isHeating != undefined) {
-      onToggleHeat(isHeating);
+    if (heatValue > 0) {
+      onToggleHeat(heatValue);
     }
   }
 
@@ -69,7 +73,7 @@ export default class SimulationControls extends PureComponent {
 
     let oldTimeStep = this.props.timeStep.value;
     onChange({timeStep: slowSpeedTimeStep});
-    this.setState({isSlowed: true, isHeating: false});
+    this.setState({isSlowed: true, heatValue: 0});
     this.progress(5, 2500, function(){
       onChange({timeStep: oldTimeStep});
     });
@@ -79,7 +83,7 @@ export default class SimulationControls extends PureComponent {
     if (completed > 100) {
       this.setState({completed: 100});
       this.timer = setTimeout(() => {
-        this.setState({completed: 0, isSlowed: false, isFrozen: false, isHeating: false});
+        this.setState({completed: 0, isSlowed: false, isFrozen: false, heatValue: 0});
         onComplete();
       }, 100);
     } else {
@@ -101,7 +105,7 @@ export default class SimulationControls extends PureComponent {
   }
 
   render() {
-    const {isSlowed, isFrozen, isHeating, completed} = this.state;
+    const { isSlowed, isFrozen, heatValue, completed } = this.state;
     const { showFreezeButton, container, containerLid, authoring, simulationRunning } = this.props;
     let containerVisible = container.value;
     let lidVisible = containerLid.value;
@@ -110,8 +114,8 @@ export default class SimulationControls extends PureComponent {
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
-    let _isHeating = isHeating === true ? true : false;
-    let heatIconStyle = _isHeating ? "heat-button hot" : "heat-button";
+    let heatIconStyle = heatValue > noHeat ? "heat-button hot" : "heat-button";
+    let coolIconStyle = heatValue < noHeat ? "cool-button cold" : "cool-button";
 
     return(
       <div className="speed-controls">
@@ -134,8 +138,8 @@ export default class SimulationControls extends PureComponent {
         {showFreezeButton.value === true &&
           <div className="button-layout">
           <IconButton iconClassName="material-icons" className={heatIconStyle}
-            onClick={() => this.setHeatStatus(!_isHeating)} tooltip="Heat">whatshot</IconButton>
-            {isHeating && <CircularProgress
+            onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">whatshot</IconButton>
+            {heatValue > 0 && <CircularProgress
                     mode="determinate"
                     value={completed}
                     className="progress"
