@@ -146,15 +146,6 @@ export default class SimulationControls extends PureComponent {
             />}
           </div>
         }
-        {showFreezeButton.value === true &&
-          <div className="button-layout">
-            <IconButton iconClassName="material-icons" className="speed-button" onClick={this.slow} tooltip="Slow">directions_run</IconButton>
-            {isSlowed && <CircularProgress
-                mode="determinate"
-                value={completed}
-                className="progress"
-              />}
-          </div>}
         {containerVisible &&
           <div className="button-layout">
             <IconButton className="container-button" onClick={this.toggleLid} tooltip="Container Lid">
