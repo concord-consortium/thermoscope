@@ -495,7 +495,7 @@ export default class Interactive extends PureComponent {
           api.setAtomProperties(heatAtoms[i], { vx: p.vx * heatLevel, vy: p.vy * heatLevel });
         }
       } else {
-        heatValue = 0
+        //heatValue = 0
       }
       this.setState({ heatLevel: heatValue });
     }
@@ -546,7 +546,7 @@ export default class Interactive extends PureComponent {
 
     let allowDragging = api ? (allowLiveDragging || api.isStopped()) : true;
     // we will only render the heatbath if it is set to a non-zero value
-    let heatBathStyle = heatLevel > 1 ? "heatbath hot" : "heatbath cold";
+    let heatBathStyle = heatLevel > 1 ? "heatbath hot" : heatLevel < 1 ? "heatbath cold" : "heatbath";
 
     return (
       <MuiThemeProvider>

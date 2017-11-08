@@ -55,7 +55,7 @@ export default class SimulationControls extends PureComponent {
   applyHeat(heat) {
     const { onToggleHeat } = this.props;
     onToggleHeat(heat);
-    this.progress(5, 2500, function() {
+    this.progress(5, 2000, function() {
       onToggleHeat(noHeat);
     });
   }
@@ -90,8 +90,8 @@ export default class SimulationControls extends PureComponent {
       if (this.state.completed != completed) {
         this.setState({completed});
       }
-      const nextCompleted = completed + 25;
-      this.timer = setTimeout(() => this.progress(nextCompleted, totalTime, onComplete), totalTime / 4);
+      const nextCompleted = completed + 10;
+      this.timer = setTimeout(() => this.progress(nextCompleted, totalTime, onComplete), totalTime / 10);
     }
    }
 
