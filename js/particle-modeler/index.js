@@ -15,6 +15,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getUsername from '../components/user-name-generator.js';
+import { updateContainerLid, updateContainerVisibility, getContainerPosition } from './container';
+
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
@@ -48,6 +50,7 @@ export default class Interactive extends PureComponent {
       model = models.emptyModel,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
       urlModel = getURLParam("model"),
+      allowLiveDragging = getURLParam("allowLiveDragging") ? true : false,
       // Disable recording of student interaction by default
       recordInteractions = getURLParam("record") ? getURLParam("record") === "true" : false;
     if (urlModel) {
@@ -56,6 +59,9 @@ export default class Interactive extends PureComponent {
       if (authoredState.atoms) model.atoms = authoredState.atoms;
     }
 
+    // Group session identifiers by current hour to collate student activity in Firebase
+    let d = new Date();
+    let sessionDate = Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDay(), d.getUTCHours());
     let sessionName = getUsername();
 
     this.state = {
@@ -70,6 +76,8 @@ export default class Interactive extends PureComponent {
       nextUpdate: Date.now(),
       sessionName,
       recordInteractions,
+      allowLiveDragging,
+      simulationRunning: false,
       modelDiff: getModelDiff(authoredState, authorableProps),
       ...authoredState
     };
@@ -87,6 +95,10 @@ export default class Interactive extends PureComponent {
     this.updateDiff = this.updateDiff.bind(this);
     this.replayDiff = this.replayDiff.bind(this);
     this.toggleRecording = this.toggleRecording.bind(this);
+    this.toggleRunState = this.toggleRunState.bind(this);
+    this.toggleHeat = this.toggleHeat.bind(this);
+    this.toggleContainerLid = this.toggleContainerLid.bind(this);
+
   }
 
   componentWillMount() {
@@ -120,8 +132,8 @@ export default class Interactive extends PureComponent {
   setModelProps(prevState = {}) {
     // Capture updated properties from Authoring component and merge into model
     let newModelProperties = {},
-        newElementProperties = [{}, {}, {}],
-        newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
+      newElementProperties = [{}, {}, {}],
+      newPairwiseProperties = [[{}, {}, {}], [{}, {}, {}], [{}, {}, {}]];
     for (let prop in authorableProps) {
       let value = this.state[prop];
       if (value !== "" && value !== prevState[prop]) {
@@ -144,8 +156,8 @@ export default class Interactive extends PureComponent {
       for (let elem2 = 0; elem2 < newPairwiseProperties[elem1].length; elem2++) {
         let pairValue = newPairwiseProperties[elem1][elem2];
         if (Object.keys(pairValue).length > 0) {
-          if (this.state[`pair${(elem1+1)}${(elem2+1)}Forces`].value) {
-            api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1+1)}${(elem2+1)}Epsilon`].value) });
+          if (this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Forces`].value) {
+            api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Epsilon`].value) });
           } else {
             api.removePairwiseLJProperties(elem1, elem2);
           }
@@ -185,43 +197,64 @@ export default class Interactive extends PureComponent {
     return atoms;
   }
 
+
+  saveModel() {
+    const { recordInteractions, modelDiff, sessionDate, sessionName } = this.state;
+    // To save entire model:
+    // lab.interactiveController.getModel().serialize();
+    if (recordInteractions) {
+      base.post(`${sessionDate}/${sessionName}/${Date.now()}`, {
+        data: modelDiff
+      }).then(() => {
+        // update completed console.log("then");
+      }).catch(err => {
+        console.log("Error storing diff data on Firebase", err);
+      });
+    }
+  }
+
   handleModelLoad() {
     api = lab.scriptingAPI;
-    // any atoms loaded from saved state that are pinned need to have their pinned indicator added on load
+    api.stop();
     this.addPinnedParticleText();
-    // Atoms can be dragged from the bin or while in the simulation
+    if (this.state.container) {
+      updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api);
+      updateContainerLid(this.state.containerLid, this.state.containerLid.value, this.state.container.value, this.state.containerHeight, api);
+    }
     api.onDrag('atom', (x, y, d, i) => {
-      if (d.pinned === 1) {
-        let el = d.element,
-          newState = {};
-        // initial spawned elements do not interact with the simulation
-        if (el >= this.state.elements.value) {
-          el -= 3;
-          newState["showAtom"+el] = false;
-        } else {
-          // this was a pinned live particle
-          this.removePinnedParticleText(i)
-        }
-        api.setAtomProperties(i, {pinned: 0, element: el});
-
-        this.setState(newState);
-        this.addNewDraggableAtom(el);
-      } else {
-        if (d.x > delIcon.x && d.x < delIcon.x+delIcon.width && d.y > delIcon.y && d.y < delIcon.y+delIcon.height) {
-          // mark atoms for deletion
-          if (!d.marked) {
-            this.setState({deleteHover: true});
-            api.setAtomProperties(i, { marked: 1 });
-
+      if (api.isStopped() || this.state.allowLiveDragging) {
+        if (d.pinned === 1) {
+          let el = d.element,
+            newState = {};
+          // initial spawned elements do not interact with the simulationx
+          if (el >= this.state.elements.value) {
+            el -= 3;
+            newState["showAtom" + el] = false;
+          } else {
+            // this was a pinned live particle
+            this.removePinnedParticleText(i)
           }
-        } else if (d.marked) {
-          this.setState({deleteHover: false});
-          api.setAtomProperties(i, {marked: 0});
+          api.setAtomProperties(i, { pinned: 0, element: el });
+
+          this.setState(newState);
+          this.addNewDraggableAtom(el);
+        } else {
+          if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
+            // mark atoms for deletion
+            if (!d.marked) {
+              this.setState({ deleteHover: true });
+              api.setAtomProperties(i, { marked: 1 });
+
+            }
+          } else if (d.marked) {
+            this.setState({ deleteHover: false });
+            api.setAtomProperties(i, { marked: 0 });
+          }
         }
-      }
-      if (this.state.nextUpdate < Date.now()) {
-        // this triggers component update & save
-        this.updateDiff(Date.now() + saveStateInterval);
+        if (this.state.nextUpdate < Date.now()) {
+          // this triggers component update & save
+          this.updateDiff(Date.now() + saveStateInterval);
+        }
       }
     });
     // Clicking / tapping on a particle will toggle pinned status
@@ -232,7 +265,7 @@ export default class Interactive extends PureComponent {
         newState[i] = { x, y };
         this.setState({ pinnedAtoms: newState });
         this.addPinnedParticleText(i);
-      } else if (d.element < this.state.elements.value){
+      } else if (d.element < this.state.elements.value) {
         api.setAtomProperties(i, { pinned: 0 });
         this.removePinnedParticleText(i);
       }
@@ -253,21 +286,21 @@ export default class Interactive extends PureComponent {
     });
     let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
-      for (let i=0, ii=api.getNumberOfAtoms(); i<ii; i++) {
-        if (api.getAtomProperties(i).marked && ! api.getAtomProperties(i).pinned)
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        if (api.getAtomProperties(i).marked && !api.getAtomProperties(i).pinned)
           atomsToDelete.push(i);
       }
-      for (let i=atomsToDelete.length-1; i>-1; i--) {
+      for (let i = atomsToDelete.length - 1; i > -1; i--) {
         api.removeAtom(atomsToDelete[i]);
       }
 
-      this.setState({deleteHover: false});
+      this.setState({ deleteHover: false });
     }
 
     lab.iframe.contentDocument.body.onmouseup = deleteMarkedAtoms;
     lab.iframe.contentDocument.body.style.touchAction = "none";
 
-    for (let i = 0; i < this.state.elements.value; i++){
+    for (let i = 0; i < this.state.elements.value; i++) {
       this.addNewDraggableAtom(i);
     }
 
@@ -275,15 +308,15 @@ export default class Interactive extends PureComponent {
   }
 
   generatePinnedParticleText(i) {
-      let textProps = {
-          "text": "P",
-          "hostType": "Atom",
-          "hostIndex": i,
-          "layer": 1,
-          "textAlign": "center",
-          "width": 0.3
-        };
-      return textProps;
+    let textProps = {
+      "text": "P",
+      "hostType": "Atom",
+      "hostIndex": i,
+      "layer": 1,
+      "textAlign": "center",
+      "width": 0.3
+    };
+    return textProps;
   }
 
   addPinnedParticleText(particle) {
@@ -291,7 +324,7 @@ export default class Interactive extends PureComponent {
       // add boxes for all pinned particles
       api.set({ 'textboxes': {} });
       let textToAdd = [];
-      for (let i = 0; i < api.getNumberOfAtoms(); i++){
+      for (let i = 0; i < api.getNumberOfAtoms(); i++) {
         let a = api.getAtomProperties(i);
         if (a.pinned && a.element < this.state.elements.value) {
           let textProps = this.generatePinnedParticleText(i);
@@ -307,7 +340,7 @@ export default class Interactive extends PureComponent {
   removePinnedParticleText(particle) {
     let textboxes = api.get('textBoxes');
     let textToRemove = -1;
-    for (let i = 0; i < textboxes.length; i++){
+    for (let i = 0; i < textboxes.length; i++) {
       if (textboxes[i].hostIndex == particle) {
         textToRemove = i;
         break;
@@ -337,17 +370,48 @@ export default class Interactive extends PureComponent {
     this.setState({ authoring: false });
   }
 
-  handleSimulationChange(changedProps){
-      api.set(changedProps);
+  handleSimulationChange(changedProps) {
+    api.set(changedProps);
   }
 
   handleAuthoringPropChange(prop, value) {
     let newState = {};
-    newState[prop] = {...this.state[prop]};
+    newState[prop] = { ...this.state[prop] };
     newState[prop].value = parseToPrimitive(value);
 
     if (prop === "elements") {
       this.changeElementCount(value);
+    }
+    if (prop === "container") {
+      try {
+        updateContainerVisibility(value, null, this.state.containerHeight, this.state.containerLid, api);
+        // if the container is set to invisible we need to also remove the lid
+        if (!value) {
+          let lid = this.state.containerLid;
+          lid.value = false;
+          this.setState({ containerLid: lid });
+        }
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
+    }
+    if (prop === "containerHeight") {
+      let h = value;
+      try {
+        updateContainerVisibility(this.state.container.value, h, this.state.containerHeight, this.state.containerLid, api)
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
+    }
+    if (prop === "containerLid") {
+      try {
+        newState[prop].value = updateContainerLid(this.state.containerLid, value, this.state.container.value, this.state.containerHeight, api); // container lid dependent on container visibility
+      } catch (ex) {
+        console.log("ERROR: ", ex);
+        newState[prop].value = this.state[prop].value;
+      }
     }
     newState.nextUpdate = Date.now();
     newState.atoms = this.getAtomsWithoutPlaceholders();
@@ -358,7 +422,7 @@ export default class Interactive extends PureComponent {
   changeElementCount(newElementCount) {
     // has the number of elements been increased
     if (newElementCount > this.state.elements.value) {
-      for (let i = this.state.elements.value; i < newElementCount; i++){
+      for (let i = this.state.elements.value; i < newElementCount; i++) {
         this.addNewDraggableAtom(i, true);
       }
     } else {
@@ -372,9 +436,69 @@ export default class Interactive extends PureComponent {
         api.removeAtom(atomsToDelete[i]);
       }
       // because initial draggable elements are a different type, recreate the hidden dragables after deleting
-      for (let i = 0; i < newElementCount; i++){
+      for (let i = 0; i < newElementCount; i++) {
         this.addNewDraggableAtom(i, true);
       }
+    }
+  }
+
+  toggleRunState() {
+    if (api.isStopped()) {
+      console.log("Simulation is currently stopped, attempting to start");
+      api.start();
+      if (!this.state.allowLiveDragging) {
+        for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+          api.setAtomProperties(i, { draggable: false });
+          if (api.getAtomProperties(i).element > 2) {
+            api.setAtomProperties(i, { visible: false });
+          }
+        }
+      }
+
+    } else {
+      console.log("Simulation is running, attempting to stop");
+      api.stop();
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        api.setAtomProperties(i, { draggable: true });
+        if (api.getAtomProperties(i).element > 2) {
+          api.setAtomProperties(i, { visible: true });
+        }
+      }
+
+    }
+    this.setState({ simulationRunning: !api.isStopped() });
+  }
+
+  toggleHeat(heatLevel) {
+    if (heatLevel != undefined & api != undefined && heatLevel > 0) {
+      const { container } = this.state;
+      let heatAtoms = [];
+      let containerPosition = getContainerPosition();
+
+      // iterate through all atoms, remove elements no longer needed
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        let a = api.getAtomProperties(i);
+        if (a.element !== 2 && !a.pinned) {
+          // heatable atoms are near the base of the simulation, and if the container is in place, only those inside the container
+          if (a.y <= containerPosition.basePos + 0.5) {
+            if (container.value) {
+              if (a.x > containerPosition.leftPos && a.y < containerPosition.rightPos) heatAtoms.push(i);
+            }
+          }
+        }
+      }
+      let heatValue = heatLevel;
+
+      if (heatLevel !== 1 && heatAtoms.length > 0) {
+        // excite lowest particles
+        for (let i = heatAtoms.length - 1; i > -1; i--) {
+          let p = api.getAtomProperties(heatAtoms[i]);
+          api.setAtomProperties(heatAtoms[i], { vx: p.vx * heatLevel, vy: p.vy * heatLevel });
+        }
+      } else {
+        //heatValue = 0
+      }
+      this.setState({ heatLevel: heatValue });
     }
   }
 
@@ -420,8 +544,17 @@ export default class Interactive extends PureComponent {
       this.setState(nextDiff);
   }
 
+  toggleContainerLid() {
+    const { containerLid, containerHeight } = this.state;
+    updateContainerLid(containerLid, !containerLid.value, true, containerHeight, api);
+    let lid = containerLid;
+    lid.value = !containerLid.value;
+    this.setState({ containerLid: lid });
+  }
+
   render() {
-    const { authoring, showFreezeButton, showRestart, sessionName, recordInteractions, modelDiff} = this.state;
+    const { authoring, allowLiveDragging, showRestart, recordInteractions, modelDiff, heatLevel, sessionName } = this.state;
+
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
@@ -434,19 +567,24 @@ export default class Interactive extends PureComponent {
     };
 
 
+    let allowDragging = api ? (allowLiveDragging || api.isStopped()) : true;
+    // we will only render the heatbath if it is set to a non-zero value
+    let heatBathStyle = heatLevel > 1 ? "heatbath hot" : heatLevel < 1 ? "heatbath cold" : "heatbath";
+
     return (
       <MuiThemeProvider>
         <div className={appClass}>
-          <LogoMenu scale="logo-menu small" navPath="../index.html" />
           <div className="app-container">
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
                 playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
-              <div className="lab-ui">
-                <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-
-                <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
-              </div>
+              { allowDragging &&
+                <div className="lab-ui">
+                  <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
+                  <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+                </div>
+              }
+              { heatLevel && <div className={heatBathStyle}/>}
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>
@@ -456,7 +594,8 @@ export default class Interactive extends PureComponent {
               <FirebaseStorage sessionName={sessionName} recordInteractions={recordInteractions} modelDiff={modelDiff} onLoadDiff={this.replayDiff} />
             </div>}
           </div>
-          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleRecording={this.toggleRecording}/>
+          <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleRecording={this.toggleRecording} onToggleHeat={this.toggleHeat} onContainerLid={this.toggleContainerLid} onToggleRunState={this.toggleRunState} />
+          <LogoMenu scale="logo-menu small" navPath="../index.html" />
         </div>
       </MuiThemeProvider>
     );

@@ -7,6 +7,7 @@ import LogoMenu from '../components/logo-menu';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { GridList, GridTile } from 'material-ui/GridList';
 import RaisedButton from 'material-ui/RaisedButton';
+import Dialog from 'material-ui/Dialog';
 
 import '../../css/app.less';
 import '../../css/icon-setter.less';
@@ -17,14 +18,18 @@ injectTapEventPlugin();
 darkBaseTheme.palette.textColor = '#ccc';
 
 const icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '⚽', '🍒', '🐟', '🐢', '🚀',
-               '🐿', '🐌', '🌼', '🐙', '🌵', '🦀', '🚁', '⛄', '🐝', '🔑', '💡', '🐍' ];
+               '🐿', '🐌', '🌼', '🐙', '🌵', '🦀', '🚁', '⛄', '🐝', '🔑', '💡', '🐍', 'A' ];
 
-const nameServiceAddr = 0x1234;
-const nameCharacteristicAddr = 0x2345;
+const infoServiceAddr = 0x1234;
+const nameCharacteristicAddr = '00002345-0000-1000-8000-00805f9b34fb';
+const versionCharacteristicAddr = '00006789-0000-1000-8000-00805f9b34fb';
 
 const instr_start = 'Click "Connect" and select a Thermoscope to set its icon';
 const instr_connected = 'Select a new icon for the Thermoscope and click "Set Icon"';
 const instr_changed = 'Click "Disconnect" and turn the Thermoscope off and on again';
+
+
+
 
 
 export class IconSetter extends PureComponent {
@@ -37,9 +42,12 @@ export class IconSetter extends PureComponent {
       iconChanged: false,
       status: "not connected",
       currentIcon: '',
-      selectedIcon: ''
+      selectedIcon: '',
+      showWinLink: false,
+      sensorVersion: ''
     };
 
+    this.infoService = null;
     this.iconCharacteristic = null;
 
     this.decoder = new TextDecoder('utf-8');
@@ -51,11 +59,23 @@ export class IconSetter extends PureComponent {
     this.setIcon = this.setIcon.bind(this);
   }
 
+  logError(msg, error) {
+    console.log(msg + ":" + error);
+    this.setState({
+      status: msg
+    });
+  }
+
   connect() {
+    if (navigator.appVersion.indexOf("Win")!=-1 && navigator.bluetooth == undefined) {
+      this.setState({ showWinLink: true });
+      return;
+    } 
+
     console.log("connect");
     let request = navigator.bluetooth.requestDevice({
       filters: [{ namePrefix: "Thermoscope" }],
-      optionalServices: [nameServiceAddr]
+      optionalServices: [infoServiceAddr]
     });
 
 
@@ -68,24 +88,57 @@ export class IconSetter extends PureComponent {
       });
       return device.gatt.connect();
     })
-    // Step 3: Get the icon service
+    // Step 3: Get the info service (icon + version)
     .then(function(server) {
       component.setState({
-        status: "getting icon service"
+        status: "getting info service"
       });
       window.server = server;
-      return server.getPrimaryService(nameServiceAddr);
+      return server.getPrimaryService(infoServiceAddr);
     })
-    .then(function(service){
+    .catch(function(error) {
+      console.error("connection failed: " + error);
       component.setState({
-        status: "getting characteristic"
+        status: "connection failed"
       });
-      return service.getCharacteristic(nameCharacteristicAddr);
     })
+    // Get the sensor version
+    .then(function(service) {
+      component.setState({
+        status: "getting sensor version characteristic"
+      });
+      component.infoService = service;
+      
+      component.infoService.getCharacteristic(versionCharacteristicAddr)
+      .then(function(characteristic) {
+        if(characteristic && characteristic.readValue) {
+          component.setState({
+            status: "getting sensor version value"
+          });
+          return characteristic.readValue();
+        }
+      })
+      .then(function(value){
+        var state = {};
+        component.setState({
+          sensorVersion: component.decoder.decode(value)
+        });
+      })
+      .catch(function(error) {
+        console.log("failed to get sensor version: " + error);
+        component.setState({
+          sensorVersion: "unknown"
+        });
+        return;
+      })
+        
+      return component.infoService.getCharacteristic(nameCharacteristicAddr);
+    })
+    // Get the icon characteristic
     .then(function(characteristic){
       component.iconCharacteristic = characteristic;
       component.setState({
-        status: "reading characteristic"
+        status: "reading icon characteristic"
       });
       return characteristic.readValue();
     })
@@ -99,11 +152,11 @@ export class IconSetter extends PureComponent {
       });
     })
     .catch(function(error) {
-      console.error('Connection failed!', error);
+      console.log("failed to get sensor icon: " + error);
       component.setState({
-        status: "connection failed"
+        status: "failed to get sensor icon"
       });
-    });
+    })
   }
 
   disconnect() {
@@ -111,7 +164,10 @@ export class IconSetter extends PureComponent {
 
     this.setState({
       connected: false,
-      status: "disconnected"
+      status: "not connected",
+      currentIcon: '',
+      selectedIcon: '',
+      sensorVersion: ''
     });
   }
 
@@ -145,6 +201,10 @@ export class IconSetter extends PureComponent {
 
     return newInstr;
   }
+  
+  openWinBLE(event) {
+    window.location = "/windows-ble/";
+  }
 
   render() {
     return (
@@ -156,6 +216,12 @@ export class IconSetter extends PureComponent {
             {this.getInstructions()}
           </h3>
           <div className="app-container">
+            <Dialog open={this.state.showWinLink} ref="winLinkDlg" className="dialog">
+              <div className="dialog-msg">
+                  It looks like you're using Windows - if you want to connect to a Thermoscope on Windows, 
+                  you need to install some software.</div>
+              <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
+            </Dialog>
             <div>
               {!this.state.connected && <RaisedButton id="connect" onClick={this.connect}>Connect</RaisedButton>}
               {this.state.connected && <RaisedButton id="disconnect" onClick={this.disconnect}>Disconnect</RaisedButton>}
@@ -175,6 +241,7 @@ export class IconSetter extends PureComponent {
 
           </div>
           <div id="status" className="message">{this.state.status}</div>
+          <div className="message">{this.state.sensorVersion ? 'sensor version: ' + this.state.sensorVersion : ' '}</div>
           <div className="instructions">
             <div>After the icon has been set, and the thermoscope power cycled, the device will still show up with the
               wrong name on any computer or tablet that saw it with the wrong name. The device is saying "Hi, I'm device 12345,
@@ -183,7 +250,6 @@ export class IconSetter extends PureComponent {
               operating system updates its name for "12345" to be "Thermoscope X"
               </div>
           </div>
-
         </div>
       </MuiThemeProvider>
     );

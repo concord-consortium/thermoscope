@@ -240,3 +240,41 @@ table {
 td {
   text-align: center;
 }
+.beaker{
+  height: 24px;
+  width: 24px;
+  background: url("beaker_icon.svg");
+  &.closed{
+    background: url("beaker_icon_closed.svg");
+  }
+}
+.beakerlight{
+  height: 24px;
+  width: 24px;
+  background: url("beaker_icon_light.svg");
+  &.closed{
+    background: url("beaker_icon_closed_light.svg");
+  }
+}
+.heat-button{
+  &.hot{
+    background-color: orange !important;
+  }
+  &.cold{
+    background-color: lightsteelblue !important;
+  }
+}
+.heatbath{
+  width: 220px;
+  margin-top: -30px;
+  height: 8px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  &.hot{
+    background-color: orange;
+  }
+  &.cold{
+    background-color: lightsteelblue;
+  }
+}

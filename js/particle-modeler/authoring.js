@@ -1,7 +1,7 @@
 import React from 'react';
 import Slider from 'material-ui/Slider';
 
-let ignoreList = ["atoms","modelDiff","recordedSession","stepNumber"];
+let ignoreList = ["atoms","modelDiff","heatLevel","recordedSession","stepNumber"];
 
 const Authoring = (props) => {
   let handleCheckboxChange = function (evt) {
@@ -60,8 +60,7 @@ const Authoring = (props) => {
 
   function elementInputMap(element) {
     return function (key) {
-      if (ignoreList.indexOf(key) > -1) return;
-      if (props[key].hasOwnProperty("element") && props[key].element == element) {
+      if (ignoreList.indexOf(key) == -1 && props[key].hasOwnProperty("element") && props[key].element == element) {
         return createSliderInput(key, props[key], true);
       }
     }

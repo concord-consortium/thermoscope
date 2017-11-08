@@ -69,7 +69,7 @@ export default class ThermoscopeControl extends PureComponent {
     this.setState({ mode: quantity })
   }
 
-  renderThermoscope(material, probeIndex, label, showMeter, meterMinClamp, meterMaxClamp) {
+  renderThermoscope(material, probeIndex, label, hidden, showMeter, meterMinClamp, meterMaxClamp) {
     let meterMin = meterMinClamp ? meterMinClamp : 0;
     let meterMax = meterMaxClamp ? meterMaxClamp : 1;
     let showControls = getURLParam('controls');
@@ -85,7 +85,8 @@ export default class ThermoscopeControl extends PureComponent {
           meterSegments={meterSegments}
           minClamp={meterMin}
           maxClamp={meterMax}
-          showMaterialControls={showControls}/>
+          showMaterialControls={showControls}
+          hidden={hidden}/>
       </div>;
     return thermoscope;
   }
@@ -103,7 +104,7 @@ export default class ThermoscopeControl extends PureComponent {
             <div className="list-section">
                 <h1>Thermoscope Examples</h1>
               <ListItem primaryText="Thermoscope (solid) Wood and Stone" onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1" />
-              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" />
+              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid&hideB", 2)} key="2" />
               <ListItem primaryText="Thermoscope (gas) Air" onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" />
               </div>
               <div className="list-section">
@@ -116,20 +117,20 @@ export default class ThermoscopeControl extends PureComponent {
           }
           {mode === ThermoscopeMode.OneThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A')}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'))}
             </div>
           }
           { mode === ThermoscopeMode.TwoThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A')}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B')}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'))}
+              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'))}
             </div>
           }
           { mode === ThermoscopeMode.ThreeThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', true)}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B', true)}
-              {this.renderThermoscope(getURLParam('C'), 1, 'C', true)}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'), true)}
+              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'), true)}
+              {this.renderThermoscope(getURLParam('C'), 1, 'C', getURLParam('hideC'), true)}
             </div>
           }
           <Sensor sensor={sensor} showAddressBox={false} />
