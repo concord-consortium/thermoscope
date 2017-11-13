@@ -20,6 +20,7 @@ import '../../css/app.less';
 injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
+darkBaseTheme.palette.primary1Color = '#ccc';
 
 let ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3 };
 let meterSegments = [
