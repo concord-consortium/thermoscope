@@ -111,18 +111,18 @@ export default class ThermoscopeControl extends PureComponent {
                 <h1>Thermoscope Examples</h1>
                 <GridList style={gridStyle}>
                   <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
-                    <img src="../images/blocks-100px.png"/>
-                    <img src="../images/quartz-100px.png"/>
+                    <img src="../css/wood-100px.png"/>
+                    <img src="../css/stone-100px.png"/>
                     <div>Wood and Stone</div>
                   </GridTile>
                   <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" >
-                    <img src="../images/oil-100px.png"/>
-                    <img src="../images/soap-100px.png"/>
+                    <img src="../css/oil-100px.png"/>
+                    <img src="../css/soap-100px.png"/>
                     <div>Oil and Soap</div>
                   </GridTile>
                   <GridTile onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" >
-                    <img src="../images/air-100px.png"/>  
-                    <img src="../images/air-100px.png"/>
+                    <img src="../css/air-100px.png"/>  
+                    <img src="../css/air-100px.png"/>
                     <div>Air</div>
                   </GridTile>
                 </GridList>
