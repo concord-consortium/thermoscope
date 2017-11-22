@@ -77,11 +77,11 @@ export default class ThermoscopeControl extends PureComponent {
     let showControls = getURLParam('controls');
     let thermoscope =
       <div className="thermoscope-container">
-        <div className="label">{label}</div>
         <Thermoscope
           sensor={sensor}
           material={material}
           embeddableSrc='../lab/embeddable.html'
+          label={label}
           probeIndex={probeIndex}
           showMeter={showMeter}
           meterSegments={meterSegments}

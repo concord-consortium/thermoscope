@@ -26,6 +26,7 @@ export default class Thermoscope extends PureComponent {
       liveData: false,
       materialType: this.props.material ? this.props.material : 'solid',
       materialIdx: this.props.probeIndex ? this.props.probeIndex : 0,
+      label: this.props.label,
       paused: false,
       hidden: this.props.hidden
     };
@@ -84,7 +85,7 @@ export default class Thermoscope extends PureComponent {
   }
 
   render() {
-    const { temperature, materialType, materialIdx, liveData, paused, hidden } = this.state;
+    const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
     const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls } = this.props;
 
     const model = models[materialType][materialIdx];
@@ -104,7 +105,9 @@ export default class Thermoscope extends PureComponent {
     if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
 
     return (
+      
       <div className="thermoscope">
+        <div className="label">{label + ":"}{this.renderIcon(model.name)}{" " + model.name}</div>
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={tempScale}
@@ -167,7 +170,6 @@ export default class Thermoscope extends PureComponent {
               </div>
             }
           </div>
-          {!showControls && <div className="controls-row"> {this.renderIcon(model.name)}<div>{model.name}</div></div>}
         </div>
       </div>
     );
