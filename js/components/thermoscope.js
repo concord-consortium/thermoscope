@@ -81,7 +81,7 @@ export default class Thermoscope extends PureComponent {
   }
 
   renderIcon(iconName) {
-    return <div className={"material-icon " + iconName.toLowerCase() + "-icon"}/>
+    return <div className={"material-icon " + iconName.toLowerCase().replace(/ /g,"-") + "-icon"}/>
   }
 
   render() {
@@ -157,6 +157,7 @@ export default class Thermoscope extends PureComponent {
                     <RadioButton value="solid" label="Solid" icon={this.renderIcon("solid")}/>
                     <RadioButton value="liquid" label="Liquid"  icon={this.renderIcon("liquid")}/>
                     <RadioButton value="gas" label="Gas"  icon={this.renderIcon("gas")}/>
+                    <RadioButton value="uniform" label="Experiments" />
                   </RadioButtonGroup>
                 </div>
                 <div className="material-select">

@@ -125,16 +125,20 @@ export default class ThermoscopeControl extends PureComponent {
                     <img src="../css/air-100px.png"/>
                     <div>Air</div>
                   </GridTile>
+                  <GridTile onClick={() => this.setThermoscopeRendering("A=uniform", 1)} key="4" >
+                    <img src="../css/coconut-oil-100px.png"/>
+                    <div>Experiments</div>
+                  </GridTile>
                 </GridList>
               </div>
               <div className="list-section">
                 <h1>Configurable Thermoscopes</h1>
                 <GridList style={gridStyle}>
-                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="4">
+                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="5">
                     <img src="../css/thermoscope_icon_84.png"/>
                     <div>Thermoscope (one)</div> 
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="5">
+                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="6">
                     <img src="../css/thermoscope_icon_84.png"/>
                     <img src="../css/thermoscope_icon_84.png"/>
                     <div>Thermoscope (two)</div>
