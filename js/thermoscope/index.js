@@ -131,7 +131,7 @@ export default class ThermoscopeControl extends PureComponent {
                 </GridList>
               </div>
               <div className="list-section">
-                <h1>Configurable Thermoscopes</h1>
+                <h1>Demo Thermoscopes</h1>
                 <GridList style={gridStyle}>
                   <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="4">
                     <img src="../css/thermoscope_icon_84.png"/>
