@@ -10,6 +10,8 @@ const tempAServiceAddr  = 'f000aa00-0451-4000-b000-000000000000';
 const tempAValueAddr    = 'f000aa01-0451-4000-b000-000000000000';
 const tempBServiceAddr  = 'f000bb00-0451-4000-b000-000000000000';
 const tempBValueAddr    = 'f000bb01-0451-4000-b000-000000000000';
+const infoServiceAddr   = 0x1234;
+const nameCharacteristicAddr = '00002345-0000-1000-8000-00805f9b34fb';
 
 var service;
 var bluetoothDevice;
@@ -85,10 +87,10 @@ module.exports = {
   connect: function (address) {
     let request = navigator.bluetooth.requestDevice({
       filters: [{ namePrefix: "Thermoscope" }],
-      optionalServices: [tempAServiceAddr, tempBServiceAddr]
+      optionalServices: [infoServiceAddr, tempAServiceAddr, tempBServiceAddr]
     })
 
-    let characteristicA, characteristicB;
+    let iconCharacteristic, characteristicA, characteristicB;
 
     // Step 2: Connect to it
     request.then(function (device) {
@@ -102,16 +104,34 @@ module.exports = {
         logMessage('Connection failed!', error);
         return disconnectSensor();
       })
-      // Step 3: Get the Service
-      .then(function (server) {
+      // Step 2a: Get the icon characteristic
+      .then(function(server) {
         if (server) {
           isConnected = true;
           window.server = server;
-          return server.getPrimaryService(tempAServiceAddr);
+          return server.getPrimaryService(infoServiceAddr);
         }
         else {
           return disconnectSensor();
         }
+      })
+      .then(function(service) {
+        return service.getCharacteristic(nameCharacteristicAddr);
+      })
+      .then(function(characteristic){
+        return characteristic.readValue();
+      })
+      .catch(function(error) {
+        logMessage('Failed to get sensor icon' + error);
+      })
+      .then(function(value){
+        var iconVal = new TextDecoder().decode(value);
+        
+        if(iconVal.charCodeAt(0) != 0) 
+          events.emit('iconUpdate', iconVal);
+      
+        // Step 3: Get the Service
+        return server.getPrimaryService(tempAServiceAddr);
       })
       .catch(function (error) {
         logMessage('Failed to get Primary Service at address A', error);

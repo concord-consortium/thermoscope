@@ -61,6 +61,7 @@ export default class Sensor extends PureComponent {
       this.connectedSensor.on('connectionLost', this.connectionLost.bind(this));
       this.connectedSensor.on('screenConsole', this.screenConsole.bind(this));
       this.connectedSensor.on('nameUpdate', this.nameUpdate.bind(this));
+      this.connectedSensor.on('iconUpdate', this.iconUpdate.bind(this));
     }
   }
 
@@ -68,10 +69,13 @@ export default class Sensor extends PureComponent {
     this.setState({ connected: true, connecting: false });
   }
   connectionLost(event) {
-    this.setState({ connected: false, connecting: false, lostConnection: !this.state.disconnecting });
+    this.setState({ connected: false, connecting: false, lostConnection: !this.state.disconnecting, connectedSensorIcon: null });
   }
   nameUpdate(event) {
     this.setState({ connectedSensorName: event });
+  }
+  iconUpdate(event) {
+    this.setState({ connectedSensorIcon: event });
   }
   toggleDisplay(event) {
     this.setState({ showDetails: this.state.showDetails ? false : true });
@@ -97,19 +101,25 @@ export default class Sensor extends PureComponent {
   }
 
   render() {
-    const { connected, connecting, disconnecting, lostConnection, connectedSensorName, showDetails, debugMessages, showWinLink } = this.state;
+    const { connected, connecting, disconnecting, lostConnection, connectedSensorName, connectedSensorIcon, showDetails, debugMessages, showWinLink } = this.state;
     const { showAddressBox } = this.props;
     let showDebug = DEBUG && DEBUG.toLowerCase() === "true";
     let sensorName = null;
+    let sensorIcon = null;
     let prefix = "Thermoscope";
     let sensorIconStyle = "sensor-tag-icon";
     const dialogBtn = { margin: 10 };
 
     if (connected && connectedSensorName) {
       console.log(connectedSensorName.length);
-      sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+      if(connectedSensorIcon && connectedSensorIcon != "") {
+        sensorName = connectedSensorIcon;
+      } 
+      else { 
+        sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+      }
       this.lastSensorName = sensorName;
-      sensorIconStyle = connectedSensorName.length > prefix.length ? sensorIconStyle : sensorIconStyle + " small";
+      sensorIconStyle = connectedSensorName.length > prefix.length || connectedSensorIcon ? sensorIconStyle : sensorIconStyle + " small";
     }
     let nameTag;
 
