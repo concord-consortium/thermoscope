@@ -129,7 +129,7 @@ export default class ThermoscopeControl extends PureComponent {
                     <div>Air</div>
                   </GridTile>
                   <GridTile onClick={() => this.setThermoscopeRendering("A=uniform", 1)} key="4" >
-                    <img src="../css/coconut-oil-100px.png"/>
+                    <div className="coconut-oil-icon-100 example-icon" />
                     <div>Experiments</div>
                   </GridTile>
                 </GridList>
