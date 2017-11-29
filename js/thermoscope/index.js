@@ -64,7 +64,7 @@ export default class ThermoscopeControl extends PureComponent {
   showMenu() {
     // make sure controls param is reset
     location.search = "";
-    
+
     this.setState({ mode: ThermoscopeMode.Menu });
   }
 
@@ -113,19 +113,19 @@ export default class ThermoscopeControl extends PureComponent {
               <div className="list-section">
                 <h1>Thermoscope Examples</h1>
                 <GridList style={gridStyle}>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
-                    <img src="../css/wood-100px.png"/>
-                    <img src="../css/stone-100px.png"/>
+                <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
+                    <div className="wood-icon-100 example-icon" />
+                    <div className="stone-icon-100 example-icon" />
                     <div>Wood and Stone</div>
                   </GridTile>
                   <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" >
-                    <img src="../css/oil-100px.png"/>
-                    <img src="../css/soap-100px.png"/>
+                    <div className="oil-icon-100 example-icon" />
+                    <div className="soap-icon-100 example-icon" />
                     <div>Oil and Soap</div>
                   </GridTile>
                   <GridTile onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" >
-                    <img src="../css/air-100px.png"/>  
-                    <img src="../css/air-100px.png"/>
+                    <div className="air-icon-100 example-icon" />
+                    <div className="air-icon-100 example-icon" />
                     <div>Air</div>
                   </GridTile>
                 </GridList>
@@ -134,12 +134,12 @@ export default class ThermoscopeControl extends PureComponent {
                 <h1>Demo Thermoscopes</h1>
                 <GridList style={gridStyle}>
                   <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="4">
-                    <img src="../css/thermoscope_icon_84.png"/>
-                    <div>Thermoscope (one)</div> 
+                    <div className="thermoscope-icon-84 example-icon" />
+                    <div>Thermoscope (one)</div>
                   </GridTile>
                   <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="5">
-                    <img src="../css/thermoscope_icon_84.png"/>
-                    <img src="../css/thermoscope_icon_84.png"/>
+                    <div className="thermoscope-icon-84 example-icon" />
+                    <div className="thermoscope-icon-84 example-icon" />
                     <div>Thermoscope (two)</div>
                   </GridTile>
                 </GridList>
