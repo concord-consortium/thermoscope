@@ -103,10 +103,12 @@ export default class Sensor extends PureComponent {
     let sensorName = null;
     let prefix = "Thermoscope";
     let sensorIconStyle = "sensor-tag-icon";
+    const dialogBtn = { margin: 10 };
 
     if (connected && connectedSensorName) {
       console.log(connectedSensorName.length);
       sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+      this.lastSensorName = sensorName;
       sensorIconStyle = connectedSensorName.length > prefix.length ? sensorIconStyle : sensorIconStyle + " small";
     }
     let nameTag;
@@ -124,12 +126,18 @@ export default class Sensor extends PureComponent {
           <div className="dialog-msg">
               It looks like you're using Windows - if you want to connect to a Thermoscope on Windows, 
               you need to install some software.</div>
-          <RaisedButton onClick={this.closeWinLink}>Cancel</RaisedButton>
-          <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
+          <RaisedButton onClick={this.closeWinLink} style={dialogBtn} primary={true}>Cancel</RaisedButton>
+          <RaisedButton onClick={this.openWinBLE} style={dialogBtn} primary={true}>OK</RaisedButton>
         </Dialog>
-        <Dialog open={lostConnection} ref="lostConDialog" className="dialog">
-          <div className="dialog-msg">Lost sensor connection</div>
-          <RaisedButton onClick={this.hideLostConDlg}>OK</RaisedButton>
+        <Dialog open={lostConnection} ref="lostConDialog" className="dialog" contentStyle={{minWidth: "30%", width:0}}>
+          <div className="dialog-msg sensorConnect">
+            <div className={sensorIconStyle}>
+              <div>{this.lastSensorName == "Thermoscope" || !this.lastSensorName ?  "🌡" : this.lastSensorName}</div>
+              <div className="overlay">?</div>
+            </div>
+            <div>Lost connection to Thermoscope</div>
+          </div>
+          <RaisedButton onClick={this.hideLostConDlg} primary={true}>OK</RaisedButton>
         </Dialog>
         <div id="toggleSensorDisplay" onClick={this.toggleDisplay}><i className="material-icons">settings_input_antenna</i></div>
         {showDetails &&

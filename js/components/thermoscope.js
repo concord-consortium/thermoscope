@@ -26,6 +26,7 @@ export default class Thermoscope extends PureComponent {
       liveData: false,
       materialType: this.props.material ? this.props.material : 'solid',
       materialIdx: this.props.probeIndex ? this.props.probeIndex : 0,
+      label: this.props.label,
       paused: false,
       hidden: this.props.hidden
     };
@@ -79,8 +80,12 @@ export default class Thermoscope extends PureComponent {
     this.setState({ hidden: !hidden });
   }
 
+  renderIcon(iconName) {
+    return <div className={"material-icon " + iconName.toLowerCase() + "-icon"}/>
+  }
+
   render() {
-    const { temperature, materialType, materialIdx, liveData, paused, hidden } = this.state;
+    const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
     const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls } = this.props;
 
     const model = models[materialType][materialIdx];
@@ -100,7 +105,9 @@ export default class Thermoscope extends PureComponent {
     if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
 
     return (
+      
       <div className="thermoscope">
+        <div className="label">{label + ":"}{this.renderIcon(model.name)}{" " + model.name}</div>
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={tempScale}
@@ -147,22 +154,22 @@ export default class Thermoscope extends PureComponent {
               <div className="controls-row">
                 <div className="material-type-select">
                   <RadioButtonGroup name="material-type" valueSelected={material} onChange={this.handleMaterialTypeChange}>
-                    <RadioButton value="solid" label="Solid" />
-                    <RadioButton value="liquid" label="Liquid" />
-                    <RadioButton value="gas" label="Gas" />
+                    <RadioButton value="solid" label="Solid" icon={this.renderIcon("solid")}/>
+                    <RadioButton value="liquid" label="Liquid"  icon={this.renderIcon("liquid")}/>
+                    <RadioButton value="gas" label="Gas"  icon={this.renderIcon("gas")}/>
                   </RadioButtonGroup>
                 </div>
                 <div className="material-select">
+                  {this.renderIcon(model.name)}
                   <SelectField floatingLabelText="Material" value={materialIdx} onChange={this.handleMaterialIdxChange}>
                     {models[material].map((model, idx) =>
-                      <MenuItem key={idx} value={idx} primaryText={model.name} />
+                      <MenuItem key={idx} value={idx} primaryText={model.name} leftIcon={this.renderIcon(model.name)}/>
                     )}
                   </SelectField>
                 </div>
               </div>
             }
           </div>
-          {!showControls && <div className="controls-row"> <div>{model.name}</div></div>}
         </div>
       </div>
     );

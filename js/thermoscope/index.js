@@ -10,6 +10,7 @@ import bleSensor from '../components/ble-sensor.js';
 import LogoMenu from '../components/logo-menu';
 import { getURLParam } from '../utils';
 import { List, ListItem } from 'material-ui/List';
+import { GridList, GridTile } from 'material-ui/GridList'
 import Thermoscope from '../components/thermoscope';
 
 const sensor = bleSensor;
@@ -20,6 +21,7 @@ import '../../css/app.less';
 injectTapEventPlugin();
 
 darkBaseTheme.palette.textColor = '#ccc';
+darkBaseTheme.palette.primary1Color = '#ccc';
 
 let ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3 };
 let meterSegments = [
@@ -60,6 +62,9 @@ export default class ThermoscopeControl extends PureComponent {
     this.showMenu = this.showMenu.bind(this);
   }
   showMenu() {
+    // make sure controls param is reset
+    location.search = "";
+
     this.setState({ mode: ThermoscopeMode.Menu });
   }
 
@@ -75,11 +80,11 @@ export default class ThermoscopeControl extends PureComponent {
     let showControls = getURLParam('controls');
     let thermoscope =
       <div className="thermoscope-container">
-        <div className="label">{label}</div>
         <Thermoscope
           sensor={sensor}
           material={material}
           embeddableSrc='../lab/embeddable.html'
+          label={label}
           probeIndex={probeIndex}
           showMeter={showMeter}
           meterSegments={meterSegments}
@@ -93,6 +98,11 @@ export default class ThermoscopeControl extends PureComponent {
 
   render() {
     const { mode } = this.state;
+    const gridStyle = {
+      display: 'flex',
+      flexWrap: 'nowrap',
+      overflowX: 'auto',
+    }
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="app">
@@ -100,19 +110,40 @@ export default class ThermoscopeControl extends PureComponent {
           <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div>
           { mode === ThermoscopeMode.Menu &&
             <div className="demo-links">
-            <List>
-            <div className="list-section">
+              <div className="list-section">
                 <h1>Thermoscope Examples</h1>
-              <ListItem primaryText="Thermoscope (solid) Wood and Stone" onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1" />
-              <ListItem primaryText="Thermoscope (liquid) Oil and Soap" onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" />
-              <ListItem primaryText="Thermoscope (gas) Air" onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" />
+                <GridList style={gridStyle}>
+                <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
+                    <div className="wood-icon-100 example-icon" />
+                    <div className="stone-icon-100 example-icon" />
+                    <div>Wood and Stone</div>
+                  </GridTile>
+                  <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" >
+                    <div className="oil-icon-100 example-icon" />
+                    <div className="soap-icon-100 example-icon" />
+                    <div>Oil and Soap</div>
+                  </GridTile>
+                  <GridTile onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" >
+                    <div className="air-icon-100 example-icon" />
+                    <div className="air-icon-100 example-icon" />
+                    <div>Air</div>
+                  </GridTile>
+                </GridList>
               </div>
               <div className="list-section">
-                <h1>Configurable Thermoscopes</h1>
-              <ListItem primaryText="Thermoscope (one)" onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="4" />
-              <ListItem primaryText="Thermoscope (two)" onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="5" />
-               </div>
-               </List>
+                <h1>Demo Thermoscopes</h1>
+                <GridList style={gridStyle}>
+                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="4">
+                    <div className="thermoscope-icon-84 example-icon" />
+                    <div>Thermoscope (one)</div>
+                  </GridTile>
+                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="5">
+                    <div className="thermoscope-icon-84 example-icon" />
+                    <div className="thermoscope-icon-84 example-icon" />
+                    <div>Thermoscope (two)</div>
+                  </GridTile>
+                </GridList>
+              </div>
             </div>
           }
           {mode === ThermoscopeMode.OneThermoscope &&
