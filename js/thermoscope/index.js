@@ -62,9 +62,6 @@ export default class ThermoscopeControl extends PureComponent {
     this.showMenu = this.showMenu.bind(this);
   }
   showMenu() {
-    // make sure controls param is reset
-    location.search = "";
-
     this.setState({ mode: ThermoscopeMode.Menu });
   }
 
