@@ -50,9 +50,14 @@ and open http://localhost:8080/ or http://localhost:8080/webpack-dev-server/ (au
 
 To connect to a thermoscope on Windows 10, install the Web Bluetooth Polyfill Chrome extension:
 https://github.com/urish/web-bluetooth-polyfill
-Follow the installation instructions in the repository's readme file. 
+Follow the installation instructions in the repository's readme file.
 
 ## Deployment
 
+iOS devices using the Thermoscope app depend on the `ios` branch https://thermoscope.concord.org/branch/ios/. The app on iPads is hard-wired to the iOS path, so any changes that need to be seen on iPads will require that the `ios` branch is updated. Note, however, that since this branch is used on all the iPads, it should not be used as a development branch, and is only used for accepted, tested features.
+
+Production branch will deploy to the root of `https://thermoscope.concord.org`
+
 #### Github Pages:
+(not currently used)
 Run `./build-and-deploy.sh`
