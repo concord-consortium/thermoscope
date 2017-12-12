@@ -23,6 +23,8 @@ const icons = ['🐞', '🦋', '🍎', '🍄', '🌈', '⭐', '🚜', '✈', '�
 const infoServiceAddr = 0x1234;
 const nameCharacteristicAddr = '00002345-0000-1000-8000-00805f9b34fb';
 const versionCharacteristicAddr = '00006789-0000-1000-8000-00805f9b34fb';
+const adcCalibration50CharacteristicAddr = '00000101-0000-1000-8000-00805f9b34fb';
+const adcCalibration75CharacteristicAddr = '00000102-0000-1000-8000-00805f9b34fb';
 
 const instr_start = 'Click "Connect" and select a Thermoscope to set its icon';
 const instr_connected = 'Select a new icon for the Thermoscope and click "Set Icon"';
@@ -39,6 +41,8 @@ export class IconSetter extends PureComponent {
 
     this.state = {
       connected: false,
+      supportsIcon: false,
+      supportsADCCalibration: false,
       iconChanged: false,
       status: "not connected",
       currentIcon: '',
@@ -57,6 +61,9 @@ export class IconSetter extends PureComponent {
     this.disconnect = this.disconnect.bind(this);
     this.selectIcon = this.selectIcon.bind(this);
     this.setIcon = this.setIcon.bind(this);
+    this.handleADCCalibration50 = this.handleADCCalibration50.bind(this);
+    this.handleADCCalibration75 = this.handleADCCalibration75.bind(this);
+    this.saveCalibration = this.saveCalibration.bind(this);
   }
 
   logError(msg, error) {
@@ -70,7 +77,7 @@ export class IconSetter extends PureComponent {
     if (navigator.appVersion.indexOf("Win")!=-1 && navigator.bluetooth == undefined) {
       this.setState({ showWinLink: true });
       return;
-    } 
+    }
 
     console.log("connect");
     let request = navigator.bluetooth.requestDevice({
@@ -91,6 +98,7 @@ export class IconSetter extends PureComponent {
     // Step 3: Get the info service (icon + version)
     .then(function(server) {
       component.setState({
+        connected: true,
         status: "getting info service"
       });
       window.server = server;
@@ -108,7 +116,7 @@ export class IconSetter extends PureComponent {
         status: "getting sensor version characteristic"
       });
       component.infoService = service;
-      
+
       component.infoService.getCharacteristic(versionCharacteristicAddr)
       .then(function(characteristic) {
         if(characteristic && characteristic.readValue) {
@@ -131,7 +139,7 @@ export class IconSetter extends PureComponent {
         });
         return;
       })
-        
+
       return component.infoService.getCharacteristic(nameCharacteristicAddr);
     })
     // Get the icon characteristic
@@ -145,8 +153,8 @@ export class IconSetter extends PureComponent {
     .then(function(value){
       var iconVal = component.decoder.decode(value);
       component.setState({
-        connected: true,
         status: "current icon value: " + iconVal,
+        supportsIcon: true,
         currentIcon: iconVal,
         selectedIcon: iconVal
       });
@@ -154,7 +162,43 @@ export class IconSetter extends PureComponent {
     .catch(function(error) {
       console.log("failed to get sensor icon: " + error);
       component.setState({
+        supportsIcon: false,
         status: "failed to get sensor icon"
+      });
+    })
+    .then(function(){
+      return component.infoService.getCharacteristic(adcCalibration50CharacteristicAddr);
+    })
+    .then(function(characteristic){
+      component.adcCalibration50Characteristic = characteristic;
+      component.setState({
+        status: "reading adc 50% characteristic"
+      });
+      return characteristic.readValue();
+    })
+    .then(function(value){
+      var counts = value.getInt16(0, true)
+      component.setState({
+        status: "current adc 50% value: " + counts,
+        adcCalibration50: counts
+      });
+    })
+    .then(function(){
+      return component.infoService.getCharacteristic(adcCalibration75CharacteristicAddr);
+    })
+    .then(function(characteristic){
+      component.adcCalibration75Characteristic = characteristic;
+      component.setState({
+        status: "reading adc 75% characteristic"
+      });
+      return characteristic.readValue();
+    })
+    .then(function(value){
+      var counts = value.getInt16(0, true)
+      component.setState({
+        status: "current adc 75% value: " + counts,
+        supportsADCCalibration: true,
+        adcCalibration75: counts
       });
     })
   }
@@ -165,6 +209,8 @@ export class IconSetter extends PureComponent {
     this.setState({
       connected: false,
       status: "not connected",
+      supportsIcon: false,
+      supportsADCCalibration: false,
       currentIcon: '',
       selectedIcon: '',
       sensorVersion: ''
@@ -189,6 +235,29 @@ export class IconSetter extends PureComponent {
     });
   }
 
+  handleADCCalibration50(event) {
+    this.setState({adcCalibration50: event.target.value});
+  }
+
+  handleADCCalibration75(event) {
+    this.setState({adcCalibration75: event.target.value});
+  }
+
+  saveCalibration() {
+    // Add error checking
+    var adcCalibration50Data = new DataView(new ArrayBuffer(2));
+    var adcCalibration75Data = new DataView(new ArrayBuffer(2));
+    var self = this;
+    adcCalibration50Data.setInt16(0, this.state.adcCalibration50, true);
+    adcCalibration75Data.setInt16(0, this.state.adcCalibration75, true);
+    console.log("saving calibration");
+    this.adcCalibration50Characteristic.writeValue(adcCalibration50Data)
+    .then(function(){
+      // only one gatt call can be going at once it seems
+      self.adcCalibration75Characteristic.writeValue(adcCalibration75Data);
+    });
+  }
+
   getInstructions() {
     var newInstr = '';
     if(!this.state.connected) {
@@ -201,7 +270,7 @@ export class IconSetter extends PureComponent {
 
     return newInstr;
   }
-  
+
   openWinBLE(event) {
     window.location = "/windows-ble/";
   }
@@ -218,7 +287,7 @@ export class IconSetter extends PureComponent {
           <div className="app-container">
             <Dialog open={this.state.showWinLink} ref="winLinkDlg" className="dialog">
               <div className="dialog-msg">
-                  It looks like you're using Windows - if you want to connect to a Thermoscope on Windows, 
+                  It looks like you&apos;re using Windows - if you want to connect to a Thermoscope on Windows,
                   you need to install some software.</div>
               <RaisedButton onClick={this.openWinBLE}>OK</RaisedButton>
             </Dialog>
@@ -227,16 +296,28 @@ export class IconSetter extends PureComponent {
               {this.state.connected && <RaisedButton id="disconnect" onClick={this.disconnect}>Disconnect</RaisedButton>}
             </div>
             {this.state.connected && <div>
-              <select id="icon-select" value={this.state.selectedIcon} onChange={this.selectIcon} className="icons">
-              {icons.map((icon) => (
-                <option key={icon} value={icon}>
-                  {icon}
-                </option>
-              ))}
-              </select>
-              <RaisedButton id="set-icon" onClick={this.setIcon} className="button2"
-                disabled={this.state.selectedIcon == this.state.currentIcon}>
-                Set Icon</RaisedButton>
+              {this.state.supportsIcon && <div>
+                <select id="icon-select" value={this.state.selectedIcon} onChange={this.selectIcon} className="icons">
+                {icons.map((icon) => (
+                  <option key={icon} value={icon}>
+                    {icon}
+                  </option>
+                ))}
+                </select>
+                <RaisedButton id="set-icon" onClick={this.setIcon} className="button2"
+                  disabled={this.state.selectedIcon == this.state.currentIcon}>
+                  Set Icon</RaisedButton>
+              </div>}
+              {this.state.supportsADCCalibration && <div style={{color: 'black'}}>
+                  <div><label>ADC Calibration 0.5:
+                    <input type="text" value={this.state.adcCalibration50} onChange={this.handleADCCalibration50} />
+                  </label></div>
+                  <div><label>ADC Calibration 0.75:
+                  <input type="text" value={this.state.adcCalibration75} onChange={this.handleADCCalibration75} />
+                  </label></div>
+                  <RaisedButton id="save-calibration" onClick={this.saveCalibration} className="button2">
+                    Save Calibration</RaisedButton>
+              </div>}
             </div>}
 
           </div>
