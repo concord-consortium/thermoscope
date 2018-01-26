@@ -71,7 +71,7 @@ export default class ThermoscopeControl extends PureComponent {
     this.setState({ mode: quantity })
   }
 
-  renderThermoscope(material, probeIndex, label, hidden, showMeter, meterMinClamp, meterMaxClamp) {
+  renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
     let meterMin = meterMinClamp ? meterMinClamp : 0;
     let meterMax = meterMaxClamp ? meterMaxClamp : 1;
     let showControls = getURLParam('controls');
@@ -83,6 +83,7 @@ export default class ThermoscopeControl extends PureComponent {
           embeddableSrc='../lab/embeddable.html'
           label={label}
           probeIndex={probeIndex}
+          materialIndex={materialIndex}
           showMeter={showMeter}
           meterSegments={meterSegments}
           minClamp={meterMin}
@@ -124,15 +125,20 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="air-icon-100 example-icon" />
                     <div className="air-icon-100 example-icon" />
                     <div>Air</div>
+                </GridTile>
+                <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid&materialA=2&materialB=2", 2)} key="4" >
+                    <div className="water-icon-100 example-icon" />
+                    <div className="water-icon-100 example-icon" />
+                    <div>Hot and Cold Water</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=uniform", 1)} key="4" >
+                  <GridTile onClick={() => this.setThermoscopeRendering("A=uniform", 1)} key="5" >
                     <div className="coconut-oil-icon-100 example-icon" />
                     <div>Experiments</div>
                   </GridTile>
                 </GridList>
               </div>
               <div className="list-section">
-                <h1>Demo Thermoscopes</h1>
+                <h1>Thermoscope Experiments</h1>
                 <GridList style={gridStyle}>
                   <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="5">
                     <div className="thermoscope-icon-84 example-icon" />
@@ -141,7 +147,6 @@ export default class ThermoscopeControl extends PureComponent {
                   <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="6">
                     <div className="thermoscope-icon-84 example-icon" />
                     <div className="thermoscope-icon-84 example-icon" />
-
                     <div>Thermoscope (two)</div>
                   </GridTile>
                 </GridList>
@@ -155,15 +160,15 @@ export default class ThermoscopeControl extends PureComponent {
           }
           { mode === ThermoscopeMode.TwoThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'))}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'))}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'),  getURLParam('materialA'))}
+              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'),  getURLParam('materialB'))}
             </div>
           }
           { mode === ThermoscopeMode.ThreeThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'), true)}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'), true)}
-              {this.renderThermoscope(getURLParam('C'), 1, 'C', getURLParam('hideC'), true)}
+              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'), getURLParam('materialA'), true)}
+              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'), getURLParam('materialB'), true)}
+              {this.renderThermoscope(getURLParam('C'), 1, 'C', getURLParam('hideC'), getURLParam('materialC'), true)}
             </div>
           }
           <Sensor sensor={sensor} showAddressBox={false} />

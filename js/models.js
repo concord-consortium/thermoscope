@@ -5,6 +5,7 @@ import solid3 from '../models/solid-3.json';
 import solid4 from '../models/solid-4.json';
 import liquid1 from '../models/liquid-1-oil.json';
 import liquid1a from '../models/liquid-1-soap.json';
+import liquid1b from '../models/liquid-1-water.json';
 import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
 import liquid4 from '../models/liquid-4.json';
@@ -72,6 +73,16 @@ export default {
     },
     {
       name: 'Soap',
+      json: liquid1a,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 1500 + 500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.55 + 0.25;
+      }
+    },
+    {
+      name: 'Water',
       json: liquid1a,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 1500 + 500;
