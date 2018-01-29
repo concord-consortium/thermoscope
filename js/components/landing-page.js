@@ -67,8 +67,7 @@ export default class LandingPage extends PureComponent {
           </div>
         </div>
           }
-
-        <div className="version-identifier">iOS 20171204.1</div>
+        <div className="version-identifier">iOS 20180129.1</div>
       </div>
     </MuiThemeProvider>
     );
