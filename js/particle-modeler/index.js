@@ -12,6 +12,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import LogoMenu from '../components/logo-menu';
+import Clock from '../components/clock';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getUsername from '../components/user-name-generator.js';
 import { updateContainerLid, updateContainerVisibility, getContainerPosition } from './container';
@@ -572,6 +573,7 @@ export default class Interactive extends PureComponent {
           </div>
           <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleHeat={this.toggleHeat} onContainerLid={this.toggleContainerLid} onToggleRunState={this.toggleRunState} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
+          <Clock dark={authoring} />
         </div>
       </MuiThemeProvider>
     );

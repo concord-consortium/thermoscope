@@ -8,6 +8,7 @@ import Sensor from '../components/sensor';
 import LabQuest2 from 'sensor-labquest-2-interface';
 import bleSensor from '../components/ble-sensor.js';
 import LogoMenu from '../components/logo-menu';
+import Clock from '../components/clock';
 import { getURLParam } from '../utils';
 import { List, ListItem } from 'material-ui/List';
 import { GridList, GridTile } from 'material-ui/GridList'
@@ -104,6 +105,7 @@ export default class ThermoscopeControl extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
         <div className="app">
+        <Clock />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
           <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div>
           { mode === ThermoscopeMode.Menu &&
