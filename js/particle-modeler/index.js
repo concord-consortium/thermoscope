@@ -229,7 +229,7 @@ export default class Interactive extends PureComponent {
         if (d.pinned === 1) {
           let el = d.element,
             newState = {};
-          // initial spawned elements do not interact with the simulationx
+          // initial spawned elements do not interact with the simulation
           if (el >= this.state.elements.value) {
             el -= 3;
             newState["showAtom" + el] = false;
@@ -242,16 +242,24 @@ export default class Interactive extends PureComponent {
           this.setState(newState);
           this.addNewDraggableAtom(el);
         } else {
-          if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
+          let checkRadius = 0.2;
+          let elementOverDeleteIcon = d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height;
+          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < checkRadius && Math.abs(d.y - atomBox.y) < checkRadius;
+          // check if atom is over the delete icon
+          if (elementOverDeleteIcon) {
             // mark atoms for deletion
             if (!d.marked) {
               this.setState({ deleteHover: true });
               api.setAtomProperties(i, { marked: 1 });
-
             }
-          } else if (d.marked) {
+          } else if (!elementInsideAtomBox && d.marked) {
             this.setState({ deleteHover: false });
             api.setAtomProperties(i, { marked: 0 });
+          } else if (elementInsideAtomBox) {
+            if (!d.marked) {
+              this.setState({ deleteHover: true });
+              api.setAtomProperties(i, { marked: 1 });
+            }
           }
         }
         if (this.state.nextUpdate < Date.now()) {
