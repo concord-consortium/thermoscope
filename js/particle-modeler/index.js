@@ -242,9 +242,8 @@ export default class Interactive extends PureComponent {
           this.setState(newState);
           this.addNewDraggableAtom(el);
         } else {
-          let checkRadius = 0.2;
           let elementOverDeleteIcon = d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height;
-          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < checkRadius && Math.abs(d.y - atomBox.y) < checkRadius;
+          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
           // check if atom is over the delete icon
           if (elementOverDeleteIcon) {
             // mark atoms for deletion
@@ -287,6 +286,7 @@ export default class Interactive extends PureComponent {
       // this will fire every tick
       for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
         a = api.getAtomProperties(i);
+
         if (((a.vx * a.vx) + (a.vy * a.vy)) > particleMaxVelocity) {
           // particles moving too fast can cause the model to freeze up
           let adjustedVx = a.vx * 0.01;
@@ -298,13 +298,17 @@ export default class Interactive extends PureComponent {
     let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
       for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
-        if (api.getAtomProperties(i).marked && !api.getAtomProperties(i).pinned)
+        let d = api.getAtomProperties(i);
+        if (d.marked && !d.pinned) {
           atomsToDelete.push(i);
+        } else {
+          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
+          if (elementInsideAtomBox && d.element < 3) atomsToDelete.push(i);
+        }
       }
       for (let i = atomsToDelete.length - 1; i > -1; i--) {
         api.removeAtom(atomsToDelete[i]);
       }
-
       this.setState({ deleteHover: false });
     }
 
