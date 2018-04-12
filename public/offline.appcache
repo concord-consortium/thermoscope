@@ -54,7 +54,6 @@ lab/lab/resources/col.svg
 lab/lab/resources/diagonal-lines.jpg
 lab/lab/resources/down.png
 lab/lab/resources/exp.svg
-lab/lab/resources/flags
 lab/lab/resources/forward.png
 lab/lab/resources/heatbath.gif
 lab/lab/resources/interactive-screenshot.jpg
@@ -110,7 +109,6 @@ lab/lab/vendor/fonts/Font-Awesome/README.md
 lab/lab/vendor/fonts/Font-Awesome/_config.yml
 lab/lab/vendor/fonts/Font-Awesome/composer.json
 lab/lab/vendor/fonts/Font-Awesome/package.json
-lab/lab/vendor/fonts/Font-Awesome/src
 
 lab/lab/vendor/fonts/Font-Awesome/css/font-awesome-ie7.css
 lab/lab/vendor/fonts/Font-Awesome/css/font-awesome-ie7.min.css
