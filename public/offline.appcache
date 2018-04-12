@@ -3,10 +3,8 @@ CACHE MANIFEST
 app.js
 beaker.svg
 beaker_base.svg
-icon-setter
 icon-setter.js
 index.html
-particle-modeler
 particle-modeler.js
 thermoscope.js
 
