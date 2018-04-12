@@ -33,7 +33,7 @@
     "viewPortDrag": false,
     "backgroundColor": "#eeeeee",
     "showClock": false,
-    "markColor": "#f8b500",
+    "markColor": "#aaaaaa",
     "keShading": false,
     "chargeShading": false,
     "useThreeLetterCode": true,

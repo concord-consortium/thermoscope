@@ -12,6 +12,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import IconButton from 'material-ui/IconButton';
 import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import LogoMenu from '../components/logo-menu';
+import Clock from '../components/clock';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import getUsername from '../components/user-name-generator.js';
 import { updateContainerLid, updateContainerVisibility, getContainerPosition } from './container';
@@ -94,9 +95,6 @@ export default class Interactive extends PureComponent {
     this.changeElementCount = this.changeElementCount.bind(this);
     this.handleSimulationChange = this.handleSimulationChange.bind(this);
     this.studentView = this.studentView.bind(this);
-    this.generatePinnedParticleText = this.generatePinnedParticleText.bind(this);
-    this.addPinnedParticleText = this.addPinnedParticleText.bind(this);
-    this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleRunState = this.toggleRunState.bind(this);
@@ -218,7 +216,6 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     api.stop();
-    this.addPinnedParticleText();
     if (this.state.container) {
       updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api);
       updateContainerLid(this.state.containerLid, this.state.containerLid.value, this.state.container.value, this.state.containerHeight, api);
@@ -228,29 +225,33 @@ export default class Interactive extends PureComponent {
         if (d.pinned === 1) {
           let el = d.element,
             newState = {};
-          // initial spawned elements do not interact with the simulationx
+          // initial spawned elements do not interact with the simulation
           if (el >= this.state.elements.value) {
             el -= 3;
             newState["showAtom" + el] = false;
-          } else {
-            // this was a pinned live particle
-            this.removePinnedParticleText(i)
           }
           api.setAtomProperties(i, { pinned: 0, element: el });
 
           this.setState(newState);
           this.addNewDraggableAtom(el);
         } else {
-          if (d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height) {
+          let elementOverDeleteIcon = d.x > delIcon.x && d.x < delIcon.x + delIcon.width && d.y > delIcon.y && d.y < delIcon.y + delIcon.height;
+          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
+          // check if atom is over the delete icon
+          if (elementOverDeleteIcon) {
             // mark atoms for deletion
             if (!d.marked) {
               this.setState({ deleteHover: true });
               api.setAtomProperties(i, { marked: 1 });
-
             }
-          } else if (d.marked) {
+          } else if (!elementInsideAtomBox && d.marked) {
             this.setState({ deleteHover: false });
             api.setAtomProperties(i, { marked: 0 });
+          } else if (elementInsideAtomBox) {
+            if (!d.marked) {
+              this.setState({ deleteHover: true });
+              api.setAtomProperties(i, { marked: 1 });
+            }
           }
         }
         if (this.state.nextUpdate < Date.now()) {
@@ -260,24 +261,11 @@ export default class Interactive extends PureComponent {
       }
     });
 
-    api.onClick('atom', (x, y, d, i) => {
-      if (d.pinned === 0) {
-        api.setAtomProperties(i, { pinned: 1 });
-        let newState = this.state.pinnedAtoms;
-        newState[i] = { x, y };
-        this.setState({ pinnedAtoms: newState });
-        this.addPinnedParticleText(i);
-      } else if (d.element < this.state.elements.value) {
-        api.setAtomProperties(i, { pinned: 0 });
-        this.removePinnedParticleText(i);
-      }
-      this.updateDiff(Date.now());
-    });
-
     api.onPropertyChange('time', function (t) {
       // this will fire every tick
       for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
         a = api.getAtomProperties(i);
+
         if (((a.vx * a.vx) + (a.vy * a.vy)) > particleMaxVelocity) {
           // particles moving too fast can cause the model to freeze up
           let adjustedVx = a.vx * 0.01;
@@ -289,13 +277,17 @@ export default class Interactive extends PureComponent {
     let deleteMarkedAtoms = () => {
       let atomsToDelete = [];
       for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
-        if (api.getAtomProperties(i).marked && !api.getAtomProperties(i).pinned)
+        let d = api.getAtomProperties(i);
+        if (d.marked && !d.pinned) {
           atomsToDelete.push(i);
+        } else {
+          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
+          if (elementInsideAtomBox && d.element < 3) atomsToDelete.push(i);
+        }
       }
       for (let i = atomsToDelete.length - 1; i > -1; i--) {
         api.removeAtom(atomsToDelete[i]);
       }
-
       this.setState({ deleteHover: false });
     }
 
@@ -307,48 +299,6 @@ export default class Interactive extends PureComponent {
     }
 
     this.setModelProps();
-  }
-
-  generatePinnedParticleText(i) {
-    let textProps = {
-      "text": "P",
-      "hostType": "Atom",
-      "hostIndex": i,
-      "layer": 1,
-      "textAlign": "center",
-      "width": 0.3
-    };
-    return textProps;
-  }
-
-  addPinnedParticleText(particle) {
-    if (!particle) {
-      // add boxes for all pinned particles
-      api.set({ 'textboxes': {} });
-      let textToAdd = [];
-      for (let i = 0; i < api.getNumberOfAtoms(); i++) {
-        let a = api.getAtomProperties(i);
-        if (a.pinned && a.element < this.state.elements.value) {
-          let textProps = this.generatePinnedParticleText(i);
-          api.addTextBox(textProps);
-        }
-      }
-    } else {
-      // add box for specific particle
-      let textProps = this.generatePinnedParticleText(particle);
-      api.addTextBox(textProps);
-    }
-  }
-  removePinnedParticleText(particle) {
-    let textboxes = api.get('textBoxes');
-    let textToRemove = -1;
-    for (let i = 0; i < textboxes.length; i++) {
-      if (textboxes[i].hostIndex == particle) {
-        textToRemove = i;
-        break;
-      }
-    }
-    if (textToRemove > -1) api.removeTextBox(textToRemove);
   }
 
   addNewDraggableAtom(el = 0, skipCheck = false) {
@@ -572,6 +522,7 @@ export default class Interactive extends PureComponent {
           </div>
           <SimulationControls {...this.state} onChange={this.handleSimulationChange} onToggleHeat={this.toggleHeat} onContainerLid={this.toggleContainerLid} onToggleRunState={this.toggleRunState} />
           <LogoMenu scale="logo-menu small" navPath="../index.html" />
+          <Clock dark={authoring} />
         </div>
       </MuiThemeProvider>
     );

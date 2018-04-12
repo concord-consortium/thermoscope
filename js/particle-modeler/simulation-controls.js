@@ -138,7 +138,7 @@ export default class SimulationControls extends PureComponent {
         {showFreezeButton.value === true &&
           <div className="button-layout">
           <IconButton iconClassName="material-icons" className={heatIconStyle}
-            onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">whatshot</IconButton>
+            onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">wb_sunny</IconButton>
             {heatValue == heatMultiplier && <CircularProgress
                     mode="determinate"
                     value={completed}
