@@ -21,6 +21,7 @@
 <script>
   function handleUpdateReadyEvent(e){
     window.applicationCache.swapCache();
+    window.location.reload();
   }
 
   function handleCacheEvent(e){
