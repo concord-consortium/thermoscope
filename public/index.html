@@ -18,6 +18,31 @@
 </head>
 <body>
 <div id="app"></div>
+<script>
+  function handleUpdateReadyEvent(e){
+    window.applicationCache.swapCache();
+  }
+
+  function handleCacheEvent(e){
+    //console.log('Handling cache event: ', e.type);
+  }
+
+  function handleCacheError(e) {
+    console.log('Error: Cache failed to update!');
+  }
+
+  window.addEventListener('load', function(e) {
+    window.applicationCache.addEventListener('updateready', handleUpdateReadyEvent, false);
+    window.applicationCache.addEventListener('checking', handleCacheEvent, false);
+    window.applicationCache.addEventListener('noupdate', handleCacheEvent, false);
+    window.applicationCache.addEventListener('downloading', handleCacheEvent, false);
+    window.applicationCache.addEventListener('cached', handleCacheEvent, false);
+    window.applicationCache.addEventListener('obsolete', handleCacheEvent, false);
+    window.applicationCache.addEventListener('error', handleCacheError, false);
+
+  }, false);
+
+</script>
 <script src="app.js"></script>
 </body>
 </html>
