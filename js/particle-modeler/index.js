@@ -504,7 +504,7 @@ export default class Interactive extends PureComponent {
           <div className="app-container">
             <div className="lab-wrapper">
               <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
-                playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
+                playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='lab/embeddable.html' />
               { allowDragging &&
                 <div className="lab-ui">
                   <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
