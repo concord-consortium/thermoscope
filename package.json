@@ -4,6 +4,7 @@
   "description": "This repository contains the initial code to visualize matter at different temperatures, controlled either by sliders or by input from an external temperature sensor.",
   "main": "js/components/app.js",
   "scripts": {
+    "start": "webpack --config webpack.config.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
