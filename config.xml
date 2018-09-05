@@ -17,9 +17,7 @@
       The Concord Consortium
   </author>
 
-  <platform>
-    <platform name="ios" />
-    <platform name="android" />
-  </platform>
+  <platform name="ios" />
+  <platform name="android" />
 
 </widget>
