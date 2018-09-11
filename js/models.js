@@ -166,28 +166,30 @@ export default {
   ],
   uniform: [
     {
-      name: 'Coconut Oil',
+      name: 'Wax',
       json: coconutOil,
       tempScale: function (temp) {
         let t = normalizeTemp(temp);
-        if (t < 0.462)
-          return t * 2000 + 1000;
+        if (t < 0.65)   // 37ºC
+          return t * 1000 + 500;
         else
-          return t * 7000;
+          return t * 6000;
       },
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 0.3 + 0.6;
       },
       gravityScale: function (temp) {
         let t = normalizeTemp(temp);
-        if (t < 0.462)
+        if (t < 0.65)
           return 1e-6
-        else
+        else {
+          console.log("wee!")
           return 3e-7
+        }
       },
       coulombForcesSettings: function (temp) {
         let t = normalizeTemp(temp);
-        if (t > 0.462)
+        if (t > 0.65)
           return true
         return false
       }
@@ -197,7 +199,7 @@ export default {
       json: uniform,
       tempScale: function (temp) {
         let t = normalizeTemp(temp);
-        if (t < 0.27)
+        if (t < 0.9)
           return t * 2000 + 1000;
         else if (t < 0.71)
           return t * 7000;
