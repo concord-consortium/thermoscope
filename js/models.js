@@ -135,16 +135,6 @@ export default {
       }
     },
     {
-      name: 'Air',
-      json: gas1,
-      tempScale: function (temp) {
-        return normalizeTemp(temp) * 5000 + 1500;
-      },
-      timeStepScale: function (temp) {
-        return normalizeTemp(temp) * 1.0 + 0.2;
-      }
-    },
-    {
       name: 'Air2',
       json: gas4,
       tempScale: function (temp) {
@@ -152,16 +142,6 @@ export default {
       },
       timeStepScale: function (temp) {
         return normalizeTemp(temp) * 1.0 + 0.2;
-      }
-    },
-    {
-      name: 'Gas 2',
-      json: gas2,
-      tempScale: function (temp) {
-        return normalizeTemp(temp) * 7000 + 3500;
-      },
-      timeStepScale: function (temp) {
-        return normalizeTemp(temp) * 0.65 + 0.03;
       }
     }
   ],
