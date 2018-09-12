@@ -113,7 +113,7 @@ export default class ThermoscopeControl extends PureComponent {
               <div className="list-section">
                 <h1>Thermoscope Examples</h1>
                 <GridList style={gridStyle}>
-                <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
+                  <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
                     <div className="wood-icon-100 example-icon" />
                     <div className="stone-icon-100 example-icon" />
                     <div>Wood and Stone</div>
@@ -127,8 +127,10 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="air-icon-100 example-icon" />
                     <div className="air-icon-100 example-icon" />
                     <div>Air</div>
-                </GridTile>
-                <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid&materialA=2&materialB=2", 2)} key="4" >
+                  </GridTile>
+                </GridList>
+                <GridList style={gridStyle}>
+                  <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid&materialA=2&materialB=2", 2)} key="4" >
                     <div className="water-icon-100 example-icon" />
                     <div className="water-icon-100 example-icon" />
                     <div>Water</div>
