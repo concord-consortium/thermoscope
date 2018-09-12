@@ -14,6 +14,7 @@ import gas2 from '../models/gas-2.json';
 import gas4 from '../models/gas-4.json';
 import uniform from '../models/uniform.json';
 import coconutOil from '../models/coconut-oil.json';
+import wax from '../models/wax.json';
 
 export const MIN_TEMP = -6; // *C
 export const MAX_TEMP = 60; // *C
@@ -167,7 +168,7 @@ export default {
   uniform: [
     {
       name: 'Wax',
-      json: coconutOil,
+      json: wax,
       tempScale: function (temp) {
         let t = normalizeTemp(temp);
         if (t < 0.65)   // 37ºC
@@ -190,6 +191,33 @@ export default {
       coulombForcesSettings: function (temp) {
         let t = normalizeTemp(temp);
         if (t > 0.65)
+          return true
+        return false
+      }
+    },
+    {
+      name: 'Coconut Oil',
+      json: coconutOil,
+      tempScale: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t < 0.462)
+          return t * 2000 + 1000;
+        else
+          return t * 7000;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.3 + 0.6;
+      },
+      gravityScale: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t < 0.462)
+          return 1e-6
+        else
+          return 3e-7
+      },
+      coulombForcesSettings: function (temp) {
+        let t = normalizeTemp(temp);
+        if (t > 0.462)
           return true
         return false
       }
