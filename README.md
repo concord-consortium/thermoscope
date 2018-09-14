@@ -34,12 +34,15 @@ To access the Particle Modeler in Authoring mode, adjust the url to add #authori
 First, you need to make sure that webpack is installed and all the NPM packages required by this project are available:
 
 ```
-npm install -g webpack
 npm install
 ```
 Then you can build the project files using:
 ```
-webpack
+npm start
+```
+And serve the contents of `dist` using, e.g. live-server
+```
+live-server dist
 ```
 or start webpack dev server:
 ```

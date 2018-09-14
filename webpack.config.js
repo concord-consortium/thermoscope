@@ -37,8 +37,8 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|gif)$/,
-        // inline base64 URLs for <=100k images, direct URLs for the rest
-        loader: 'url-loader?limit=102400'
+        // inline base64 URLs for <=200k images, direct URLs for the rest
+        loader: 'url-loader?limit=204800'
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
