@@ -468,7 +468,7 @@ export default class Interactive extends PureComponent {
   toggleContainerLid() {
     const { containerLid, containerHeight } = this.state;
     updateContainerLid(containerLid, !containerLid.value, true, containerHeight, api);
-    let lid = containerLid;
+    let lid = {...containerLid};
     lid.value = !containerLid.value;
     this.setState({ containerLid: lid });
   }

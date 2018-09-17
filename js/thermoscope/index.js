@@ -15,6 +15,7 @@ import { GridList, GridTile } from 'material-ui/GridList'
 import Thermoscope from '../components/thermoscope';
 
 const sensor = bleSensor;
+const enableUrlParam = getURLParam('params') || false;
 
 import '../../css/app.less';
 
@@ -48,8 +49,8 @@ export default class ThermoscopeControl extends PureComponent {
   constructor(props) {
     super(props);
     let initialMode = ThermoscopeMode.Menu;
-    if (getURLParam('A')) {
-      if (getURLParam('B')) {
+    if (enableUrlParam && getURLParam('A')) {
+      if (enableUrlParam && getURLParam('B')) {
         initialMode = ThermoscopeMode.TwoThermoscope;
       } else {
         initialMode = ThermoscopeMode.OneThermoscope;
@@ -62,20 +63,30 @@ export default class ThermoscopeControl extends PureComponent {
     this.renderThermoscope = this.renderThermoscope.bind(this);
     this.showMenu = this.showMenu.bind(this);
   }
+  getParam(param) {
+    if (enableUrlParam) {
+      return getURLParam(param);
+    } else {
+      return this.state.params[param] || false;
+    }
+  }
   showMenu() {
     this.setState({ mode: ThermoscopeMode.Menu });
   }
 
   setThermoscopeRendering(params, quantity) {
-    var pageUrl = params ? '?' + params : '';
-    window.history.pushState('', '', pageUrl);
-    this.setState({ mode: quantity })
+    if (enableUrlParam) {
+      let urlParams = Object.entries(params).map(e => e.join('=')).join('&');
+      var pageUrl = params ? '?' + urlParams : '';
+      window.history.pushState('', '', pageUrl);
+    }
+    this.setState({ params, mode: quantity })
   }
 
   renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
     let meterMin = meterMinClamp ? meterMinClamp : 0;
     let meterMax = meterMaxClamp ? meterMaxClamp : 1;
-    let showControls = getURLParam('controls');
+    let showControls = this.getParam('controls');
     let thermoscope =
       <div className="thermoscope-container">
         <Thermoscope
@@ -99,8 +110,7 @@ export default class ThermoscopeControl extends PureComponent {
     const { mode } = this.state;
     const gridStyle = {
       display: 'flex',
-      flexWrap: 'nowrap',
-      overflowX: 'auto',
+      flexWrap: 'nowrap'
     }
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
@@ -113,29 +123,29 @@ export default class ThermoscopeControl extends PureComponent {
               <div className="list-section">
                 <h1>Thermoscope Examples</h1>
                 <GridList style={gridStyle}>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=solid&B=solid", 2)} key="1">
+                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'solid', B: 'solid' }, 2)} key="1">
                     <div className="wood-icon-100 example-icon" />
                     <div className="stone-icon-100 example-icon" />
                     <div>Wood and Stone</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid", 2)} key="2" >
+                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid' }, 2)} key="2" >
                     <div className="oil-icon-100 example-icon" />
                     <div className="soap-icon-100 example-icon" />
                     <div>Oil and Soap</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=gas&B=gas", 2)} key="3" >
+                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas' }, 2)} key="3" >
                     <div className="air-icon-100 example-icon" />
                     <div className="air-icon-100 example-icon" />
                     <div>Air</div>
                   </GridTile>
                 </GridList>
                 <GridList style={gridStyle}>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=liquid&B=liquid&materialA=2&materialB=2", 2)} key="4" >
+                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid', materialA: 2, materialB: 2 }, 2)} key="4" >
                     <div className="water-icon-100 example-icon" />
                     <div className="water-icon-100 example-icon" />
                     <div>Water</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering("A=uniform", 1)} key="5" >
+                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'uniform' }, 1)} key="5" >
                     <div className="wax-icon-100 example-icon" />
                     <div>Experiments</div>
                   </GridTile>
@@ -144,11 +154,11 @@ export default class ThermoscopeControl extends PureComponent {
               <div className="list-section">
                 <h1>Thermoscope Experiments</h1>
                 <GridList style={gridStyle}>
-                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 1)} key="5">
+                <GridTile onClick={() => this.setThermoscopeRendering({ controls:true }, 1)} key="5">
                     <div className="thermoscope-icon-84 example-icon" />
                     <div>Thermoscope (one)</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering("controls=true", 2)} key="6">
+                  <GridTile onClick={() => this.setThermoscopeRendering({ controls:true }, 2)} key="6">
                     <div className="thermoscope-icon-84 example-icon" />
                     <div className="thermoscope-icon-84 example-icon" />
                     <div>Thermoscope (two)</div>
@@ -159,20 +169,20 @@ export default class ThermoscopeControl extends PureComponent {
           }
           {mode === ThermoscopeMode.OneThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'))}
+              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'))}
             </div>
           }
           { mode === ThermoscopeMode.TwoThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'),  getURLParam('materialA'))}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'),  getURLParam('materialB'))}
+              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'),  this.getParam('materialA'))}
+              {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'),  this.getParam('materialB'))}
             </div>
           }
           { mode === ThermoscopeMode.ThreeThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(getURLParam('A'), 0, 'A', getURLParam('hideA'), getURLParam('materialA'), true)}
-              {this.renderThermoscope(getURLParam('B'), 1, 'B', getURLParam('hideB'), getURLParam('materialB'), true)}
-              {this.renderThermoscope(getURLParam('C'), 1, 'C', getURLParam('hideC'), getURLParam('materialC'), true)}
+              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'), true)}
+              {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'), this.getParam('materialB'), true)}
+              {this.renderThermoscope(this.getParam('C'), 1, 'C', this.getParam('hideC'), this.getParam('materialC'), true)}
             </div>
           }
           <Sensor sensor={sensor} showAddressBox={false} />
