@@ -95,14 +95,23 @@
     }
   }
   .speed-controls{
-    top: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    padding-top: 420px;
     height: 50px;
     text-align: center;
     width: 100%;
-    position: absolute;
     .button-layout{
       display:inline-block;
-      margin:0px 20px;
+      margin:0px 31px;
+
+      .material-icons {
+        font-size: 40px !important;
+      }
     }
   }
 
@@ -234,8 +243,9 @@ td {
   }
 }
 .beakerlight{
-  height: 24px;
-  width: 24px;
+  height: 38px;
+  width: 38px;
+  margin-top: -20px;
   background: url("beaker_icon_light.svg");
   &.closed{
     background: url("beaker_icon_closed_light.svg");

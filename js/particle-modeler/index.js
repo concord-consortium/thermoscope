@@ -20,14 +20,6 @@ import { updateContainerLid, updateContainerVisibility, getContainerPosition } f
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
-import Rebase from 're-base';
-var base = Rebase.createClass({
-    apiKey: "AIzaSyChElp_DuPn3Q0jwV1VXq2M4urgKgANrKw",
-    authDomain: "particlemodeler.firebaseapp.com",
-    databaseURL: "https://particlemodeler.firebaseio.com",
-    storageBucket: "particlemodeler.appspot.com",
-    messagingSenderId: "708009502450"
-});
 // Required by Material-UI library.
 injectTapEventPlugin();
 
@@ -476,7 +468,7 @@ export default class Interactive extends PureComponent {
   toggleContainerLid() {
     const { containerLid, containerHeight } = this.state;
     updateContainerLid(containerLid, !containerLid.value, true, containerHeight, api);
-    let lid = containerLid;
+    let lid = {...containerLid};
     lid.value = !containerLid.value;
     this.setState({ containerLid: lid });
   }
