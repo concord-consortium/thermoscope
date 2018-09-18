@@ -20,6 +20,8 @@ import { updateContainerLid, updateContainerVisibility, getContainerPosition } f
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
 
+let defaultOfflineModelProps = "gravitationalField=0.0000051&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true&element1Sigma=0.299&element1Epsilon=-0.5&element1Mass=19.9&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&element3Epsilon=-0.495&pair11Forces=true&pair11Epsilon=-0.5&pair11Sigma=0.299&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair13Epsilon=-0.5&pair22Epsilon=-0.065&pair22Sigma=0.157";
+
 // Required by Material-UI library.
 injectTapEventPlugin();
 
@@ -46,7 +48,7 @@ export default class Interactive extends PureComponent {
 
   constructor(props) {
     super(props);
-    let hashParams = window.location.hash.substring(1),
+    let hashParams = defaultOfflineModelProps,
       model = models.emptyModel,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
       urlModel = getURLParam("model"),
