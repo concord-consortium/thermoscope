@@ -3,6 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import LogoMenu from './logo-menu';
+import Version from './version';
 import Clock from './clock';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { List, ListItem } from 'material-ui/List';
@@ -32,9 +33,7 @@ export default class LandingPage extends PureComponent {
   }
   render() {
     const { particleMenuMode } = this.state;
-
     const iPadBuild = window.location.href.indexOf('/branch/ios') > -1;
-    const versionId = iPadBuild ? 'iOS' : 'Master';
     const headerText = iPadBuild ? 'Welcome to the Thermoscope! Tap the Icon to Start' : 'Thermoscope and Particle Modeler Examples';
 
     return (
@@ -74,7 +73,7 @@ export default class LandingPage extends PureComponent {
           </div>
         </div>
           }
-        <div className="version-identifier">{versionId} 20180920.1</div>
+        <Version />
       </div>
     </MuiThemeProvider>
     );
