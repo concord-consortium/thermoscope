@@ -46,10 +46,10 @@ export default class LandingPage extends PureComponent {
           <h1>{headerText}</h1>
           <LogoMenu scale="logo-menu" navPath="./index.html" />
           <div className="main-menu">
-            <div className="menu-button"> <a href="./thermoscope/"><div className="thermoscope-link" /></a></div>
+            <div className="menu-button"> <a href="./thermoscope/index.html"><div className="thermoscope-link" /></a></div>
             {!iPadBuild && <div className="menu-button"><a><div className="particle-modeler-link" onClick={this.showParticleMenu} /></a></div>}
             </div>
-            {!iPadBuild && <div className="settings-button"><a href="./icon-setter/"><div className="settings-link"><i className="material-icons">settings</i></div></a></div>}
+            {!iPadBuild && <div className="settings-button"><a href="./icon-setter/index.html"><div className="settings-link"><i className="material-icons">settings</i></div></a></div>}
         </div>
         }
         {particleMenuMode &&
@@ -60,15 +60,15 @@ export default class LandingPage extends PureComponent {
               <List>
               <div className="list-section">
                 <h1>Empty Particle Modeler</h1>
-                <ListItem primaryText="Particle Modeler" href="./particle-modeler/" />
-                <ListItem primaryText="Particle Modeler (Authoring)" href="./particle-modeler/#authoring=true" />
+                <ListItem primaryText="Particle Modeler" href="./particle-modeler/index.html" />
+                <ListItem primaryText="Particle Modeler (Authoring)" href="./particle-modeler/index.html#authoring=true" />
                 </div>
                 <div className="list-section">
                   <h1>Particle Modeler Examples</h1>
-                  <ListItem primaryText="One Particle Example" href= "./particle-modeler/#targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="6" />
-                  <ListItem primaryText="One Particle Example (Authoring)" href="./particle-modeler/#authoring=true&targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="7" />
-                  <ListItem primaryText="Container Demo" href="./particle-modeler/#gravitationalField=0.0000051&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true&element1Sigma=0.299&element1Epsilon=-0.5&element1Mass=19.9&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&element3Epsilon=-0.495&pair11Forces=true&pair11Epsilon=-0.5&pair11Sigma=0.299&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair13Epsilon=-0.5&pair22Epsilon=-0.065&pair22Sigma=0.157" key="8" />
-                  <ListItem primaryText="Container Demo (Authoring)" href="./particle-modeler/#authoring=true&gravitationalField=0.0000051&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true&element1Sigma=0.299&element1Epsilon=-0.5&element1Mass=19.9&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&element3Epsilon=-0.495&pair11Forces=true&pair11Epsilon=-0.5&pair11Sigma=0.299&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair13Epsilon=-0.5&pair22Epsilon=-0.065&pair22Sigma=0.157" key="9" />
+                  <ListItem primaryText="One Particle Example" href= "./particle-modeler/index.html#targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="6" />
+                  <ListItem primaryText="One Particle Example (Authoring)" href="./particle-modeler/index.html#authoring=true&targetTemperature=140&gravitationalField=0.000005&timeStep=0.6&viscosity=0.8&showFreezeButton=true&elements=1&element1Sigma=0.392&element1Epsilon=-0.5&element1Mass=10&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&pair11Epsilon=-0.5&pair11Sigma=0.392&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair22Forces=true&pair22Epsilon=-0.065&pair22Sigma=0.157" key="7" />
+                  <ListItem primaryText="Container Demo" href="./particle-modeler/index.html#gravitationalField=0.0000051&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true&element1Sigma=0.299&element1Epsilon=-0.5&element1Mass=19.9&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&element3Epsilon=-0.495&pair11Forces=true&pair11Epsilon=-0.5&pair11Sigma=0.299&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair13Epsilon=-0.5&pair22Epsilon=-0.065&pair22Sigma=0.157" key="8" />
+                  <ListItem primaryText="Container Demo (Authoring)" href="./particle-modeler/index.html#authoring=true&gravitationalField=0.0000051&timeStep=0.25&viscosity=0.8&showFreezeButton=true&container=true&element1Sigma=0.299&element1Epsilon=-0.5&element1Mass=19.9&element2Sigma=0.255&element2Epsilon=0&element2Mass=19.9&element3Epsilon=-0.495&pair11Forces=true&pair11Epsilon=-0.5&pair11Sigma=0.299&pair12Forces=true&pair12Epsilon=-0.25&pair12Sigma=0.378&pair13Epsilon=-0.5&pair22Epsilon=-0.065&pair22Sigma=0.157" key="9" />
               </div>
             </List>
           </div>
