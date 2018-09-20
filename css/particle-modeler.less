@@ -105,9 +105,25 @@
     height: 50px;
     text-align: center;
     width: 100%;
+
+    pointer-events: none;
+
+    button {
+      padding: 0px !important;
+      border-radius: 0px !important;
+      width: 55px !important;
+      height: 55px !important;
+    }
+    button.heat-button {
+      border-radius: 24px !important;
+      width: 48px !important;
+      height: 48px !important;
+    }
+
     .button-layout{
       display:inline-block;
-      margin:0px 31px;
+      width: 125px;
+      pointer-events: all;
 
       .material-icons {
         font-size: 40px !important;
