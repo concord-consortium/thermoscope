@@ -6,12 +6,11 @@ export default class LogoMenu extends PureComponent {
     super(props);
   }
   render() {
-    const { scale, showNav, navPath } = this.props;
-    let path = navPath ? navPath : '../index.html';
+    const { scale } = this.props;
 
     return (
       <div className={scale}>
-        <a href={path}><div className="cc-logo"></div></a>
+        <div className="cc-logo"></div>
       </div>
     )
   };
