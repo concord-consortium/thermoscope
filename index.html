@@ -20,47 +20,5 @@
 <body>
 <div id="app"></div>
 <script src="particle-modeler.js"></script>
-<script>
-  var doNothing = function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  // prevent background elastic-band effect on iOS
-  document.addEventListener('touchmove', doNothing, { passive: false });
-
-  // Create an observer instance linked to the callback function
-  var domObserver = new MutationObserver(function() {
-    var iframes = document.getElementsByTagName("iframe");
-    if (iframes.length > 0) {
-      domObserver.disconnect();
-      var checkForBody = setInterval(function() {
-        var iframe = iframes[0];
-        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-        if (!innerDoc.body) {
-          return;
-        }
-        clearInterval(checkForBody);
-        var innerDomObserver = new MutationObserver(function() {
-          var modelSVGs = innerDoc.getElementsByTagName("svg");
-          var canvas = innerDoc.getElementsByTagName("canvas");
-          if (modelSVGs.length === 3 && canvas.length > 0) {
-            innerDomObserver.disconnect();
-
-            modelSVGs[0].addEventListener('touchmove', doNothing, { passive: false });
-            modelSVGs[1].addEventListener('touchmove', doNothing, { passive: false });
-            modelSVGs[2].addEventListener('touchmove', doNothing, { passive: false });
-            canvas[0].addEventListener('touchmove', doNothing, { passive: false });
-            innerDoc.getElementsByClassName('lab-fastclick-container')[0].addEventListener('touchmove', doNothing, { passive: false });
-            innerDoc.addEventListener('touchmove', doNothing, { passive: false });
-          }
-        });
-        innerDomObserver.observe(innerDoc.body, { attributes: true, childList: true, subtree: true });
-      }, 200);
-    }
-  });
-
-  domObserver.observe(document.querySelector('body'), { attributes: true, childList: true, subtree: true });
-</script>
 </body>
 </html>

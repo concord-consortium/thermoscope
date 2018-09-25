@@ -38530,21 +38530,13 @@
 	  _createClass(LogoMenu, [{
 	    key: 'render',
 	    value: function render() {
-	      var _props = this.props,
-	          scale = _props.scale,
-	          showNav = _props.showNav,
-	          navPath = _props.navPath;
+	      var scale = this.props.scale;
 
-	      var path = navPath ? navPath : '../index.html';
 
 	      return _react2.default.createElement(
 	        'div',
 	        { className: scale },
-	        _react2.default.createElement(
-	          'a',
-	          { href: path },
-	          _react2.default.createElement('div', { className: 'cc-logo' })
-	        )
+	        _react2.default.createElement('div', { className: 'cc-logo' })
 	      );
 	    }
 	  }]);
