@@ -133,7 +133,7 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="soap-icon-100 example-icon" />
                     <div>Oil and Soap</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas' }, 2)} key="3" >
+                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas', materialA: 0, materialB: 0}, 2)} key="3" >
                     <div className="air-icon-100 example-icon" />
                     <div className="air-icon-100 example-icon" />
                     <div>Air</div>
