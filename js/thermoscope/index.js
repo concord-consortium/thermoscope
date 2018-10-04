@@ -133,7 +133,7 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="soap-icon-100 example-icon" />
                     <div>Oil and Soap</div>
                   </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas' }, 2)} key="3" >
+                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas', materialA: 0, materialB: 0}, 2)} key="3" >
                     <div className="air-icon-100 example-icon" />
                     <div className="air-icon-100 example-icon" />
                     <div>Air</div>
@@ -145,9 +145,13 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="water-icon-100 example-icon" />
                     <div>Water</div>
                   </GridTile>
-                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'uniform' }, 1)} key="5" >
+                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1 }, 1)} key="5" >
+                    <div className="coconut-oil-icon-100 example-icon" />
+                    <div>Coconut oil</div>
+                  </GridTile>
+                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'uniform' }, 1)} key="6" >
                     <div className="wax-icon-100 example-icon" />
-                    <div>Experiments</div>
+                    <div>Wax</div>
                   </GridTile>
                 </GridList>
               </div>
@@ -169,7 +173,7 @@ export default class ThermoscopeControl extends PureComponent {
           }
           {mode === ThermoscopeMode.OneThermoscope &&
             <div className="app-container">
-              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'))}
+              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'))}
             </div>
           }
           { mode === ThermoscopeMode.TwoThermoscope &&

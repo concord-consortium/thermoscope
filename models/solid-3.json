@@ -30,7 +30,7 @@
   "viewOptions": {
     "viewPortWidth": 3.1,
     "viewPortHeight": 3.1,
-    "viewPortZoom": 1,
+    "viewPortZoom": 1.4,
     "viewPortX": 0.075,
     "viewPortY": 0,
     "viewPortDrag": false,
