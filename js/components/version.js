@@ -9,7 +9,7 @@ export default class Version extends PureComponent {
     const iPadBuild = window.location.href.indexOf('/branch/ios') > -1;
     const versionId = iPadBuild ? 'iOS' : 'Master';
     return (
-      <div className="version-identifier">{versionId} 20180920.2</div>
+      <div className="version-identifier">{versionId} 20181004.1</div>
     )
   }
 }
