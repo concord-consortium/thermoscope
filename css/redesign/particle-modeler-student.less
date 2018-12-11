@@ -1,0 +1,272 @@
+@scale-width: 2732;
+@scale-height: 2048;
+
+@sim-window-left: 24vw;
+@sim-window-top: 15vh;
+@sim-window-width: 768px;
+@sim-window-height: 514px;
+@sim-margin: 6px;
+@sim-window-background-color: #ffffff;
+@sim-window-box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.35) inset;
+@sim-border-width: 12px;
+@sim-border-radius: 24px;
+
+.sim-window{
+  left: 642px;
+  top: 302px;
+  width: 1448px; height: 1012px;
+  background-color: white or #FFFFFF;
+  box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.35) inset;
+}
+
+.app{
+  &.student {
+    background: #71FFFF;
+    background: url("background.png");
+    overflow:hidden;
+    position: relative;
+
+    .app-container{
+      position: absolute;
+      text-align:center;
+      width: 100%;
+
+      .sim-frame{
+        position: absolute;
+        width: @sim-window-width + (@sim-border-width * 2);
+        height: @sim-window-height + (@sim-border-width * 2);
+        background-color: #71FFFF;
+        border-radius: @sim-border-radius;
+        opacity: 0.5;
+
+        .sim-frame-overlay{
+          position: absolute;
+          left: @sim-border-width;
+          top: @sim-border-width;
+          width:@sim-window-width;
+          height:@sim-window-height;
+          box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.35) inset;
+          border-radius: @sim-border-radius;
+        }
+      }
+
+      .lab-wrapper{
+        width: @sim-window-width + @sim-margin;
+        height: @sim-window-height + @sim-margin;
+        border-radius: 25px;
+      }
+    }
+
+
+    .logo-menu{
+      z-index: 4;
+      .menu{
+        right:115px;
+        width:105px;
+        background: white;
+      }
+    }
+    .sim-controls{
+      position: absolute;
+      bottom: 50px;
+      width: 100%;
+
+      .button-layout-container{
+        text-align: center;
+        width: 800px;
+        margin: 0 auto;
+
+        .button-layout{
+          display: inline-block;
+        }
+      }
+
+      .speed-button{ color:#333;}
+      }
+    .material-icons{
+      color:#333 !important;
+    }
+  }
+  .material-icons{
+    color: #ddd !important;
+  }
+  .model-link-button{
+    a{
+      color: teal;
+    }
+  }
+  button {
+    position: absolute;
+    padding: 8px;
+    border-radius: 24px;
+    outline:none;
+
+    &:hover{
+      background-color:#eee;
+    }
+    i{
+      font-size:30px;
+    }
+  }
+  .speed-controls{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    padding-top: 420px;
+    height: 50px;
+    text-align: center;
+    width: 100%;
+
+    pointer-events: none;
+
+    button {
+      padding: 0px !important;
+      border-radius: 0px !important;
+      width: 55px !important;
+      height: 55px !important;
+    }
+    button.heat-button {
+      border-radius: 24px !important;
+      width: 48px !important;
+      height: 48px !important;
+    }
+
+    .button-layout{
+      display:inline-block;
+      width: 125px;
+      pointer-events: all;
+
+      .material-icons {
+        font-size: 40px !important;
+      }
+    }
+  }
+
+ .progress{
+      position: absolute !important;
+      width: 40px;
+      height: 40px;
+      margin: 4px -44px;
+    }
+}
+
+.lab-ui {
+  position: relative;
+  width: 100%;
+
+  .new-atom-bin {
+    position: absolute;
+    top: -340px;
+    left: 18px;
+    border: 1px solid #555;
+    color: #777;
+    padding: 10px;
+    pointer-events: none;
+    z-index: 2;
+
+    p {
+      width: 100%;
+      text-align: center;
+      padding-bottom: 10px;
+    }
+
+    .new-atom {
+      display: block;
+      border: 1px solid #555;
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.7);
+      transition: background 1.5s;
+
+      div {
+        display: block;
+        background: black;
+        border-radius: 50%;
+        height: 22px;
+        width: 22px;
+        margin: 3px;
+        background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
+        opacity: 1;
+        transition: opacity 1.5s;
+      }
+
+      &.new-atom-0 {
+        div {
+          background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);
+        }
+      }
+
+      &.new-atom-1 {
+        div {
+          background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
+        }
+      }
+    }
+
+    .hiding {
+      display: block;
+      border: 1px solid #555;
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,1);
+      transition: background 0s;
+
+      div {
+        opacity: 0;
+        transition: opacity 0s;
+      }
+    }
+  }
+
+  .delete-icon {
+    position: absolute;
+    top: -73px;
+    left: 489px;
+    pointer-events: none;
+  }
+}
+
+.beaker{
+  height: 24px;
+  width: 24px;
+  background: url("container.svg");
+  &.closed{
+    background: url("container-lid.svg");
+  }
+}
+.beakerlight{
+  height: 38px;
+  width: 38px;
+  margin-top: -20px;
+  background: url("container.svg");
+  &.closed{
+    background: url("container-lid.svg");
+  }
+}
+.heat-button{
+  &.hot{
+    background-color: orange !important;
+  }
+  &.cold{
+    background-color: lightsteelblue !important;
+  }
+}
+.heatbath{
+  width: 220px;
+  margin-top: -30px;
+  height: 8px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  &.hot{
+    background-color: orange;
+  }
+  &.cold{
+    background-color: lightsteelblue;
+  }
+}

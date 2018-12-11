@@ -44,9 +44,9 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|gif)$/,
-        // inline base64 URLs for <=200k images, direct URLs for the rest
+        // inline base64 URLs for <=4000k images, direct URLs for the rest
         use: [{
-          loader: 'url-loader?limit=204800'
+          loader: 'url-loader?limit=4096000'
         }]
       },
       {
