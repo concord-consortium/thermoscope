@@ -2,7 +2,7 @@
 @scale-height: 2048;
 
 @sim-window-left: 24vw;
-@sim-window-top: 15vh;
+@sim-window-top: 12vh;
 @sim-window-width: 768px;
 @sim-window-height: 514px;
 @sim-margin: 6px;
@@ -13,7 +13,7 @@
 
 .sim-window{
   left: 642px;
-  top: 302px;
+  top: 250px;
   width: 1448px; height: 1012px;
   background-color: white or #FFFFFF;
   box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.35) inset;
@@ -30,6 +30,7 @@
       position: absolute;
       text-align:center;
       width: 100%;
+      margin-top:-50px;
 
       .sim-frame{
         position: absolute;
@@ -57,18 +58,9 @@
       }
     }
 
-
-    .logo-menu{
-      z-index: 4;
-      .menu{
-        right:115px;
-        width:105px;
-        background: white;
-      }
-    }
     .sim-controls{
       position: absolute;
-      bottom: 50px;
+      bottom: 70px;
       width: 100%;
 
       .button-layout-container{
@@ -78,195 +70,197 @@
 
         .button-layout{
           display: inline-block;
+          width: 80px;
+          height: 80px;
+          margin: 0 30px;
+          background-color:#71FFFF;
+          border-radius:40px;
+          color:black;
+          box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
+
+          .button {
+            position: relative;
+            width:80%;
+            height: 80%;
+            margin-top: 8px;
+            margin-left: 8px;
+            border-radius:40px;
+            background-color:#aaaaaa;
+            color:white;
+            fill:white;
+            box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.35) inset;
+
+            background-size: 60%;
+            background-repeat: no-repeat;
+            background-position: center;
+            &.run{
+              background-color: #7BCE52;
+              background-image: url("run-icon.svg");
+            }
+            &.cool-button{
+              background-color: #27ADB8;
+              background-image: url("cool-icon.svg");
+            }
+            &.heat-button{
+              background-color: #F0822B;
+              background-image: url("heat-icon.svg");
+            }
+            &.container{
+              background-color: #6D7BD6;
+              background-image: url("container.svg");
+            }
+            &.restart{
+              background-color: #F7AA00;
+              background-image: url("restart-icon.svg");
+            }
+
+            .progress{
+              position: absolute !important;
+              width: 40px;
+              height: 40px;
+              margin: 4px -44px;
+            }
+          }
         }
       }
 
       .speed-button{ color:#333;}
       }
-    .material-icons{
-      color:#333 !important;
-    }
-  }
-  .material-icons{
-    color: #ddd !important;
-  }
-  .model-link-button{
-    a{
-      color: teal;
-    }
-  }
-  button {
-    position: absolute;
-    padding: 8px;
-    border-radius: 24px;
-    outline:none;
 
-    &:hover{
-      background-color:#eee;
-    }
-    i{
-      font-size:30px;
-    }
-  }
-  .speed-controls{
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    padding-top: 420px;
-    height: 50px;
-    text-align: center;
+
+
+
+  .lab-ui {
+    position: relative;
     width: 100%;
 
-    pointer-events: none;
-
-    button {
-      padding: 0px !important;
-      border-radius: 0px !important;
-      width: 55px !important;
-      height: 55px !important;
-    }
-    button.heat-button {
-      border-radius: 24px !important;
-      width: 48px !important;
-      height: 48px !important;
-    }
-
-    .button-layout{
-      display:inline-block;
-      width: 125px;
-      pointer-events: all;
-
-      .material-icons {
-        font-size: 40px !important;
-      }
-    }
-  }
-
- .progress{
-      position: absolute !important;
-      width: 40px;
-      height: 40px;
-      margin: 4px -44px;
-    }
-}
-
-.lab-ui {
-  position: relative;
-  width: 100%;
-
-  .new-atom-bin {
-    position: absolute;
-    top: -340px;
-    left: 18px;
-    border: 1px solid #555;
-    color: #777;
-    padding: 10px;
-    pointer-events: none;
-    z-index: 2;
-
-    p {
-      width: 100%;
-      text-align: center;
-      padding-bottom: 10px;
-    }
-
-    .new-atom {
-      display: block;
+    .new-atom-bin {
+      position: absolute;
+      top: -500px;
+      left: 38px;
       border: 1px solid #555;
-      height: 28px;
-      width: 28px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.7);
-      transition: background 1.5s;
+      color: #777;
+      padding: 10px;
+      pointer-events: none;
+      z-index: 2;
 
-      div {
+      p {
+        width: 100%;
+        text-align: center;
+        padding-bottom: 10px;
+      }
+
+      .new-atom {
         display: block;
-        background: black;
+        border: 1px solid #555;
+        height: 32px;
+        width: 32px;
         border-radius: 50%;
-        height: 22px;
-        width: 22px;
-        margin: 3px;
-        background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
-        opacity: 1;
-        transition: opacity 1.5s;
-      }
+        background: rgba(255,255,255,0.7);
+        transition: background 1.5s;
 
-      &.new-atom-0 {
         div {
-          background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #F3F3F3 16%, #B4B4B4 60%, #F3F3F3 85%);
+          display: block;
+          background: black;
+          border-radius: 50%;
+          height: 28px;
+          width: 28px;
+          margin: 2px;
+          background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
+          opacity: 1;
+          transition: opacity 1.5s;
+        }
+
+        &.new-atom-0 {
+          div {
+            background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #e0e0e0 16%, #808080 60%, #404040 85%);
+          }
+        }
+
+        &.new-atom-1 {
+          div {
+            background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
+          }
         }
       }
 
-      &.new-atom-1 {
+      .hiding {
+        display: block;
+        border: 1px solid #555;
+        height: 28px;
+        width: 28px;
+        border-radius: 50%;
+        background: rgba(255,255,255,1);
+        transition: background 0s;
+
         div {
-          background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
+          opacity: 0;
+          transition: opacity 0s;
         }
       }
     }
 
-    .hiding {
-      display: block;
-      border: 1px solid #555;
-      height: 28px;
-      width: 28px;
-      border-radius: 50%;
-      background: rgba(255,255,255,1);
-      transition: background 0s;
-
-      div {
-        opacity: 0;
-        transition: opacity 0s;
+    .delete-icon {
+      position: absolute;
+      top: -120px;
+      left: 720px;
+      width: 45px;
+      height: 50px;
+      pointer-events: none;
+      background: url("trash-can-closed.svg");
+      background-repeat:no-repeat;
+      &.hover {
+        background: url("trash-can-open.svg");
+        background-repeat:no-repeat;
       }
     }
   }
 
-  .delete-icon {
-    position: absolute;
-    top: -73px;
-    left: 489px;
-    pointer-events: none;
+  .beaker{
+    height: 24px;
+    width: 24px;
+    background: url("container.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    &.closed{
+      background: url("container-lid.svg");
+    }
   }
-}
+  .beakerlight{
+    height: 38px;
+    width: 38px;
+    margin-top: -20px;
+    background: url("container.svg");
+    background-repeat: no-repeat;
 
-.beaker{
-  height: 24px;
-  width: 24px;
-  background: url("container.svg");
-  &.closed{
-    background: url("container-lid.svg");
+    background-size: contain;
+    &.closed{
+      background: url("container-lid.svg");
+    }
+  }
+  .heat-button{
+    &.hot{
+      background-color: orange !important;
+    }
+    &.cold{
+      background-color: lightsteelblue !important;
+    }
+  }
+  .heatbath{
+    width: 320px;
+    margin-top: -95px;
+    height: 28px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #eeeeee;
+    border-radius: 4px;
+    &.hot{
+      background-color: orange;
+    }
+    &.cold{
+      background-color: lightsteelblue;
+    }
   }
 }
-.beakerlight{
-  height: 38px;
-  width: 38px;
-  margin-top: -20px;
-  background: url("container.svg");
-  &.closed{
-    background: url("container-lid.svg");
-  }
-}
-.heat-button{
-  &.hot{
-    background-color: orange !important;
-  }
-  &.cold{
-    background-color: lightsteelblue !important;
-  }
-}
-.heatbath{
-  width: 220px;
-  margin-top: -30px;
-  height: 8px;
-  position: relative;
-  margin-left: auto;
-  margin-right: auto;
-  &.hot{
-    background-color: orange;
-  }
-  &.cold{
-    background-color: lightsteelblue;
-  }
 }

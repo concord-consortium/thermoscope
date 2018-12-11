@@ -489,6 +489,7 @@ export default class Interactive extends PureComponent {
     // const appPositionLeft = window.width === 2732 ? "24vw" : "14vw";
     // const containerStyle = { left: appPositionLeft };
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
+    const deleteIconClass = this.state.deleteHover ? "delete-icon hover" : "delete-icon";
     let newAtomVisibility = {
       atomsToShow: [this.state.showAtom0, this.state.showAtom1, this.state.showAtom2],
       count: this.state.elements.value
@@ -517,11 +518,16 @@ export default class Interactive extends PureComponent {
                 onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
               { allowDragging &&
                 <div className="lab-ui">
-                  <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-                  <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+                <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
+                {authoring &&
+                  <DeleteIcon className={deleteIconClass} style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+                }
+                {!authoring &&
+                  <div className={deleteIconClass} />
+                }
                 </div>
               }
-              { heatLevel && <div className={heatBathStyle}/>}
+              {heatLevel && <div className={heatBathStyle} />}
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>

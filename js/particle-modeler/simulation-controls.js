@@ -115,47 +115,90 @@ export default class SimulationControls extends PureComponent {
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
-    let heatIconStyle = heatValue == heatMultiplier ? "heat-button hot" : "heat-button";
-    let coolIconStyle = heatValue == coolMultiplier ? "heat-button cold" : "heat-button";
+    let heatIconStyle = heatValue == heatMultiplier ? "button heat-button hot" : "button heat-button";
+    let coolIconStyle = heatValue == coolMultiplier ? "button cool-button cold" : "button cool-button";
 
     return(
       <div className={controlsClass}>
-        <div className="button-layout-container">
-          <div className="button-layout">
-            <IconButton id="restart" iconClassName="material-icons" tooltip="Reload" onClick={this.restart}>refresh</IconButton>
-          </div>
-          <div className="button-layout">
-            <IconButton iconClassName="material-icons" className="simulation-state-button" onClick={this.toggleRunState} tooltip={simulationRunStateHint}>{simulationControlIcon}</IconButton>
-          </div>
-          {showFreezeButton.value === true &&
+        {authoring &&
+          <div className="button-layout-container">
             <div className="button-layout">
-              <IconButton  iconClassName="material-icons" className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)} tooltip="Cool">ac_unit</IconButton>
+              <IconButton iconClassName="material-icons" className="simulation-state-button" onClick={this.toggleRunState} tooltip={simulationRunStateHint}>{simulationControlIcon}</IconButton>
+            </div>
+
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <IconButton iconClassName="material-icons" className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)} tooltip="Cool">ac_unit</IconButton>
                 {heatValue == coolMultiplier && <CircularProgress
-                    mode="determinate"
-                    value={completed}
-                    className="progress"
-            />}
-            </div>
+                  mode="determinate"
+                  value={completed}
+                  className="progress"
+                />}
+              </div>
             }
-          {showFreezeButton.value === true &&
-            <div className="button-layout">
-            <IconButton iconClassName="material-icons" className={heatIconStyle}
-              onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">wb_sunny</IconButton>
-              {heatValue == heatMultiplier && <CircularProgress
-                      mode="determinate"
-                      value={completed}
-                      className="progress"
-              />}
-            </div>
-          }
-          {containerVisible &&
-            <div className="button-layout">
-              <IconButton className="container-button" onClick={this.toggleLid} tooltip="Container Lid">
-                <div className={beakerIconStyle} />
-              </IconButton>
-            </div>
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <IconButton iconClassName="material-icons" className={heatIconStyle}
+                  onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">wb_sunny</IconButton>
+                {heatValue == heatMultiplier && <CircularProgress
+                  mode="determinate"
+                  value={completed}
+                  className="progress"
+                />}
+              </div>
             }
+            {containerVisible &&
+              <div className="button-layout">
+                <IconButton className="container-button" onClick={this.toggleLid} tooltip="Container Lid">
+                  <div className={beakerIconStyle} />
+                </IconButton>
+              </div>
+            }
+
+            <div className="button-layout">
+              <IconButton id="restart" iconClassName="material-icons" tooltip="Reload" onClick={this.restart}>refresh</IconButton>
+            </div>
           </div>
+        }
+        {!authoring &&
+          <div className="button-layout-container">
+            <div className="button-layout">
+              <div className="button run" onClick={this.toggleRunState}>run</div>
+            </div>
+
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <div className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)}>cool</div>
+                {heatValue == coolMultiplier && <CircularProgress
+                  mode="determinate"
+                  value={completed}
+                  className="progress"
+                />}
+              </div>
+            }
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <div className={heatIconStyle}
+                  onClick={() => this.setHeatStatus(heatMultiplier)} >heat</div>
+                {heatValue == heatMultiplier && <CircularProgress
+                  mode="determinate"
+                  value={completed}
+                  className="progress"
+                />}
+              </div>
+            }
+            {containerVisible &&
+              <div className="button-layout">
+                <div className="button container" onClick={this.toggleLid}>lid
+                </div>
+              </div>
+            }
+
+            <div className="button-layout">
+              <div id="restart" className="button restart" onClick={this.restart}>restart</div>
+            </div>
+          </div>
+        }
       </div>
     )
   }
