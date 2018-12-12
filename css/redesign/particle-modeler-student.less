@@ -61,18 +61,32 @@
       }
     }
 
-
-
-
   .lab-ui {
     position: relative;
     width: 100%;
 
+    .new-atom-text{
+      position: absolute;
+      top: -410px;
+      left: 40px;
+
+      font-family: 'LondrinaSolid-Light', 'Londrina Solid Light';
+      font-weight: 500;
+      font-style: normal;
+      font-size: 32px;
+      color: #7BCE52;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+      line-height: normal (120px);
+      text-align: center;
+    }
+
     .new-atom-bin {
       position: absolute;
-      top: -500px;
-      left: 38px;
-      border: 1px solid #555;
+      top: -480px;
+      left: 34px;
+      border: 4px dashed #7BCE52;
+      border-radius: 50px;
       color: #777;
       padding: 10px;
       pointer-events: none;
@@ -87,8 +101,8 @@
       .new-atom {
         display: block;
         border: 1px solid #555;
-        height: 32px;
-        width: 32px;
+        height: 34px;
+        width: 34px;
         border-radius: 50%;
         background: rgba(255,255,255,0.7);
         transition: background 1.5s;
@@ -97,8 +111,8 @@
           display: block;
           background: black;
           border-radius: 50%;
-          height: 28px;
-          width: 28px;
+          height: 30px;
+          width: 30px;
           margin: 2px;
           background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
           opacity: 1;
@@ -150,28 +164,6 @@
     }
   }
 
-  .beaker{
-    height: 24px;
-    width: 24px;
-    background: url("container.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
-    &.closed{
-      background: url("container-lid.svg");
-    }
-  }
-  .beakerlight{
-    height: 38px;
-    width: 38px;
-    margin-top: -20px;
-    background: url("container.svg");
-    background-repeat: no-repeat;
-
-    background-size: contain;
-    &.closed{
-      background: url("container-lid.svg");
-    }
-  }
   .heat-button{
     &.hot{
       background-color: orange !important;
@@ -200,7 +192,7 @@
 
 .sim-controls{
   position: absolute;
-  bottom: 35px;
+  bottom: 30px;
   width: 100%;
 
   .button-layout-container{
@@ -240,7 +232,7 @@
         }
         &.pause{
           background-color: #7BCE52;
-          background-size: 50%;
+          background-size: 40%;
           background-image: url("pause-icon.svg");
         }
         &.cool-button{
@@ -280,11 +272,10 @@
         height: 110%;
         margin-top: 18px;
         margin-left: -4px;
-
         font-family: 'LondrinaSolid-Light', 'Londrina Solid Light';
-        font-weight: 400;
+        font-weight: 500;
         font-style: normal;
-        font-size: 24px;
+        font-size: 28px;
         color: white;
         text-rendering: optimizeLegibility;
         font-kerning: normal;
@@ -316,7 +307,6 @@
     }
   }
 
-  .speed-button{ color:#333;}
   }
 
 }

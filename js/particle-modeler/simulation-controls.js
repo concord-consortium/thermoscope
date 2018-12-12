@@ -119,8 +119,9 @@ export default class SimulationControls extends PureComponent {
     let heatIconStyle = heatValue == heatMultiplier ? "button heat-button hot" : "button heat-button";
     let coolIconStyle = heatValue == coolMultiplier ? "button cool-button cold" : "button cool-button";
 
-    let runButtonStyle = simulationRunning ? "buton pause" : "button run";
-    let runButtonText = simulationRunning ? "pause" : "run";
+    let runButtonStyle = simulationRunning ? "button pause" : "button run";
+    let runButtonText = simulationRunning ? "Pause" : "Run";
+    let lidButtonText = lidVisible ? "Lid Off" : "Lid On";
 
     return(
       <div className={controlsClass}>
@@ -181,7 +182,7 @@ export default class SimulationControls extends PureComponent {
                     strokeWidth={15}
                   />}
                 </div>
-            <div className="nameplate cool">cool</div>
+            <div className="nameplate cool">Cool</div>
               </div>
             }
             {showFreezeButton.value === true &&
@@ -195,20 +196,20 @@ export default class SimulationControls extends PureComponent {
                     className="progress-new"
                   />}
                 </div>
-            <div className="nameplate heat">heat</div>
+            <div className="nameplate heat">Heat</div>
               </div>
             }
             {containerVisible &&
               <div className="button-layout">
                 <div className={beakerIconStyle} onClick={this.toggleLid}>
               </div>
-              <div className="nameplate lid">lid</div>
+              <div className="nameplate lid">{lidButtonText}</div>
               </div>
             }
 
             <div className="button-layout">
               <div id="restart" className="button restart" onClick={this.restart}></div>
-              <div className="nameplate restart">restart</div>
+              <div className="nameplate restart">Restart</div>
             </div>
           </div>
         }
