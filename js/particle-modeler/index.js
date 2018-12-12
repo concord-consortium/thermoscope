@@ -219,7 +219,6 @@ export default class Interactive extends PureComponent {
         if (d.pinned === 1) {
           let el = d.element,
             newState = {};
-          console.log(api.getAtomProperties(i));
           api.get
           // initial spawned elements do not interact with the simulation
           if (el >= this.state.elements.value) {

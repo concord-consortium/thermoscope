@@ -4,6 +4,9 @@ import IconButton from 'material-ui/IconButton';
 import SvgIcon from 'material-ui/SvgIcon';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+
 const slowSpeedTimeStep = 0.05;
 const frozenTemps = { temperatureControl: true, targetTemperature: 0 };
 const heatMultiplier = 1.1;
@@ -28,7 +31,6 @@ export default class SimulationControls extends PureComponent {
   }
 
   restart() {
-   console.log("restart");
    window.location.reload();
   }
 
@@ -109,14 +111,16 @@ export default class SimulationControls extends PureComponent {
     const { showFreezeButton, container, containerLid, authoring, simulationRunning } = this.props;
     let containerVisible = container.value;
     let lidVisible = containerLid.value;
-    let beakerIconStyle = "beaker";
-    if (!authoring === true) beakerIconStyle += "light";
+    let beakerIconStyle = "button beaker";
     const controlsClass = authoring ? "speed-controls" : "sim-controls";
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
     let heatIconStyle = heatValue == heatMultiplier ? "button heat-button hot" : "button heat-button";
     let coolIconStyle = heatValue == coolMultiplier ? "button cool-button cold" : "button cool-button";
+
+    let runButtonStyle = simulationRunning ? "buton pause" : "button run";
+    let runButtonText = simulationRunning ? "pause" : "run";
 
     return(
       <div className={controlsClass}>
@@ -140,7 +144,7 @@ export default class SimulationControls extends PureComponent {
               <div className="button-layout">
                 <IconButton iconClassName="material-icons" className={heatIconStyle}
                   onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">wb_sunny</IconButton>
-                {heatValue == heatMultiplier && <CircularProgress
+            {heatValue == heatMultiplier && <CircularProgress
                   mode="determinate"
                   value={completed}
                   className="progress"
@@ -163,39 +167,48 @@ export default class SimulationControls extends PureComponent {
         {!authoring &&
           <div className="button-layout-container">
             <div className="button-layout">
-              <div className="button run" onClick={this.toggleRunState}>run</div>
+              <div className={runButtonStyle} onClick={this.toggleRunState}></div>
+              <div className="nameplate run">{runButtonText}</div>
             </div>
 
             {showFreezeButton.value === true &&
               <div className="button-layout">
-                <div className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)}>cool</div>
-                {heatValue == coolMultiplier && <CircularProgress
-                  mode="determinate"
-                  value={completed}
-                  className="progress"
-                />}
+                <div className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)}>
+                  {heatValue == coolMultiplier && <CircularProgressbar
+                    percentage={completed}
+                    textForPercentage={null}
+                    className="progress-new"
+                    strokeWidth={15}
+                  />}
+                </div>
+            <div className="nameplate cool">cool</div>
               </div>
             }
             {showFreezeButton.value === true &&
               <div className="button-layout">
                 <div className={heatIconStyle}
-                  onClick={() => this.setHeatStatus(heatMultiplier)} >heat</div>
-                {heatValue == heatMultiplier && <CircularProgress
-                  mode="determinate"
-                  value={completed}
-                  className="progress"
-                />}
+                  onClick={() => this.setHeatStatus(heatMultiplier)} >
+                  {heatValue == heatMultiplier && <CircularProgressbar
+                    percentage={completed}
+                    textForPercentage={null}
+                    strokeWidth={15}
+                    className="progress-new"
+                  />}
+                </div>
+            <div className="nameplate heat">heat</div>
               </div>
             }
             {containerVisible &&
               <div className="button-layout">
-                <div className="button container" onClick={this.toggleLid}>lid
-                </div>
+                <div className={beakerIconStyle} onClick={this.toggleLid}>
+              </div>
+              <div className="nameplate lid">lid</div>
               </div>
             }
 
             <div className="button-layout">
-              <div id="restart" className="button restart" onClick={this.restart}>restart</div>
+              <div id="restart" className="button restart" onClick={this.restart}></div>
+              <div className="nameplate restart">restart</div>
             </div>
           </div>
         }
