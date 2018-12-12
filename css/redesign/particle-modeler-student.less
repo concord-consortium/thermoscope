@@ -12,7 +12,7 @@
 @sim-border-radius: 24px;
 
 @button-size: 100px;
-
+@ui-border-color: #71FFFF;
 
 .sim-window{
   left: 642px;
@@ -24,7 +24,7 @@
 
 .app{
   &.student {
-    background: #71FFFF;
+    background: @ui-border-color;
     background: url("background.png");
     overflow:hidden;
     position: relative;
@@ -39,7 +39,7 @@
         position: absolute;
         width: @sim-window-width + (@sim-border-width * 2);
         height: @sim-window-height + (@sim-border-width * 2);
-        background-color: #71FFFF;
+        background-color:@ui-border-color;
         border-radius: @sim-border-radius;
         opacity: 0.5;
 
@@ -69,11 +69,14 @@
       position: absolute;
       top: -410px;
       left: 40px;
+      @font-face {
+        font-family: 'Londrina Solid';
+        font-style: normal;
+        font-weight: 300;
+        src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url(../londrina.woff2) format('woff2');
+        }
 
-      font-family: 'LondrinaSolid-Light', 'Londrina Solid Light';
-      font-weight: 500;
-      font-style: normal;
-      font-size: 32px;
+      font-size: 28px;
       color: #7BCE52;
       text-rendering: optimizeLegibility;
       font-kerning: normal;
@@ -150,10 +153,10 @@
 
     .delete-icon {
       position: absolute;
-      top: -120px;
+      top: -135px;
       left: 720px;
-      width: 45px;
-      height: 50px;
+      width: 55px;
+      height: 61px;
       pointer-events: none;
       background: url("trash-can-closed.svg");
       background-repeat:no-repeat;
@@ -205,7 +208,7 @@
       width: @button-size;
       height:  @button-size;
       margin: 0 30px;
-      background-color:#71FFFF;
+      background-color:@ui-border-color;
       border-radius: @button-size / 2;
       color:black;
       box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
@@ -272,10 +275,13 @@
         height: 110%;
         margin-top: 18px;
         margin-left: -4px;
-        font-family: 'LondrinaSolid-Light', 'Londrina Solid Light';
-        font-weight: 500;
+        @font-face {
+        font-family: 'Londrina Solid';
         font-style: normal;
-        font-size: 28px;
+        font-weight: 300;
+        src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url(../londrina.woff2) format('woff2');
+        }
+        font-size: 26px;
         color: white;
         text-rendering: optimizeLegibility;
         font-kerning: normal;
