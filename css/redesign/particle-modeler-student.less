@@ -41,7 +41,7 @@
         height: @sim-window-height + (@sim-border-width * 2);
         background-color:@ui-border-color;
         border-radius: @sim-border-radius;
-        opacity: 0.5;
+
 
         .sim-frame-overlay{
           position: absolute;
@@ -61,257 +61,263 @@
       }
     }
 
-  .lab-ui {
-    position: relative;
-    width: 100%;
+    .lab-ui {
+      position: relative;
+      width: 100%;
 
-    .new-atom-text{
-      position: absolute;
-      top: -410px;
-      left: 40px;
-      @font-face {
-        font-family: 'Londrina Solid';
-        font-style: normal;
-        font-weight: 300;
-        src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina.woff2") format('woff2');
-        }
-
-      font-size: 28px;
-      color: #7BCE52;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-      line-height: normal (120px);
-      text-align: center;
-    }
-
-    .new-atom-bin {
-      position: absolute;
-      top: -480px;
-      left: 34px;
-      border: 4px dashed #7BCE52;
-      border-radius: 50px;
-      color: #777;
-      padding: 10px;
-      pointer-events: none;
-      z-index: 2;
-
-      p {
-        width: 100%;
-        text-align: center;
-        padding-bottom: 10px;
-      }
-
-      .new-atom {
-        display: block;
-        border: 1px solid #555;
-        height: 34px;
-        width: 34px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.7);
-        transition: background 1.5s;
-
-        div {
-          display: block;
-          background: black;
-          border-radius: 50%;
-          height: 30px;
-          width: 30px;
-          margin: 2px;
-          background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
-          opacity: 1;
-          transition: opacity 1.5s;
-        }
-
-        &.new-atom-0 {
-          div {
-            background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #e0e0e0 16%, #808080 60%, #404040 85%);
-          }
-        }
-
-        &.new-atom-1 {
-          div {
-            background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
-          }
-        }
-      }
-
-      .hiding {
-        display: block;
-        border: 1px solid #555;
-        height: 28px;
-        width: 28px;
-        border-radius: 50%;
-        background: rgba(255,255,255,1);
-        transition: background 0s;
-
-        div {
-          opacity: 0;
-          transition: opacity 0s;
-        }
-      }
-    }
-
-    .delete-icon {
-      position: absolute;
-      top: -135px;
-      left: 720px;
-      width: 55px;
-      height: 61px;
-      pointer-events: none;
-      background: url("trash-can-closed.svg");
-      background-repeat:no-repeat;
-      &.hover {
-        background: url("trash-can-open.svg");
-        background-repeat:no-repeat;
-      }
-    }
-  }
-
-  .heat-button{
-    &.hot{
-      background-color: orange !important;
-    }
-    &.cold{
-      background-color: lightsteelblue !important;
-    }
-  }
-  .heatbath{
-    width: 320px;
-    margin-top: -95px;
-    height: 28px;
-    position: relative;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #eeeeee;
-    border-radius: 4px;
-    &.hot{
-      background-color: orange;
-    }
-    &.cold{
-      background-color: lightsteelblue;
-    }
-  }
-}
-
-.sim-controls{
-  position: absolute;
-  bottom: 30px;
-  width: 100%;
-
-  .button-layout-container{
-    text-align: center;
-    width: 800px;
-    margin: 0 auto;
-
-    .button-layout{
-      display: inline-block;
-      width: @button-size;
-      height:  @button-size;
-      margin: 0 30px;
-      background-color:@ui-border-color;
-      border-radius: @button-size / 2;
-      color:black;
-      box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
-
-      .button {
-        position: relative;
-        width: 85%;
-        height: 85%;
-        margin-top: 8px;
-        margin-left: 8px;
-        border-radius: @button-size / 2;
-        background-color:#aaaaaa;
-        color:white;
-        fill:white;
-        box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.35) inset;
-
-        background-size: 60%;
-        background-repeat: no-repeat;
-        background-position: center;
-        &.run{
-          background-color: #7BCE52;
-          background-size: 50%;
-          background-image: url("run-icon.svg");
-        }
-        &.pause{
-          background-color: #7BCE52;
-          background-size: 40%;
-          background-image: url("pause-icon.svg");
-        }
-        &.cool-button{
-          background-color: #27ADB8;
-          background-image: url("cool-icon.svg");
-        }
-        &.heat-button{
-          background-color: #F0822B;
-          background-image: url("heat-icon.svg");
-        }
-        &.beaker{
-          background-color: #6D7BD6;
-          background-image: url("lid-off-icon.svg");
-          &.closed{
-            background-image: url("lid-on-icon.svg");
-          }
-        }
-        &.restart{
-          background-color: #F7AA00;
-          background-image: url("restart-icon.svg");
-        }
-
-        .progress-new{
-          position: absolute;
-          width: 85px;
-          height: 85px;
-          bottom:0px;
-          left:0px;
-          stroke: #3e98c7;
-          stroke-linecap: round;
-        }
-      }
-
-      .nameplate {
-        position: relative;
-        width: 110%;
-        height: 110%;
-        margin-top: 18px;
-        margin-left: -4px;
+      .new-atom-text{
+        position: absolute;
+        top: -410px;
+        left: 40px;
         @font-face {
-        font-family: 'Londrina Solid';
-        font-style: normal;
-        font-weight: 300;
-        src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina.woff2") format('woff2');
-        }
-        font-size: 26px;
-        color: white;
+          font-family: 'Londrina Solid';
+          font-style: normal;
+          font-weight: 300;
+          src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina-solid-light.woff2") format('woff2');
+          };
+
+        font-size: 28px;
+        color: #7BCE52;
         text-rendering: optimizeLegibility;
         font-kerning: normal;
         line-height: normal (120px);
         text-align: center;
+      }
 
-        background-image: url("label-plate.svg");
-        background-repeat: no-repeat;
+      .new-atom-bin {
+        position: absolute;
+        top: -480px;
+        left: 34px;
+        border: 4px dashed #7BCE52;
+        border-radius: 50px;
+        color: #777;
+        padding: 10px;
+        pointer-events: none;
+        z-index: 2;
 
-        -webkit-filter: drop-shadow( 1px 1px 4px rgba(0, 0, 0, 0.35 ));
-        filter: drop-shadow( 1px 1px 4px rgba(0, 0, 0, 0.35) );
+        p {
+          width: 100%;
+          text-align: center;
+          padding-bottom: 10px;
+        }
 
-        &.run{
-          background-image: url("run-label-plate.svg");
+        .new-atom {
+          display: block;
+          border: 1px solid #555;
+          height: 34px;
+          width: 34px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.7);
+          transition: background 1.5s;
+
+          div {
+            display: block;
+            background: black;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            margin: 2px;
+            background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
+            opacity: 1;
+            transition: opacity 1.5s;
+          }
+
+          &.new-atom-0 {
+            div {
+              background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #e0e0e0 16%, #808080 60%, #404040 85%);
+            }
+          }
+
+          &.new-atom-1 {
+            div {
+              background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
+            }
+          }
         }
-        &.cool{
-          background-image: url("cool-label-plate.svg");
+
+        .hiding {
+          display: block;
+          border: 1px solid #555;
+          height: 28px;
+          width: 28px;
+          border-radius: 50%;
+          background: rgba(255,255,255,1);
+          transition: background 0s;
+
+          div {
+            opacity: 0;
+            transition: opacity 0s;
+          }
         }
-        &.heat{
-          background-image: url("heat-label-plate.svg");
-        }
-        &.lid{
-          background-image: url("lid-label-plate.svg");
-        }
-        &.restart{
-          background-image: url("restart-label-plate.svg");
+      }
+
+      .delete-icon {
+        position: absolute;
+        top: -135px;
+        left: 720px;
+        width: 55px;
+        height: 61px;
+        pointer-events: none;
+        background: url("trash-can-closed.svg");
+        background-repeat:no-repeat;
+        &.hover {
+          background: url("trash-can-open.svg");
+          background-repeat:no-repeat;
         }
       }
     }
+
+    .heat-button{
+      &.hot{
+        background-color: orange !important;
+      }
+      &.cold{
+        background-color: lightsteelblue !important;
+      }
+    }
+    .heatbath{
+      width: 320px;
+      margin-top: -95px;
+      height: 28px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #eeeeee;
+      border-radius: 4px;
+      &.hot{
+        background-color: orange;
+      }
+      &.cold{
+        background-color: lightsteelblue;
+      }
+    }
   }
+
+  .sim-controls{
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+
+    .button-layout-container{
+      text-align: center;
+      width: 800px;
+      margin: 0 auto;
+
+      .button-layout{
+        display: inline-block;
+        width: @button-size;
+        height:  @button-size;
+        margin: 0 30px;
+        background-color:@ui-border-color;
+        border-radius: @button-size / 2;
+        color:black;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
+
+        .button {
+          position: relative;
+          width: 85%;
+          height: 85%;
+          margin-top: 8px;
+          margin-left: 8px;
+          border-radius: @button-size / 2;
+          background-color:#aaaaaa;
+          color:white;
+          fill:white;
+          box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.35) inset;
+
+          background-size: 60%;
+          background-repeat: no-repeat;
+          background-position: center;
+          &.run{
+            background-color: #7BCE52;
+            background-size: 50%;
+            background-image: url("run-icon.svg");
+          }
+          &.pause{
+            background-color: #7BCE52;
+            background-size: 40%;
+            background-image: url("pause-icon.svg");
+          }
+          &.cool-button{
+            background-color: #27ADB8;
+            background-image: url("cool-icon.svg");
+          }
+          &.heat-button{
+            background-color: #F0822B;
+            background-image: url("heat-icon.svg");
+          }
+          &.beaker{
+            background-color: #6D7BD6;
+            background-image: url("lid-off-icon.svg");
+            &.closed{
+              background-image: url("lid-on-icon.svg");
+            }
+          }
+          &.restart{
+            background-color: #F7AA00;
+            background-image: url("restart-icon.svg");
+          }
+
+          .progress-new{
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            bottom:0px;
+            left:0px;
+            .CircularProgressbar-trail      { stroke: gray; }
+            &.heat{
+
+              .CircularProgressbar-path       { stroke: #F0822B; }
+            }
+            &.cool{
+              .CircularProgressbar-path       { stroke: #27ADB8; }
+            }
+          }
+        }
+
+        .nameplate {
+          position: relative;
+          width: 110%;
+          height: 110%;
+          margin-top: 18px;
+          margin-left: -4px;
+          @font-face {
+          font-family: 'Londrina Solid';
+          font-style: normal;
+          font-weight: 300;
+          src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina-solid-light.woff2") format('woff2');
+          }
+          font-size: 26px;
+          color: white;
+          text-rendering: optimizeLegibility;
+          font-kerning: normal;
+          line-height: normal (120px);
+          text-align: center;
+
+          background-image: url("label-plate.svg");
+          background-repeat: no-repeat;
+
+          -webkit-filter: drop-shadow( 1px 1px 4px rgba(0, 0, 0, 0.35 ));
+          filter: drop-shadow( 1px 1px 4px rgba(0, 0, 0, 0.35) );
+
+          &.run{
+            background-image: url("run-label-plate.svg");
+          }
+          &.cool{
+            background-image: url("cool-label-plate.svg");
+          }
+          &.heat{
+            background-image: url("heat-label-plate.svg");
+          }
+          &.lid{
+            background-image: url("lid-label-plate.svg");
+          }
+          &.restart{
+            background-image: url("restart-label-plate.svg");
+          }
+        }
+      }
+    }
 
   }
 

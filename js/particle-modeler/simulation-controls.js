@@ -49,9 +49,12 @@ export default class SimulationControls extends PureComponent {
     });
   }
   setHeatStatus(heat) {
-    const { heatValue } = this.state;
-    this.setState({ heatValue: heat });
-    this.applyHeat(heat);
+    const { completed } = this.state;
+    if (completed === 0) {
+      // only allow change of heat when previous cycle completed
+      this.setState({ heatValue: heat });
+      this.applyHeat(heat);
+    }
   }
 
   applyHeat(heat) {
@@ -178,7 +181,7 @@ export default class SimulationControls extends PureComponent {
                   {heatValue == coolMultiplier && <CircularProgressbar
                     percentage={completed}
                     textForPercentage={null}
-                    className="progress-new"
+                    className="progress-new cool"
                     strokeWidth={15}
                   />}
                 </div>
@@ -193,7 +196,7 @@ export default class SimulationControls extends PureComponent {
                     percentage={completed}
                     textForPercentage={null}
                     strokeWidth={15}
-                    className="progress-new"
+                    className="progress-new heat"
                   />}
                 </div>
             <div className="nameplate heat">Heat</div>
