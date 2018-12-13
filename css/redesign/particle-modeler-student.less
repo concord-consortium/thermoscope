@@ -14,6 +14,17 @@
 @button-size: 100px;
 @ui-border-color: #71FFFF;
 
+@font-face {
+  font-family: 'Londrina Solid';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina-solid-light.woff2") format('woff2');
+  }
+
+body{
+  font-family: "Londrina Solid";
+}
+
 .sim-window{
   left: 642px;
   top: 250px;
@@ -69,12 +80,6 @@
         position: absolute;
         top: -410px;
         left: 40px;
-        @font-face {
-          font-family: 'Londrina Solid';
-          font-style: normal;
-          font-weight: 300;
-          src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina-solid-light.woff2") format('woff2');
-          };
 
         font-size: 28px;
         color: #7BCE52;
@@ -281,12 +286,7 @@
           height: 110%;
           margin-top: 18px;
           margin-left: -4px;
-          @font-face {
-          font-family: 'Londrina Solid';
-          font-style: normal;
-          font-weight: 300;
-          src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina-solid-light.woff2") format('woff2');
-          }
+
           font-size: 26px;
           color: white;
           text-rendering: optimizeLegibility;
