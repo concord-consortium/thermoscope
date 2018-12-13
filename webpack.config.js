@@ -51,8 +51,19 @@ module.exports = {
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
-        test: /\.(eot|ttf|woff|woff2|svg)((\?|\#).*)?$/,
-        use: [{ loader: 'url-loader?limit=81920' }]
+        test: /\.(eot|ttf|svg)((\?|\#).*)?$/,
+        use: [{ loader: 'url-loader?limit=8192' }]
+      },
+      {
+        test: /\.(woff|woff2)((\?|\#).*)?$/,
+        use: [{
+            loader: 'file-loader',
+            options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/'
+          }
+        }],
+
       }
     ]
   },
