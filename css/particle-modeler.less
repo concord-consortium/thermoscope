@@ -292,3 +292,114 @@ td {
     background-color: lightsteelblue;
   }
 }
+
+@button-size: 50px;
+
+.app{
+  &.authoring {
+    .sim-controls{
+      position: fixed;
+      left: 0px;
+      top: 500px;
+      width: 500px;
+
+      .button-layout-container{
+        text-align: center;
+        width: 500px;
+        margin: 0 auto;
+
+        .button-layout{
+          display: inline-block;
+          width: @button-size;
+          height:  @button-size;
+          margin: 0 20px;
+          background-color:#ddd;
+          border-radius: @button-size / 2;
+          color:black;
+          box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
+
+          .button {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            margin-top: 4px;
+            margin-left: 4px;
+            border-radius: @button-size / 2;
+            background-color:#aaaaaa;
+            color:white;
+            fill:white;
+            box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.35) inset;
+
+            background-size: 60%;
+            background-repeat: no-repeat;
+            background-position: center;
+            &.run{
+              background-color: #7BCE52;
+              background-size: 50%;
+              background-image: url("redesign/run-icon.svg");
+            }
+            &.pause{
+              background-color: #7BCE52;
+              background-size: 40%;
+              background-image: url("redesign/pause-icon.svg");
+            }
+            &.cool-button{
+              background-color: #27ADB8;
+              background-image: url("redesign/cool-icon.svg");
+            }
+            &.heat-button{
+              background-color: #F0822B;
+              background-image: url("redesign/heat-icon.svg");
+            }
+            &.beaker{
+              background-color: #6D7BD6;
+              background-image: url("redesign/lid-off-icon.svg");
+              &.closed{
+                background-image: url("redesign/lid-on-icon.svg");
+              }
+            }
+            &.restart{
+              background-color: #F7AA00;
+              background-image: url("redesign/restart-icon.svg");
+            }
+
+            .progress-new{
+              position: absolute;
+              width: 45px;
+              height: 45px;
+              bottom:0px;
+              left:0px;
+              .CircularProgressbar-trail      { stroke: gray; }
+              &.heat{
+
+                .CircularProgressbar-path       { stroke: #F0822B; }
+              }
+              &.cool{
+                .CircularProgressbar-path       { stroke: #27ADB8; }
+              }
+            }
+          }
+
+          .nameplate {
+            position: relative;
+            width: 130%;
+            height: 110%;
+            margin-top: 18px;
+            margin-left: -4px;
+
+            font-size: 16px;
+            color: #333;
+            text-rendering: optimizeLegibility;
+            font-kerning: normal;
+            line-height: normal (120px);
+            text-align: center;
+
+            background-image: url("redesign/label-plate.svg") !important;
+
+          }
+        }
+      }
+    }
+  }
+
+}

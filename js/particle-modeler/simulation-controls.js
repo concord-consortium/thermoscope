@@ -115,7 +115,7 @@ export default class SimulationControls extends PureComponent {
     let containerVisible = container.value;
     let lidVisible = containerLid.value;
     let beakerIconStyle = "button beaker";
-    const controlsClass = authoring ? "speed-controls" : "sim-controls";
+    const controlsClass = authoring ? "sim-controls" : "sim-controls";
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
@@ -128,47 +128,6 @@ export default class SimulationControls extends PureComponent {
 
     return(
       <div className={controlsClass}>
-        {authoring &&
-          <div className="button-layout-container">
-            <div className="button-layout">
-              <IconButton iconClassName="material-icons" className="simulation-state-button" onClick={this.toggleRunState} tooltip={simulationRunStateHint}>{simulationControlIcon}</IconButton>
-            </div>
-
-            {showFreezeButton.value === true &&
-              <div className="button-layout">
-                <IconButton iconClassName="material-icons" className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)} tooltip="Cool">ac_unit</IconButton>
-                {heatValue == coolMultiplier && <CircularProgress
-                  mode="determinate"
-                  value={completed}
-                  className="progress"
-                />}
-              </div>
-            }
-            {showFreezeButton.value === true &&
-              <div className="button-layout">
-                <IconButton iconClassName="material-icons" className={heatIconStyle}
-                  onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">wb_sunny</IconButton>
-            {heatValue == heatMultiplier && <CircularProgress
-                  mode="determinate"
-                  value={completed}
-                  className="progress"
-                />}
-              </div>
-            }
-            {containerVisible &&
-              <div className="button-layout">
-                <IconButton className="container-button" onClick={this.toggleLid} tooltip="Container Lid">
-                  <div className={beakerIconStyle} />
-                </IconButton>
-              </div>
-            }
-
-            <div className="button-layout">
-              <IconButton id="restart" iconClassName="material-icons" tooltip="Reload" onClick={this.restart}>refresh</IconButton>
-            </div>
-          </div>
-        }
-        {!authoring &&
           <div className="button-layout-container">
             <div className="button-layout">
               <div className={runButtonStyle} onClick={this.toggleRunState}></div>
@@ -215,7 +174,6 @@ export default class SimulationControls extends PureComponent {
               <div className="nameplate restart">Restart</div>
             </div>
           </div>
-        }
       </div>
     )
   }
