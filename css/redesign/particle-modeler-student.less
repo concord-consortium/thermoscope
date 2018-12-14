@@ -179,18 +179,31 @@ body{
 
     .heatbath{
       width: 320px;
-      margin-top: -95px;
-      height: 26px;
+      margin-top: -97px;
+      height: 27px;
       position: relative;
       margin-left: auto;
       margin-right: auto;
       background-color:@color-neutral;
+      border-width: 0px 6px;
+      border-style: solid;
+      border-color: @color-neutral;
       border-radius: 4px;
+
+      background-image: none;
+      background-position:center;
+      background-size:100%;
+      background-repeat:no-repeat;
+
       &.hot{
         background-color: @color-hot;
+        border-color: @color-hot;
+        background-image: url("particles_fast_crop.gif");
       }
       &.cold{
         background-color: @color-cool;
+        border-color: @color-cool;
+        background-image: url("particles_slow_crop.gif");
       }
     }
   }

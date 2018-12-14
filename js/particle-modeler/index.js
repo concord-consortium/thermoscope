@@ -526,7 +526,7 @@ export default class Interactive extends PureComponent {
                 }
                 </div>
               }
-              {heatLevel && <div className={heatBathStyle} />}
+              <div className={heatBathStyle} />
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>
