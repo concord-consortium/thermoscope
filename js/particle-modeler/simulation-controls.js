@@ -4,6 +4,9 @@ import IconButton from 'material-ui/IconButton';
 import SvgIcon from 'material-ui/SvgIcon';
 import CircularProgress from 'material-ui/CircularProgress';
 
+import CircularProgressbar from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+
 const slowSpeedTimeStep = 0.05;
 const frozenTemps = { temperatureControl: true, targetTemperature: 0 };
 const heatMultiplier = 1.1;
@@ -28,7 +31,6 @@ export default class SimulationControls extends PureComponent {
   }
 
   restart() {
-   console.log("restart");
    window.location.reload();
   }
 
@@ -47,9 +49,12 @@ export default class SimulationControls extends PureComponent {
     });
   }
   setHeatStatus(heat) {
-    const { heatValue } = this.state;
-    this.setState({ heatValue: heat });
-    this.applyHeat(heat);
+    const { completed } = this.state;
+    if (completed === 0) {
+      // only allow change of heat when previous cycle completed
+      this.setState({ heatValue: heat });
+      this.applyHeat(heat);
+    }
   }
 
   applyHeat(heat) {
@@ -109,50 +114,66 @@ export default class SimulationControls extends PureComponent {
     const { showFreezeButton, container, containerLid, authoring, simulationRunning } = this.props;
     let containerVisible = container.value;
     let lidVisible = containerLid.value;
-    let beakerIconStyle = "beaker";
-    if (!authoring===true) beakerIconStyle += "light";
+    let beakerIconStyle = "button beaker";
+    const controlsClass = authoring ? "sim-controls" : "sim-controls";
     if (!lidVisible) beakerIconStyle += " closed";
     let simulationRunStateHint = simulationRunning ? "Pause Simulation" : "Run Simulation"
     let simulationControlIcon = simulationRunning ? 'pause_circle_outline' : 'play_circle_outline';
-    let heatIconStyle = heatValue == heatMultiplier ? "heat-button hot" : "heat-button";
-    let coolIconStyle = heatValue == coolMultiplier ? "heat-button cold" : "heat-button";
+    let heatIconStyle = heatValue == heatMultiplier ? "button heat-button hot" : "button heat-button";
+    let coolIconStyle = heatValue == coolMultiplier ? "button cool-button cold" : "button cool-button";
+
+    let runButtonStyle = simulationRunning ? "button pause" : "button run";
+    let runButtonText = simulationRunning ? "Pause" : "Run";
+    let lidButtonText = lidVisible ? "Lid Off" : "Lid On";
 
     return(
-      <div className="speed-controls">
-        <div className="button-layout">
-          <IconButton id="restart" iconClassName="material-icons" tooltip="Reload" onClick={this.restart}>refresh</IconButton>
-        </div>
-        <div className="button-layout">
-          <IconButton iconClassName="material-icons" className="simulation-state-button" onClick={this.toggleRunState} tooltip={simulationRunStateHint}>{simulationControlIcon}</IconButton>
-        </div>
-        {showFreezeButton.value === true &&
-          <div className="button-layout">
-            <IconButton  iconClassName="material-icons" className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)} tooltip="Cool">ac_unit</IconButton>
-              {heatValue == coolMultiplier && <CircularProgress
-                  mode="determinate"
-                  value={completed}
-                  className="progress"
-          />}
+      <div className={controlsClass}>
+          <div className="button-layout-container">
+            <div className="button-layout">
+              <div className={runButtonStyle} onClick={this.toggleRunState}></div>
+              <div className="nameplate run">{runButtonText}</div>
+            </div>
+
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <div className={coolIconStyle} onClick={() => this.setHeatStatus(coolMultiplier)}>
+                  {heatValue == coolMultiplier && <CircularProgressbar
+                    percentage={completed}
+                    textForPercentage={null}
+                    className="progress-new cool"
+                    strokeWidth={15}
+                  />}
+                </div>
+            <div className="nameplate cool">Cool</div>
+              </div>
+            }
+            {showFreezeButton.value === true &&
+              <div className="button-layout">
+                <div className={heatIconStyle}
+                  onClick={() => this.setHeatStatus(heatMultiplier)} >
+                  {heatValue == heatMultiplier && <CircularProgressbar
+                    percentage={completed}
+                    textForPercentage={null}
+                    strokeWidth={15}
+                    className="progress-new heat"
+                  />}
+                </div>
+            <div className="nameplate heat">Heat</div>
+              </div>
+            }
+            {containerVisible &&
+              <div className="button-layout">
+                <div className={beakerIconStyle} onClick={this.toggleLid}>
+              </div>
+              <div className="nameplate lid">{lidButtonText}</div>
+              </div>
+            }
+
+            <div className="button-layout">
+              <div id="restart" className="button restart" onClick={this.restart}></div>
+              <div className="nameplate restart">Restart</div>
+            </div>
           </div>
-          }
-        {showFreezeButton.value === true &&
-          <div className="button-layout">
-          <IconButton iconClassName="material-icons" className={heatIconStyle}
-            onClick={() => this.setHeatStatus(heatMultiplier)} tooltip="Heat">wb_sunny</IconButton>
-            {heatValue == heatMultiplier && <CircularProgress
-                    mode="determinate"
-                    value={completed}
-                    className="progress"
-            />}
-          </div>
-        }
-        {containerVisible &&
-          <div className="button-layout">
-            <IconButton className="container-button" onClick={this.toggleLid} tooltip="Container Lid">
-              <div className={beakerIconStyle} />
-            </IconButton>
-          </div>
-        }
       </div>
     )
   }

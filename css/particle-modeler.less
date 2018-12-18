@@ -28,9 +28,13 @@
 
 .app{
   &.authoring {
-    background: white;
+    background: #fff;
     overflow:hidden;
-
+    font: 12px verdana, helvetica, sans-serif;
+    .lab-wrapper{
+      background: #fff;
+      border: 6px solid #eee;
+    }
     .app-container{
       position: absolute;
       display: block;
@@ -62,13 +66,6 @@
         background: white;
       }
     }
-    .speed-controls{
-      top: 0px;
-      position: fixed;
-      text-align: left;
-
-      .speed-button{ color:#333;}
-      }
     .material-icons{
       color:#333 !important;
     }
@@ -94,42 +91,6 @@
       font-size:30px;
     }
   }
-  .speed-controls{
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    padding-top: 420px;
-    height: 50px;
-    text-align: center;
-    width: 100%;
-
-    pointer-events: none;
-
-    button {
-      padding: 0px !important;
-      border-radius: 0px !important;
-      width: 55px !important;
-      height: 55px !important;
-    }
-    button.heat-button {
-      border-radius: 24px !important;
-      width: 48px !important;
-      height: 48px !important;
-    }
-
-    .button-layout{
-      display:inline-block;
-      width: 125px;
-      pointer-events: all;
-
-      .material-icons {
-        font-size: 40px !important;
-      }
-    }
-  }
 
  .progress{
       position: absolute !important;
@@ -145,7 +106,7 @@
 
   .new-atom-bin {
     position: absolute;
-    top: -340px;
+    top: -320px;
     left: 18px;
     border: 1px solid #555;
     color: #777;
@@ -254,6 +215,7 @@ td {
   height: 24px;
   width: 24px;
   background: url("beaker_icon.svg");
+  background-repeat: no-repeat;
   &.closed{
     background: url("beaker_icon_closed.svg");
   }
@@ -263,6 +225,7 @@ td {
   width: 38px;
   margin-top: -20px;
   background: url("beaker_icon_light.svg");
+  background-repeat: no-repeat;
   &.closed{
     background: url("beaker_icon_closed_light.svg");
   }
@@ -277,8 +240,8 @@ td {
 }
 .heatbath{
   width: 220px;
-  margin-top: -30px;
-  height: 8px;
+  margin-top: -42px;
+  height: 18px;
   position: relative;
   margin-left: auto;
   margin-right: auto;
@@ -288,4 +251,113 @@ td {
   &.cold{
     background-color: lightsteelblue;
   }
+}
+
+@button-size: 50px;
+
+.app{
+  &.authoring {
+    .sim-controls{
+      position: fixed;
+      left: 0px;
+      top: 500px;
+      width: 500px;
+
+      .button-layout-container{
+        text-align: center;
+        width: 500px;
+        margin: 0 auto;
+
+        .button-layout{
+          display: inline-block;
+          width: @button-size;
+          height:  @button-size;
+          margin: 0 20px;
+          background-color:#ddd;
+          border-radius: @button-size / 2;
+          color:black;
+          box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
+
+          .button {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            margin-top: 4px;
+            margin-left: 4px;
+            border-radius: @button-size / 2;
+            background-color:#aaaaaa;
+            color:white;
+            fill:white;
+            box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.35) inset;
+
+            background-size: 60%;
+            background-repeat: no-repeat;
+            background-position: center;
+            &.run{
+              background-color: #7BCE52;
+              background-image: url("redesign/run-icon.svg");
+            }
+            &.pause{
+              background-color: #7BCE52;
+              background-image: url("redesign/pause-icon.svg");
+            }
+            &.cool-button{
+              background-color: #27ADB8;
+              background-image: url("redesign/cool-icon.svg");
+            }
+            &.heat-button{
+              background-color: #F0822B;
+              background-image: url("redesign/heat-icon.svg");
+            }
+            &.beaker{
+              background-color: #6D7BD6;
+              background-image: url("redesign/lid-off-icon.svg");
+              &.closed{
+                background-image: url("redesign/lid-on-icon.svg");
+              }
+            }
+            &.restart{
+              background-color: #F7AA00;
+              background-image: url("redesign/restart-icon.svg");
+            }
+
+            .progress-new{
+              position: absolute;
+              width: 45px;
+              height: 45px;
+              bottom:0px;
+              left:0px;
+              .CircularProgressbar-trail      { stroke: gray; }
+              &.heat{
+
+                .CircularProgressbar-path       { stroke: #F0822B; }
+              }
+              &.cool{
+                .CircularProgressbar-path       { stroke: #27ADB8; }
+              }
+            }
+          }
+
+          .nameplate {
+            position: relative;
+            width: 130%;
+            height: 110%;
+            margin-top: 18px;
+            margin-left: -4px;
+
+            font-size: 16px;
+            color: #333;
+            text-rendering: optimizeLegibility;
+            font-kerning: normal;
+            line-height: normal (120px);
+            text-align: center;
+
+            background-image: url("redesign/label-plate.svg") !important;
+
+          }
+        }
+      }
+    }
+  }
+
 }

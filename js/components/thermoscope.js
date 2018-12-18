@@ -59,7 +59,10 @@ export default class Thermoscope extends PureComponent {
   liveDataHandler() {
     if (this.props.sensor && this.props.sensor.liveSensors) {
       let newData = this.props.sensor.liveSensors[this.props.probeIndex].liveValue;
-      if (!isNaN(newData) && isFinite(newData)) this.setState({ temperature: newData, liveData: true })
+      if (!isNaN(newData) && isFinite(newData)) {
+        let roundedTemperatureData = Math.round(newData);
+        this.setState({ temperature: roundedTemperatureData, liveData: true })
+      }
     }
   }
 
@@ -121,8 +124,8 @@ export default class Thermoscope extends PureComponent {
         {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />}
         <div>
           {!paused && !hidden &&
-            <div className="controls-row">
-              Temperature {temperature}°C
+            <div className="controls-row top">
+              <div className="temperatureDisplay">Temperature {temperature}°C</div>
               <div className="slider">
                 {!liveData && !showMeter && <Slider min={MIN_TEMP} max={MAX_TEMP} step={1} value={temperature}
                   sliderStyle={{ marginTop: 5, marginBottom: 5 }}

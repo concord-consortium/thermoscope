@@ -1,5 +1,5 @@
 const wallThickness = 0.1;
-const basePos = 0.15;
+const basePos = 0.25;
 const baseThickness = 0.01;
 const leftPos = 1.25;
 const rightPos = 3.25;
@@ -8,6 +8,7 @@ const hiddenWallColor = "rgba(0,128,0,0)";
 const wallColor = "rgba(0,0,0,1)";
 const lidColor = "rgba(0,0,0,1)";
 const containerWidth = rightPos - leftPos;
+const defaultContainerHeight = 2.25;
 
 export function getContainerPosition() {
   let c = {};
@@ -17,8 +18,8 @@ export function getContainerPosition() {
   c.wallThickness = wallThickness;
   return c
 }
-export function updateContainerVisibility(visible, height, currentContainerHeight, containerLid, api) {
-    let h = height ? height : currentContainerHeight ? currentContainerHeight.value : 2.25;
+export function updateContainerVisibility(visible, height, currentContainerHeight, containerLid, api, containerScale) {
+    let h = height ? height : currentContainerHeight ? currentContainerHeight.value : defaultContainerHeight;
     let currentlyVisible = api.getNumberOfObstacles() > 0;
 
     if (currentlyVisible) {
@@ -78,16 +79,17 @@ export function updateContainerVisibility(visible, height, currentContainerHeigh
       // add base layer atoms
       let spacing = 0.2;
       for (let i = 1; i < 10; i++) {
-        api.addAtom({ x: leftPos + (i * spacing), y: 0, element: 2, draggable: 0, pinned: 1, visible: false });
+        api.addAtom({ x: leftPos + (i * spacing), y: 0.18, element: 2, draggable: 0, pinned: 1, visible: false });
       }
 
       // show image
-      api.setImageProperties(0, { visible: true });
+      const scale = containerScale ? containerScale : api.getImageProperties(0).scale;
+      api.setImageProperties(0, { visible: true, scale: scale });
     }
   }
 
   export function updateContainerLid(containerLid, lidVisible, containerVisible, containerHeight, api) {
-    let h = containerHeight ? containerHeight.value : 2.25;
+    let h = containerHeight ? containerHeight.value : defaultContainerHeight;
     let lid = containerLid;
 
     let lidObstacleIndex = lid.value ? api.getNumberOfObstacles() - 1 : -1;
