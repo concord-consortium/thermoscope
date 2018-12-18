@@ -513,7 +513,7 @@ export default class Interactive extends PureComponent {
                 width={labWidth}
                 frameBorder="0"
                 playing={true}
-                onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
+                onModelLoad={this.handleModelLoad} embeddableSrc='lab/embeddable.html' />
               { allowDragging &&
                 <div className="lab-ui">
                 <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
