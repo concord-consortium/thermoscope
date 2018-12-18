@@ -11,11 +11,11 @@ const atoms = function (atoms) {
   return atomGlyphs;
 };
 const NewAtomBin = ({ atomVisibility }) => (
-
-  <div className="new-atom-bin">
-    <p>New</p>
-    {atoms(atomVisibility)}
-
+  <div>
+    <div className="new-atom-bin">
+      {atoms(atomVisibility)}
+    </div>
+    <div className="new-atom-text">Add</div>
   </div>
 );
 

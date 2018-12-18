@@ -31,7 +31,7 @@
     "viewPortX": 0,
     "viewPortY": 0,
     "viewPortDrag": false,
-    "backgroundColor": "#eeeeee",
+    "backgroundColor": "#ffffff",
     "showClock": false,
     "markColor": "#aaaaaa",
     "keShading": false,
@@ -51,7 +51,7 @@
     "images": [{
       "imageUri": "beaker_base.svg",
       "imageX": 0.90,
-      "imageY": 2.76,
+      "imageY": 2.86,
       "imageHostType": "",
       "imageHostIndex": 0,
       "imageLayer": 2,
@@ -156,7 +156,7 @@
       30
     ],
     "sigma": [
-      0.3,
+      0.2,
       0.19149999618530272,
       0.15,
       0.2,

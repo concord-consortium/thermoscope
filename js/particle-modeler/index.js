@@ -19,6 +19,7 @@ import { updateContainerLid, updateContainerVisibility, getContainerPosition } f
 
 import '../../css/app.less';
 import '../../css/particle-modeler.less';
+import '../../css/redesign/particle-modeler-student.less';
 
 // Required by Material-UI library.
 injectTapEventPlugin();
@@ -209,7 +210,8 @@ export default class Interactive extends PureComponent {
     api = lab.scriptingAPI;
     api.stop();
     if (this.state.container) {
-      updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api);
+      const containerScale = this.state.authoring ? 0.5 : 0.3534;
+      updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api, containerScale);
       updateContainerLid(this.state.containerLid, this.state.containerLid.value, this.state.container.value, this.state.containerHeight, api);
     }
     api.onDrag('atom', (x, y, d, i) => {
@@ -217,6 +219,7 @@ export default class Interactive extends PureComponent {
         if (d.pinned === 1) {
           let el = d.element,
             newState = {};
+          api.get
           // initial spawned elements do not interact with the simulation
           if (el >= this.state.elements.value) {
             el -= 3;
@@ -478,9 +481,12 @@ export default class Interactive extends PureComponent {
     let appClass = "app";
     if (authoring) {
       appClass += " authoring";
+    } else {
+      appClass += " student";
     }
 
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
+    const deleteIconClass = this.state.deleteHover ? "delete-icon hover" : "delete-icon";
     let newAtomVisibility = {
       atomsToShow: [this.state.showAtom0, this.state.showAtom1, this.state.showAtom2],
       count: this.state.elements.value
@@ -489,21 +495,36 @@ export default class Interactive extends PureComponent {
     let allowDragging = api ? (allowLiveDragging || api.isStopped()) : true;
     // we will only render the heatbath if it is set to a non-zero value
     let heatBathStyle = heatLevel > 1 ? "heatbath hot" : heatLevel < 1 ? "heatbath cold" : "heatbath";
+    const labHeight = authoring ? 380 :  580;
+    const labWidth = authoring ? 565 : 800;
 
     return (
       <MuiThemeProvider>
         <div className={appClass}>
-          <div className="app-container">
+          <div className="app-container" >
+            <div className="sim-frame">
+              <div className="sim-frame-overlay" />
+            </div>
             <div className="lab-wrapper">
-              <Lab ref={node => lab = node} model={this.state.model} interactive={this.state.interactive} height='380px'
-                playing={true} onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
+              <Lab ref={node => lab = node} model={this.state.model}
+                interactive={this.state.interactive}
+                height={labHeight}
+                width={labWidth}
+                frameBorder="0"
+                playing={true}
+                onModelLoad={this.handleModelLoad} embeddableSrc='../lab/embeddable.html' />
               { allowDragging &&
                 <div className="lab-ui">
-                  <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
-                  <DeleteIcon className="delete-icon" style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+                <NewAtomBin atomVisibility={newAtomVisibility} onParticleAdded={true} />
+                {authoring &&
+                  <DeleteIcon className={deleteIconClass} style={{ width: 45, height: 50, opacity: deleteOpacity }} />
+                }
+                {!authoring &&
+                  <div className={deleteIconClass}><div className="delete-icon-overlay"/></div>
+                }
                 </div>
               }
-              { heatLevel && <div className={heatBathStyle}/>}
+              <div className={heatBathStyle} />
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>

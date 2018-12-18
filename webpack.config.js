@@ -13,37 +13,46 @@ module.exports = {
     path: path.join(__dirname, 'dist'),
     filename: '[name].js'
   },
+  mode: 'development',
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react', 'stage-3']
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env',  '@babel/preset-react']
+          }
         }
       },
       {
         test: /\.css$/,
-        loader: 'style!css!autoprefixer'
+        use: [{
+          loader: 'css-loader'
+        }]
       },
       {
         test: /\.less$/,
-        loader: 'style!css!less!autoprefixer'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
+        use: [{
+          loader: 'style-loader' // creates style nodes from JS strings
+        }, {
+          loader: 'css-loader' // translates CSS into CommonJS
+        }, {
+          loader: 'less-loader' // compiles Less to CSS
+        }]
       },
       {
         test: /\.(png|jpg|gif)$/,
-        // inline base64 URLs for <=200k images, direct URLs for the rest
-        loader: 'url-loader?limit=204800'
+        // inline base64 URLs for <=4000k images, direct URLs for the rest
+        use: [{
+          loader: 'url-loader?limit=4096000'
+        }]
       },
       {
         // Support ?123 suffix, e.g. ../fonts/m4d-icons.eot?3179539#iefix
         test: /\.(eot|ttf|woff|woff2|svg)((\?|\#).*)?$/,
-        loader: 'url-loader?limit=8192'
+        use: [{ loader: 'url-loader?limit=81920' }]
       }
     ]
   },

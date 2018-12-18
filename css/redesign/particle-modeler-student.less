@@ -1,0 +1,341 @@
+@sim-window-left: 24vw;
+@sim-window-top: 12vh;
+@sim-window-width: 768px;
+@sim-window-height: 514px;
+@sim-margin: 6px;
+@sim-window-background-color: #ffffff;
+@sim-window-box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.35) inset;
+@sim-border-width: 12px;
+@sim-border-radius: 24px;
+
+@button-size: 100px;
+@ui-border-color: rgba(113, 255, 255, 0.5);
+
+@color-run: #7BCE52;
+@color-pause: #7BCE52;
+@color-cool: #27ADB8;
+@color-hot: #F0822B;
+@color-beaker: #6D7BD6;
+@color-restart: #F7AA00;
+
+@color-neutral: #b7b7b7;
+
+@font-face {
+  font-family: 'Londrina Solid';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Londrina Solid Light'), local('LondrinaSolid-Light'), url("londrina-solid-light.woff2") format('woff2');
+  }
+
+body{
+  font-family: "Londrina Solid";
+}
+
+.app{
+  &.student {
+    background: @ui-border-color;
+    background: url("background.png");
+    overflow:hidden;
+    position: relative;
+
+    .app-container{
+      position: absolute;
+      text-align:center;
+      width: 100%;
+      margin-top:-60px;
+
+      .sim-frame{
+        position: absolute;
+        width: @sim-window-width + (@sim-border-width * 2);
+        height: @sim-window-height + (@sim-border-width * 2);
+        background-color:@ui-border-color;
+        border-radius: @sim-border-radius;
+
+        .sim-frame-overlay{
+          position: absolute;
+          left: @sim-border-width;
+          top: @sim-border-width;
+          width:@sim-window-width;
+          height:@sim-window-height;
+          box-shadow: 5px 5px 25px 0px rgba(0, 0, 0, 0.35) inset;
+          border-radius: @sim-border-radius;
+        }
+      }
+
+      .lab-wrapper{
+        width: @sim-window-width + @sim-margin;
+        height: @sim-window-height + @sim-margin;
+        border-radius: 25px;
+      }
+    }
+
+    .lab-ui {
+      position: relative;
+      width: 100%;
+
+      .new-atom-text{
+        position: absolute;
+        top: -410px;
+        left: 40px;
+
+        font-size: 28px;
+        color: @color-run;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+        line-height: normal (120px);
+        text-align: center;
+      }
+
+      .new-atom-bin {
+        position: absolute;
+        top: -480px;
+        left: 34px;
+        border: 4px dashed@color-run;
+        border-radius: 50px;
+        color: #777;
+        padding: 10px;
+        pointer-events: none;
+        z-index: 2;
+
+        p {
+          width: 100%;
+          text-align: center;
+          padding-bottom: 10px;
+        }
+
+        .new-atom {
+          display: block;
+          border: 1px solid #555;
+          height: 34px;
+          width: 34px;
+          border-radius: 50%;
+          background: rgba(255,255,255,0.7);
+          transition: background 1.5s;
+
+          div {
+            display: block;
+            background: black;
+            border-radius: 50%;
+            height: 30px;
+            width: 30px;
+            margin: 2px;
+            background: radial-gradient(circle at 8px 8px, #FFF7CF 0%, #FFD7A8 16%, #B4906C 60%, #FFD7A8 85%);
+            opacity: 1;
+            transition: opacity 1.5s;
+          }
+
+          &.new-atom-0 {
+            div {
+              background: radial-gradient(circle at 8px 8px, #F9F9F9 0%, #e0e0e0 16%, #808080 60%, #404040 85%);
+            }
+          }
+
+          &.new-atom-1 {
+            div {
+              background: radial-gradient(circle at 8px 8px, #9AE04F 0%, #82BD43 16%, #52782A 60%, #82BD43 85%);
+            }
+          }
+        }
+
+        .hiding {
+          display: block;
+          border: 1px solid #555;
+          height: 28px;
+          width: 28px;
+          border-radius: 50%;
+          background: rgba(255,255,255,1);
+          transition: background 0s;
+
+          div {
+            opacity: 0;
+            transition: opacity 0s;
+          }
+        }
+      }
+
+      .delete-icon {
+        position: absolute;
+        top: -135px;
+        left: 720px;
+        width: 55px;
+        height: 61px;
+        pointer-events: none;
+        background: url("trash-can-closed.svg");
+        background-repeat:no-repeat;
+        &.hover {
+          background: url("trash-can-open.svg");
+          background-repeat:no-repeat;
+          .delete-icon-overlay {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 55px;
+            height: 61px;
+            pointer-events: none;
+            background: url("trash-can-design.svg");
+            background-repeat:no-repeat;
+
+          }
+        }
+      }
+    }
+
+    .heatbath{
+      width: 320px;
+      margin-top: -97px;
+      height: 27px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      background-color:@color-neutral;
+      border-width: 0px 6px;
+      border-style: solid;
+      border-color: @color-neutral;
+      border-radius: 4px;
+
+      background-image: none;
+      background-position:center;
+      background-size:100%;
+      background-repeat:no-repeat;
+
+      &.hot{
+        background-color: @color-hot;
+        border-color: @color-hot;
+        background-image: url("particles_liquid_fast.gif");
+      }
+      &.cold{
+        background-color: @color-cool;
+        border-color: @color-cool;
+        background-image: url("particles_liquid_slow.gif");
+      }
+    }
+  }
+
+  .sim-controls{
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+
+    .button-layout-container{
+      text-align: center;
+      width: 800px;
+      margin: 0 auto;
+
+      .button-layout{
+        display: inline-block;
+        width: @button-size;
+        height:  @button-size;
+        margin: 0 30px;
+        background-color:@ui-border-color;
+        border-radius: @button-size / 2;
+        color:black;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.35);
+
+        .button {
+          position: relative;
+          width: 85%;
+          height: 85%;
+          margin-top: 8px;
+          margin-left: 8px;
+          border-radius: @button-size / 2;
+          background-color:#aaaaaa;
+          color:white;
+          fill:white;
+          box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.35) inset;
+
+          background-size: 60%;
+          background-repeat: no-repeat;
+          background-position: center;
+
+          &.run{
+            background-color: @color-run;
+            background-image: url("run-icon.svg");
+          }
+          &.pause{
+            background-color: @color-run;
+            background-image: url("pause-icon.svg");
+          }
+          &.cool-button{
+            background-color: @color-cool;
+            background-image: url("cool-icon.svg");
+            &.cold{
+              background-color: rgb(47, 200, 214);
+            }
+          }
+          &.heat-button{
+            background-color: @color-hot;
+            background-image: url("heat-icon.svg");
+            &.hot{
+              background-color: rgb(255, 147, 65);
+            }
+          }
+          &.beaker{
+            background-color:  @color-beaker;
+            background-image: url("lid-off-icon.svg");
+            &.closed{
+              background-image: url("lid-on-icon.svg");
+            }
+          }
+          &.restart{
+            background-color:@color-restart;
+            background-image: url("restart-icon.svg");
+          }
+
+          .progress-new{
+            position: absolute;
+            width: 85px;
+            height: 85px;
+            bottom:0px;
+            left:0px;
+            .CircularProgressbar-trail      { stroke: rgba(0,0,0,0.25); }
+            &.heat{
+              .CircularProgressbar-path       { stroke: @color-hot; }
+            }
+            &.cool{
+              .CircularProgressbar-path       { stroke: @color-cool; }
+            }
+          }
+        }
+
+        .nameplate {
+          position: relative;
+          width: 110%;
+          height: 110%;
+          margin-top: 18px;
+          margin-left: -4px;
+
+          font-size: 26px;
+          color: white;
+          text-rendering: optimizeLegibility;
+          font-kerning: normal;
+          line-height: normal (120px);
+          text-align: center;
+
+          background-image: url("label-plate.svg");
+          background-repeat: no-repeat;
+
+          -webkit-filter: drop-shadow( 1px 1px 4px rgba(0, 0, 0, 0.35 ));
+          filter: drop-shadow( 1px 1px 4px rgba(0, 0, 0, 0.35) );
+
+          &.run{
+            background-image: url("run-label-plate.svg");
+          }
+          &.cool{
+            background-image: url("cool-label-plate.svg");
+          }
+          &.heat{
+            background-image: url("heat-label-plate.svg");
+          }
+          &.lid{
+            background-image: url("lid-label-plate.svg");
+          }
+          &.restart{
+            background-image: url("restart-label-plate.svg");
+          }
+        }
+      }
+    }
+
+  }
+
+}
