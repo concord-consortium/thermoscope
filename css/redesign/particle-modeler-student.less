@@ -165,6 +165,17 @@ body{
         &.hover {
           background: url("trash-can-open.svg");
           background-repeat:no-repeat;
+          .delete-icon-overlay {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 55px;
+            height: 61px;
+            pointer-events: none;
+            background: url("trash-can-design.svg");
+            background-repeat:no-repeat;
+
+          }
         }
       }
     }
@@ -238,12 +249,10 @@ body{
 
           &.run{
             background-color: @color-run;
-            background-size: 50%;
             background-image: url("run-icon.svg");
           }
           &.pause{
             background-color: @color-run;
-            background-size: 40%;
             background-image: url("pause-icon.svg");
           }
           &.cool-button{

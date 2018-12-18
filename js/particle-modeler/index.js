@@ -485,8 +485,6 @@ export default class Interactive extends PureComponent {
       appClass += " student";
     }
 
-    // const appPositionLeft = window.width === 2732 ? "24vw" : "14vw";
-    // const containerStyle = { left: appPositionLeft };
     let deleteOpacity = this.state.deleteHover ? 0.3 : 0.7;
     const deleteIconClass = this.state.deleteHover ? "delete-icon hover" : "delete-icon";
     let newAtomVisibility = {
@@ -522,7 +520,7 @@ export default class Interactive extends PureComponent {
                   <DeleteIcon className={deleteIconClass} style={{ width: 45, height: 50, opacity: deleteOpacity }} />
                 }
                 {!authoring &&
-                  <div className={deleteIconClass} />
+                  <div className={deleteIconClass}><div className="delete-icon-overlay"/></div>
                 }
                 </div>
               }
