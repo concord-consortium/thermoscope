@@ -396,10 +396,16 @@ export default class Interactive extends PureComponent {
       let atomsToDelete = [];
       for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
         let d = api.getAtomProperties(i);
-
-        let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
-        if (elementInsideAtomBox && d.element < 3) {
-          atomsToDelete.push(i);
+        // We have invisible / hidden atoms under the base of the beaker - ignore those
+        if (d.element !== 2) {
+          let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
+          if (elementInsideAtomBox && d.element < 3) {
+            atomsToDelete.push(i);
+            console.log("Invalid position - inside box, will remove " + i);
+          } else if (Math.abs(d.ax) > 0.1 || Math.abs(d.ay) > 0.1) {
+            atomsToDelete.push(i);
+            console.log("Invalid position - extreme acceleration, likely due to overlap, will remove " + i);
+          }
         }
       }
       for (let i = atomsToDelete.length - 1; i > -1; i--) {
