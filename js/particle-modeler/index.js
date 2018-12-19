@@ -300,6 +300,11 @@ export default class Interactive extends PureComponent {
   }
 
   addNewDraggableAtom(el = 0, skipCheck = false) {
+    if (!api.isStopped()) {
+      // try again every couple of seconds - this ensures that if you hit run too fast after
+      // adding a particle that a new particle would be present when the model is stopped
+      setTimeout(() => this.addNewDraggableAtom(el, skipCheck), 2000);
+    };
     if (skipCheck || this.state.elements.value > el) {
       let y = atomBox.y - (el * atomBox.spacing),
         added = api.addAtom({ x: atomBox.x, y: y, element: (el + 3), draggable: 1, pinned: 1 });
