@@ -278,7 +278,9 @@ export default class Interactive extends PureComponent {
           atomsToDelete.push(i);
         } else {
           let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
-          if (elementInsideAtomBox && d.element < 3) atomsToDelete.push(i);
+          if (elementInsideAtomBox && d.element < 3) {
+            atomsToDelete.push(i);
+          }
         }
       }
       for (let i = atomsToDelete.length - 1; i > -1; i--) {
@@ -390,6 +392,23 @@ export default class Interactive extends PureComponent {
   toggleRunState() {
     if (api.isStopped()) {
       console.log("Simulation is currently stopped, attempting to start");
+      // Check for atoms inside atom box and remove those first
+      // These could have been left behind from setup moving atoms dragged into invalid locations
+      let atomsToDelete = [];
+      for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
+        let d = api.getAtomProperties(i);
+
+        let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
+        if (elementInsideAtomBox && d.element < 3) {
+          atomsToDelete.push(i);
+        }
+      }
+      for (let i = atomsToDelete.length - 1; i > -1; i--) {
+        api.removeAtom(atomsToDelete[i]);
+      }
+      atomsToDelete = [];
+
+      // all atoms should now be valid
       api.start();
       if (!this.state.allowLiveDragging) {
         for (let i = 0, ii = api.getNumberOfAtoms(); i < ii; i++) {
