@@ -303,16 +303,17 @@ export default class Interactive extends PureComponent {
       // try again every couple of seconds - this ensures that if you hit run too fast after
       // adding a particle that a new particle would be present when the model is stopped
       setTimeout(() => this.addNewDraggableAtom(el, skipCheck), 2000);
-    };
-    if (skipCheck || this.state.elements.value > el) {
-      let y = atomBox.y - (el * atomBox.spacing),
-        added = api.addAtom({ x: atomBox.x, y: y, element: (el + 3), draggable: 1, pinned: 1 });
-      if (!added) {
-        setTimeout(() => this.addNewDraggableAtom(el), 2000);
-      } else {
-        let newState = {};
-        newState["showAtom" + el] = true;
-        this.setState(newState);
+    } else {
+      if (skipCheck || this.state.elements.value > el) {
+        let y = atomBox.y - (el * atomBox.spacing),
+          added = api.addAtom({ x: atomBox.x, y: y, element: (el + 3), draggable: 1, pinned: 1 });
+        if (!added) {
+          setTimeout(() => this.addNewDraggableAtom(el), 2000);
+        } else {
+          let newState = {};
+          newState["showAtom" + el] = true;
+          this.setState(newState);
+        }
       }
     }
   }
