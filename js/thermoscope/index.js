@@ -92,7 +92,7 @@ export default class ThermoscopeControl extends PureComponent {
         <Thermoscope
           sensor={sensor}
           material={material}
-          embeddableSrc='../lab/embeddable.html'
+          embeddableSrc='./lab/embeddable.html'
           label={label}
           probeIndex={probeIndex}
           materialIndex={materialIndex}
