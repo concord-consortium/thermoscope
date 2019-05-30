@@ -99,13 +99,29 @@ export default class Sensor extends PureComponent {
   }
 
   getSensorConnectButton() {
-    const { connecting, connected } = this.state;
-    const state = connecting
-      ? "connecting"
-      : connected
-        ? "connected"
-        : "disconnected";
-    return <div id="toggleSensorDisplay" className={`sensor-connect-icon ${state}`} onClick={this.toggleDisplay} />
+    const { connecting, connected, connectedSensorName } = this.state;
+    if (connecting) {
+      return (
+        <div id="toggleSensorDisplay" className={`sensor-connect-icon connecting`} onClick={this.toggleDisplay}>
+          <div className="connecting-label" />
+        </div>
+      );
+    } else if (connected) {
+      const sensorName = connectedSensorName ? this.getSensorName(connectedSensorName) : "";
+      return (
+        <div id="toggleSensorDisplay" className={`sensor-connect-icon connected`} onClick={this.toggleDisplay}>
+          <div className="sensor-tag-icon">{sensorName}</div>
+          <div className="sensor-display-disconnect" />
+        </div>
+      );
+    } else {
+      return <div id="toggleSensorDisplay" className={`sensor-connect-icon disconnected`} onClick={this.toggleDisplay} />;
+    }
+  }
+
+  getSensorName(connectedSensorName) {
+    const prefix = "Thermoscope";
+    return connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2).trim() : prefix;
   }
 
   render() {
@@ -119,7 +135,7 @@ export default class Sensor extends PureComponent {
 
     if (connected && connectedSensorName) {
       console.log(connectedSensorName.length);
-      sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+      sensorName = this.getSensorName(connectedSensorName);
       this.lastSensorName = sensorName;
       sensorIconStyle = connectedSensorName.length > prefix.length ? sensorIconStyle : sensorIconStyle + " small";
     }
