@@ -4,3 +4,4 @@ npm-debug.log*
 .node_repl_history
 .idea
 dist
+.DS_Store
