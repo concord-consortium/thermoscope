@@ -9,6 +9,7 @@ import LabQuest2 from 'sensor-labquest-2-interface';
 import bleSensor from '../components/ble-sensor.js';
 import LogoMenu from '../components/logo-menu';
 import Clock from '../components/clock';
+import Sidebar from '../components/sidebar';
 import { getURLParam } from '../utils';
 import { List, ListItem } from 'material-ui/List';
 import { GridList, GridTile } from 'material-ui/GridList'
@@ -57,7 +58,11 @@ export default class ThermoscopeControl extends PureComponent {
       }
     }
     this.state = {
-      mode: initialMode
+      mode: initialMode,
+      showSidebar: false,
+      showHideButtons: false,
+      showPlayButtons: false,
+      showCelsius: true
     };
     this.setThermoscopeRendering = this.setThermoscopeRendering.bind(this);
     this.renderThermoscope = this.renderThermoscope.bind(this);
@@ -73,6 +78,9 @@ export default class ThermoscopeControl extends PureComponent {
   showMenu() {
     this.setState({ mode: ThermoscopeMode.Menu });
   }
+  toggleState(key) {
+    return () => this.setState({ [key]: !this.state[key] });
+  }
 
   setThermoscopeRendering(params, quantity) {
     if (enableUrlParam) {
@@ -80,7 +88,8 @@ export default class ThermoscopeControl extends PureComponent {
       var pageUrl = params ? '?' + urlParams : '';
       window.history.pushState('', '', pageUrl);
     }
-    this.setState({ params, mode: quantity })
+    // TODO: temporarily disable the buttons until the experiment screen is done
+    // this.setState({ params, mode: quantity })
   }
 
   renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
@@ -107,89 +116,71 @@ export default class ThermoscopeControl extends PureComponent {
   }
 
   render() {
-    const { mode } = this.state;
+    const { mode, showSidebar, showPlayButtons, showHideButtons, showCelsius } = this.state;
     const gridStyle = {
       display: 'flex',
-      flexWrap: 'nowrap'
+      flexWrap: 'nowrap',
     }
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-        <div className="app">
-        <Clock />
-          <LogoMenu scale="logo-menu small" navPath="../index.html" />
-          <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div>
-          { mode === ThermoscopeMode.Menu &&
-            <div className="demo-links">
+        <div className="app-container">
+          <div className="app">
+            <Clock />
+            <LogoMenu scale="logo-menu small" navPath="../index.html" />
+            {/* <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div> */}
+            <div className="options" onClick={this.toggleState("showSidebar")}/>
+            { mode === ThermoscopeMode.Menu &&
               <div className="list-section">
-                <h1>Thermoscope Examples</h1>
-                <GridList style={gridStyle}>
-                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'solid', B: 'solid' }, 2)} key="1">
-                    <div className="wood-icon-100 example-icon" />
-                    <div className="stone-icon-100 example-icon" />
-                    <div>Wood and Stone</div>
-                  </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid' }, 2)} key="2" >
-                    <div className="oil-icon-100 example-icon" />
-                    <div className="soap-icon-100 example-icon" />
-                    <div>Oil and Soap</div>
-                  </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas', materialA: 0, materialB: 0}, 2)} key="3" >
-                    <div className="air-icon-100 example-icon" />
-                    <div className="air-icon-100 example-icon" />
-                    <div>Air</div>
-                  </GridTile>
-                </GridList>
-                <GridList style={gridStyle}>
-                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid', materialA: 2, materialB: 2 }, 2)} key="4" >
-                    <div className="water-icon-100 example-icon" />
-                    <div className="water-icon-100 example-icon" />
-                    <div>Water</div>
-                  </GridTile>
-                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1 }, 1)} key="5" >
-                    <div className="coconut-oil-icon-100 example-icon" />
-                    <div>Coconut oil</div>
-                  </GridTile>
-                <GridTile onClick={() => this.setThermoscopeRendering({ A: 'uniform' }, 1)} key="6" >
-                    <div className="wax-icon-100 example-icon" />
-                    <div>Wax</div>
-                  </GridTile>
-                </GridList>
+                <div className="demo-links">
+                  <div className="icon-row">
+                    <div className="water-icon example-icon"
+                      onClick={() => this.setThermoscopeRendering({ A: 'solid', B: 'solid' }, 2)}/>
+                    <div className="wood-stone example-icon"
+                      onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid' }, 2)}/>
+                    <div className="oil-soap example-icon"
+                      onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas', materialA: 0, materialB: 0}, 2)}/>
+                  </div>
+                  <div className="icon-row">
+                    <div className="air-icon example-icon"
+                      onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid', materialA: 2, materialB: 2 }, 2)}/>
+                    <div className="coconut-icon example-icon"
+                      onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1 }, 1)}/>
+                    <div className="experiments-icon example-icon"
+                      onClick={() => this.setThermoscopeRendering({ A: 'uniform' }, 1)}/>
+                  </div>
+                </div>
               </div>
-              <div className="list-section">
-                <h1>Thermoscope Experiments</h1>
-                <GridList style={gridStyle}>
-                <GridTile onClick={() => this.setThermoscopeRendering({ controls:true }, 1)} key="5">
-                    <div className="thermoscope-icon-84 example-icon" />
-                    <div>Thermoscope (one)</div>
-                  </GridTile>
-                  <GridTile onClick={() => this.setThermoscopeRendering({ controls:true }, 2)} key="6">
-                    <div className="thermoscope-icon-84 example-icon" />
-                    <div className="thermoscope-icon-84 example-icon" />
-                    <div>Thermoscope (two)</div>
-                  </GridTile>
-                </GridList>
+            }
+            {mode === ThermoscopeMode.OneThermoscope &&
+              <div className="app-container">
+                {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'))}
               </div>
-            </div>
-          }
-          {mode === ThermoscopeMode.OneThermoscope &&
-            <div className="app-container">
-              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'))}
-            </div>
-          }
-          { mode === ThermoscopeMode.TwoThermoscope &&
-            <div className="app-container">
-              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'),  this.getParam('materialA'))}
-              {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'),  this.getParam('materialB'))}
-            </div>
-          }
-          { mode === ThermoscopeMode.ThreeThermoscope &&
-            <div className="app-container">
-              {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'), true)}
-              {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'), this.getParam('materialB'), true)}
-              {this.renderThermoscope(this.getParam('C'), 1, 'C', this.getParam('hideC'), this.getParam('materialC'), true)}
-            </div>
-          }
-          <Sensor sensor={sensor} showAddressBox={false} />
+            }
+            { mode === ThermoscopeMode.TwoThermoscope &&
+              <div className="app-container">
+                {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'),  this.getParam('materialA'))}
+                {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'),  this.getParam('materialB'))}
+              </div>
+            }
+            { mode === ThermoscopeMode.ThreeThermoscope &&
+              <div className="app-container">
+                {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'), true)}
+                {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'), this.getParam('materialB'), true)}
+                {this.renderThermoscope(this.getParam('C'), 1, 'C', this.getParam('hideC'), this.getParam('materialC'), true)}
+              </div>
+            }
+            <Sensor sensor={sensor} showAddressBox={false} />
+            <Sidebar 
+              active={showSidebar}
+              onClose={this.toggleState("showSidebar")}
+              showHideButtons={showHideButtons}
+              onToggleHideButtons={this.toggleState("showHideButtons")}
+              showPlayButtons={showPlayButtons}
+              onTogglePlayButtons={this.toggleState("showPlayButtons")}
+              showCelsius={showCelsius}
+              onToggleCelsius={this.toggleState("showCelsius")}
+            /> 
+          </div>
         </div>
       </MuiThemeProvider>
     )

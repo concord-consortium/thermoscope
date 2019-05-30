@@ -1,0 +1,128 @@
+.sidebar-container {
+  position: fixed;
+
+  .sidebar-cover {
+    height: 724px;
+    width: 252px;
+    position: fixed;
+    left: 1024px;
+    background-color: white;
+    z-index: 100;
+  }
+
+  .sidebar {
+    height: 724px;
+    width: 252px;
+    left: 1024px;
+    background-image: url("options-panel.svg");
+    position: fixed;
+    transition: left .25s;
+    z-index: 99;
+    &.active {
+      left: 772px;
+      transition: left .5s;
+    }
+  
+    .close {
+      height: 35px;
+      width: 36px;
+      left: 209px;
+      top: 19px;
+      background-image: url("close-options.svg");
+      background-repeat: no-repeat;
+      position: absolute;
+      cursor: pointer;
+      &:hover {
+        background-image: url("close-options-hover.svg");
+      }
+      &:active {
+        background-image: url("close-options-press.svg");
+        transform: scale(.9);
+      }
+    }
+
+    .toggle {
+      height: 52px;
+      width: 76px;
+      position: absolute;
+      background-image: url("switch-back-off.svg");
+      &.show-hide {
+        left: 149px;
+        top: 117px;
+      }
+      &.show-play {
+        left: 156px;
+        top: 188px;
+      }
+      &.toggle-celsius {
+        left: 95px;
+        top: 299px;
+        .c-label {
+          position: absolute;
+          width: 28px;
+          height: 27px;
+          left: -34px;
+          top: 10px;
+          background-image: url("c-label-off.svg");
+        }
+        .f-label {
+          position: absolute;
+          width: 29px;
+          height: 26px;
+          left: 79px;
+          top: 11px;
+          background-image: url("f-label-off.svg");
+        }
+      }
+      .thumb {
+        height: 48px;
+        width: 47px;
+        position: absolute;
+        transition: left .25s;
+        left: 3px;
+        top: 1px;
+        cursor: pointer;
+        background-image: url("switch-thumb-off.svg");
+        &:hover {
+          background-image: url("switch-thumb-off-hover.svg");
+        }
+        &:active {
+          background-image: url("switch-thumb-off-press.svg");
+        }
+      }
+
+      &.on, &.right, &.left {
+        background-image: url("switch-back-on.svg");
+        .thumb {
+          background-image: url("switch-thumb-on.svg");
+          &:hover {
+            background-image: url("switch-thumb-on-hover.svg");
+          }
+          &:active {
+            background-image: url("switch-thumb-on-press.svg");
+          }
+        }
+      }
+
+      &.on, &.right {
+        .thumb {
+          left: 25px;
+        }
+
+        .f-label {
+          background-image: url("f-label-on.svg");
+        }
+      }
+
+      &.off, &.left {
+        .thumb {
+          left: 3px;
+        }
+
+        .c-label {
+          background-image: url("c-label-on.svg");
+        }
+      }
+    }
+  }
+}

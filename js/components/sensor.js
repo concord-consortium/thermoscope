@@ -23,6 +23,7 @@ export default class Sensor extends PureComponent {
     this.screenConsole = this.screenConsole.bind(this);
     this.closeWinLink = this.closeWinLink.bind(this);
     this.hideLostConDlg = this.hideLostConDlg.bind(this);
+    this.getSensorConnectButton = this.getSensorConnectButton.bind(this);
   }
 
   handleIPAddressChange(event) {
@@ -75,6 +76,7 @@ export default class Sensor extends PureComponent {
   }
   toggleDisplay(event) {
     this.setState({ showDetails: this.state.showDetails ? false : true });
+    this.connect();
   }
 
   closeWinLink(event) {
@@ -94,6 +96,16 @@ export default class Sensor extends PureComponent {
 
     let newMessages = debugMessages + "\n" + event;
     this.setState({ debugMessages: newMessages });
+  }
+
+  getSensorConnectButton() {
+    const { connecting, connected } = this.state;
+    const state = connecting
+      ? "connecting"
+      : connected
+        ? "connected"
+        : "disconnected";
+    return <div id="toggleSensorDisplay" className={`sensor-connect-icon ${state}`} onClick={this.toggleDisplay} />
   }
 
   render() {
@@ -139,15 +151,10 @@ export default class Sensor extends PureComponent {
           </div>
           <RaisedButton onClick={this.hideLostConDlg} primary={true}>OK</RaisedButton>
         </Dialog>
-        <div id="toggleSensorDisplay" onClick={this.toggleDisplay}><i className="material-icons">settings_input_antenna</i></div>
+        { this.getSensorConnectButton() }
         {showDetails &&
           <div className="sensorDetails">
             {showAddressBox && <TextField hintText="IP Address" ref="ip" type="text" id="ipAddress" onChange={this.handleIPAddressChange} onKeyDown={this.enterkey}></TextField>}
-            <RaisedButton id="connect" onClick={this.connect}>{connectButtonText}</RaisedButton>
-            {connecting &&
-              <LinearProgress />
-            }
-            {!connecting && <div id="sensorConnectionStatus">{nameTag}</div>}
             {showDebug &&
               <div id="screenConsole">{debugMessages}</div>
             }
