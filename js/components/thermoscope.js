@@ -110,7 +110,7 @@ export default class Thermoscope extends PureComponent {
     return (
 
       <div className="thermoscope">
-        <div className="label">{label + ":"}{this.renderIcon(model.name)}{" " + model.name}</div>
+        <div className={`label ${label.toLowerCase()} ${model.name.toLowerCase()}`} />
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={tempScale}
@@ -120,10 +120,14 @@ export default class Thermoscope extends PureComponent {
                   width={MODEL_WIDTH} height={MODEL_HEIGHT}
                   embeddableSrc={embeddableSrc}
         />
-        <Aperture open={!hidden} bladeColor="#333" outerColor="white" />
-        {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />}
+        <div className={`thermoscope ${label.toLowerCase()}`} />
+        <div className={`temp-gauge ${label.toLowerCase()} ${model.name.toLowerCase()}`}>
+          <div className="pointer" />
+          <div className="readout"> {`${temperature} °C`} </div>
+        </div>
+        {/* {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />} */}
         <div>
-          {!paused && !hidden &&
+          {/* {!paused && !hidden &&
             <div className="controls-row top">
               <div className="temperatureDisplay">Temperature {temperature}°C</div>
               <div className="slider">
@@ -140,9 +144,9 @@ export default class Thermoscope extends PureComponent {
                 &nbsp;
               </div>
             </div>
-          }
+          } */}
           <div>
-            <div className="controls-row">
+            {/* <div className="controls-row">
               <div className="aperture">
                 <RaisedButton id="hidden" onClick={this.toggleAperture}>{toggleApertureText}</RaisedButton>
               </div>
@@ -151,7 +155,7 @@ export default class Thermoscope extends PureComponent {
                   <RaisedButton id="pause" onClick={this.togglePause}>{pauseButtonText}</RaisedButton>
                 </div>
               }
-            </div>
+            </div> */}
 
             {showControls &&
               <div className="controls-row">

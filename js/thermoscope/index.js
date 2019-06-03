@@ -88,8 +88,11 @@ export default class ThermoscopeControl extends PureComponent {
       var pageUrl = params ? '?' + urlParams : '';
       window.history.pushState('', '', pageUrl);
     }
-    // TODO: temporarily disable the buttons until the experiment screen is done
-    // this.setState({ params, mode: quantity })
+
+    //  TODO: enable all buttons
+    if (params.container === 'coconut' || params.container === 'experiment') return;
+
+    this.setState({ params, mode: quantity })
   }
 
   renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
@@ -97,7 +100,7 @@ export default class ThermoscopeControl extends PureComponent {
     let meterMax = meterMaxClamp ? meterMaxClamp : 1;
     let showControls = this.getParam('controls');
     let thermoscope =
-      <div className="thermoscope-container">
+      <div className={`thermoscope-container ${label.toLowerCase()}`}>
         <Thermoscope
           sensor={sensor}
           material={material}
@@ -127,43 +130,49 @@ export default class ThermoscopeControl extends PureComponent {
           <div className="app">
             <Clock />
             <LogoMenu scale="logo-menu small" navPath="../index.html" />
-            {/* <div title="Home" className="main-menu-button" onClick={this.showMenu} ><i className="material-icons">home</i></div> */}
+            {
+              mode !== ThermoscopeMode.Menu &&
+              <div title="Home" className="main-menu-button" onClick={this.showMenu} />
+            }
             <div className="options" onClick={this.toggleState("showSidebar")}/>
             { mode === ThermoscopeMode.Menu &&
               <div className="list-section">
                 <div className="demo-links">
                   <div className="icon-row">
                     <div className="water-icon example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'solid', B: 'solid' }, 2)}/>
+                      onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid', materialA: 2, materialB: 2, container: 'water-water'}, 2)}/>
                     <div className="wood-stone example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid' }, 2)}/>
+                      onClick={() => this.setThermoscopeRendering({ A: 'solid', B: 'solid', container: 'wood-stone' }, 2)}/>
                     <div className="oil-soap example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas', materialA: 0, materialB: 0}, 2)}/>
+                      onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid', container: 'oil-soap' }, 2)}/>
                   </div>
                   <div className="icon-row">
                     <div className="air-icon example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'liquid', B: 'liquid', materialA: 2, materialB: 2 }, 2)}/>
+                      onClick={() => this.setThermoscopeRendering({ A: 'gas', B: 'gas', container: 'air' }, 2)}/>
                     <div className="coconut-icon example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1 }, 1)}/>
+                      onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1, container: 'coconut' }, 1)}/>
                     <div className="experiments-icon example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'uniform' }, 1)}/>
+                      onClick={() => this.setThermoscopeRendering({ A: 'uniform', container: 'experiment' }, 1)}/>
                   </div>
                 </div>
               </div>
             }
             {mode === ThermoscopeMode.OneThermoscope &&
-              <div className="app-container">
+              <div className={`app-container ${this.getParam('container')}`}>
+                <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'))}
               </div>
             }
             { mode === ThermoscopeMode.TwoThermoscope &&
-              <div className="app-container">
+              <div className={`app-container ${this.getParam('container')}`}>
+                <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'),  this.getParam('materialA'))}
                 {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'),  this.getParam('materialB'))}
               </div>
             }
             { mode === ThermoscopeMode.ThreeThermoscope &&
-              <div className="app-container">
+              <div className={`app-container ${this.getParam('container')}`}>
+                <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'), true)}
                 {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'), this.getParam('materialB'), true)}
                 {this.renderThermoscope(this.getParam('C'), 1, 'C', this.getParam('hideC'), this.getParam('materialC'), true)}

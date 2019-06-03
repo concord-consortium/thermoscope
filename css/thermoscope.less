@@ -35,6 +35,110 @@
   button{
     color:#ccc;
   }
+
+  .label {
+    width: 285px;
+    height: 141px;
+    position: fixed;
+    top: 73px;
+    &.a {
+      left: 200px;
+      &.water {
+        background-image: url("label-a-water.svg");
+      }
+      &.wood {
+        background-image: url("label-a-wood.svg");
+      }
+      &.oil {
+        background-image: url("label-a-oil.svg");
+      }
+      &.air {
+        background-image: url("label-a-air.svg");
+      }
+    }
+    &.b {
+      left: 539px;
+      &.water {
+        background-image: url("label-b-water.svg");
+      }
+      &.stone {
+        background-image: url("label-b-stone.svg");
+      }
+      &.soap {
+        background-image: url("label-b-soap.svg");
+      }
+      &.air {
+        background-image: url("label-b-air.svg");
+      }
+    }
+  }
+
+  .temp-gauge {
+    width: 234px;
+    height: 155px;
+    top: 505px;
+    position: fixed;
+    &.a {
+      left: 209px;
+    }
+    &.b {
+      left: 581px;
+    }
+    &.water {
+      background-image: url("tempgauge-water.svg");
+    }
+    &.wood, &.stone {
+      background-image: url("tempgauge-wood-stone.svg");
+    }
+    &.oil, &.soap {
+      background-image: url("tempgauge-oil-soap.svg");
+    }
+    &.air {
+      background-image: url("tempgauge-air.svg");
+    }
+    
+    .pointer {
+      width: 118px;
+      height: 51px;
+      position: absolute;
+      left: 19px;
+      top: 91px;
+      background-image: url("tempgauge-a-pointer.svg");
+      transform-origin: 98px 26px;
+      transform: rotate(45deg);
+    }
+
+    .readout {
+      position: absolute;
+      top: 141px;
+      left: 80px;
+      width: 74px;
+      height: 38px;
+      color: white;
+      font-size: 35px;
+      font-weight: 400;
+      text-align: right;
+      letter-spacing: .5px;
+    }
+  }
+
+  .thermoscope {
+    z-index: 1;
+    top: 197px;
+    position: fixed;
+    &.a {
+      background-image: url("thermoscope-a.svg");
+      width: 443px;
+      height: 444px;
+      left: 55px;
+    }
+    &.b {
+      background-image: url("thermoscope-b.svg");
+      width: 444px;
+      height: 444px;
+      left: 532px;
+    }
+  }
 }
 .temperatureDisplay{
   font-size: 1.3em;

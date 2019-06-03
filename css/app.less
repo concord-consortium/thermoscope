@@ -1,4 +1,6 @@
-@font-face { font-family: 'Londrina Solid'; src: url("LondrinaSolid-Thin.ttf"); }
+@font-face { font-family: 'Londrina Solid'; font-weight: 300; src: url("LondrinaSolid-Thin.ttf"); }
+@font-face { font-family: 'Londrina Solid'; font-weight: 400; src: url("LondrinaSolid-Light.ttf"); }
+
 
 .app-container {
   width: 1024px;
@@ -21,26 +23,17 @@
 
     .main-menu-button{
       position:fixed;
-      right: 140px;
-      top: 4px;
-      &:hover{
-        cursor:pointer;
+      background-image: url("home-button.svg");
+      width: 49px;
+      height: 45px;
+      left: 805px;
+      top: 7px;
+      cursor: pointer;
+      &:hover {
+        background-image: url("home-button-hover.svg");
       }
-      >div{
-        float:right;
-        padding-right:10px;
-      }
-      a{
-        color:#aaa;
-        &:hover{
-          color:#888;
-        }
-        &:active{
-          color:#888;
-        }
-      }
-      i{
-        font-size:42px;
+      &:active {
+        background-image: url("home-button-press.svg");
       }
     }
 
@@ -267,91 +260,92 @@
       display: flex;
       flex-direction: row;
       justify-content: space-around;
-    }
-  }
-  .example-icon{
-    position: fixed;
-    width:307px;
-    height:318px;
-    background-repeat: no-repeat;
-    cursor: pointer;
-  }
-  .water-icon {
-    width:307px;
-    height:318px;
-    left: 20px;
-    top: 57px;
-    background-image: url("water-button.svg");
-    &:hover {
-      background-image: url("water-button-hover.svg");
-    }
-    &:active {
-      background-image: url("water-button-press.svg");
-    }
-  }
-  .wood-stone {
-    width:338px;
-    height:311px;
-    left: 343px;
-    top: 52px;
-    background-image: url("wood-stone.svg");
-    &:hover {
-      background-image: url("wood-stone-hover.svg");
-    }
-    &:active {
-      background-image: url("wood-stone-press.svg");
-    }
-  }
-  .oil-soap {
-    width:306px;
-    height:305px;
-    left: 699px;
-    top: 55px;
-    background-image: url("oil-soap.svg");
-    &:hover {
-      background-image: url("oil-soap-hover.svg");
-    }
-    &:active {
-      background-image: url("oil-soap-press.svg");
-    }
-  }
-  .air-icon {
-    width:313px;
-    height:307px;
-    left: 19px;
-    top: 395px;
-    background-image: url("air-button.svg");
-    &:hover {
-      background-image: url("air-button-hover.svg");
-    }
-    &:active {
-      background-image: url("air-button-press.svg");
-    }
-  }
-  .coconut-icon {
-    width:319px;
-    height:325px;
-    left: 350px;
-    top: 380px;
-    background-image: url("coconut-button.svg");
-    &:hover {
-      background-image: url("coconut-button-hover.svg");
-    }
-    &:active {
-      background-image: url("coconut-button-press.svg");
-    }
-  }
-  .experiments-icon {
-    width:315px;
-    height:325px;
-    left: 689px;
-    top: 377px;
-    background-image: url("experiments-button.svg");
-    &:hover {
-      background-image: url("experiments-button-hover.svg");
-    }
-    &:active {
-      background-image: url("experiments-button-press.svg");
+
+      .example-icon{
+        position: fixed;
+        width:307px;
+        height:318px;
+        background-repeat: no-repeat;
+        cursor: pointer;
+      }
+      .water-icon {
+        width:307px;
+        height:318px;
+        left: 20px;
+        top: 57px;
+        background-image: url("water-button.svg");
+        &:hover {
+          background-image: url("water-button-hover.svg");
+        }
+        &:active {
+          background-image: url("water-button-press.svg");
+        }
+      }
+      .wood-stone {
+        width:338px;
+        height:311px;
+        left: 343px;
+        top: 52px;
+        background-image: url("wood-stone.svg");
+        &:hover {
+          background-image: url("wood-stone-hover.svg");
+        }
+        &:active {
+          background-image: url("wood-stone-press.svg");
+        }
+      }
+      .oil-soap {
+        width:306px;
+        height:305px;
+        left: 699px;
+        top: 55px;
+        background-image: url("oil-soap.svg");
+        &:hover {
+          background-image: url("oil-soap-hover.svg");
+        }
+        &:active {
+          background-image: url("oil-soap-press.svg");
+        }
+      }
+      .air-icon {
+        width:313px;
+        height:307px;
+        left: 19px;
+        top: 395px;
+        background-image: url("air-button.svg");
+        &:hover {
+          background-image: url("air-button-hover.svg");
+        }
+        &:active {
+          background-image: url("air-button-press.svg");
+        }
+      }
+      .coconut-icon {
+        width:319px;
+        height:325px;
+        left: 350px;
+        top: 380px;
+        background-image: url("coconut-button.svg");
+        &:hover {
+          background-image: url("coconut-button-hover.svg");
+        }
+        &:active {
+          background-image: url("coconut-button-press.svg");
+        }
+      }
+      .experiments-icon {
+        width:315px;
+        height:325px;
+        left: 689px;
+        top: 377px;
+        background-image: url("experiments-button.svg");
+        &:hover {
+          background-image: url("experiments-button-hover.svg");
+        }
+        &:active {
+          background-image: url("experiments-button-press.svg");
+        }
+      }
     }
   }
   .thermoscope-icon-84{
@@ -362,8 +356,11 @@
     position:fixed;
     left: 930px;
     top: 696px;
-    font-size:20px;
+    font-size:17px;
+    font-weight: 400;
     color: #AFAFAF;
+    letter-spacing: .2px;
+    text-align: right;
   }
   .clock-dark{
     position:fixed;
@@ -386,6 +383,46 @@
     &:active {
       background-image: url("options-button-press.svg");
       transform: scale(.9);
+    }
+  }
+
+  .background {
+    width: 984px;
+    height: 653px;
+    left: 20px;
+    top: 52px;
+    position: fixed;
+  }
+  .water-water {
+    .background {
+      background-image: url("background-water.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #f9aa78 65%);
+    }
+  }
+  .wood-stone {
+    .background {
+      background-image: url("background-wood-stone.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #fd8788 65%);
+    }
+  }
+  .oil-soap {
+    .background {
+      background-image: url("background-oil-soap.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #6ed0c2 65%);
+    }
+  }
+  .air {
+    .background {
+      background-image: url("background-air.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #c797fc 65%);
     }
   }
 }
