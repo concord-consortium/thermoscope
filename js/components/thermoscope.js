@@ -95,6 +95,14 @@ export default class Thermoscope extends PureComponent {
     return model.name.toLowerCase().split(" ")[0];
   }
 
+  getTemperatureDisplay() {
+    const { temperature } = this.state;
+    const { showCelsius } = this.props;
+    const convertedTemp = showCelsius ? temperature : temperature * (9/5) + 32;
+    const label = showCelsius ? "C" : "F";
+    return `${convertedTemp} °${label}`;
+  }
+
   getButtonBackground(buttonType, label, model, state) {
     const name = this.modelToClassName(model);
     const stateInfix = state ? `${state}-` : "";
@@ -142,7 +150,7 @@ export default class Thermoscope extends PureComponent {
             <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
             <div className={`temp-gauge ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="gauge">
               <div className="pointer" />
-              <div className="readout"> {`${temperature} °C`} </div>
+              <div className="readout"> {this.getTemperatureDisplay()} </div>
             </div>
           ]
         }
