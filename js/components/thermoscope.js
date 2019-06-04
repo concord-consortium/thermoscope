@@ -10,6 +10,7 @@ import models, { MIN_TEMP, MAX_TEMP } from '../models';
 import { getURLParam } from '../utils';
 import Aperture from '../components/aperture';
 
+import StyledButton from './styled-button';
 import '../../css/thermoscope.less';
 import '../../css/aperture.less';
 
@@ -37,7 +38,7 @@ export default class Thermoscope extends PureComponent {
     this.props.sensor.on('connectionLost', this.connectionLostHandler.bind(this));
     this.onMeterChange = this.onMeterChange.bind(this);
     this.togglePause = this.togglePause.bind(this);
-    this.toggleAperture = this.toggleAperture.bind(this);
+    this.toggleHidden = this.toggleHidden.bind(this);
   }
 
   componentWillUnmount() {
@@ -78,7 +79,7 @@ export default class Thermoscope extends PureComponent {
     const { paused } = this.state;
     this.setState({ paused: !paused });
   }
-  toggleAperture() {
+  toggleHidden() {
     const { hidden } = this.state;
     this.setState({ hidden: !hidden });
   }
@@ -88,12 +89,19 @@ export default class Thermoscope extends PureComponent {
   }
 
   modelToClassName(model) {
-    return model.name.toLowerCase().replace(" ", "-");
+    return model.name.toLowerCase().split(" ")[0];
+  }
+
+  getButtonBackground(buttonType, label, model, state) {
+    const name = this.modelToClassName(model);
+    const stateInfix = state ? `${state}-` : "";
+    const backgroundLabel = label.toLowerCase() === "center" ? "a" : label.toLowerCase();
+    return `css/exp/${buttonType}-button-${backgroundLabel}-${stateInfix}${name}.svg`;
   }
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls } = this.props;
+    const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls, showHideButtons, showPlayButtons } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -106,6 +114,7 @@ export default class Thermoscope extends PureComponent {
     const zeroTempScale = function (temp) { return 0; };
     let pauseButtonText = paused ? "Resume" : "Pause";
     let toggleApertureText = hidden ? "Activate" : "Hide";
+    let showClass = hidden ? "hidden" : "shown";
     let tempScale = paused ? zeroTempScale : model.tempScale;
 
     // a url parameter will override the props setting
@@ -115,20 +124,45 @@ export default class Thermoscope extends PureComponent {
 
       <div className="thermoscope">
         <div className={`label ${label.toLowerCase()} ${this.modelToClassName(model)}`} />
-        <LabModel temperature={temperature}
-                  model={model.json}
-                  tempScale={tempScale}
-                  timeStepScale={model.timeStepScale}
-                  gravityScale={model.gravityScale}
-                  coulombForcesSettings={model.coulombForcesSettings}
-                  width={MODEL_WIDTH} height={MODEL_HEIGHT}
-                  embeddableSrc={embeddableSrc}
-        />
+        {!hidden && [
+            <LabModel temperature={temperature}
+                      model={model.json}
+                      tempScale={tempScale}
+                      timeStepScale={model.timeStepScale}
+                      gravityScale={model.gravityScale}
+                      coulombForcesSettings={model.coulombForcesSettings}
+                      width={MODEL_WIDTH} height={MODEL_HEIGHT}
+                      embeddableSrc={embeddableSrc}
+                      key="lab"
+            />,
+            <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
+            <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
+            <div className={`temp-gauge ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="gauge">
+              <div className="pointer" />
+              <div className="readout"> {`${temperature} °C`} </div>
+            </div>
+          ]
+        }
+        {showHideButtons &&
+          <StyledButton 
+            className={`show-hide ${label.toLowerCase()}`}
+            onClick={this.toggleHidden}
+            background={this.getButtonBackground("showhide", label, model, hidden ? "press1" : undefined)}
+            hoveredBackground={this.getButtonBackground("showhide", label, model, hidden ? "hover2": "hover1")}
+            activeBackground={this.getButtonBackground("showhide", label, model, hidden ? "press2" : "hover1")}
+          />
+        }
+        {showPlayButtons && 
+          <StyledButton 
+            className={`play-pause ${label.toLowerCase()}`}
+            onClick={this.togglePause}
+            background={this.getButtonBackground("playpause", label, model, paused ? "press1" : undefined)}
+            hoveredBackground={this.getButtonBackground("playpause", label, model, paused ? "hover2": "hover1")}
+            activeBackground={this.getButtonBackground("playpause", label, model, paused ? "press2" : "hover1")}
+          />
+        }
+        {/* <div className={`show-hide ${showClass} ${label.toLowerCase()} ${this.modelToClassName(model)}`} onClick={this.toggleHidden} /> */}
         <div className={`thermoscope ${label.toLowerCase()}`} />
-        <div className={`temp-gauge ${label.toLowerCase()} ${this.modelToClassName(model)}`}>
-          <div className="pointer" />
-          <div className="readout"> {`${temperature} °C`} </div>
-        </div>
         {/* {showMeter && <Meter minValue={MIN_TEMP} maxValue={MAX_TEMP} currentValue={temperature} background="#444" segments={meterSegments} minClamp={minClamp} maxClamp={maxClamp} onMeterChange={this.onMeterChange} />} */}
         <div>
           {/* {!paused && !hidden &&

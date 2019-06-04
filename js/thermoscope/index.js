@@ -96,6 +96,7 @@ export default class ThermoscopeControl extends PureComponent {
   }
 
   renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
+    const { showHideButtons, showPlayButtons } = this.state;
     let meterMin = meterMinClamp ? meterMinClamp : 0;
     let meterMax = meterMaxClamp ? meterMaxClamp : 1;
     let showControls = this.getParam('controls');
@@ -113,7 +114,10 @@ export default class ThermoscopeControl extends PureComponent {
           minClamp={meterMin}
           maxClamp={meterMax}
           showMaterialControls={showControls}
-          hidden={hidden}/>
+          hidden={hidden}
+          showHideButtons={showHideButtons}
+          showPlayButtons={showPlayButtons}
+        />
       </div>;
     return thermoscope;
   }
