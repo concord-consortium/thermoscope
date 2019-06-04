@@ -14,6 +14,9 @@ import StyledButton from './styled-button';
 import '../../css/thermoscope.less';
 import '../../css/aperture.less';
 
+import '../../css/exp/showhide-button-a-water.svg';
+import '../../css/exp/showhide-button-b-water.svg';
+
 const SHOW_MATERIAL_CONTROLS = getURLParam('controls');
 const MODEL_WIDTH = 400;
 const MODEL_HEIGHT = 400;
@@ -96,7 +99,7 @@ export default class Thermoscope extends PureComponent {
     const name = this.modelToClassName(model);
     const stateInfix = state ? `${state}-` : "";
     const backgroundLabel = label.toLowerCase() === "center" ? "a" : label.toLowerCase();
-    return `css/exp/${buttonType}-button-${backgroundLabel}-${stateInfix}${name}.svg`;
+    return `${buttonType}-button-${backgroundLabel}-${stateInfix}${name}.svg`;
   }
 
   render() {

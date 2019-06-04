@@ -1,5 +1,11 @@
 import React, {PureComponent} from 'react';
 
+function importAll(r) {
+  let images = {};
+  r.keys().forEach((item, index) => { images[item.replace('./', '')] = r(item); });
+  return images;
+}
+
 export default class StyledButton extends PureComponent {
   constructor(props) {
     super(props);
@@ -7,6 +13,7 @@ export default class StyledButton extends PureComponent {
       hovered: false,
       active: false
     };
+    this.images = importAll(require.context('../../css/exp', false, /\.(png|jpe?g|svg)$/));
   }
 
   handleMouse(enter) {
@@ -38,7 +45,7 @@ export default class StyledButton extends PureComponent {
       <div 
         className={className}
         onClick={onClick}
-        style={{backgroundImage: `url(${currentBackground})`}}
+        style={{backgroundImage: `url(${this.images[currentBackground]})`}}
         onMouseEnter={this.handleMouse(true)}
         onMouseLeave={this.handleMouse(false)}
         onMouseDown={this.handleClick(true)}
