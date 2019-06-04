@@ -87,6 +87,10 @@ export default class Thermoscope extends PureComponent {
     return <div className={"material-icon " + iconName.toLowerCase().replace(/ /g,"-") + "-icon"}/>
   }
 
+  modelToClassName(model) {
+    return model.name.toLowerCase().replace(" ", "-");
+  }
+
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
     const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls } = this.props;
@@ -110,7 +114,7 @@ export default class Thermoscope extends PureComponent {
     return (
 
       <div className="thermoscope">
-        <div className={`label ${label.toLowerCase()} ${model.name.toLowerCase()}`} />
+        <div className={`label ${label.toLowerCase()} ${this.modelToClassName(model)}`} />
         <LabModel temperature={temperature}
                   model={model.json}
                   tempScale={tempScale}
@@ -121,7 +125,7 @@ export default class Thermoscope extends PureComponent {
                   embeddableSrc={embeddableSrc}
         />
         <div className={`thermoscope ${label.toLowerCase()}`} />
-        <div className={`temp-gauge ${label.toLowerCase()} ${model.name.toLowerCase()}`}>
+        <div className={`temp-gauge ${label.toLowerCase()} ${this.modelToClassName(model)}`}>
           <div className="pointer" />
           <div className="readout"> {`${temperature} °C`} </div>
         </div>

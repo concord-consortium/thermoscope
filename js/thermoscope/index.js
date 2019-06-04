@@ -90,7 +90,7 @@ export default class ThermoscopeControl extends PureComponent {
     }
 
     //  TODO: enable all buttons
-    if (params.container === 'coconut' || params.container === 'experiment') return;
+    if (params.container === 'experiment') return;
 
     this.setState({ params, mode: quantity })
   }
@@ -160,7 +160,7 @@ export default class ThermoscopeControl extends PureComponent {
             {mode === ThermoscopeMode.OneThermoscope &&
               <div className={`app-container ${this.getParam('container')}`}>
                 <div className="background" />
-                {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'))}
+                {this.renderThermoscope(this.getParam('A'), 0, 'center', this.getParam('hideA'), this.getParam('materialA'))}
               </div>
             }
             { mode === ThermoscopeMode.TwoThermoscope &&
