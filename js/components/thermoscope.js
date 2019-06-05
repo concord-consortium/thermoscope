@@ -9,13 +9,11 @@ import Meter from '../components/meter';
 import models, { MIN_TEMP, MAX_TEMP } from '../models';
 import { getURLParam } from '../utils';
 import Aperture from '../components/aperture';
-
+import Dial from './dial';
 import StyledButton from './styled-button';
+
 import '../../css/thermoscope.less';
 import '../../css/aperture.less';
-
-import '../../css/exp/showhide-button-a-water.svg';
-import '../../css/exp/showhide-button-b-water.svg';
 
 const SHOW_MATERIAL_CONTROLS = getURLParam('controls');
 const MODEL_WIDTH = 400;
@@ -34,7 +32,7 @@ export default class Thermoscope extends PureComponent {
       paused: false,
       hidden: this.props.hidden
     };
-    this.handleTempSliderChange = this.handleTempSliderChange.bind(this);
+    this.handleTemperatureChange = this.handleTemperatureChange.bind(this);
     this.handleMaterialTypeChange = this.handleMaterialTypeChange.bind(this);
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
@@ -48,7 +46,7 @@ export default class Thermoscope extends PureComponent {
     this.props.sensor.removeAllListeners('statusReceived');
   }
 
-  handleTempSliderChange(event, value) {
+  handleTemperatureChange(value) {
     this.setState({temperature: value});
   }
 
@@ -95,14 +93,6 @@ export default class Thermoscope extends PureComponent {
     return model.name.toLowerCase().split(" ")[0];
   }
 
-  getTemperatureDisplay() {
-    const { temperature } = this.state;
-    const { showCelsius } = this.props;
-    const convertedTemp = showCelsius ? temperature : temperature * (9/5) + 32;
-    const label = showCelsius ? "C" : "F";
-    return `${convertedTemp} °${label}`;
-  }
-
   getButtonBackground(buttonType, label, model, state) {
     const name = this.modelToClassName(model);
     const stateInfix = state ? `${state}-` : "";
@@ -112,7 +102,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls, showHideButtons, showPlayButtons } = this.props;
+    const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls, showHideButtons, showPlayButtons, showCelsius } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -148,10 +138,16 @@ export default class Thermoscope extends PureComponent {
             />,
             <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
             <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
-            <div className={`temp-gauge ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="gauge">
-              <div className="pointer" />
-              <div className="readout"> {this.getTemperatureDisplay()} </div>
-            </div>
+            <Dial 
+              className={`${label.toLowerCase()} ${this.modelToClassName(model)}`}
+              temperature={temperature}
+              showCelsius={showCelsius}
+              draggable={true}
+              onUpdateTemp={this.handleTemperatureChange}
+              minTemp={-6}
+              maxTemp={60}
+              key="dial"
+            />
           ]
         }
         {showHideButtons &&
