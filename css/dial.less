@@ -51,4 +51,32 @@
     text-align: right;
     letter-spacing: .5px;
   }
+
+  .cover {
+    width: 234px;
+    height: 155px;
+    position: absolute;
+    background-image: url("tempgauge-cover-water.svg");
+    opacity: 0;
+    transition: opacity .25s;
+    &.active {
+      opacity: 1;
+      transition: opacity .5s;
+    }
+    &.water {
+      background-image: url("tempgauge-cover-water.svg");
+    }
+    &.wood, &.stone {
+      background-image: url("tempgauge-cover-wood-stone.svg");
+    }
+    &.oil, &.soap {
+      background-image: url("tempgauge-cover-oil-soap.svg");
+    }
+    &.air {
+      background-image: url("tempgauge-cover-air.svg");
+    }
+    &.coconut {
+      background-image: url("tempgauge-cover-coconut.svg");
+    }
+  }
 }

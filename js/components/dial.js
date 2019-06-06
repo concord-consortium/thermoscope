@@ -81,7 +81,7 @@ export default class Dial extends PureComponent {
   }
 
   render() {
-    const { className, minTemp, maxTemp, temperature } = this.props;
+    const { className, minTemp, maxTemp, temperature, draggable } = this.props;
     const tempPercent = this.percentBetween(temperature, minTemp, maxTemp);
     const rotation = this.getTransformForRotation(tempPercent * Math.PI);
     return (
@@ -92,6 +92,7 @@ export default class Dial extends PureComponent {
           onTouchStart={this.startDragging}
           style={{transform: rotation}}
           ref={p => this.pointer = p} />
+        <div className={`cover ${className} ${draggable ? "inactive" : "active"}`} />
         <div className="readout"> {this.getTemperatureDisplay()} </div>
       </div>
     );

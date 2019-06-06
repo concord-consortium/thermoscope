@@ -136,8 +136,8 @@ export default class Thermoscope extends PureComponent {
                       embeddableSrc={embeddableSrc}
                       key="lab"
             />,
-            <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
             <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
+            <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
             <Dial 
               className={`${label.toLowerCase()} ${this.modelToClassName(model)}`}
               temperature={temperature}
@@ -146,6 +146,7 @@ export default class Thermoscope extends PureComponent {
               onUpdateTemp={this.handleTemperatureChange}
               minTemp={-6}
               maxTemp={60}
+              draggable={!liveData}
               key="dial"
             />
           ]
