@@ -9,6 +9,7 @@ import liquid1b from '../models/liquid-1-water.json';
 import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
 import liquid4 from '../models/liquid-4.json';
+import mixing from '../models/mixing.json';
 import gas1 from '../models/gas-1.json';
 import gas3 from '../models/gas-3.json';
 import gas4 from '../models/gas-4.json';
@@ -64,6 +65,16 @@ export default {
     {
       name: 'Water',
       json: liquid1a,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 1500 + 500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.55 + 0.25;
+      }
+    },
+    {
+      name: 'Mixing',
+      json: mixing,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 1500 + 500;
       },

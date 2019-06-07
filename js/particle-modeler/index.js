@@ -48,7 +48,7 @@ export default class Interactive extends PureComponent {
   constructor(props) {
     super(props);
     let hashParams = window.location.hash.substring(1),
-      model = models.emptyModel,
+      model = models.mixing,
       authoredState = getStateFromHashWithDefaults(hashParams, authorableProps),
       urlModel = getURLParam("model"),
       allowLiveDragging = getURLParam("allowLiveDragging") ? true : false,
@@ -88,9 +88,9 @@ export default class Interactive extends PureComponent {
     this.changeElementCount = this.changeElementCount.bind(this);
     this.handleSimulationChange = this.handleSimulationChange.bind(this);
     this.studentView = this.studentView.bind(this);
-    this.generatePinnedParticleText = this.generatePinnedParticleText.bind(this);
-    this.addPinnedParticleText = this.addPinnedParticleText.bind(this);
-    this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
+    this.generateParticleText = this.generateParticleText.bind(this);
+    this.addParticleText = this.addParticleText.bind(this);
+    this.removeParticleText = this.removeParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleRunState = this.toggleRunState.bind(this);
@@ -155,7 +155,7 @@ export default class Interactive extends PureComponent {
           if (this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Forces`].value) {
             api.setPairwiseLJProperties(elem1, elem2, { sigma: parseToPrimitive(this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Sigma`].value), epsilon: parseToPrimitive(this.state[`pair${(elem1 + 1)}${(elem2 + 1)}Epsilon`].value) });
           } else {
-            api.removePairwiseLJProperties(elem1, elem2);
+           //  api.removePairwiseLJProperties(elem1, elem2);
           }
         }
       }
@@ -212,7 +212,7 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     api.stop();
-    this.addPinnedParticleText();
+    // this.addParticleText();
     if (this.state.container) {
       const containerScale = this.state.authoring ? 0.5 : 0.3534;
       updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api, containerScale);
@@ -230,7 +230,7 @@ export default class Interactive extends PureComponent {
             newState["showAtom" + el] = false;
           } else {
             // this was a pinned live particle
-            this.removePinnedParticleText(i)
+            // this.removeParticleText(i)
           }
           api.setAtomProperties(i, { pinned: 0, element: el });
 
@@ -269,10 +269,10 @@ export default class Interactive extends PureComponent {
         let newState = this.state.pinnedAtoms;
         newState[i] = { x, y };
         this.setState({ pinnedAtoms: newState });
-        this.addPinnedParticleText(i);
+        // this.addParticleText(i);
       } else if (d.element < this.state.elements.value) {
         api.setAtomProperties(i, { pinned: 0 });
-        this.removePinnedParticleText(i);
+        // this.removeParticleText(i);
       }
       this.updateDiff(Date.now());
     });
@@ -319,37 +319,63 @@ export default class Interactive extends PureComponent {
     this.setModelProps();
   }
 
-  generatePinnedParticleText(i) {
+  generateParticleText(i, t, c) {
     let textProps = {
-      "text": "P",
+      "text": t ? t : "A",
       "hostType": "Atom",
       "hostIndex": i,
       "layer": 1,
       "textAlign": "center",
-      "width": 0.3
+      "width": 0.03,
+      "color": c ? c : "black"
     };
     return textProps;
   }
 
-  addPinnedParticleText(particle) {
+  convertHexToLabColor(hexColor) {
+    if (hexColor[0] === '#') {
+      hexColor = hexColor.substr(1);
+    }
+
+    var num = parseInt(hexColor, 16);
+    num = num - Math.pow(2, 24);
+  }
+
+  addParticleText(particle) {
     if (!particle) {
-      // add boxes for all pinned particles
+      var newVx = [];
+      var newVy = [];
+      var newTextboxes = [];
+      // add boxes for all labeled particles
       api.set({ 'textboxes': {} });
       let textToAdd = [];
       for (let i = 0; i < api.getNumberOfAtoms(); i++) {
         let a = api.getAtomProperties(i);
-        if (a.pinned && a.element < this.state.elements.value) {
-          let textProps = this.generatePinnedParticleText(i);
+        if (a.x < 1.7) {
+          let textProps = this.generateParticleText(i, "A", "white");
           api.addTextBox(textProps);
+          newTextboxes.push(textProps);
+          var adjustedVx = a.vx * 0.1;
+          var adjustedVy = a.vy * 0.1;
+          api.setAtomProperties(i, { vx: adjustedVx, vy: adjustedVy });
+        } else {
+          let textProps = this.generateParticleText(i, "B");
+          api.addTextBox(textProps);
+          newTextboxes.push(textProps);
         }
+        newVx.push(api.getAtomProperties(i).vx);
+        newVy.push(api.getAtomProperties(i).vy);
       }
+      console.log("New VX:", newVx.concat(','));
+      console.log("New Vy:", newVy.concat(','));
+      console.log("new textboxes", JSON.stringify(newTextboxes.concat(',')));
     } else {
       // add box for specific particle
-      let textProps = this.generatePinnedParticleText(particle);
+      let textProps = this.generateParticleText(particle);
       api.addTextBox(textProps);
     }
   }
-  removePinnedParticleText(particle) {
+  removeParticleText(particle) {
     let textboxes = api.get('textBoxes');
     let textToRemove = -1;
     for (let i = 0; i < textboxes.length; i++) {
