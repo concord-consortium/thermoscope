@@ -88,6 +88,9 @@ export default class Interactive extends PureComponent {
     this.changeElementCount = this.changeElementCount.bind(this);
     this.handleSimulationChange = this.handleSimulationChange.bind(this);
     this.studentView = this.studentView.bind(this);
+    this.generatePinnedParticleText = this.generatePinnedParticleText.bind(this);
+    this.addPinnedParticleText = this.addPinnedParticleText.bind(this);
+    this.removePinnedParticleText = this.removePinnedParticleText.bind(this);
     this.getCurrentModelLink = this.getCurrentModelLink.bind(this);
     this.updateDiff = this.updateDiff.bind(this);
     this.toggleRunState = this.toggleRunState.bind(this);
@@ -209,6 +212,7 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     api.stop();
+    this.addPinnedParticleText();
     if (this.state.container) {
       const containerScale = this.state.authoring ? 0.5 : 0.3534;
       updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api, containerScale);
@@ -224,6 +228,9 @@ export default class Interactive extends PureComponent {
           if (el >= this.state.elements.value) {
             el -= 3;
             newState["showAtom" + el] = false;
+          } else {
+            // this was a pinned live particle
+            this.removePinnedParticleText(i)
           }
           api.setAtomProperties(i, { pinned: 0, element: el });
 
@@ -254,6 +261,20 @@ export default class Interactive extends PureComponent {
           this.updateDiff(Date.now() + saveStateInterval);
         }
       }
+    });
+
+    api.onClick('atom', (x, y, d, i) => {
+      if (d.pinned === 0) {
+        api.setAtomProperties(i, { pinned: 1 });
+        let newState = this.state.pinnedAtoms;
+        newState[i] = { x, y };
+        this.setState({ pinnedAtoms: newState });
+        this.addPinnedParticleText(i);
+      } else if (d.element < this.state.elements.value) {
+        api.setAtomProperties(i, { pinned: 0 });
+        this.removePinnedParticleText(i);
+      }
+      this.updateDiff(Date.now());
     });
 
     api.onPropertyChange('time', function (t) {
@@ -296,6 +317,48 @@ export default class Interactive extends PureComponent {
     }
 
     this.setModelProps();
+  }
+
+  generatePinnedParticleText(i) {
+    let textProps = {
+      "text": "P",
+      "hostType": "Atom",
+      "hostIndex": i,
+      "layer": 1,
+      "textAlign": "center",
+      "width": 0.3
+    };
+    return textProps;
+  }
+
+  addPinnedParticleText(particle) {
+    if (!particle) {
+      // add boxes for all pinned particles
+      api.set({ 'textboxes': {} });
+      let textToAdd = [];
+      for (let i = 0; i < api.getNumberOfAtoms(); i++) {
+        let a = api.getAtomProperties(i);
+        if (a.pinned && a.element < this.state.elements.value) {
+          let textProps = this.generatePinnedParticleText(i);
+          api.addTextBox(textProps);
+        }
+      }
+    } else {
+      // add box for specific particle
+      let textProps = this.generatePinnedParticleText(particle);
+      api.addTextBox(textProps);
+    }
+  }
+  removePinnedParticleText(particle) {
+    let textboxes = api.get('textBoxes');
+    let textToRemove = -1;
+    for (let i = 0; i < textboxes.length; i++) {
+      if (textboxes[i].hostIndex == particle) {
+        textToRemove = i;
+        break;
+      }
+    }
+    if (textToRemove > -1) api.removeTextBox(textToRemove);
   }
 
   addNewDraggableAtom(el = 0, skipCheck = false) {
