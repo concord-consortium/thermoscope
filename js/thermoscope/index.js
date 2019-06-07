@@ -14,6 +14,7 @@ import { getURLParam } from '../utils';
 import { List, ListItem } from 'material-ui/List';
 import { GridList, GridTile } from 'material-ui/GridList'
 import Thermoscope from '../components/thermoscope';
+import ExperimentSelector from '../components/experiment-selector';
 
 const sensor = bleSensor;
 const enableUrlParam = getURLParam('params') || false;
@@ -26,7 +27,7 @@ injectTapEventPlugin();
 darkBaseTheme.palette.textColor = '#ccc';
 darkBaseTheme.palette.primary1Color = '#ccc';
 
-let ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3 };
+export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3, ExperimentSelector: 4, SingleExperiment: 5 };
 let meterSegments = [
   {
     color: "#800000",
@@ -82,17 +83,14 @@ export default class ThermoscopeControl extends PureComponent {
     return () => this.setState({ [key]: !this.state[key] });
   }
 
-  setThermoscopeRendering(params, quantity) {
+  setThermoscopeRendering(params, mode) {
     if (enableUrlParam) {
       let urlParams = Object.entries(params).map(e => e.join('=')).join('&');
       var pageUrl = params ? '?' + urlParams : '';
       window.history.pushState('', '', pageUrl);
     }
 
-    //  TODO: enable all buttons
-    if (params.container === 'experiment') return;
-
-    this.setState({ params, mode: quantity })
+    this.setState({ params, mode })
   }
 
   renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
@@ -157,7 +155,7 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="coconut-icon example-icon"
                       onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1, container: 'coconut' }, 1)}/>
                     <div className="experiments-icon example-icon"
-                      onClick={() => this.setThermoscopeRendering({ A: 'uniform', container: 'experiment' }, 1)}/>
+                      onClick={() => this.setState({ mode: ThermoscopeMode.ExperimentSelector })}/>
                   </div>
                 </div>
               </div>
@@ -181,6 +179,15 @@ export default class ThermoscopeControl extends PureComponent {
                 {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'), true)}
                 {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'), this.getParam('materialB'), true)}
                 {this.renderThermoscope(this.getParam('C'), 1, 'C', this.getParam('hideC'), this.getParam('materialC'), true)}
+              </div>
+            }
+            { mode === ThermoscopeMode.ExperimentSelector &&
+              <ExperimentSelector onSelect={this.setThermoscopeRendering} />
+            }
+            {mode === ThermoscopeMode.SingleExperiment &&
+              <div className={`app-container ${this.getParam('container')}`}>
+                <div className="background" />
+                {this.renderThermoscope(this.getParam('A'), 0, 'center experiment', this.getParam('hideA'), this.getParam('materialA'))}
               </div>
             }
             <Sensor sensor={sensor} showAddressBox={false} />

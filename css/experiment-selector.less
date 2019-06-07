@@ -1,0 +1,192 @@
+.experiment-selector {
+  .background {
+    width: 984px;
+    height: 653px;
+    left: 20px;
+    top: 52px;
+    position: absolute;
+    background-image: url("background-one-view.svg");
+  }
+
+  div {
+    position: absolute;
+  }
+
+  .icon {
+    cursor: pointer;
+  }
+
+  .selected-exp {
+    width: 285px;
+    height: 141px;
+    left: 386px;
+    top: 73px;
+    &.none {
+      background-image: url("one-view-label-a-blank.svg");
+    }
+    &.wood {
+      background-image: url("one-view-label-a-wood.svg");
+    }
+    &.stone {
+      background-image: url("one-view-label-a-stone.svg");
+    }
+    &.coconut {
+      background-image: url("one-view-label-a-coconut.svg");
+    }
+    &.water {
+      background-image: url("one-view-label-a-water.svg");
+    }
+    &.oil {
+      background-image: url("one-view-label-a-oil.svg");
+    }
+    &.soap {
+      background-image: url("one-view-label-a-soap.svg");
+    }
+    &.air {
+      background-image: url("one-view-label-a-air.svg");
+    }
+  }
+
+  .solids {
+    .header {
+      width: 128px;
+      height: 65px;
+      left: 300px;
+      top: 220px;
+      background-image: url("label-a-solid.svg");
+    }
+
+    .wood {
+      width: 131px;
+      height: 130px;
+      left: 316px;
+      top: 281px;
+      background-image: url("one-view-button-wood.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-wood.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-wood.svg");
+      }
+    }
+
+    .stone {
+      width: 129px;
+      height: 128px;
+      left: 337px;
+      top: 412px;
+      background-image: url("one-view-button-stone.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-stone.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-stone.svg");
+      }
+    }
+
+    .coconut {
+      width: 129px;
+      height: 128px;
+      left: 357px;
+      top: 542px;
+      background-image: url("one-view-button-coconut.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-coconut.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-coconut.svg");
+      }
+    }
+  }
+
+  .liquids {
+    .header {
+      width: 143px;
+      height: 67px;
+      left: 426px;
+      top: 235px;
+      background-image: url("label-a-liquid.svg");
+    }
+
+    .water {
+      width: 130px;
+      height: 130px;
+      left: 447px;
+      top: 296px;
+      background-image: url("one-view-button-water.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-water.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-water.svg");
+      }
+    }
+
+    .soap {
+      width: 129px;
+      height: 128px;
+      left: 487px;
+      top: 557px;
+      background-image: url("one-view-button-soap.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-soap.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-soap.svg");
+      }
+    }
+
+    .oil {
+      width: 129px;
+      height: 128px;
+      left: 467px;
+      top: 427px;
+      background-image: url("one-view-button-oil.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-oil.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-oil.svg");
+      }
+    }
+  }
+
+  .gas {
+    .header {
+      width: 104px;
+      height: 61px;
+      left: 576px;
+      top: 250px;
+      background-image: url("label-a-gas.svg");
+    }
+
+    .air {
+      width: 130px;
+      height: 130px;
+      left: 577px;
+      top: 311px;
+      background-image: url("one-view-button-air.svg");
+      &:hover {
+        background-image: url("one-view-button-hover-air.svg");
+      }
+      &.active {
+        background-image: url("one-view-button-press-air.svg");
+      }
+    }
+  }
+
+  .go-on {
+    width: 134px;
+    height: 121px;
+    left: 45px;
+    top: 558px;
+    background-image: url("one-view-button-go-on.svg");
+    cursor: pointer;
+    &:hover {
+      background-image: url("one-view-button-hover-go-on.svg");
+    }
+    &:active {
+      background-image: url("one-view-button-press-go-on.svg");
+    }
+  }
+}

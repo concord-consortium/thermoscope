@@ -27,6 +27,9 @@
   &.coconut {
     background-image: url("tempgauge-coconut.svg");
   }
+  &.experiment {
+    background-image: url("one-view-tempgauge.svg");
+  }
   
   .pointer {
     width: 118px;
@@ -63,6 +66,9 @@
       opacity: 1;
       transition: opacity .5s;
     }
+    &.inactive {
+      pointer-events: none;
+    }
     &.water {
       background-image: url("tempgauge-cover-water.svg");
     }
@@ -77,6 +83,9 @@
     }
     &.coconut {
       background-image: url("tempgauge-cover-coconut.svg");
+    }
+    &.experiment {
+      background-image: url("one-view-tempgauge-cover.svg");
     }
   }
 }

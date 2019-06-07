@@ -94,10 +94,13 @@ export default class Thermoscope extends PureComponent {
   }
 
   getButtonBackground(buttonType, label, model, state) {
+    const stateInfix = state ? `-${state}` : "";
+    if (label.indexOf("experiment") > -1) {
+      return `one-view-${buttonType}-button-a${stateInfix}.svg`;
+    }
     const name = this.modelToClassName(model);
-    const stateInfix = state ? `${state}-` : "";
     const backgroundLabel = label.toLowerCase() === "center" ? "a" : label.toLowerCase();
-    return `${buttonType}-button-${backgroundLabel}-${stateInfix}${name}.svg`;
+    return `${buttonType}-button-${backgroundLabel}${stateInfix}-${name}.svg`;
   }
 
   render() {
