@@ -15,6 +15,7 @@ import { List, ListItem } from 'material-ui/List';
 import { GridList, GridTile } from 'material-ui/GridList'
 import Thermoscope from '../components/thermoscope';
 import ExperimentSelector from '../components/experiment-selector';
+import MixingView from '../components/mixing-view';
 
 const sensor = bleSensor;
 const enableUrlParam = getURLParam('params') || false;
@@ -27,7 +28,9 @@ injectTapEventPlugin();
 darkBaseTheme.palette.textColor = '#ccc';
 darkBaseTheme.palette.primary1Color = '#ccc';
 
-export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3, ExperimentSelector: 4, SingleExperiment: 5 };
+export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3, 
+                                 ExperimentSelector: 4, SingleExperiment: 5, ExperimentSubmenu: 6,
+                                 MixingView: 7 };
 let meterSegments = [
   {
     color: "#800000",
@@ -155,7 +158,7 @@ export default class ThermoscopeControl extends PureComponent {
                     <div className="coconut-icon example-icon"
                       onClick={() => this.setThermoscopeRendering({ A: 'uniform', materialA: 1, container: 'coconut' }, 1)}/>
                     <div className="experiments-icon example-icon"
-                      onClick={() => this.setState({ mode: ThermoscopeMode.ExperimentSelector })}/>
+                      onClick={() => this.setState({ mode: ThermoscopeMode.ExperimentSubmenu })}/>
                   </div>
                 </div>
               </div>
@@ -188,6 +191,26 @@ export default class ThermoscopeControl extends PureComponent {
               <div className={`app-container ${this.getParam('container')}`}>
                 <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'center experiment', this.getParam('hideA'), this.getParam('materialA'))}
+              </div>
+            }
+            {
+              mode === ThermoscopeMode.ExperimentSubmenu && 
+              <div className="submenu">
+                <div className="one-view-icon example-icon"
+                  onClick={() => this.setState({ mode: ThermoscopeMode.ExperimentSelector })}/>
+                <div className="mixing-icon example-icon"
+                  onClick={() => this.setState({ mode: ThermoscopeMode.MixingView })}/>
+              </div>
+            }
+            {
+              mode === ThermoscopeMode.MixingView && 
+              <div className="mixing-container">
+                <div  className="background" />
+                <MixingView 
+                  showHideButtons={showHideButtons}
+                  showPlayButtons={showPlayButtons}
+                  showCelsius={showCelsius}
+                /> 
               </div>
             }
             <Sensor sensor={sensor} showAddressBox={false} />

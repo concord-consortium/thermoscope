@@ -441,6 +441,41 @@
       background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #6cbbdc 65%);
     }
   }
+
+  .submenu {
+    div {
+      position: fixed;
+      cursor: pointer;
+    }
+
+    .one-view-icon {
+      width: 320px;
+      height: 305px;
+      left: 181px;
+      top: 224px;
+      background-image: url("alt-one-view-button.svg");
+      &:hover {
+        background-image: url("alt-one-view-button-hover.svg");
+      }
+      &:active {
+        background-image: url("alt-one-view-button-press.svg")
+      }
+    }
+
+    .mixing-icon {
+      width: 328px;
+      height: 302px;
+      left: 515px;
+      top: 221px;
+      background-image: url("alt-mixing-view-button.svg");
+      &:hover {
+        background-image: url("alt-mixing-view-button-hover.svg");
+      }
+      &:active {
+        background-image: url("alt-mixing-view-button-press.svg")
+      }
+    }
+  }
 }
 
 // For preloading

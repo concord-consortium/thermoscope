@@ -37,7 +37,6 @@ export default class Thermoscope extends PureComponent {
     this.handleMaterialIdxChange = this.handleMaterialIdxChange.bind(this);
     this.props.sensor.on('statusReceived', this.liveDataHandler.bind(this));
     this.props.sensor.on('connectionLost', this.connectionLostHandler.bind(this));
-    this.onMeterChange = this.onMeterChange.bind(this);
     this.togglePause = this.togglePause.bind(this);
     this.toggleHidden = this.toggleHidden.bind(this);
   }
@@ -46,8 +45,12 @@ export default class Thermoscope extends PureComponent {
     this.props.sensor.removeAllListeners('statusReceived');
   }
 
-  handleTemperatureChange(value) {
-    this.setState({temperature: value});
+  handleTemperatureChange(value, liveData) {
+    const { onTemperatureChage } = this.props;
+    this.setState({temperature: value, liveData: !!liveData});
+    if (onTemperatureChage) {
+      onTemperatureChage(value);
+    }
   }
 
   handleMaterialTypeChange(event, value) {
@@ -63,17 +66,13 @@ export default class Thermoscope extends PureComponent {
       let newData = this.props.sensor.liveSensors[this.props.probeIndex].liveValue;
       if (!isNaN(newData) && isFinite(newData)) {
         let roundedTemperatureData = Math.round(newData);
-        this.setState({ temperature: roundedTemperatureData, liveData: true })
+        this.handleTemperatureChange(roundedTemperatureData, true);
       }
     }
   }
 
   connectionLostHandler() {
     this.setState({liveData: false});
-  }
-
-  onMeterChange(value) {
-    this.setState({temperature: value});
   }
 
   togglePause() {
@@ -97,6 +96,10 @@ export default class Thermoscope extends PureComponent {
     const stateInfix = state ? `-${state}` : "";
     if (label.indexOf("experiment") > -1) {
       return `one-view-${buttonType}-button-a${stateInfix}.svg`;
+    } else if (label.indexOf("mixing") > -1) {
+      return (label.indexOf("center") > -1)
+        ? `mixed-view-${buttonType}-button${stateInfix}.svg`
+        : `mixing-view-${buttonType}-button-a${stateInfix}.svg`;
     }
     const name = this.modelToClassName(model);
     const backgroundLabel = label.toLowerCase() === "center" ? "a" : label.toLowerCase();
@@ -105,7 +108,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMeter, meterSegments, minClamp, maxClamp, showMaterialControls, showHideButtons, showPlayButtons, showCelsius } = this.props;
+    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -126,7 +129,7 @@ export default class Thermoscope extends PureComponent {
 
     return (
 
-      <div className="thermoscope">
+      <div className={`thermoscope ${className}`}>
         <div className={`label ${label.toLowerCase()} ${this.modelToClassName(model)}`} />
         {!hidden && [
             <LabModel temperature={temperature}
@@ -142,16 +145,29 @@ export default class Thermoscope extends PureComponent {
             <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
             <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
             <Dial 
-              className={`${label.toLowerCase()} ${this.modelToClassName(model)}`}
+              className={`${className ? className : ''} ${label.toLowerCase()} ${this.modelToClassName(model)}`}
               temperature={temperature}
               showCelsius={showCelsius}
-              draggable={true}
               onUpdateTemp={this.handleTemperatureChange}
               minTemp={-6}
               maxTemp={60}
-              draggable={!liveData}
-              key="dial"
-            />
+              draggable={!liveData && !forceCover}
+              key="dial1"
+              peggedTemp={aPegged}
+            />,
+            (isFinite(bPegged) &&
+              <Dial 
+                className={`${className} ${label.toLowerCase()} ${this.modelToClassName(model)} dial2`}
+                temperature={temperature}
+                showCelsius={showCelsius}
+                onUpdateTemp={this.handleTemperatureChange}
+                minTemp={-6}
+                maxTemp={60}
+                draggable={false}
+                key="dial2"
+                peggedTemp={bPegged}
+              />
+            )
           ]
         }
         {showHideButtons &&

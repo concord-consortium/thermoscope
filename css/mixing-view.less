@@ -1,0 +1,158 @@
+.mixing-container {
+  div {
+    position: fixed;
+  }
+
+  .invisible {
+    opacity: 0;
+    transition: opacity .5s;
+    pointer-events: none;
+  }
+
+  .visible {
+    transition: opacity .5s;
+  }
+
+  .transition {
+    transition: opacity 1s;
+  }
+
+  .title {
+    width: 304px;
+    height: 129px;
+    left: 361px;
+    top: 85px;
+    background-image: url("mix/mixing-view-label-ab-water.svg");
+  }
+
+  .background {
+    width: 984px;
+    height: 653px;
+    left: 20px;
+    top: 52px;
+    position: absolute;
+    background-image: url("mix/background-mixing-view.svg");
+  }
+
+  .zoom-fade {
+    width: 220px;
+    height: 167px;
+    left: 376px;
+    top: 155px;
+    background-image: url("mix/zoom-fade-ab-water.svg")
+  }
+
+  .zoom-circle {
+    width: 220px;
+    height: 167px;
+    left: 376px;
+    top: 155px;
+    background-image: url("mix/zoom-circle-ab-water.svg")
+  }
+
+  .thermoscope-a {
+    width: 443px;
+    height: 444px;
+    top: 197px;
+    background-image: url("thermoscope-a.svg");
+    transition: left .5s;
+    left: 241px;
+    &.start {
+      left: 55px;
+    }
+  }
+
+  .thermoscope-b,.thermoscope-b-alt {
+    width: 444px;
+    height: 444px;
+    top: 197px;
+    background-image: url("thermoscope-b.svg");
+    transition: left .5s;
+    left: 346px;
+    &.start {
+      left: 532px;
+    }
+  }
+
+  .thermoscope-b-alt {
+    background-image: url("mix/thermoscope-b-v2.svg");
+    pointer-events: none;
+  }
+
+  .temp-gauge.mixing {
+    &.center {
+      left: 107px;
+      top: 290px;
+    }
+    &.dial2 {
+      left: 683px;
+    }
+  }
+
+  .temp-gauge.mixing.b, .temp-gauge.mixing.dial2 {
+    .readout {
+      color: #4d4d4d;
+    }
+  }
+
+  .temp-gauge.dial2 .pointer {
+    background-image: url("tempgauge-b-pointer.svg");
+  }
+
+  .show-hide.center.mixing {
+    width: 88px;
+    height: 87px;
+    left: 422px;
+    top: 525px;
+    cursor: pointer;
+  }
+
+  .play-pause.center.mixing {
+    width: 88px;
+    height: 86px;
+    left: 516px;
+    top: 526px;
+    cursor: pointer;
+  }
+
+  .center .lab-model {
+    left: 311px;
+  }
+
+  .lab-container .overlay {
+    background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #6cc7bb 65%);
+  }
+
+  .thermoscope.mixing {
+    .label {
+      &.a {
+        background-image: url("mix/mixing-view-label-a-water.svg");
+      }
+      &.b {
+        background-image: url("mix/mixing-view-label-b-water.svg");
+      }
+      &.center {
+        width: 304px;
+        height: 129px;
+        left: 361px;
+        top: 85px;
+        background-image: url("mix/mixing-view-label-ab-water.svg");
+      }
+    }
+  }
+
+  .continue {
+    width: 161px;
+    height: 116px;
+    left: 433px;
+    top: 573px;
+    cursor: pointer;
+    background-image: url("mix/mixing-view-button-go-on.svg");
+    &:hover {
+      background-image: url("mix/mixing-view-button-hover-go-on.svg");
+    }
+    &:active {
+      background-image: url("mix/mixing-view-button-press-go-on.svg");
+    }
+  }
+}
