@@ -212,7 +212,7 @@ export default class Interactive extends PureComponent {
   handleModelLoad() {
     api = lab.scriptingAPI;
     api.stop();
-    // this.addParticleText();
+    this.addParticleText();
     if (this.state.container) {
       const containerScale = this.state.authoring ? 0.5 : 0.3534;
       updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api, containerScale);
@@ -342,6 +342,10 @@ export default class Interactive extends PureComponent {
   }
 
   addParticleText(particle) {
+    let textboxes = api.get('textBoxes');
+    for (let i = textboxes.length - 1; i >= 0; i--) {
+      api.removeTextBox(i);
+    }
     if (!particle) {
       var newVx = [];
       var newVy = [];
@@ -351,23 +355,23 @@ export default class Interactive extends PureComponent {
       let textToAdd = [];
       for (let i = 0; i < api.getNumberOfAtoms(); i++) {
         let a = api.getAtomProperties(i);
-        if (a.x < 1.7) {
-          let textProps = this.generateParticleText(i, "A", "white");
-          api.addTextBox(textProps);
-          newTextboxes.push(textProps);
-          var adjustedVx = a.vx * 0.1;
-          var adjustedVy = a.vy * 0.1;
-          api.setAtomProperties(i, { vx: adjustedVx, vy: adjustedVy });
-        } else {
+        // if (a.x < 1.7) {
+          // let textProps = this.generateParticleText(i, "A", "white");
+          // api.addTextBox(textProps);
+          // newTextboxes.push(textProps);
+          // var adjustedVx = 0;
+          // var adjustedVy = 0;
+          // api.setAtomProperties(i, { vx: adjustedVx, vy: adjustedVy });
+        // } else {
           let textProps = this.generateParticleText(i, "B");
           api.addTextBox(textProps);
           newTextboxes.push(textProps);
-        }
+        // }
         newVx.push(api.getAtomProperties(i).vx);
         newVy.push(api.getAtomProperties(i).vy);
       }
-      console.log("New VX:", newVx.concat(','));
-      console.log("New Vy:", newVy.concat(','));
+      // console.log("New VX:", newVx.concat(','));
+      // console.log("New Vy:", newVy.concat(','));
       console.log("new textboxes", JSON.stringify(newTextboxes.concat(',')));
     } else {
       // add box for specific particle
