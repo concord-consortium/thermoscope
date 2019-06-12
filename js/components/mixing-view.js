@@ -27,12 +27,14 @@ export default class MixingView extends PureComponent {
     return `${material} icon ${material === this.state.material ? 'active' : ''}`;
   }
 
-  handleTemperatureChage(side) {
+  handleTemperatureChange(side) {
     return (temp) => {
-      if (side === 'a') {
-        this.setState({ aTemp: temp });
-      } else {
-        this.setState({ bTemp: temp });
+      if (this.state.mode === MixingMode.TwoThermoscope) {
+        if (side === 'a') {
+          this.setState({ aTemp: temp });
+        } else {
+          this.setState({ bTemp: temp });
+        }
       }
     }
   }
@@ -62,12 +64,11 @@ export default class MixingView extends PureComponent {
             embeddableSrc='./lab/embeddable.html'
             label={'a mixing'}
             probeIndex={0}
-            materialIndex={2}
             hidden={false}
             showHideButtons={showHideButtons}
             showPlayButtons={showPlayButtons}
             showCelsius={showCelsius}
-            onTemperatureChage={this.handleTemperatureChage('a')}
+            onTemperatureChage={this.handleTemperatureChange('a')}
             forceCover={true}
           />
         </div>
@@ -79,13 +80,12 @@ export default class MixingView extends PureComponent {
             materialIndex={2}
             embeddableSrc='./lab/embeddable.html'
             label={'b mixing'}
-            probeIndex={0}
-            materialIndex={2}
+            probeIndex={1}
             hidden={false}
             showHideButtons={showHideButtons}
             showPlayButtons={showPlayButtons}
             showCelsius={showCelsius}
-            onTemperatureChage={this.handleTemperatureChage('b')}
+            onTemperatureChage={this.handleTemperatureChange('b')}
             forceCover={true}
           />
         </div>
@@ -116,11 +116,10 @@ export default class MixingView extends PureComponent {
             className="mixing"
             sensor={sensor}
             material={'liquid'}
-            materialIndex={2}
+            materialIndex={3}
             embeddableSrc='./lab/embeddable.html'
             label={'center mixing'}
             probeIndex={0}
-            materialIndex={2}
             hidden={false}
             showHideButtons={showHideButtons}
             showPlayButtons={showPlayButtons}
