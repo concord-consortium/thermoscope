@@ -60,7 +60,7 @@ export default class MixingView extends PureComponent {
             className="mixing"
             sensor={sensor}
             material={'liquid'}
-            materialIndex={2}
+            materialIndex={4}
             embeddableSrc='./lab/embeddable.html'
             label={'a mixing'}
             probeIndex={0}
@@ -77,7 +77,7 @@ export default class MixingView extends PureComponent {
             className="mixing"
             sensor={sensor}
             material={'liquid'}
-            materialIndex={2}
+            materialIndex={5}
             embeddableSrc='./lab/embeddable.html'
             label={'b mixing'}
             probeIndex={1}

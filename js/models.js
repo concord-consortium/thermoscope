@@ -10,6 +10,8 @@ import liquid2 from '../models/liquid-2.json';
 import liquid3 from '../models/liquid-3.json';
 import liquid4 from '../models/liquid-4.json';
 import mixing from '../models/mixing.json';
+import mixinga from '../models/mixing-a.json';
+import mixingb from '../models/mixing-b.json';
 import gas1 from '../models/gas-1.json';
 import gas3 from '../models/gas-3.json';
 import gas4 from '../models/gas-4.json';
@@ -75,6 +77,26 @@ export default {
     {
       name: 'Mixing',
       json: mixing,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 1500 + 500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.55 + 0.25;
+      }
+    },
+    {
+      name: 'MixingA',
+      json: mixinga,
+      tempScale: function (temp) {
+        return normalizeTemp(temp) * 1500 + 500;
+      },
+      timeStepScale: function (temp) {
+        return normalizeTemp(temp) * 0.55 + 0.25;
+      }
+    },
+    {
+      name: 'MixingB',
+      json: mixingb,
       tempScale: function (temp) {
         return normalizeTemp(temp) * 1500 + 500;
       },
