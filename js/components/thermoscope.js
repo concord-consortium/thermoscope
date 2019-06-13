@@ -125,6 +125,10 @@ export default class Thermoscope extends PureComponent {
     let showClass = hidden ? "hidden" : "shown";
     let tempScale = paused ? zeroTempScale : model.tempScale;
 
+    // if mixing without live sensors, simulate a median temperature
+    let mixingTemperature = mixingValues && !liveData ? (Math.abs(mixingValues.aTemp - mixingValues.bTemp) / 2) + Math.min(mixingValues.aTemp, mixingValues.bTemp) : temperature;
+    let calculatedTemperature = mixingValues ? mixingTemperature : temperature;
+
     // a url parameter will override the props setting
     if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
 
@@ -134,7 +138,7 @@ export default class Thermoscope extends PureComponent {
         <div className={`label ${label.toLowerCase()} ${this.modelToClassName(model)}`} />
         {!hidden && [
             !frozen &&
-              <LabModel temperature={temperature}
+              <LabModel temperature={calculatedTemperature}
                 model={model.json}
                 tempScale={tempScale}
                 timeStepScale={model.timeStepScale}
@@ -149,7 +153,7 @@ export default class Thermoscope extends PureComponent {
             <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
             <Dial
               className={`${className ? className : ''} ${label.toLowerCase()} ${this.modelToClassName(model)}`}
-              temperature={temperature}
+              temperature={calculatedTemperature}
               showCelsius={showCelsius}
               onUpdateTemp={this.handleTemperatureChange}
               minTemp={-6}
@@ -162,7 +166,7 @@ export default class Thermoscope extends PureComponent {
             (isFinite(bPegged) &&
               <Dial
                 className={`${className} ${label.toLowerCase()} ${this.modelToClassName(model)} dial2`}
-                temperature={temperature}
+                temperature={calculatedTemperature}
                 showCelsius={showCelsius}
                 onUpdateTemp={this.handleTemperatureChange}
                 minTemp={-6}
