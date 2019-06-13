@@ -107,10 +107,10 @@ export default class Sensor extends PureComponent {
         </div>
       );
     } else if (connected) {
-      const sensorName = connectedSensorName ? this.getSensorName(connectedSensorName) : "";
+      const displayName = this.getDisplayName(getSensorName(connectedSensorName));
       return (
         <div id="toggleSensorDisplay" className={`sensor-connect-icon connected`} onClick={this.toggleDisplay}>
-          <div className="sensor-tag-icon">{sensorName}</div>
+          <div className="sensor-tag-icon">{displayName}</div>
           <div className="sensor-display-disconnect" />
         </div>
       );
@@ -121,7 +121,11 @@ export default class Sensor extends PureComponent {
 
   getSensorName(connectedSensorName) {
     const prefix = "Thermoscope";
-    return connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2).trim() : prefix;
+    return connectedSensorName && connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2).trim() : prefix;
+  }
+
+  getDisplayName(sensorName) {
+    return sensorName && sensorName.length === 1 ? sensorName : "✔️";
   }
 
   render() {
@@ -157,16 +161,15 @@ export default class Sensor extends PureComponent {
           <RaisedButton onClick={this.closeWinLink} style={dialogBtn} primary={true}>Cancel</RaisedButton>
           <RaisedButton onClick={this.openWinBLE} style={dialogBtn} primary={true}>OK</RaisedButton>
         </Dialog>
-        <Dialog open={lostConnection} ref="lostConDialog" className="dialog" contentStyle={{minWidth: "30%", width:0}}>
-          <div className="dialog-msg sensorConnect">
-            <div className={sensorIconStyle}>
-              <div>{this.lastSensorName == "Thermoscope" || !this.lastSensorName ?  "🌡" : this.lastSensorName}</div>
-              <div className="overlay">?</div>
+        {lostConnection &&
+          <div className="lost-connection-dialog">
+            <div className="overlay" />
+            <div className="sensor-tag-icon">
+              {this.getDisplayName(this.lastSensorName)}
             </div>
-            <div>Lost connection to Thermoscope</div>
+            <div className="close" onClick={this.hideLostConDlg} />
           </div>
-          <RaisedButton onClick={this.hideLostConDlg} primary={true}>OK</RaisedButton>
-        </Dialog>
+        }
         { this.getSensorConnectButton() }
         {showDetails &&
           <div className="sensorDetails">

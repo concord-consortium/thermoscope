@@ -96,4 +96,42 @@
       background-image: url("sensor-connected.svg");
     }
   }
+
+  .lost-connection-dialog {
+    position: fixed;
+    width: 476px;
+    height: 120px;
+    left: 274px;
+    top: 302px;
+    background-image: url("sensor-modal-w-text.svg");
+
+    .close {
+      position: fixed;
+      width: 35px;
+      height: 36px;
+      left: 694px;
+      top: 321px;
+      background-image: url("sensor-modal-dismiss-button.svg");
+      cursor: pointer;
+      &:hover {
+        background-image: url("sensor-modal-dismiss-button-hover.svg");
+      }
+      &:active {
+        background-image: url("sensor-modal-dismiss-button-press.svg");
+      }
+    }
+
+    .overlay  {
+      position: fixed;
+      width: 1024px;
+      height: 724px;
+      left: 0;
+      top: 0;
+    }
+
+    .sensor-tag-icon {
+      left: 38px;
+      top: 43px;
+    }
+  }
 }
