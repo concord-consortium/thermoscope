@@ -81,7 +81,7 @@ export default class Dial extends PureComponent {
   }
 
   render() {
-    const { className, minTemp, maxTemp, temperature, draggable, peggedTemp } = this.props;
+    const { className, minTemp, maxTemp, temperature, draggable, peggedTemp, frozen } = this.props;
     const tempPercent = this.percentBetween(temperature, minTemp, maxTemp);
     const rotation = this.getTransformForRotation(tempPercent * Math.PI);
     const peggedTempPercent = this.percentBetween(peggedTemp, minTemp, maxTemp);
@@ -89,7 +89,7 @@ export default class Dial extends PureComponent {
     return (
       <div className={`temp-gauge ${className ? className : ''}`} ref={g => this.gauge = g}>
         <div 
-          className="pointer"
+          className={frozen ? "pegged-pointer" : "pointer"}
           onMouseDown={this.startDragging}
           onTouchStart={this.startDragging}
           style={{transform: rotation}} />

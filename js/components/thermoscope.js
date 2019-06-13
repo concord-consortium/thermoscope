@@ -46,7 +46,8 @@ export default class Thermoscope extends PureComponent {
   }
 
   handleTemperatureChange(value, liveData) {
-    const { onTemperatureChage } = this.props;
+    const { onTemperatureChage, frozen } = this.props;
+    if (frozen) return;
     this.setState({temperature: value, liveData: !!liveData});
     if (onTemperatureChage) {
       onTemperatureChage(value);
@@ -108,7 +109,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover } = this.props;
+    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover, frozen } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -132,15 +133,16 @@ export default class Thermoscope extends PureComponent {
       <div className={`thermoscope ${className}`}>
         <div className={`label ${label.toLowerCase()} ${this.modelToClassName(model)}`} />
         {!hidden && [
-            <LabModel temperature={temperature}
-                      model={model.json}
-                      tempScale={tempScale}
-                      timeStepScale={model.timeStepScale}
-                      gravityScale={model.gravityScale}
-                      coulombForcesSettings={model.coulombForcesSettings}
-                      width={MODEL_WIDTH} height={MODEL_HEIGHT}
-                      embeddableSrc={embeddableSrc}
-                      key="lab"
+            !frozen && 
+              <LabModel temperature={temperature}
+                model={model.json}
+                tempScale={tempScale}
+                timeStepScale={model.timeStepScale}
+                gravityScale={model.gravityScale}
+                coulombForcesSettings={model.coulombForcesSettings}
+                width={MODEL_WIDTH} height={MODEL_HEIGHT}
+                embeddableSrc={embeddableSrc}
+                key="lab"
             />,
             <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
             <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
@@ -154,6 +156,7 @@ export default class Thermoscope extends PureComponent {
               draggable={!liveData && !forceCover}
               key="dial1"
               peggedTemp={aPegged}
+              frozen={frozen}
             />,
             (isFinite(bPegged) &&
               <Dial 

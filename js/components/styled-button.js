@@ -1,10 +1,6 @@
 import React, {PureComponent} from 'react';
+import { importAll } from '../utils';
 
-function importAll(r) {
-  let images = {};
-  r.keys().forEach((item, index) => { images[item.replace('./', '')] = r(item); });
-  return images;
-}
 
 export default class StyledButton extends PureComponent {
   constructor(props) {

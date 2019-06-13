@@ -1,22 +1,27 @@
 import React, { PureComponent } from 'react';
 import Thermoscope from './thermoscope';
+import Instructions from './instructions';
 import bleSensor from '../components/ble-sensor.js';
 
 const sensor = bleSensor;
 
 import '../../css/mixing-view.less';
 
-const MixingMode = { TwoThermoscope: 0, StartMixTransition: 1, EndMixTransition: 2, OneThermoscope: 3  }
+const MixingMode = { Blank: 0, Intro: 1, TwoThermoscope: 2, RemovalInstructions: 3, Frozen: 4, MixInstructions: 5, StartMixTransition: 6, EndMixTransition: 7, OneThermoscope: 8 }
 
 export default class MixingView extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      mode: MixingMode.TwoThermoscope,
+      mode: MixingMode.Blank,
       aTemp: 20,
       bTemp: 20
     }
     this.handleContinue = this.handleContinue.bind(this);
+  }
+
+  componentDidMount() {
+    setTimeout(this.handleContinue(MixingMode.Intro), 100);
   }
 
   setMaterial(material, type, index) {
@@ -46,15 +51,21 @@ export default class MixingView extends PureComponent {
         setTimeout(this.handleContinue(MixingMode.EndMixTransition), 1000);
       } else if (mode === MixingMode.EndMixTransition) {
         setTimeout(this.handleContinue(MixingMode.OneThermoscope), 1000);
+      } else if (mode === MixingMode.Frozen) {
+        setTimeout(this.handleContinue(MixingMode.MixInstructions), 2000)
       }
     }
   }
 
   renderTwoThermoscopes(mode) {
     const { showHideButtons, showPlayButtons, showCelsius } = this.props;
-    const active = mode === MixingMode.TwoThermoscope;
+    const active = mode === MixingMode.TwoThermoscope 
+      || mode === MixingMode.RemovalInstructions 
+      || mode === MixingMode.Frozen
+      || mode === MixingMode.MixInstructions;
+    const frozen = mode >= MixingMode.Frozen;
     return (
-      <div className={active ? '' : 'invisible'}>
+      <div className={active ? 'visible' : 'invisible'}>
         <div className="thermoscope-container a mixing">
           <Thermoscope
             className="mixing"
@@ -70,6 +81,7 @@ export default class MixingView extends PureComponent {
             showCelsius={showCelsius}
             onTemperatureChage={this.handleTemperatureChange('a')}
             forceCover={true}
+            frozen={frozen}
           />
         </div>
         <div className="thermoscope-container b mixing">
@@ -87,9 +99,10 @@ export default class MixingView extends PureComponent {
             showCelsius={showCelsius}
             onTemperatureChage={this.handleTemperatureChange('b')}
             forceCover={true}
+            frozen={frozen}
           />
         </div>
-        <div className="continue" onClick={this.handleContinue(MixingMode.StartMixTransition)} />
+        { !frozen && <div className="continue" onClick={this.handleContinue(MixingMode.RemovalInstructions)} />}
       </div>
     );
   }
@@ -134,6 +147,25 @@ export default class MixingView extends PureComponent {
     );
   }
 
+  renderInstructions(mode) {
+    return (
+      <div>
+        <Instructions
+          steps={['mixing-view-step1a.svg', 'mixing-view-step1b.svg']}
+          visible={mode === MixingMode.Intro}
+          onClose={this.handleContinue(MixingMode.TwoThermoscope)} />
+        <Instructions
+          steps={['mixing-view-step1b.svg', 'mixing-view-step1a.svg', 'mixing-view-step2c.svg', 'mixing-view-step2d.svg', 'mixing-view-step2e.svg']}
+          visible={mode === MixingMode.RemovalInstructions}
+          onClose={this.handleContinue(MixingMode.Frozen)} />
+        <Instructions
+          steps={['mixing-view-step2e.svg', 'mixing-view-step3b.svg']}
+          visible={mode === MixingMode.MixInstructions}
+          onClose={this.handleContinue(MixingMode.StartMixTransition)} />
+      </div>
+    );
+  } 
+
   render() {
     const { mode } = this.state;
     return (
@@ -141,6 +173,7 @@ export default class MixingView extends PureComponent {
         { this.renderOneThermoscope(mode) }
         { this.renderTwoThermoscopes(mode) }
         { this.renderMixingTransition(mode) }
+        { this.renderInstructions(mode) }
       </div>
     )
   }
