@@ -125,7 +125,8 @@ export default class MixingView extends PureComponent {
     return (
       <div className={active ? 'visible' : 'invisible'}>
         <div className="thermoscope-container center mixing">
-          <Thermoscope
+          {active &&
+            <Thermoscope
             className="mixing"
             sensor={sensor}
             material={'liquid'}
@@ -140,7 +141,8 @@ export default class MixingView extends PureComponent {
             aPegged={aTemp}
             bPegged={bTemp}
             forceCover={true}
-          />
+            mixingValues={{ aTemp, bTemp }}
+            />}
         </div>
         <div className="thermoscope-b-alt" />
       </div>

@@ -109,7 +109,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover, frozen } = this.props;
+    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover, frozen, mixingValues } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -133,7 +133,7 @@ export default class Thermoscope extends PureComponent {
       <div className={`thermoscope ${className}`}>
         <div className={`label ${label.toLowerCase()} ${this.modelToClassName(model)}`} />
         {!hidden && [
-            !frozen && 
+            !frozen &&
               <LabModel temperature={temperature}
                 model={model.json}
                 tempScale={tempScale}
@@ -142,11 +142,12 @@ export default class Thermoscope extends PureComponent {
                 coulombForcesSettings={model.coulombForcesSettings}
                 width={MODEL_WIDTH} height={MODEL_HEIGHT}
                 embeddableSrc={embeddableSrc}
+                mixing={mixingValues}
                 key="lab"
             />,
             <div className={`zoom-fade ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="fade"/>,
             <div className={`zoom-circle ${label.toLowerCase()} ${this.modelToClassName(model)}`} key="circle"/>,
-            <Dial 
+            <Dial
               className={`${className ? className : ''} ${label.toLowerCase()} ${this.modelToClassName(model)}`}
               temperature={temperature}
               showCelsius={showCelsius}
@@ -159,7 +160,7 @@ export default class Thermoscope extends PureComponent {
               frozen={frozen}
             />,
             (isFinite(bPegged) &&
-              <Dial 
+              <Dial
                 className={`${className} ${label.toLowerCase()} ${this.modelToClassName(model)} dial2`}
                 temperature={temperature}
                 showCelsius={showCelsius}
@@ -174,7 +175,7 @@ export default class Thermoscope extends PureComponent {
           ]
         }
         {showHideButtons &&
-          <StyledButton 
+          <StyledButton
             className={`show-hide ${label.toLowerCase()}`}
             onClick={this.toggleHidden}
             background={this.getButtonBackground("showhide", label, model, hidden ? "press1" : undefined)}
@@ -182,8 +183,8 @@ export default class Thermoscope extends PureComponent {
             activeBackground={this.getButtonBackground("showhide", label, model, hidden ? "press2" : "hover1")}
           />
         }
-        {showPlayButtons && 
-          <StyledButton 
+        {showPlayButtons &&
+          <StyledButton
             className={`play-pause ${label.toLowerCase()}`}
             onClick={this.togglePause}
             background={this.getButtonBackground("playpause", label, model, paused ? "press1" : undefined)}
