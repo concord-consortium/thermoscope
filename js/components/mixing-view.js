@@ -59,8 +59,8 @@ export default class MixingView extends PureComponent {
 
   renderTwoThermoscopes(mode) {
     const { showHideButtons, showPlayButtons, showCelsius } = this.props;
-    const active = mode === MixingMode.TwoThermoscope 
-      || mode === MixingMode.RemovalInstructions 
+    const active = mode === MixingMode.TwoThermoscope
+      || mode === MixingMode.RemovalInstructions
       || mode === MixingMode.Frozen
       || mode === MixingMode.MixInstructions;
     const frozen = mode >= MixingMode.Frozen;
@@ -80,7 +80,7 @@ export default class MixingView extends PureComponent {
             showPlayButtons={showPlayButtons}
             showCelsius={showCelsius}
             onTemperatureChage={this.handleTemperatureChange('a')}
-            forceCover={true}
+            forceCover={frozen}
             frozen={frozen}
           />
         </div>
@@ -98,7 +98,7 @@ export default class MixingView extends PureComponent {
             showPlayButtons={showPlayButtons}
             showCelsius={showCelsius}
             onTemperatureChage={this.handleTemperatureChange('b')}
-            forceCover={true}
+            forceCover={frozen}
             frozen={frozen}
           />
         </div>
@@ -122,10 +122,12 @@ export default class MixingView extends PureComponent {
     const { showHideButtons, showPlayButtons, showCelsius } = this.props;
     const { aTemp, bTemp } = this.state;
     const active = mode === MixingMode.OneThermoscope;
+    const frozen = mode >= MixingMode.Frozen;
     return (
       <div className={active ? 'visible' : 'invisible'}>
         <div className="thermoscope-container center mixing">
-          <Thermoscope
+          {active &&
+            <Thermoscope
             className="mixing"
             sensor={sensor}
             material={'liquid'}
@@ -140,7 +142,7 @@ export default class MixingView extends PureComponent {
             aPegged={aTemp}
             bPegged={bTemp}
             forceCover={true}
-          />
+            />}
         </div>
         <div className="thermoscope-b-alt" />
       </div>
@@ -164,7 +166,7 @@ export default class MixingView extends PureComponent {
           onClose={this.handleContinue(MixingMode.StartMixTransition)} />
       </div>
     );
-  } 
+  }
 
   render() {
     const { mode } = this.state;
