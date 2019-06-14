@@ -142,7 +142,6 @@ export default class MixingView extends PureComponent {
             aPegged={aTemp}
             bPegged={bTemp}
             forceCover={frozen}
-            mixingValues={{ aTemp, bTemp }}
             />}
         </div>
         <div className="thermoscope-b-alt" />

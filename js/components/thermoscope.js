@@ -109,7 +109,7 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover, frozen, mixingValues } = this.props;
+    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover, frozen } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -125,10 +125,11 @@ export default class Thermoscope extends PureComponent {
     let showClass = hidden ? "hidden" : "shown";
     let tempScale = paused ? zeroTempScale : model.tempScale;
 
+    let isMixing = isFinite(aPegged) && isFinite(bPegged);
     // if mixing without live sensors, simulate a median temperature
-    let mixingTemperature = mixingValues && !liveData ? (Math.abs(mixingValues.aTemp - mixingValues.bTemp) / 2) + Math.min(mixingValues.aTemp, mixingValues.bTemp) : temperature;
-    let calculatedTemperature = mixingValues ? mixingTemperature : temperature;
-
+    let calculatedTemperature = isMixing && !liveData ? Math.round((aPegged + bPegged) / 2) : temperature;
+    // Need to pass both values to Lab to simulate the mixing process
+    let mixingValues = isMixing ? { aTemp: aPegged, bTemp: bPegged } : undefined;
     // a url parameter will override the props setting
     if (SHOW_MATERIAL_CONTROLS != null) showControls = showControlsParam;
 

@@ -46,6 +46,8 @@ export default class LabModel extends PureComponent {
     api = lab.scriptingAPI;
     if (!api) return null;
     api.start();
+
+    // Only doing this for the mixing simulation
     if (mixing != null) {
       var particlesHot = [];
       var particlesCold = [];
@@ -57,7 +59,10 @@ export default class LabModel extends PureComponent {
       var tickCount = 0;
       var mixingTimeTicks = 200;
       api.onPropertyChange('time', function (t) {
-        // this will fire every tick
+        // this will fire every tick, necessary to find out particle properties
+        // and, if necessary, adjust. Filter in here to lighten the processing load
+
+        // Do this once
         if (!isReady && particlesHot.length == 0) {
           var textboxes = api.get('textBoxes');
           if (textboxes) {
@@ -77,13 +82,18 @@ export default class LabModel extends PureComponent {
             isReady = true;
           }
         }
+
+        // Once we figure out who's hot and who's not,
         if (isReady && particlesHot.length > 0) {
           if (tickCount < mixingTimeTicks) {
-            if (tickCount % 10 == 0) {
-                var energyA = tickCount / mixingTimeTicks;
-                api.addKEToAtoms(energyA, particlesCold);
-                api.addKEToAtoms(mixingTimeTicks - tickCount, particlesHot);
-                // Sanity check particle properties to prevent model diverge
+            // don't need to do adjustments every single tick
+            if (tickCount % 5 == 0) {
+              var energyA = tickCount / mixingTimeTicks;
+              api.addKEToAtoms(energyA, particlesCold);
+              api.addKEToAtoms(mixingTimeTicks - tickCount, particlesHot);
+
+              // Sanity check particle properties to prevent model diverge errors
+              // which cause lockups and crashes if particle acceleration is too high
                 for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
                   a = api.getAtomProperties(i);
                   if (Math.abs(i.ax) > 0.1 || Math.abs(i.ay) > 0.1) {
