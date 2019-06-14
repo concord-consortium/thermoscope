@@ -66,48 +66,52 @@ export default class MixingView extends PureComponent {
     const frozen = mode >= MixingMode.Frozen;
     return (
       <div className={active ? 'visible' : 'invisible'}>
-        <div className="thermoscope-container a mixing">
-          <Thermoscope
-            className="mixing"
-            sensor={sensor}
-            material={'liquid'}
-            materialIndex={4}
-            embeddableSrc='./lab/embeddable.html'
-            label={'a mixing'}
-            probeIndex={0}
-            hidden={false}
-            showHideButtons={showHideButtons}
-            showPlayButtons={showPlayButtons}
-            showCelsius={showCelsius}
-            onTemperatureChage={this.handleTemperatureChange('a')}
-            forceCover={frozen}
-            frozen={frozen}
-            scale={scale}
-            top={top}
-            left={left}
-          />
-        </div>
-        <div className="thermoscope-container b mixing">
-          <Thermoscope
-            className="mixing"
-            sensor={sensor}
-            material={'liquid'}
-            materialIndex={5}
-            embeddableSrc='./lab/embeddable.html'
-            label={'b mixing'}
-            probeIndex={1}
-            hidden={false}
-            showHideButtons={showHideButtons}
-            showPlayButtons={showPlayButtons}
-            showCelsius={showCelsius}
-            onTemperatureChage={this.handleTemperatureChange('b')}
-            forceCover={frozen}
-            frozen={frozen}
-            scale={scale}
-            top={top}
-            left={left}
-          />
-        </div>
+        {active && 
+          <div>
+            <div className="thermoscope-container a mixing">
+              <Thermoscope
+                className="mixing"
+                sensor={sensor}
+                material={'liquid'}
+                materialIndex={4}
+                embeddableSrc='./lab/embeddable.html'
+                label={'a mixing'}
+                probeIndex={0}
+                hidden={false}
+                showHideButtons={showHideButtons}
+                showPlayButtons={showPlayButtons}
+                showCelsius={showCelsius}
+                onTemperatureChage={this.handleTemperatureChange('a')}
+                forceCover={frozen}
+                frozen={frozen}
+                scale={scale}
+                top={top}
+                left={left}
+              />
+            </div>
+            <div className="thermoscope-container b mixing">
+              <Thermoscope
+                className="mixing"
+                sensor={sensor}
+                material={'liquid'}
+                materialIndex={5}
+                embeddableSrc='./lab/embeddable.html'
+                label={'b mixing'}
+                probeIndex={1}
+                hidden={false}
+                showHideButtons={showHideButtons}
+                showPlayButtons={showPlayButtons}
+                showCelsius={showCelsius}
+                onTemperatureChage={this.handleTemperatureChange('b')}
+                forceCover={frozen}
+                frozen={frozen}
+                scale={scale}
+                top={top}
+                left={left}
+              />
+            </div>
+          </div>
+        }
         { !frozen && <div className="continue" onClick={this.handleContinue(MixingMode.RemovalInstructions)} />}
       </div>
     );
