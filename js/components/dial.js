@@ -35,16 +35,19 @@ export default class Dial extends PureComponent {
   }
 
   onDrag(event) {
-    const { draggable, minTemp, maxTemp, onUpdateTemp } = this.props;
+    const { draggable, minTemp, maxTemp, onUpdateTemp, scale, top, left } = this.props;
     if (draggable) {
       const yPos = event.clientY ? -event.clientY : -event.touches[0].clientY;
       const xPos = event.clientX ? event.clientX : event.touches[0].clientX;
+
+      const yPosScaled = (yPos + top) / scale;
+      const xPosScaled = (xPos - left) / scale;
 
       // Since smaller y-values are above larger y-values, we must multiply the y-values by -1 for atan to give expected results
       const pointerTransformOriginY = -1 * (this.gauge.offsetTop  + POINTER_OFFSET_TOP + POINTER_ORIGIN_OFFSET_TOP);
       const pointerTransformOriginX = this.gauge.offsetLeft + POINTER_OFFSET_LEFT + POINTER_ORIGIN_OFFSET_LEFT;
 
-      const angle = Math.atan2(yPos - pointerTransformOriginY, xPos - pointerTransformOriginX);
+      const angle = Math.atan2(yPosScaled - pointerTransformOriginY, xPosScaled - pointerTransformOriginX);
       const clampAngle = angle > 0
         ? angle
         : angle < -Math.PI / 2

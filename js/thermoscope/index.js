@@ -28,6 +28,8 @@ injectTapEventPlugin();
 darkBaseTheme.palette.textColor = '#ccc';
 darkBaseTheme.palette.primary1Color = '#ccc';
 
+export const BASE_WIDTH = 1024;
+export const BASE_HEIGHT = 724;
 export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3, 
                                  ExperimentSelector: 4, SingleExperiment: 5, ExperimentSubmenu: 6,
                                  MixingView: 7 };
@@ -66,11 +68,45 @@ export default class ThermoscopeControl extends PureComponent {
       showSidebar: false,
       showHideButtons: false,
       showPlayButtons: false,
-      showCelsius: true
+      showCelsius: true,
+      scale: 1,
+      top: 0,
+      left: 0
     };
     this.setThermoscopeRendering = this.setThermoscopeRendering.bind(this);
     this.renderThermoscope = this.renderThermoscope.bind(this);
     this.showMenu = this.showMenu.bind(this);
+    this.updateScale = this.updateScale.bind(this);
+  }
+  componentDidMount() {
+    this.updateScale();
+    window.onresize = this.updateScale;
+  }
+  updateScale() {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    if (windowWidth / windowHeight < BASE_WIDTH / BASE_HEIGHT) {
+      // tall ratio
+      const scale = windowWidth / BASE_WIDTH;
+      const appHeight = BASE_HEIGHT * scale;
+      const leftover = windowHeight - appHeight;
+      this.setState({
+        scale,
+        top: leftover / 2,
+        left: 0
+      });
+    } else {
+      // wide ratio
+      const scale = windowHeight / BASE_HEIGHT;
+      const appWidth = BASE_WIDTH * scale;
+      const leftover = windowWidth - appWidth;
+      this.setState({
+        scale,
+        top: 0,
+        left: leftover / 2
+      });
+    }
   }
   getParam(param) {
     if (enableUrlParam) {
@@ -97,7 +133,7 @@ export default class ThermoscopeControl extends PureComponent {
   }
 
   renderThermoscope(material, probeIndex, label, hidden, materialIndex, showMeter, meterMinClamp, meterMaxClamp) {
-    const { showHideButtons, showPlayButtons, showCelsius } = this.state;
+    const { showHideButtons, showPlayButtons, showCelsius, scale, top, left } = this.state;
     let meterMin = meterMinClamp ? meterMinClamp : 0;
     let meterMax = meterMaxClamp ? meterMaxClamp : 1;
     let showControls = this.getParam('controls');
@@ -119,20 +155,23 @@ export default class ThermoscopeControl extends PureComponent {
           showHideButtons={showHideButtons}
           showPlayButtons={showPlayButtons}
           showCelsius={showCelsius}
+          scale={scale}
+          top={top}
+          left={left}
         />
       </div>;
     return thermoscope;
   }
 
   render() {
-    const { mode, showSidebar, showPlayButtons, showHideButtons, showCelsius } = this.state;
+    const { mode, showSidebar, showPlayButtons, showHideButtons, showCelsius, scale, top, left } = this.state;
     const gridStyle = {
       display: 'flex',
       flexWrap: 'nowrap',
     }
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-        <div className="app-container">
+        <div className="app-container" style={{transform: `scale(${scale})`, top, left}}>
           <div className="app">
             <Clock />
             <LogoMenu scale="logo-menu small" navPath="../index.html" />
@@ -164,20 +203,20 @@ export default class ThermoscopeControl extends PureComponent {
               </div>
             }
             {mode === ThermoscopeMode.OneThermoscope &&
-              <div className={`app-container ${this.getParam('container')}`}>
+              <div className={`thermo-container ${this.getParam('container')}`}>
                 <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'center', this.getParam('hideA'), this.getParam('materialA'))}
               </div>
             }
             { mode === ThermoscopeMode.TwoThermoscope &&
-              <div className={`app-container ${this.getParam('container')}`}>
+              <div className={`thermo-container ${this.getParam('container')}`}>
                 <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'),  this.getParam('materialA'))}
                 {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'),  this.getParam('materialB'))}
               </div>
             }
             { mode === ThermoscopeMode.ThreeThermoscope &&
-              <div className={`app-container ${this.getParam('container')}`}>
+              <div className={`thermo-container ${this.getParam('container')}`}>
                 <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'A', this.getParam('hideA'), this.getParam('materialA'), true)}
                 {this.renderThermoscope(this.getParam('B'), 1, 'B', this.getParam('hideB'), this.getParam('materialB'), true)}
@@ -188,7 +227,7 @@ export default class ThermoscopeControl extends PureComponent {
               <ExperimentSelector onSelect={this.setThermoscopeRendering} />
             }
             {mode === ThermoscopeMode.SingleExperiment &&
-              <div className={`app-container ${this.getParam('container')}`}>
+              <div className={`thermo-container ${this.getParam('container')}`}>
                 <div className="background" />
                 {this.renderThermoscope(this.getParam('A'), 0, 'center experiment', this.getParam('hideA'), this.getParam('materialA'))}
               </div>

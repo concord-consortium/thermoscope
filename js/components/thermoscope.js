@@ -109,7 +109,8 @@ export default class Thermoscope extends PureComponent {
 
   render() {
     const { temperature, materialType, materialIdx, liveData, label, paused, hidden } = this.state;
-    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className, aPegged, bPegged, forceCover, frozen } = this.props;
+    const { embeddableSrc, showMaterialControls, showHideButtons, showPlayButtons, showCelsius, className,
+      aPegged, bPegged, forceCover, frozen, scale, top, left } = this.props;
 
     const model = models[materialType][materialIdx];
     let material = MATERIAL_TYPES.indexOf(materialType > -1) ? materialType : 'solid';
@@ -157,6 +158,9 @@ export default class Thermoscope extends PureComponent {
               key="dial1"
               peggedTemp={aPegged}
               frozen={frozen}
+              scale={scale}
+              top={top}
+              left={left}
             />,
             (isFinite(bPegged) &&
               <Dial 
@@ -169,6 +173,9 @@ export default class Thermoscope extends PureComponent {
                 draggable={false}
                 key="dial2"
                 peggedTemp={bPegged}
+                scale={scale}
+                top={top}
+                left={left}
               />
             )
           ]
