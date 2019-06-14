@@ -93,14 +93,20 @@ export default class Thermoscope extends PureComponent {
     return model.name.toLowerCase().split(" ")[0];
   }
 
+  hasClass(label, clazz) {
+    return label.split(" ").find(c => c  === clazz);
+  }
+
   getButtonBackground(buttonType, label, model, state) {
     const stateInfix = state ? `-${state}` : "";
-    if (label.indexOf("experiment") > -1) {
+    if (this.hasClass(label, "experiment")) {
       return `one-view-${buttonType}-button-a${stateInfix}.svg`;
-    } else if (label.indexOf("mixing") > -1) {
-      return (label.indexOf("center") > -1)
+    } else if (this.hasClass(label, "mixing")) {
+      return (this.hasClass(label, "center"))
         ? `mixed-view-${buttonType}-button${stateInfix}.svg`
-        : `mixing-view-${buttonType}-button-a${stateInfix}.svg`;
+        : this.hasClass(label, "a")
+          ? `mixing-view-${buttonType}-button-a${stateInfix}.svg`
+          : `mixing-view-${buttonType}-button-b${stateInfix}.svg`;
     }
     const name = this.modelToClassName(model);
     const backgroundLabel = label.toLowerCase() === "center" ? "a" : label.toLowerCase();
