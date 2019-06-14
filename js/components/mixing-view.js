@@ -7,7 +7,18 @@ const sensor = bleSensor;
 
 import '../../css/mixing-view.less';
 
-const MixingMode = { Blank: 0, Intro: 1, TwoThermoscope: 2, RemovalInstructions: 3, Frozen: 4, MixInstructions: 5, StartMixTransition: 6, EndMixTransition: 7, OneThermoscope: 8 }
+const MixingMode = {
+  Blank: 0,
+  Intro: 1,
+  TwoThermoscope: 2,
+  RemovalInstructions: 3,
+  Frozen: 4,
+  StartMixTransition: 5,
+  EndMixTransition: 6, 
+  MixInstructions: 7,
+  OneThermoscopeFrozen: 8,
+  OneThermoscope: 9
+}
 
 export default class MixingView extends PureComponent {
   constructor(props) {
@@ -47,12 +58,15 @@ export default class MixingView extends PureComponent {
   handleContinue(mode) {
     return () => {
       this.setState({ mode });
-      if (mode === MixingMode.StartMixTransition) {
+      if (mode === MixingMode.Frozen) {
+        setTimeout(this.handleContinue(MixingMode.StartMixTransition), 2000)
+      } else if (mode === MixingMode.StartMixTransition) {
         setTimeout(this.handleContinue(MixingMode.EndMixTransition), 1000);
       } else if (mode === MixingMode.EndMixTransition) {
+        setTimeout(this.handleContinue(MixingMode.MixInstructions), 1500);
+      } else if (mode === MixingMode.OneThermoscopeFrozen) {
+        // Wait a bit before showing the mixing model - otherwise too much loads at once and the fade-in is skipped
         setTimeout(this.handleContinue(MixingMode.OneThermoscope), 1000);
-      } else if (mode === MixingMode.Frozen) {
-        setTimeout(this.handleContinue(MixingMode.MixInstructions), 2000)
       }
     }
   }
@@ -61,12 +75,12 @@ export default class MixingView extends PureComponent {
     const { showHideButtons, showPlayButtons, showCelsius, scale, top, left } = this.props;
     const active = mode === MixingMode.TwoThermoscope
       || mode === MixingMode.RemovalInstructions
-      || mode === MixingMode.Frozen
-      || mode === MixingMode.MixInstructions;
+      || mode === MixingMode.Frozen;
+    const  showThermo = active || mode === MixingMode.StartMixTransition;
     const frozen = mode >= MixingMode.Frozen;
     return (
       <div className={active ? 'visible' : 'invisible'}>
-        {active && 
+        {showThermo && 
           <div>
             <div className="thermoscope-container a mixing">
               <Thermoscope
@@ -118,9 +132,10 @@ export default class MixingView extends PureComponent {
   }
 
   renderMixingTransition(mode) {
-    const active = mode === MixingMode.MixInstructions
+    const active = mode === MixingMode.Frozen
       || mode === MixingMode.StartMixTransition
-      || mode === MixingMode.EndMixTransition;
+      || mode === MixingMode.EndMixTransition
+      || mode === MixingMode.MixInstructions;
     const end = mode >= MixingMode.EndMixTransition;
     return (
       <div className={`transition ${active ? '' : 'invisible'}`}>
@@ -133,8 +148,8 @@ export default class MixingView extends PureComponent {
   renderOneThermoscope(mode) {
     const { showHideButtons, showPlayButtons, showCelsius } = this.props;
     const { aTemp, bTemp } = this.state;
-    const active = mode === MixingMode.OneThermoscope;
-    const frozen = mode >= MixingMode.Frozen;
+    const active = mode >= MixingMode.OneThermoscopeFrozen;
+    const frozen = mode === MixingMode.OneThermoscopeFrozen;
     return (
       <div className={active ? 'visible' : 'invisible'}>
         <div className="thermoscope-container center mixing">
@@ -154,6 +169,7 @@ export default class MixingView extends PureComponent {
             aPegged={aTemp}
             bPegged={bTemp}
             forceCover={true}
+            frozen={frozen}
             />}
         </div>
         <div className="thermoscope-b-alt" />
@@ -175,7 +191,7 @@ export default class MixingView extends PureComponent {
         <Instructions
           steps={['mixing-view-step2e.svg', 'mixing-view-step3b.svg']}
           visible={mode === MixingMode.MixInstructions}
-          onClose={this.handleContinue(MixingMode.StartMixTransition)} />
+          onClose={this.handleContinue(MixingMode.OneThermoscopeFrozen)} />
       </div>
     );
   }
