@@ -118,7 +118,9 @@ export default class MixingView extends PureComponent {
   }
 
   renderMixingTransition(mode) {
-    const active = mode === MixingMode.StartMixTransition || mode === MixingMode.EndMixTransition;
+    const active = mode === MixingMode.MixInstructions
+      || mode === MixingMode.StartMixTransition
+      || mode === MixingMode.EndMixTransition;
     const end = mode >= MixingMode.EndMixTransition;
     return (
       <div className={`transition ${active ? '' : 'invisible'}`}>
