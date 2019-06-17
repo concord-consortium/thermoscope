@@ -58,7 +58,7 @@ export default class MixingView extends PureComponent {
   }
 
   renderTwoThermoscopes(mode) {
-    const { showHideButtons, showPlayButtons, showCelsius } = this.props;
+    const { showHideButtons, showPlayButtons, showCelsius, scale, top, left } = this.props;
     const active = mode === MixingMode.TwoThermoscope
       || mode === MixingMode.RemovalInstructions
       || mode === MixingMode.Frozen
@@ -82,6 +82,9 @@ export default class MixingView extends PureComponent {
             onTemperatureChage={this.handleTemperatureChange('a')}
             forceCover={frozen}
             frozen={frozen}
+            scale={scale}
+            top={top}
+            left={left}
           />
         </div>
         <div className="thermoscope-container b mixing">
@@ -100,6 +103,9 @@ export default class MixingView extends PureComponent {
             onTemperatureChage={this.handleTemperatureChange('b')}
             forceCover={frozen}
             frozen={frozen}
+            scale={scale}
+            top={top}
+            left={left}
           />
         </div>
         { !frozen && <div className="continue" onClick={this.handleContinue(MixingMode.RemovalInstructions)} />}

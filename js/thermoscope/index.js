@@ -249,6 +249,9 @@ export default class ThermoscopeControl extends PureComponent {
                   showHideButtons={showHideButtons}
                   showPlayButtons={showPlayButtons}
                   showCelsius={showCelsius}
+                  scale={scale}
+                  top={top}
+                  left={left}
                 /> 
               </div>
             }

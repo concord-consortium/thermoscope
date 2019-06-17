@@ -107,7 +107,7 @@ export default class Sensor extends PureComponent {
         </div>
       );
     } else if (connected) {
-      const displayName = this.getDisplayName(getSensorName(connectedSensorName));
+      const displayName = this.getDisplayName(this.getSensorName(connectedSensorName));
       return (
         <div id="toggleSensorDisplay" className={`sensor-connect-icon connected`} onClick={this.toggleDisplay}>
           <div className="sensor-tag-icon">{displayName}</div>
