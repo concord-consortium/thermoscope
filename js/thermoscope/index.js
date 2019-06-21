@@ -29,7 +29,7 @@ darkBaseTheme.palette.textColor = '#ccc';
 darkBaseTheme.palette.primary1Color = '#ccc';
 
 export const BASE_WIDTH = 1024;
-export const BASE_HEIGHT = 724;
+export const BASE_HEIGHT = 724; // 744 for a 9.7" iPad
 export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3, 
                                  ExperimentSelector: 4, SingleExperiment: 5, ExperimentSubmenu: 6,
                                  MixingView: 7 };
