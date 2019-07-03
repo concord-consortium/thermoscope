@@ -35,6 +35,223 @@
   button{
     color:#ccc;
   }
+
+  .show-hide {
+    width: 82px;
+    height: 72px;
+    top: 312px;
+    position: fixed;
+    cursor: pointer;
+    &.a {
+      left: 70px;
+    }
+    &.b {
+      left: 873px;
+    }
+    &.center {
+      left: 256px;
+    }
+  }
+
+  .play-pause {
+    width: 93px;
+    height: 72px;
+    top: 388px;
+    position: fixed;
+    cursor: pointer;
+    &.a {
+      left: 70px;
+    }
+    &.b {
+      left: 861px;
+    }
+    &.center {
+      left: 256px;
+    }
+  }
+
+  .zoom-fade {
+    width: 220px;
+    height: 167px;
+    position: fixed;
+    top: 155px;
+    &.a, &.center {
+      left: 190px;
+      &.water,&.mixing {
+        background-image: url("zoom-fade-a-water.svg");
+      }
+      &.wood {
+        background-image: url("zoom-fade-a-wood.svg");
+      }
+      &.oil {
+        background-image: url("zoom-fade-a-oil.svg");
+      }
+      &.air {
+        background-image: url("zoom-fade-a-air.svg");
+      }
+    }
+    &.b {
+      left: 615px;
+      &.water,&.mixing {
+        background-image: url("zoom-fade-b-water.svg");
+      }
+      &.stone {
+        background-image: url("zoom-fade-b-stone.svg");
+      }
+      &.soap {
+        background-image: url("zoom-fade-b-soap.svg");
+      }
+      &.air {
+        background-image: url("zoom-fade-b-air.svg");
+      }
+    }
+    &.center {
+      left: 376px;
+      &.coconut {
+        background-image: url("zoom-fade-a-coconut.svg");
+      }
+      &.mixing {
+        background-image: url("mix/zoom-fade-ab-water.svg");
+      }
+    }
+  }
+
+  .zoom-circle {
+    width: 220px;
+    height: 167px;
+    position: fixed;
+    top: 155px;
+    &.a, &.center {
+      left: 190px;
+      &.water,&.mixing {
+        background-image: url("zoom-circle-a-water.svg");
+      }
+      &.wood {
+        background-image: url("zoom-circle-a-wood.svg");
+      }
+      &.oil {
+        background-image: url("zoom-circle-a-oil.svg");
+      }
+      &.air {
+        background-image: url("zoom-circle-a-air.svg");
+      }
+    }
+    &.b {
+      left: 615px;
+      &.water,&.mixing {
+        background-image: url("zoom-circle-b-water.svg");
+      }
+      &.stone {
+        background-image: url("zoom-circle-b-stone.svg");
+      }
+      &.soap {
+        background-image: url("zoom-circle-b-soap.svg");
+      }
+      &.air {
+        background-image: url("zoom-circle-b-air.svg");
+      }
+    }
+    &.center {
+      left: 376px;
+      &.coconut {
+        background-image: url("zoom-circle-a-coconut.svg");
+      }
+      &.mixing {
+        background-image: url("mix/zoom-circle-ab-water.svg");
+      }
+    }
+  }
+
+  .label {
+    width: 285px;
+    height: 141px;
+    position: fixed;
+    top: 73px;
+    &.a {
+      left: 200px;
+      &.water {
+        background-image: url("label-a-water.svg");
+      }
+      &.wood {
+        background-image: url("label-a-wood.svg");
+      }
+      &.oil {
+        background-image: url("label-a-oil.svg");
+      }
+      &.air {
+        background-image: url("label-a-air.svg");
+      }
+    }
+    &.b {
+      left: 539px;
+      &.water {
+        background-image: url("label-b-water.svg");
+      }
+      &.stone {
+        background-image: url("label-b-stone.svg");
+      }
+      &.soap {
+        background-image: url("label-b-soap.svg");
+      }
+      &.air {
+        background-image: url("label-b-air.svg");
+      }
+    }
+    &.center {
+      left: 386px;
+      &.coconut {
+        background-image: url("label-a-coconut.svg");
+      }
+    }
+    &.experiment {
+      &.water {
+        background-image: url("one-view-label-a-water.svg");
+      }
+      &.wood {
+        background-image: url("one-view-label-a-wood.svg");
+      }
+      &.oil {
+        background-image: url("one-view-label-a-oil.svg");
+      }
+      &.air {
+        background-image: url("one-view-label-a-air.svg");
+      }
+      &.soap {
+        background-image: url("one-view-label-a-soap.svg");
+      }
+      &.stone {
+        background-image: url("one-view-label-a-stone.svg");
+      }
+      &.coconut {
+        background-image: url("one-view-label-a-coconut.svg");
+      }
+    }
+  }
+
+  .thermoscope {
+    z-index: 1;
+    top: 197px;
+    position: fixed;
+    pointer-events: none;
+    &.a {
+      background-image: url("thermoscope-a.svg");
+      width: 443px;
+      height: 444px;
+      left: 55px;
+    }
+    &.b {
+      background-image: url("thermoscope-b.svg");
+      width: 444px;
+      height: 444px;
+      left: 532px;
+    }
+    &.center {
+      background-image: url("thermoscope-a.svg");
+      width: 444px;
+      height: 444px;
+      left: 241px;
+    }
+  }
 }
 .temperatureDisplay{
   font-size: 1.3em;

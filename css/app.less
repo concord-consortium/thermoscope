@@ -1,305 +1,497 @@
-.app {
-  height: 100%;
-  background: #333;
-  color: #ccc;
-  touch-action: none;
-  user-select: none;
+@font-face { font-family: 'Londrina Solid'; font-weight: 300; src: url("LondrinaSolid-Thin.ttf"); }
+@font-face { font-family: 'Londrina Solid'; font-weight: 400; src: url("LondrinaSolid-Light.ttf"); }
 
-  .main-menu-button{
-    position:fixed;
-    right: 140px;
-    top: 4px;
-    &:hover{
-      cursor:pointer;
-    }
-    >div{
-      float:right;
-      padding-right:10px;
-    }
-    a{
-      color:#aaa;
-      &:hover{
-        color:#888;
+#app {
+  background-color: #E1E1E1;
+}
+
+.app-container {
+  width: 1024px;
+  height: 724px; // 744px for a 9.7" iPad
+  position: fixed;
+  transform-origin: 0 0;
+
+  div {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .app {
+    height: 100%;
+    background: black;
+    color: #ccc;
+    touch-action: none;
+    user-select: none;
+    font-family: 'Londrina Solid';
+    font-weight: 300;
+    display: flex;
+    flex-direction: column;
+
+    .main-menu-button{
+      position:fixed;
+      background-image: url("home-button.svg");
+      width: 49px;
+      height: 45px;
+      left: 805px;
+      top: 7px;
+      cursor: pointer;
+      &:hover {
+        background-image: url("home-button-hover.svg");
       }
-      &:active{
-        color:#888;
+      &:active {
+        background-image: url("home-button-press.svg");
       }
     }
-    i{
-      font-size:42px;
+
+    .logo-menu{
+      width:250px;
+      height:125px;
+      position:fixed;
+      right:0px;
+
+      top: -80px;
+      padding-top: 60px;
+
+      .menu{
+        position: fixed;
+        right: 120px;
+        width: 110px;
+        top: 5px;
+      }
+
+      .cc-logo{
+        position:fixed;
+        left:916px;
+        top: 0;
+        width:108px;
+        height:39px;
+        background-image: url("concord-logo.svg");
+      }
+
+      &.small{
+        height: 67px;
+        width:125px;
+        background-size:125px;
+        top: -40px;
+        padding-top: 30px;
+      }
+    }
+
+    .thermo-container {
+      height:100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .label {
+      font-size: 16px;
+      text-align: center;
+    }
+
+    &.authoring {
+      background: white;
+    }
+
+    h1{
+      padding:10px;
+      padding-top:16px;
+    }
+    .demo-links {
+      height:100%;
+      padding-top:70px;
+      align-items: left;
+      li{
+        padding:20px;
+        color:#aaa;
+
+      }
     }
   }
 
-  .logo-menu{
-    width:250px;
-    height:125px;
-    position:fixed;
-    right:0px;
+  .lab-wrapper {
+    border-radius: 40px;
+    width: 543px;
+    height: 361px;
+    overflow: hidden;
+    z-index: 1;
+    padding: 0px;
 
-    top: -80px;
-    padding-top: 60px;
-
-    background-image: url("bubble.svg");
-    background-position: right top;
-    background-size: 250px;
-    background-repeat: no-repeat;
-
-
-    .menu{
-      position: fixed;
-      right: 120px;
-      width: 110px;
-      top: 5px;
+    iframe {
+      margin: 0;
+      padding: 0;
+      position: relative;
+      top: -7px;
+      left: -7px;
+      touch-action:none;
     }
+  }
+  .main-menu{
+    width: 800px;
+    height: 300px;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    a div{
+      width:200px;
+      height:200px;
+      margin:50px;
+      float:left;
+      background:#666;
+      border-radius: 10px;
 
-    .cc-logo{
-      position:relative;
-      float:right;
-      right:0px;
-      top: 0px;
-      width:100%;
-      height:100%;
-      background-image: url("concordconsortium-logo.png");
-      background-size: contain;
+    }
+    .thermoscope-link{
+      background-image: url("thermoscope-button.png");
+      background-size: 90% 90%;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
+    .particle-modeler-link{
+      background-image: url("particle-modeler-button.png");
+      background-size: 90% 90%;
+      background-position: center center;
       background-repeat: no-repeat;
     }
 
-    &.small{
-      height: 67px;
-      width:125px;
-      background-size:125px;
-      top: -40px;
-      padding-top: 30px;
+  }
+  .settings-link{
+    color: white;
+    position: fixed;
+    bottom: 16px;
+    left: 10px;
+
+    &:hover{
+      cursor:pointer;
+      color:orange;
+    }
+  }
+  .version-identifier{
+    font-size:0.8em;
+    color:#111;
+    position:fixed;
+    bottom: 4px;
+    right:10px;
+  }
+  .list-section{
+    left:5px;
+    margin-top:10px;
+    font-size:1.3em;
+
+    h1{
+      font-size: 1em;
+      background:#292929;
+    }
+    div{
+      font-size: 1.1em;
+      padding-top: 7px;
+      text-align: center;
+      img{
+        width:80px;
+        height:80px;
+      }
     }
   }
 
-  .app-container {
-    height:100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-  }
-
-  .label {
-    font-size: 16px;
-    text-align: center;
-  }
-
-  &.authoring {
-    background: white;
-  }
-
-  h1{
-    padding:10px;
-    padding-top:16px;
-  }
-  .demo-links {
-    height:100%;
-    padding-top:70px;
-    align-items: left;
-    li{
-      padding:20px;
-      color:#aaa;
-
-    }
-  }
-}
-
-.lab-wrapper {
-  border-radius: 40px;
-  width: 543px;
-  height: 361px;
-  overflow: hidden;
-  z-index: 1;
-  padding: 0px;
-
-  iframe {
-    margin: 0;
-    padding: 0;
-    position: relative;
-    top: -7px;
-    left: -7px;
-    touch-action:none;
-  }
-}
-.main-menu{
-  width: 800px;
-  height: 300px;
-  margin-top: 100px;
-  margin-left: auto;
-  margin-right: auto;
-  a div{
-    width:200px;
-    height:200px;
-    margin:50px;
-    float:left;
-    background:#666;
-    border-radius: 10px;
-
-  }
-  .thermoscope-link{
-    background-image: url("thermoscope-button.png");
-    background-size: 90% 90%;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
-  .particle-modeler-link{
-    background-image: url("particle-modeler-button.png");
-    background-size: 90% 90%;
-    background-position: center center;
-    background-repeat: no-repeat;
-  }
-
-}
-.settings-link{
-  color: white;
-  position: fixed;
-  bottom: 16px;
-  left: 10px;
-
-  &:hover{
-    cursor:pointer;
-    color:orange;
-  }
-}
-.version-identifier{
-  font-size:0.8em;
-  color:#111;
-  position:fixed;
-  bottom: 4px;
-  right:10px;
-}
-.list-section{
-  left:5px;
-  margin-top:10px;
-  font-size:1.3em;
-  border: 2px solid #292929;
-
-  h1{
-    font-size: 1em;
-    background:#292929;
-  }
-  div{
-    font-size: 1.1em;
-    padding-top: 7px;
-    text-align: center;
-    img{
-      width:80px;
-      height:80px;
-    }
-  }
-}
-
-.material-icon{
-  background-size: 90% 90%;
-  background-position: center center;
-  background-repeat: no-repeat;
-  width:40px;
-  height:40px;
-  display: inline-block;
-}
-
-.label{
   .material-icon{
-    vertical-align: middle;
+    background-size: 90% 90%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    width:40px;
+    height:40px;
+    display: inline-block;
   }
-}
 
-.wood-icon{
-  background-image: url("wood-40px.png");
-}
-.stone-icon{
-  background-image: url("stone-40px.png");
-}
-.oil-icon{
-  background-image: url("oil-40px.png");
-}
-.soap-icon{
-  background-image: url("soap-40px.png");
-}
-.water-icon{
-  background-image: url("water-40px.png");
-}
-.air-icon{
-  background-image: url("air-40px.png");
-}
-.solid-icon{
-  background-image: url("solid-40px.png");
-}
-.gas-icon{
-  background-image: url("gas-40px.png");
-}
-.liquid-icon{
-  background-image: url("liquid-40px.png");
-}
-.wax-icon{
-  background-image: url("wax-40px.png");
-}
-.coconut-oil-icon{
-  background-image: url("coconut-oil-40px.png");
-}
+  .label{
+    .material-icon{
+      vertical-align: middle;
+    }
+  }
 
-.dialog{
-  text-align:center;
-  > div > div {
-    width: 50% !important;
+  .wood-icon{
+    background-image: url("wood-40px.png");
   }
-  button{
-    margin-left:10px;
-    margin-right:10px;
+  .stone-icon{
+    background-image: url("stone-40px.png");
   }
-  .dialog-msg{
-    width:100%;
+  .oil-icon{
+    background-image: url("oil-40px.png");
+  }
+  .soap-icon{
+    background-image: url("soap-40px.png");
+  }
+  .water-icon{
+    background-image: url("water-40px.png");
+  }
+  .air-icon{
+    background-image: url("air-40px.png");
+  }
+  .solid-icon{
+    background-image: url("solid-40px.png");
+  }
+  .gas-icon{
+    background-image: url("gas-40px.png");
+  }
+  .liquid-icon{
+    background-image: url("liquid-40px.png");
+  }
+  .wax-icon{
+    background-image: url("wax-40px.png");
+  }
+  .coconut-oil-icon{
+    background-image: url("coconut-oil-40px.png");
+  }
+
+  .dialog{
     text-align:center;
-    margin-bottom:20px;
-    position:relative;
+    > div > div {
+      width: 50% !important;
+    }
+    button{
+      margin-left:10px;
+      margin-right:10px;
+    }
+    .dialog-msg{
+      width:100%;
+      text-align:center;
+      margin-bottom:20px;
+      position:relative;
+    }
+  }
+
+  .demo-links {
+    display: flex;
+    flex-direction: column;
+    .icon-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+
+      .example-icon{
+        position: fixed;
+        width:307px;
+        height:318px;
+        background-repeat: no-repeat;
+        cursor: pointer;
+      }
+      .water-icon {
+        width:307px;
+        height:318px;
+        left: 20px;
+        top: 57px;
+        background-image: url("water-button.svg");
+        &:hover {
+          background-image: url("water-button-hover.svg");
+        }
+        &:active {
+          background-image: url("water-button-press.svg");
+        }
+      }
+      .wood-stone {
+        width:338px;
+        height:311px;
+        left: 343px;
+        top: 52px;
+        background-image: url("wood-stone.svg");
+        &:hover {
+          background-image: url("wood-stone-hover.svg");
+        }
+        &:active {
+          background-image: url("wood-stone-press.svg");
+        }
+      }
+      .oil-soap {
+        width:306px;
+        height:305px;
+        left: 699px;
+        top: 55px;
+        background-image: url("oil-soap.svg");
+        &:hover {
+          background-image: url("oil-soap-hover.svg");
+        }
+        &:active {
+          background-image: url("oil-soap-press.svg");
+        }
+      }
+      .air-icon {
+        width:313px;
+        height:307px;
+        left: 19px;
+        top: 395px;
+        background-image: url("air-button.svg");
+        &:hover {
+          background-image: url("air-button-hover.svg");
+        }
+        &:active {
+          background-image: url("air-button-press.svg");
+        }
+      }
+      .coconut-icon {
+        width:319px;
+        height:325px;
+        left: 350px;
+        top: 380px;
+        background-image: url("coconut-button.svg");
+        &:hover {
+          background-image: url("coconut-button-hover.svg");
+        }
+        &:active {
+          background-image: url("coconut-button-press.svg");
+        }
+      }
+      .experiments-icon {
+        width:315px;
+        height:325px;
+        left: 689px;
+        top: 377px;
+        background-image: url("experiments-button.svg");
+        &:hover {
+          background-image: url("experiments-button-hover.svg");
+        }
+        &:active {
+          background-image: url("experiments-button-press.svg");
+        }
+      }
+    }
+  }
+  .thermoscope-icon-84{
+    background-image: url("thermoscope_icon_84.png");
+  }
+
+  .clock{
+    position:fixed;
+    left: 930px;
+    top: 696px;
+    font-size:17px;
+    font-weight: 400;
+    color: #AFAFAF;
+    letter-spacing: .2px;
+    text-align: right;
+  }
+  .clock-dark{
+    position:fixed;
+    top:0px;
+    font-size:0.8em;
+    color: #333;
+  }
+
+  .options{
+    position: absolute;
+    background-image: url("options-button.svg");
+    width:48px;
+    height:48px;
+    top: 7px;
+    left: 863px;
+    cursor: pointer;
+    &:hover {
+      background-image: url("options-button-hover.svg");
+    }
+    &:active {
+      background-image: url("options-button-press.svg");
+      transform: scale(.9);
+    }
+  }
+
+  .background {
+    width: 984px;
+    height: 653px;
+    left: 20px;
+    top: 52px;
+    position: fixed;
+  }
+  .water-water {
+    .background {
+      background-image: url("background-water.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #f9aa78 65%);
+    }
+  }
+  .wood-stone {
+    .background {
+      background-image: url("background-wood-stone.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #fd8788 65%);
+    }
+  }
+  .oil-soap {
+    .background {
+      background-image: url("background-oil-soap.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #6ed0c2 65%);
+    }
+  }
+  .air {
+    .background {
+      background-image: url("background-air.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #c797fc 65%);
+    }
+  }
+  .coconut {
+    .background {
+      background-image: url("background-coconut.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #bfcd6c 65%);
+    }
+  }
+  .experiment {
+    .background {
+      background-image: url("background-one-view.svg");
+    }
+    .lab-container .overlay {
+      background: -webkit-radial-gradient(50% 50%, circle, transparent 64%, #6cbbdc 65%);
+    }
+  }
+
+  .submenu {
+    div {
+      position: fixed;
+      cursor: pointer;
+    }
+
+    .one-view-icon {
+      width: 320px;
+      height: 305px;
+      left: 181px;
+      top: 224px;
+      background-image: url("alt-one-view-button.svg");
+      &:hover {
+        background-image: url("alt-one-view-button-hover.svg");
+      }
+      &:active {
+        background-image: url("alt-one-view-button-press.svg")
+      }
+    }
+
+    .mixing-icon {
+      width: 328px;
+      height: 302px;
+      left: 515px;
+      top: 221px;
+      background-image: url("alt-mixing-view-button.svg");
+      &:hover {
+        background-image: url("alt-mixing-view-button-hover.svg");
+      }
+      &:active {
+        background-image: url("alt-mixing-view-button-press.svg")
+      }
+    }
   }
 }
 
-.example-icon{
-  display: inline-block;
-  background-size: 100%;
-  width:100px;
-  height:100px;
-  background-repeat: no-repeat;
-}
-.wood-icon-100{
-  background-image: url("wood-100px.png");
-}
-.stone-icon-100{
-  background-image: url("stone-100px.png");
-}
-.oil-icon-100{
-  background-image: url("oil-100px.png");
-}
-.soap-icon-100{
-  background-image: url("soap-100px.png");
-}
-.water-icon-100{
-  background-image: url("water-100px.png");
-}
-.air-icon-100{
-  background-image: url("air-100px.png");
-}
-.wax-icon-100{
-  background-image: url("wax-100px.png");
-}
-.coconut-oil-icon-100{
-  background-image: url("coconut-oil-100px.png");
-}
-.thermoscope-icon-84{
-  background-image: url("thermoscope_icon_84.png");
-}
-
-.clock{
-  position:fixed;
-  top:0px;
-  font-size:1em;
-  color: white;
-}
-.clock-dark{
-  position:fixed;
-  top:0px;
-  font-size:0.8em;
-  color: #333;
+// For preloading
+body:after{
+  display:none;
+  content: url("water-button-hover.svg") url("water-button-press.svg") 
+    url("air-button-hover.svg") url("air-button-press.svg")
+    url("coconut-button-hover.svg") url("coconut-button-press.svg")
+    url("experiments-button-hover.svg") url("experiments-button-press.svg")
+    url("oil-soap-hover.svg") url("oil-soap-press.svg")
+    url("wood-stone-hover.svg") url("wood-stone-press.svg")
+    url("alt-mixing-view-button-hover.svg") url("alt-mixing-view-button-press.svg")
+    url("alt-mixing-view-button-hover.svg") url("alt-mixing-view-button-press.svg");
 }

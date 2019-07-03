@@ -136,6 +136,12 @@ function getURLParam(name, defaultValue = null) {
   return value;
 }
 
+function importAll(r) {
+  let images = {};
+  r.keys().forEach((item, index) => { images[item.replace('./', '')] = r(item); });
+  return images;
+}
+
 module.exports = {
   getObjectFromHashParams,
   getHashParamsFromObject,
@@ -144,5 +150,6 @@ module.exports = {
   parseToPrimitive,
   getURLParam,
   getModelDiff,
-  loadModelDiff
+  loadModelDiff,
+  importAll
 }

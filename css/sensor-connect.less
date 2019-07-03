@@ -18,14 +18,44 @@
     margin-left:5px;
   }
   .sensor-tag-icon{
-    font-size:32px;
-    padding-left:10px;
+    position: absolute;
+    font-size:29px;
+    left: 5px;
+    top: 13px;
     &.small{
       font-size:12px;
       padding-left:4px;
     }
   }
-
+  .sensor-display-disconnect {
+    position: fixed;
+    left: 186px;
+    top: 9px;
+    width: 35px;
+    height: 35px;
+    background-image: url("sensor-disconnect.svg");
+    &:hover {
+      background-image: url("sensor-disconnect-hover.svg");
+    }
+    &:active {
+      transform: scale(.9);
+      background-image: url("sensor-disconnect-press.svg");
+    }
+  }
+  @keyframes flickerAnimation {
+    0%   { opacity:1; }
+    50%  { opacity:.25; }
+    100% { opacity:1; }
+  }
+  .connecting-label {
+    position: fixed;
+    width: 188px;
+    height: 56px;
+    left: 11px;
+    top: 9px;
+    background-image: url("sensor-connecting-label.svg");
+    animation: flickerAnimation 1s infinite;
+  }
 }
 
 .sensorConnect.dialog-msg{
@@ -41,5 +71,68 @@
     color: white;
     text-shadow: -1px 1px 1px black;
     font-weight: bold;
+  }
+}
+
+.sensorConnect {
+  .sensor-connect-icon {
+    position: fixed;
+    width: 188px;
+    height: 56px;
+    left: 11px;
+    top: 9px;
+    background-image: url("sensor-connect.svg");
+    cursor: pointer;
+    &:hover {
+      background-image: url("sensor-connect-hover.svg");
+    }
+    &:active {
+      background-image: url("sensor-connect-press.svg");
+    }
+    &.connecting {
+      background-image: url("sensor-connecting.svg");
+    }
+    &.connected {
+      background-image: url("sensor-connected.svg");
+    }
+  }
+
+  .lost-connection-dialog {
+    position: fixed;
+    z-index: 100;
+    width: 476px;
+    height: 120px;
+    left: 274px;
+    top: 302px;
+    background-image: url("sensor-modal-w-text.svg");
+
+    .close {
+      position: fixed;
+      width: 35px;
+      height: 36px;
+      left: 694px;
+      top: 321px;
+      background-image: url("sensor-modal-dismiss-button.svg");
+      cursor: pointer;
+      &:hover {
+        background-image: url("sensor-modal-dismiss-button-hover.svg");
+      }
+      &:active {
+        background-image: url("sensor-modal-dismiss-button-press.svg");
+      }
+    }
+
+    .overlay  {
+      position: fixed;
+      width: 1024px;
+      height: 724px;
+      left: 0;
+      top: 0;
+    }
+
+    .sensor-tag-icon {
+      left: 38px;
+      top: 43px;
+    }
   }
 }

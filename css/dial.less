@@ -1,0 +1,105 @@
+.temp-gauge {
+  width: 234px;
+  height: 155px;
+  top: 505px;
+  position: fixed;
+  &.a {
+    left: 209px;
+  }
+  &.b {
+    left: 581px;
+  }
+  &.center {
+    left: 386px;
+  }
+  &.water {
+    background-image: url("tempgauge-water.svg");
+  }
+  &.wood, &.stone {
+    background-image: url("tempgauge-wood-stone.svg");
+  }
+  &.oil, &.soap {
+    background-image: url("tempgauge-oil-soap.svg");
+  }
+  &.air {
+    background-image: url("tempgauge-air.svg");
+  }
+  &.coconut {
+    background-image: url("tempgauge-coconut.svg");
+  }
+  &.experiment {
+    background-image: url("one-view-tempgauge.svg");
+  }
+  &.mixing {
+    background-image: url("mix/mixing-view-tempgauge.svg");
+  }
+  
+  .pointer, .pegged-pointer {
+    width: 118px;
+    height: 51px;
+    position: absolute;
+    left: 19px;
+    top: 91px;
+    background-image: url("tempgauge-a-pointer.svg");
+    transform-origin: 98px 26px;
+    cursor: pointer;
+  }
+
+  .pegged-pointer {
+    background-image: url("mix/tempgauge-pointer-marker.svg");
+  }
+
+  &.b .pointer {
+    background-image: url("tempgauge-b-pointer.svg");
+  }
+
+  .readout {
+    position: absolute;
+    top: 141px;
+    left: 60px;
+    width: 94px;
+    height: 38px;
+    color: white;
+    font-size: 35px;
+    font-weight: 400;
+    text-align: right;
+    letter-spacing: .5px;
+  }
+
+  .cover {
+    width: 234px;
+    height: 155px;
+    position: absolute;
+    background-image: url("tempgauge-cover-water.svg");
+    opacity: 0;
+    transition: opacity .25s;
+    &.active {
+      opacity: 1;
+      transition: opacity .5s;
+    }
+    &.inactive {
+      pointer-events: none;
+    }
+    &.water {
+      background-image: url("tempgauge-cover-water.svg");
+    }
+    &.wood, &.stone {
+      background-image: url("tempgauge-cover-wood-stone.svg");
+    }
+    &.oil, &.soap {
+      background-image: url("tempgauge-cover-oil-soap.svg");
+    }
+    &.air {
+      background-image: url("tempgauge-cover-air.svg");
+    }
+    &.coconut {
+      background-image: url("tempgauge-cover-coconut.svg");
+    }
+    &.experiment {
+      background-image: url("one-view-tempgauge-cover.svg");
+    }
+    &.mixing {
+      background-image: url("mix/mixing-view-tempgauge-cover.svg");
+    }
+  }
+}

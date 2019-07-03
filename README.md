@@ -61,6 +61,8 @@ iOS devices using the Thermoscope app depend on the `ios` branch https://thermos
 
 Production branch will deploy to the root of `https://thermoscope.concord.org`
 
+You may want to change the size of the application to better target aspect ratios of certain devices. To do this, change the width or height of `.app-container` in `app.less` and the `BASE_HEIGHT` or `BASE_WIDTH` values in `thermoscope/index.js`.
+
 #### Github Pages:
 (not currently used)
 Run `./build-and-deploy.sh`

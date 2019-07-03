@@ -23,6 +23,7 @@ export default class Sensor extends PureComponent {
     this.screenConsole = this.screenConsole.bind(this);
     this.closeWinLink = this.closeWinLink.bind(this);
     this.hideLostConDlg = this.hideLostConDlg.bind(this);
+    this.getSensorConnectButton = this.getSensorConnectButton.bind(this);
   }
 
   handleIPAddressChange(event) {
@@ -75,6 +76,7 @@ export default class Sensor extends PureComponent {
   }
   toggleDisplay(event) {
     this.setState({ showDetails: this.state.showDetails ? false : true });
+    this.connect();
   }
 
   closeWinLink(event) {
@@ -96,6 +98,36 @@ export default class Sensor extends PureComponent {
     this.setState({ debugMessages: newMessages });
   }
 
+  getSensorConnectButton() {
+    const { connecting, connected, connectedSensorName } = this.state;
+    if (connecting) {
+      return (
+        <div id="toggleSensorDisplay" className={`sensor-connect-icon connecting`} onClick={this.toggleDisplay}>
+          <div className="connecting-label" />
+        </div>
+      );
+    } else if (connected) {
+      const displayName = this.getDisplayName(this.getSensorName(connectedSensorName));
+      return (
+        <div id="toggleSensorDisplay" className={`sensor-connect-icon connected`} onClick={this.toggleDisplay}>
+          <div className="sensor-tag-icon">{displayName}</div>
+          <div className="sensor-display-disconnect" />
+        </div>
+      );
+    } else {
+      return <div id="toggleSensorDisplay" className={`sensor-connect-icon disconnected`} onClick={this.toggleDisplay} />;
+    }
+  }
+
+  getSensorName(connectedSensorName) {
+    const prefix = "Thermoscope";
+    return connectedSensorName && connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2).trim() : prefix;
+  }
+
+  getDisplayName(sensorName) {
+    return sensorName && sensorName.length === 1 ? sensorName : "✔️";
+  }
+
   render() {
     const { connected, connecting, disconnecting, lostConnection, connectedSensorName, showDetails, debugMessages, showWinLink } = this.state;
     const { showAddressBox } = this.props;
@@ -107,7 +139,7 @@ export default class Sensor extends PureComponent {
 
     if (connected && connectedSensorName) {
       console.log(connectedSensorName.length);
-      sensorName = connectedSensorName.length > prefix.length ? connectedSensorName.substring(connectedSensorName.length - 2) : prefix;
+      sensorName = this.getSensorName(connectedSensorName);
       this.lastSensorName = sensorName;
       sensorIconStyle = connectedSensorName.length > prefix.length ? sensorIconStyle : sensorIconStyle + " small";
     }
@@ -129,25 +161,19 @@ export default class Sensor extends PureComponent {
           <RaisedButton onClick={this.closeWinLink} style={dialogBtn} primary={true}>Cancel</RaisedButton>
           <RaisedButton onClick={this.openWinBLE} style={dialogBtn} primary={true}>OK</RaisedButton>
         </Dialog>
-        <Dialog open={lostConnection} ref="lostConDialog" className="dialog" contentStyle={{minWidth: "30%", width:0}}>
-          <div className="dialog-msg sensorConnect">
-            <div className={sensorIconStyle}>
-              <div>{this.lastSensorName == "Thermoscope" || !this.lastSensorName ?  "🌡" : this.lastSensorName}</div>
-              <div className="overlay">?</div>
+        {lostConnection &&
+          <div className="lost-connection-dialog">
+            <div className="overlay" />
+            <div className="sensor-tag-icon">
+              {this.getDisplayName(this.lastSensorName)}
             </div>
-            <div>Lost connection to Thermoscope</div>
+            <div className="close" onClick={this.hideLostConDlg} />
           </div>
-          <RaisedButton onClick={this.hideLostConDlg} primary={true}>OK</RaisedButton>
-        </Dialog>
-        <div id="toggleSensorDisplay" onClick={this.toggleDisplay}><i className="material-icons">settings_input_antenna</i></div>
+        }
+        { this.getSensorConnectButton() }
         {showDetails &&
           <div className="sensorDetails">
             {showAddressBox && <TextField hintText="IP Address" ref="ip" type="text" id="ipAddress" onChange={this.handleIPAddressChange} onKeyDown={this.enterkey}></TextField>}
-            <RaisedButton id="connect" onClick={this.connect}>{connectButtonText}</RaisedButton>
-            {connecting &&
-              <LinearProgress />
-            }
-            {!connecting && <div id="sensorConnectionStatus">{nameTag}</div>}
             {showDebug &&
               <div id="screenConsole">{debugMessages}</div>
             }
