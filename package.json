@@ -39,7 +39,7 @@
     "babel": "^6.23.0",
     "babel-loader": "^8.0.4",
     "copy-webpack-plugin": "^4.6.0",
-    "css-loader": "^0.26.4",
+    "css-loader": "^3.0.0",
     "file-loader": "^2.0.0",
     "json-loader": "^0.5.4",
     "less": "^3.9.0",
