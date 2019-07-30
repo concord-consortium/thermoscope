@@ -1,7 +1,7 @@
 import React, {PureComponent} from 'react';
 import '../../css/sidebar.less';
 
-export default class LogoMenu extends PureComponent {
+export default class Sidebar extends PureComponent {
 
   render() {
     const { active, showHideButtons, showPlayButtons, showCelsius } = this.props;
