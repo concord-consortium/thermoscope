@@ -30,7 +30,7 @@ darkBaseTheme.palette.primary1Color = '#ccc';
 
 export const BASE_WIDTH = 1024;
 export const BASE_HEIGHT = 724; // 744 for a 9.7" iPad
-export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3, 
+export const ThermoscopeMode = { Menu: 0, OneThermoscope: 1, TwoThermoscope: 2, ThreeThermoscope: 3,
                                  ExperimentSelector: 4, SingleExperiment: 5, ExperimentSubmenu: 6,
                                  MixingView: 7 };
 let meterSegments = [
@@ -174,7 +174,7 @@ export default class ThermoscopeControl extends PureComponent {
         <div className="app-container" style={{transform: `scale(${scale})`, top, left}}>
           <div className="app">
             <Clock />
-            <LogoMenu scale="logo-menu small" navPath="../index.html" />
+            <LogoMenu scale="logo-menu small" navPath="../index.html" enableNav={false}/>
             {
               mode !== ThermoscopeMode.Menu &&
               <div title="Home" className="main-menu-button" onClick={this.showMenu} />
@@ -233,7 +233,7 @@ export default class ThermoscopeControl extends PureComponent {
               </div>
             }
             {
-              mode === ThermoscopeMode.ExperimentSubmenu && 
+              mode === ThermoscopeMode.ExperimentSubmenu &&
               <div className="submenu">
                 <div className="one-view-icon example-icon"
                   onClick={() => this.setState({ mode: ThermoscopeMode.ExperimentSelector })}/>
@@ -242,21 +242,21 @@ export default class ThermoscopeControl extends PureComponent {
               </div>
             }
             {
-              mode === ThermoscopeMode.MixingView && 
+              mode === ThermoscopeMode.MixingView &&
               <div className="mixing-container">
                 <div  className="background" />
-                <MixingView 
+                <MixingView
                   showHideButtons={showHideButtons}
                   showPlayButtons={showPlayButtons}
                   showCelsius={showCelsius}
                   scale={scale}
                   top={top}
                   left={left}
-                /> 
+                />
               </div>
             }
             <Sensor sensor={sensor} showAddressBox={false} />
-            <Sidebar 
+            <Sidebar
               active={showSidebar}
               onClose={this.toggleState("showSidebar")}
               showHideButtons={showHideButtons}
@@ -265,7 +265,7 @@ export default class ThermoscopeControl extends PureComponent {
               onTogglePlayButtons={this.toggleState("showPlayButtons")}
               showCelsius={showCelsius}
               onToggleCelsius={this.toggleState("showCelsius")}
-            /> 
+            />
           </div>
         </div>
       </MuiThemeProvider>
