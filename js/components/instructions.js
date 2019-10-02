@@ -20,11 +20,13 @@ export default class Instructions extends PureComponent {
     if (newStepIdx < steps.length) {
       this.setState({ stepIdx: newStepIdx});
       setTimeout(this.handleContinue, 1000);
+    } else {
+      this.setState({ showContinueButton: true })
     }
   }
 
   render() {
-    const { stepIdx } = this.state;
+    const { stepIdx, showContinueButton } = this.state;
     const { steps, visible, onClose } = this.props;
     if (!this.didRunAnimation && visible) {
       setTimeout(this.handleContinue, 1500);
@@ -45,7 +47,7 @@ export default class Instructions extends PureComponent {
             );
           })
         }
-        <div className="close" onClick={onClose} />
+        {showContinueButton && <div className="close" onClick={onClose} />}
       </div>
     );
   }
