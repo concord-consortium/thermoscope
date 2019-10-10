@@ -216,6 +216,14 @@ export default class Interactive extends PureComponent {
       updateContainerVisibility(this.state.container.value, null, this.state.containerHeight, this.state.containerLid, api, containerScale);
       updateContainerLid(this.state.containerLid, this.state.containerLid.value, this.state.container.value, this.state.containerHeight, api);
     }
+    // Note: There was originally capacity for three different element types in the simulation, but
+    // there are six different element types defined in the project. The first two, (element numbers 0, 1) are
+    // placeholder atoms that are draggable but do not interact with the simulation. Element 2 is used to arrange
+    // a small row of pinned particles at the base of the simulation to give the container a bit of interactivity with
+    // particles placed in it.
+
+    // When the particles are dragged out from the placeholder position, their element number is changed by a value of 3
+    // to convert them to real particles that will interact with the simulation.
     api.onDrag('atom', (x, y, d, i) => {
       if (api.isStopped() || this.state.allowLiveDragging) {
         if (d.pinned === 1) {
@@ -261,7 +269,6 @@ export default class Interactive extends PureComponent {
       // this will fire every tick
       for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
         a = api.getAtomProperties(i);
-
         if (((a.vx * a.vx) + (a.vy * a.vy)) > particleMaxVelocity) {
           // particles moving too fast can cause the model to freeze up
           let adjustedVx = a.vx * 0.01;
@@ -406,9 +413,9 @@ export default class Interactive extends PureComponent {
         // We have invisible / hidden atoms under the base of the beaker - ignore those
         if (d.element !== 2) {
           let elementInsideAtomBox = Math.abs(d.x - atomBox.x) < atomBox.spacing && Math.abs(d.y - atomBox.y) < atomBox.spacing;
-          if (elementInsideAtomBox && d.element < 3) {
+          if (elementInsideAtomBox) {
             atomsToDelete.push(i);
-            console.log("Invalid position - inside box, will remove " + i);
+            // console.log("Invalid position - inside box, will remove " + i);
           } else if (Math.abs(d.ax) > 0.1 || Math.abs(d.ay) > 0.1) {
             atomsToDelete.push(i);
             console.log("Invalid position - extreme acceleration, likely due to overlap, will remove " + i);
@@ -440,7 +447,10 @@ export default class Interactive extends PureComponent {
           api.setAtomProperties(i, { visible: true });
         }
       }
-
+      // add new atoms that were removed while the simulation was running
+      for (let i = 0; i < this.state.elements.value; i++) {
+        this.addNewDraggableAtom(i);
+      }
     }
     this.setState({ simulationRunning: !api.isStopped() });
   }
@@ -556,7 +566,9 @@ export default class Interactive extends PureComponent {
                 }
                 </div>
               }
+
               <div className={heatBathStyle} />
+              <div className="container-base-overlay" />
             </div>
             {authoring && <div>
               <IconButton id="studentView" iconClassName="material-icons" className="student-button" onClick={this.studentView} tooltip="student view">school</IconButton>
