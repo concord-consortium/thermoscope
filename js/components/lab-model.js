@@ -45,8 +45,25 @@ export default class LabModel extends PureComponent {
     const { mixing } = this.props;
     api = lab.scriptingAPI;
     if (!api) return null;
-    api.start();
 
+    for (var i = 0, a; i < api.getNumberOfAtoms(); i++) {
+      a = api.getAtomProperties(i);
+      api.addImage({
+          'imageUri': '../particle-image.png',
+          'imageX': a.x,
+          'imageY': a.y,
+          'imageHostType': 'Atom',
+          'imageHostIndex': i,
+          'imageLayer': 1,
+          'imageLayerPosition': 1,
+          'visible': true,
+          'rotation': 0,
+          'scale': 0.11,
+          'opacity': 1
+        }
+      );
+    }
+    api.start();
     // Only doing this for the mixing simulation
     if (mixing != null) {
       var particlesHot = [];
