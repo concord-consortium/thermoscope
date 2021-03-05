@@ -5,11 +5,9 @@ This repository contains the initial code to visualize matter at different tempe
 Latest builds for the Thermoscope application can be found here: https://thermoscope.concord.org/branch/master/
 Main production url is https://thermoscope.concord.org/ though there is heavy caching on this site.
 
-Thermoscope apps on iPad devices are currently using iOS branch:
-https://thermoscope.concord.org/branch/ios/
 
-The main Thermoscope demo page is here: https://thermoscope.concord.org/thermoscope/ and accepts url parameters as follows:
-https://thermoscope.concord.org/thermoscope/?A=liquid&B=liquid&controls=false&hideB
+The main Thermoscope demo page is here: https://thermoscope.concord.org/ and accepts url parameters as follows:
+https://thermoscope.concord.org/?A=liquid&B=liquid&controls=false&hideB
 
 where `A` and `B` (case sensitive) represent Thermoscopes A and B's default particle visualization, which can be one of the following states (default is `solid`):
    ```
@@ -25,8 +23,18 @@ Additionally, the `controls` parameter can be used to show or hide the controls 
 
 The `hideA`, `hideB` and `hideC` parameters can start any of the thermoscope displays with the aperture closed
 
+## Particle Modeler
+The Production version of the Particle Modeler is built from the `particle-modeler-app` branch.
+The Particle Modeler is built by updating the webpack configuration to use the `/particle-modeler/index` as the root of the files for the `dist` folder.
 
-The Particle Modeler can be found here: https://thermoscope.concord.org/particle-modeler
+```
+module.exports = {
+  entry: {
+    'particle-modeler': './js/particle-modeler/index.js'
+     ...
+```
+
+The Web version of the Particle Modeler can be found here: https://particle-modeler.concord.org/
 To access the Particle Modeler in Authoring mode, adjust the url to add #authoring=true, for example: https://thermoscope.concord.org/particle-modeler/#authoring=true
 
 ## Development
@@ -56,13 +64,16 @@ https://github.com/urish/web-bluetooth-polyfill
 Follow the installation instructions in the repository's readme file.
 
 ## Deployment
+Both the Thermoscope and the Particle Modeler are primarily intended as iOS applications, but there are web versions of each available online.
 
-iOS devices using the Thermoscope app depend on the `ios` branch https://thermoscope.concord.org/branch/ios/. The app on iPads is hard-wired to the iOS path, so any changes that need to be seen on iPads will require that the `ios` branch is updated. Note, however, that since this branch is used on all the iPads, it should not be used as a development branch, and is only used for accepted, tested features.
+### Web
+Production branch will deploy the Thermoscope to the root of `https://thermoscope.concord.org`
 
-Production branch will deploy to the root of `https://thermoscope.concord.org`
+The Particle Modeler web application has been updated by switching to the `particle-modeler-app` branch, building, and manually copying the contents of the `Dist` folder to the S3 bucket.
+### iOS
+The Thermoscope App is built from XCode by taking a self-contained `Dist` folder, built from this repository, and embedding it in the web view (see https://github.com/concord-consortium/thermoscope-ios-ble for the XCode project), requiring no external connection.
 
-You may want to change the size of the application to better target aspect ratios of certain devices. To do this, change the width or height of `.app-container` in `app.less` and the `BASE_HEIGHT` or `BASE_WIDTH` values in `thermoscope/index.js`.
+The Particle Modeler is built in a similar fashion, but by adjusting a few settings in `webpack.config.js` to set the Particle Modeler as the launch screen (with no navigation to the Thermoscope side of the application). For simplicity, the `particle-modeler-app` branch has this set already. Once a build is done from this branch, the new `dist` folder can be copied into the XCode project at https://github.com/concord-consortium/particle-modeler-ios.
+#### Obsolete iOS publishing
+iOS devices using the Thermoscope app used to depend on the deployed output of `ios` branch by using the webview on iOS and pointing to the live branch at https://thermoscope.concord.org/branch/ios/. The app on iPads was formerly hard-wired to the iOS path.
 
-#### Github Pages:
-(not currently used)
-Run `./build-and-deploy.sh`
